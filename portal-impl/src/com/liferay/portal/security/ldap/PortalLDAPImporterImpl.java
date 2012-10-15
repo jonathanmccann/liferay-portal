@@ -1231,6 +1231,9 @@ public class PortalLDAPImporterImpl implements PortalLDAPImporter {
 			ldapUser.getRoleIds(), ldapUser.getUserGroupRoles(),
 			ldapUser.getUserGroupIds(), ldapUser.getServiceContext());
 
+		user = UserLocalServiceUtil.updateStatus(
+			user.getUserId(), ldapUser.getStatus());
+
 		if (ldapUserModifiedDate != null) {
 			user = UserLocalServiceUtil.updateModifiedDate(
 				user.getUserId(), ldapUserModifiedDate);

@@ -305,6 +305,10 @@ public class DefaultPortalToLDAPConverter implements PortalToLDAPConverter {
 				modifications);
 		}
 
+		addModificationItem(
+			UserConverterKeys.STATUS, String.valueOf(user.getStatus()),
+			modifications);
+
 		populateCustomAttributeModifications(
 			user, user.getExpandoBridge(), userExpandoAttributes,
 			userExpandoMappings, modifications);
