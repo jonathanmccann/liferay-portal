@@ -175,6 +175,13 @@ public class DefaultLDAPToPortalConverter implements LDAPToPortalConverter {
 		ldapUser.setRoleIds(null);
 		ldapUser.setSendEmail(false);
 
+		String status = LDAPUtil.getAttributeString(
+			attributes, userMappings, UserConverterKeys.STATUS);
+
+		if (Validator.isNotNull(status)) {
+			ldapUser.setStatus(Integer.valueOf(status));
+		}
+
 		ServiceContext serviceContext = new ServiceContext();
 
 		String uuid = LDAPUtil.getAttributeString(

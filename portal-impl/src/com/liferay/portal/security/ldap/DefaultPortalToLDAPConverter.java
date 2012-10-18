@@ -66,6 +66,8 @@ public class DefaultPortalToLDAPConverter implements PortalToLDAPConverter {
 			UserConverterKeys.PORTRAIT, UserConverterKeys.PORTRAIT);
 		_reservedUserFieldNames.put(
 			UserConverterKeys.SCREEN_NAME, UserConverterKeys.SCREEN_NAME);
+		_reservedUserFieldNames.put(
+			UserConverterKeys.STATUS, UserConverterKeys.STATUS);
 	}
 
 	public String getGroupDNName(
@@ -307,6 +309,10 @@ public class DefaultPortalToLDAPConverter implements PortalToLDAPConverter {
 				new BasicAttribute(portraitKey, getUserPortrait(user)),
 				modifications);
 		}
+
+		addModificationItem(
+			UserConverterKeys.STATUS, String.valueOf(user.getStatus()),
+			modifications);
 
 		populateCustomAttributeModifications(
 			user, user.getExpandoBridge(), userExpandoAttributes,
