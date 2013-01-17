@@ -59,6 +59,7 @@ String usersListView = ParamUtil.get(request, "usersListView", UserConstants.LIS
 	<%
 	boolean hasAddOrganizationPermission = PortalPermissionUtil.contains(permissionChecker, ActionKeys.ADD_ORGANIZATION);
 	boolean hasAddUserPermission = PortalPermissionUtil.contains(permissionChecker, ActionKeys.ADD_USER);
+	boolean hasUpdateDetails = UsersAdminUtil.hasUpdatePermission(permissionChecker, user);
 	%>
 
 	<c:if test="<%= hasAddOrganizationPermission || hasAddUserPermission %>">
@@ -68,7 +69,7 @@ String usersListView = ParamUtil.get(request, "usersListView", UserConstants.LIS
 				<portlet:param name="sitesListView" value="<%= usersListView %>" />
 			</portlet:renderURL>
 
-			<c:if test="<%= hasAddUserPermission %>">
+			<c:if test="<%= hasAddUserPermission && hasUpdateDetails %>">
 				<portlet:renderURL var="addUserURL">
 					<portlet:param name="struts_action" value="/users_admin/edit_user" />
 					<portlet:param name="redirect" value="<%= viewUsersURL %>" />
