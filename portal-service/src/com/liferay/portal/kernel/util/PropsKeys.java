@@ -821,9 +821,11 @@ public interface PropsKeys {
 
 	public static final String FACEBOOK_CONNECT_VERIFIED_ACCOUNT_REQUIRED = "facebook.connect.verified.account.required";
 
-	public static final String FIELD_EDITABLE_COM_LIFERAY_PORTAL_MODEL_USER_EMAILADDRESS = "field.editable.com.liferay.portal.model.User.emailAddress";
+	public static final String FIELD_EDITABLE_COM_LIFERAY_PORTAL_MODEL_USER = "field.editable.com.liferay.portal.model.User";
 
-	public static final String FIELD_EDITABLE_COM_LIFERAY_PORTAL_MODEL_USER_SCREENNAME = "field.editable.com.liferay.portal.model.User.screenName";
+	public static final String FIELD_EDITABLE_COM_LIFERAY_PORTAL_MODEL_USER_DEFAULT = "field.editable.com.liferay.portal.model.User.default";
+
+	public static final String FIELD_EDITABLE_COM_LIFERAY_PORTAL_MODEL_USER_FIELDS = "field.editable.com.liferay.portal.model.User.fields";
 
 	public static final String FIELD_ENABLE_COM_LIFERAY_PORTAL_MODEL_CONTACT_BIRTHDAY = "field.enable.com.liferay.portal.model.Contact.birthday";
 

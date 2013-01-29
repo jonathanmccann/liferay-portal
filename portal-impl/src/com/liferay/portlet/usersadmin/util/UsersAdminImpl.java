@@ -17,6 +17,7 @@ package com.liferay.portlet.usersadmin.util;
 import com.liferay.portal.NoSuchOrganizationException;
 import com.liferay.portal.NoSuchUserException;
 import com.liferay.portal.NoSuchUserGroupException;
+import com.liferay.portal.kernel.configuration.Filter;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.search.Document;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Tuple;
 import com.liferay.portal.kernel.util.UniqueList;
@@ -70,6 +72,7 @@ import com.liferay.portal.service.permission.UserGroupPermissionUtil;
 import com.liferay.portal.service.permission.UserGroupRolePermissionUtil;
 import com.liferay.portal.service.persistence.UserGroupRolePK;
 import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.comparator.GroupNameComparator;
 import com.liferay.portal.util.comparator.GroupTypeComparator;
@@ -996,68 +999,71 @@ public class UsersAdminImpl implements UsersAdmin {
 		return websites;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public boolean hasUpdateEmailAddress(
 			PermissionChecker permissionChecker, User user)
 		throws PortalException, SystemException {
 
-		String[] fieldEditiableUserEmailAddress =
-			PropsValues.
-				FIELD_EDITABLE_COM_LIFERAY_PORTAL_MODEL_USER_EMAILADDRESS;
+		return hasUpdatePermission(permissionChecker, user, "emailAddress");
+	}
+
+	public boolean hasUpdatePermission(
+			PermissionChecker permissionChecker, User user, String field)
+		throws PortalException, SystemException {
+
+		String[] fieldEditableArray = null;
 
 		if (ArrayUtil.contains(
-				fieldEditiableUserEmailAddress, "administrator") &&
-			permissionChecker.isCompanyAdmin()) {
+				PropsValues.FIELD_EDITABLE_COM_LIFERAY_PORTAL_MODEL_USER_FIELDS,
+				field)) {
 
-			return true;
+			fieldEditableArray = PropsUtil.getArray(
+				PropsKeys.FIELD_EDITABLE_COM_LIFERAY_PORTAL_MODEL_USER,
+				new Filter(field));
+		}
+		else {
+			fieldEditableArray =
+				PropsValues.
+					FIELD_EDITABLE_COM_LIFERAY_PORTAL_MODEL_USER_DEFAULT;
 		}
 
-		if (ArrayUtil.contains(
-				fieldEditiableUserEmailAddress, "user-with-mx") &&
-			user.hasCompanyMx()) {
+		for (String fieldEditable : fieldEditableArray) {
+			if (Validator.equals(fieldEditable, "user-with-mx") &&
+				user.hasCompanyMx()) {
 
-			return true;
-		}
+				return true;
+			}
 
-		if (ArrayUtil.contains(
-				fieldEditiableUserEmailAddress, "user-without-mx") &&
-			!user.hasCompanyMx()) {
+			if (Validator.equals(fieldEditable, "user-without-mx") &&
+				!user.hasCompanyMx()) {
 
-			return true;
+				return true;
+			}
+
+			Role role = RoleLocalServiceUtil.fetchRole(
+				user.getCompanyId(), fieldEditable);
+
+			if ((role != null) &&
+				RoleLocalServiceUtil.hasUserRole(
+					user.getUserId(), role.getRoleId())) {
+
+				return true;
+			}
 		}
 
 		return false;
 	}
 
+	/**
+	 * @deprecated
+	 */
 	public boolean hasUpdateScreenName(
 			PermissionChecker permissionChecker, User user)
 		throws PortalException, SystemException {
 
-		String[] fieldEditiableUserScreenName =
-			PropsValues.
-				FIELD_EDITABLE_COM_LIFERAY_PORTAL_MODEL_USER_SCREENNAME;
-
-		if (ArrayUtil.contains(
-				fieldEditiableUserScreenName, "administrator") &&
-			permissionChecker.isCompanyAdmin()) {
-
-			return true;
-		}
-
-		if (ArrayUtil.contains(
-				fieldEditiableUserScreenName, "user-with-mx") &&
-			user.hasCompanyMx()) {
-
-			return true;
-		}
-
-		if (ArrayUtil.contains(
-				fieldEditiableUserScreenName, "user-without-mx") &&
-			!user.hasCompanyMx()) {
-
-			return true;
-		}
-
-		return false;
+		return hasUpdatePermission(permissionChecker, user, "screenName");
 	}
 
 	public long[] removeRequiredRoles(long userId, long[] roleIds)
