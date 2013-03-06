@@ -12,15 +12,33 @@
  * details.
  */
 
-package com.liferay.portal.tools.seleniumbuilder;
+package com.liferay.portlet.asset.model;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * @author Michael Hashimoto
+ * @author Igor Spasic
  */
-public class TestPlanConverter extends BaseConverter {
+public class AssetTagDisplayTest {
 
-	public TestPlanConverter(SeleniumBuilderContext seleniumBuilderContext) {
-		super(seleniumBuilderContext);
+	@Test
+	public void testGetPage() {
+		AssetTagDisplay assetTagDisplay = new AssetTagDisplay();
+
+		assetTagDisplay.setStart(0);
+		assetTagDisplay.setEnd(20);
+
+		Assert.assertEquals(1, assetTagDisplay.getPage());
+
+		assetTagDisplay.setStart(20);
+		assetTagDisplay.setEnd(40);
+
+		Assert.assertEquals(2, assetTagDisplay.getPage());
+
+		assetTagDisplay.setEnd(0);
+
+		Assert.assertEquals(0, assetTagDisplay.getPage());
 	}
 
 }
