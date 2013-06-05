@@ -148,11 +148,15 @@ if (showPrototypes && (group != null)) {
 	if (liveGroup != null) {
 		typeSettingsProperties = liveGroup.getTypeSettingsProperties();
 	}
-	else {
+	else if (group != null) {
 		typeSettingsProperties = group.getTypeSettingsProperties();
 	}
 
-	boolean directoryIndexingEnabled = PropertiesParamUtil.getBoolean(typeSettingsProperties, request, "directoryIndexingEnabled");
+	boolean directoryIndexingEnabled = false;
+
+	if (Validator.isNotNull(typeSettingsProperties)) {
+		directoryIndexingEnabled = PropertiesParamUtil.getBoolean(typeSettingsProperties, request, "directoryIndexingEnabled");
+	}
 	%>
 
 	<aui:input label="directory-indexing-enabled" name="TypeSettingsProperties--directoryIndexingEnabled--" type="checkbox" value="<%= directoryIndexingEnabled %>" />
