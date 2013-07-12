@@ -25,7 +25,9 @@ long defaultFolderId = GetterUtil.getLong(portletPreferences.getValue("rootFolde
 
 long folderId = BeanParamUtil.getLong(folder, request, "folderId", defaultFolderId);
 
-if ((folder == null) && (defaultFolderId != BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID)) {
+boolean viewDefaultFolder = (folder == null) && (defaultFolderId != BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
+if (viewDefaultFolder) {
 	try {
 		folder = BookmarksFolderServiceUtil.getFolder(folderId);
 	}
@@ -202,11 +204,9 @@ if (folder != null) {
 		</aui:row>
 
 		<%
-		if (folder != null) {
-			if (portletName.equals(PortletKeys.BOOKMARKS)) {
-				PortalUtil.setPageSubtitle(folder.getName(), request);
-				PortalUtil.setPageDescription(folder.getDescription(), request);
-			}
+		if (!viewDefaultFolder && (folder != null) && portletName.equals(PortletKeys.BOOKMARKS)) {
+			PortalUtil.setPageSubtitle(folder.getName(), request);
+			PortalUtil.setPageDescription(folder.getDescription(), request);
 		}
 		%>
 
