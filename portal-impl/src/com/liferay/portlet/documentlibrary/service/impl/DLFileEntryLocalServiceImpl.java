@@ -1918,50 +1918,6 @@ public class DLFileEntryLocalServiceImpl
 			(lastDLFileVersion.getFileEntryTypeId() ==
 				latestDLFileVersion.getFileEntryTypeId())) {
 
-			// Asset
-
-			AssetEntry lastAssetEntry = assetEntryLocalService.getEntry(
-				DLFileEntryConstants.getClassName(),
-				dlFileEntry.getFileEntryId());
-			AssetEntry latestAssetEntry = assetEntryLocalService.getEntry(
-				DLFileEntryConstants.getClassName(),
-				latestDLFileVersion.getFileVersionId());
-
-			if (!Validator.equalsSorted(
-					lastAssetEntry.getCategoryIds(),
-					latestAssetEntry.getCategoryIds())) {
-
-				return false;
-			}
-
-			if (!Validator.equalsSorted(
-					lastAssetEntry.getTagNames(),
-					latestAssetEntry.getTagNames())) {
-
-				return false;
-			}
-
-			List<AssetLink> lastAssetLinks =
-				assetLinkLocalService.getDirectLinks(
-					lastAssetEntry.getEntryId(),
-					AssetLinkConstants.TYPE_RELATED);
-			List<AssetLink> latestAssetLinks =
-				assetLinkLocalService.getDirectLinks(
-					latestAssetEntry.getEntryId(),
-					AssetLinkConstants.TYPE_RELATED);
-
-			if (!Validator.equalsSorted(
-					StringUtil.split(
-						ListUtil.toString(
-							lastAssetLinks, AssetLink.ENTRY_ID2_ACCESSOR), 0L),
-					StringUtil.split(
-						ListUtil.toString(
-							latestAssetLinks, AssetLink.ENTRY_ID2_ACCESSOR),
-							0L))) {
-
-				return false;
-			}
-
 			// Expando
 
 			ExpandoTable expandoTable = null;
