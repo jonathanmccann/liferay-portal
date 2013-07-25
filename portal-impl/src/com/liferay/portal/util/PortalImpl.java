@@ -956,8 +956,9 @@ public class PortalImpl implements Portal {
 
 	@Override
 	public String getAlternateURL(
-		String canonicalURL, ThemeDisplay themeDisplay, Locale locale,
-		Layout layout) {
+			String canonicalURL, ThemeDisplay themeDisplay, Locale locale,
+			Layout layout)
+		throws PortalException, SystemException {
 
 		LayoutSet layoutSet = themeDisplay.getLayoutSet();
 
@@ -1021,7 +1022,10 @@ public class PortalImpl implements Portal {
 						canonicalURLSuffix);
 				}
 
-				if (LocaleUtil.getDefault() == locale) {
+				Locale siteDefaultLocale = PortalUtil.getSiteDefaultLocale(
+					layout.getGroupId());
+
+				if (siteDefaultLocale.equals(locale)) {
 					return canonicalURL;
 				}
 
@@ -1222,7 +1226,7 @@ public class PortalImpl implements Portal {
 		String canonicalLayoutFriendlyURL = StringPool.BLANK;
 
 		String layoutFriendlyURL = layout.getFriendlyURL(
-			LocaleUtil.getDefault());
+			PortalUtil.getSiteDefaultLocale(layout.getGroupId()));
 
 		if ((groupFriendlyURL.contains(layoutFriendlyURL) ||
 			 groupFriendlyURL.contains(
@@ -3185,12 +3189,16 @@ public class PortalImpl implements Portal {
 
 		long groupId = 0;
 
-		try {
-			long scopeGroupId = getScopeGroupId(request);
+		Layout layout = (Layout)request.getAttribute(WebKeys.LAYOUT);
 
-			groupId = getSiteGroupId(scopeGroupId);
-		}
-		catch (Exception e) {
+		if ((layout != null) && !layout.isTypeControlPanel()) {
+			try {
+				long scopeGroupId = getScopeGroupId(request);
+
+				groupId = getSiteGroupId(scopeGroupId);
+			}
+			catch (Exception e) {
+			}
 		}
 
 		String i18nLanguageId = (String)request.getAttribute(
