@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -63,9 +62,6 @@ import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portlet.asset.model.AssetEntry;
-import com.liferay.portlet.asset.model.AssetLink;
-import com.liferay.portlet.asset.model.AssetLinkConstants;
 import com.liferay.portlet.documentlibrary.DuplicateFileException;
 import com.liferay.portlet.documentlibrary.DuplicateFolderNameException;
 import com.liferay.portlet.documentlibrary.FileExtensionException;
@@ -1909,202 +1905,150 @@ public class DLFileEntryLocalServiceImpl
 			return false;
 		}
 
-		if (PropsValues.DL_FILE_ENTRY_VERSION_POLICY != 1) {
+		if (PropsValues.DL_FILE_ENTRY_VERSION_POLICY == 0) {
 			return false;
 		}
 
-		if ((lastDLFileVersion.getFolderId() ==
-				latestDLFileVersion.getFolderId()) &&
-			Validator.equals(
-				lastDLFileVersion.getTitle(), latestDLFileVersion.getTitle()) &&
-			Validator.equals(
-				lastDLFileVersion.getDescription(),
-				latestDLFileVersion.getDescription()) &&
-			(lastDLFileVersion.getFileEntryTypeId() ==
-				latestDLFileVersion.getFileEntryTypeId())) {
+		long lastFolderId = lastDLFileVersion.getFolderId();
+		long latestFolderId = latestDLFileVersion.getFolderId();
 
-			// Asset
+		if (lastFolderId != latestFolderId) {
+			return false;
+		}
 
-			AssetEntry lastAssetEntry = assetEntryLocalService.getEntry(
-				DLFileEntryConstants.getClassName(),
-				dlFileEntry.getFileEntryId());
-			AssetEntry latestAssetEntry = assetEntryLocalService.getEntry(
-				DLFileEntryConstants.getClassName(),
-				latestDLFileVersion.getFileVersionId());
+		String lastExtension = lastDLFileVersion.getExtension();
+		String latestExtension = latestDLFileVersion.getExtension();
 
-			if (!Validator.equalsSorted(
-					lastAssetEntry.getCategoryIds(),
-					latestAssetEntry.getCategoryIds())) {
+		if (!Validator.equals(lastExtension, latestExtension)) {
+			return false;
+		}
 
-				return false;
-			}
+		String lastMimeType = lastDLFileVersion.getMimeType();
+		String latestMimeType = latestDLFileVersion.getMimeType();
 
-			if (!Validator.equalsSorted(
-					lastAssetEntry.getTagNames(),
-					latestAssetEntry.getTagNames())) {
+		if (!Validator.equals(lastMimeType, latestMimeType)) {
+			return false;
+		}
 
-				return false;
-			}
+		String lastTitle = lastDLFileVersion.getTitle();
+		String latestTitle = latestDLFileVersion.getTitle();
 
-			List<AssetLink> lastAssetLinks =
-				assetLinkLocalService.getDirectLinks(
-					lastAssetEntry.getEntryId(),
-					AssetLinkConstants.TYPE_RELATED);
-			List<AssetLink> latestAssetLinks =
-				assetLinkLocalService.getDirectLinks(
-					latestAssetEntry.getEntryId(),
-					AssetLinkConstants.TYPE_RELATED);
+		if (!Validator.equals(lastTitle, latestTitle)) {
+			return false;
+		}
 
-			if (!Validator.equalsSorted(
-					StringUtil.split(
-						ListUtil.toString(
-							lastAssetLinks, AssetLink.ENTRY_ID2_ACCESSOR), 0L),
-					StringUtil.split(
-						ListUtil.toString(
-							latestAssetLinks, AssetLink.ENTRY_ID2_ACCESSOR),
-							0L))) {
+		String lastDescription = lastDLFileVersion.getDescription();
+		String latestDescription = latestDLFileVersion.getDescription();
 
-				return false;
-			}
+		if (!Validator.equals(lastDescription, latestDescription)) {
+			return false;
+		}
 
-			// Expando
+		long lastFileEntryTypeId = lastDLFileVersion.getFileEntryTypeId();
+		long latestFileEntryTypeId = latestDLFileVersion.getFileEntryTypeId();
 
-			ExpandoTable expandoTable = null;
+		if (lastFileEntryTypeId != latestFileEntryTypeId) {
+			return false;
+		}
+
+		long lastSize = lastDLFileVersion.getSize();
+		long latestSize = latestDLFileVersion.getSize();
+
+		if ((lastSize == 0) && ((latestSize == 0) || (latestSize > 0))) {
+			return true;
+		}
+
+		if (lastSize != latestSize) {
+			return false;
+		}
+
+		// Expando
+
+		ExpandoTable expandoTable = null;
+
+		try {
+			expandoTable = expandoTableLocalService.getDefaultTable(
+				lastDLFileVersion.getCompanyId(),
+				DLFileEntry.class.getName());
+		}
+		catch (NoSuchTableException nste) {
+		}
+
+		if (expandoTable != null) {
+			Date lastModifiedDate = null;
 
 			try {
-				expandoTable = expandoTableLocalService.getDefaultTable(
-					lastDLFileVersion.getCompanyId(),
-					DLFileEntry.class.getName());
+				ExpandoRow lastExpandoRow = expandoRowLocalService.getRow(
+					expandoTable.getTableId(),
+					lastDLFileVersion.getPrimaryKey());
+
+				lastModifiedDate = lastExpandoRow.getModifiedDate();
 			}
-			catch (NoSuchTableException nste) {
-			}
-
-			if (expandoTable != null) {
-				Date lastModifiedDate = null;
-
-				try {
-					ExpandoRow lastExpandoRow = expandoRowLocalService.getRow(
-						expandoTable.getTableId(),
-						lastDLFileVersion.getPrimaryKey());
-
-					lastModifiedDate = lastExpandoRow.getModifiedDate();
-				}
-				catch (NoSuchRowException nsre) {
-				}
-
-				Date latestModifiedDate = null;
-
-				try {
-					ExpandoRow latestExpandoRow = expandoRowLocalService.getRow(
-						expandoTable.getTableId(),
-						latestDLFileVersion.getPrimaryKey());
-
-					latestModifiedDate = latestExpandoRow.getModifiedDate();
-				}
-				catch (NoSuchRowException nsre) {
-				}
-
-				if (!Validator.equals(lastModifiedDate, latestModifiedDate)) {
-					return false;
-				}
+			catch (NoSuchRowException nsre) {
 			}
 
-			// File entry type
+			Date latestModifiedDate = null;
 
-			List<DLFileEntryMetadata> lastFileEntryMetadatas =
-				dlFileEntryMetadataLocalService.
-					getFileVersionFileEntryMetadatas(
-						lastDLFileVersion.getFileVersionId());
-			List<DLFileEntryMetadata> latestFileEntryMetadatas =
-				dlFileEntryMetadataLocalService.
-					getFileVersionFileEntryMetadatas(
-						latestDLFileVersion.getFileVersionId());
+			try {
+				ExpandoRow latestExpandoRow = expandoRowLocalService.getRow(
+					expandoTable.getTableId(),
+					latestDLFileVersion.getPrimaryKey());
 
-			for (DLFileEntryMetadata lastFileEntryMetadata :
-					lastFileEntryMetadatas) {
-
-				Fields lastFields = StorageEngineUtil.getFields(
-					lastFileEntryMetadata.getDDMStorageId());
-
-				boolean found = false;
-
-				for (DLFileEntryMetadata latestEntryMetadata :
-						latestFileEntryMetadatas) {
-
-					Fields latestFields = StorageEngineUtil.getFields(
-						latestEntryMetadata.getDDMStorageId());
-
-					if (lastFields.equals(latestFields)) {
-						found = true;
-
-						break;
-					}
-				}
-
-				if (!found) {
-					return false;
-				}
+				latestModifiedDate = latestExpandoRow.getModifiedDate();
+			}
+			catch (NoSuchRowException nsre) {
 			}
 
-			// Size
+			if (!Validator.equals(lastModifiedDate, latestModifiedDate)) {
+				return false;
+			}
+		}
 
-			long lastSize = lastDLFileVersion.getSize();
-			long latestSize = latestDLFileVersion.getSize();
+		// Checksum
 
-			if ((lastSize == 0) && ((latestSize == 0) || (latestSize > 0))) {
+		InputStream lastInputStream = null;
+		InputStream latestInputStream = null;
+
+		try {
+			String lastChecksum = lastDLFileVersion.getChecksum();
+
+			if (Validator.isNull(lastChecksum)) {
+				lastInputStream = DLStoreUtil.getFileAsStream(
+					dlFileEntry.getCompanyId(),
+					dlFileEntry.getDataRepositoryId(),
+					dlFileEntry.getName(), lastDLFileVersion.getVersion());
+
+				lastChecksum = DigesterUtil.digestBase64(lastInputStream);
+
+				lastDLFileVersion.setChecksum(lastChecksum);
+
+				dlFileVersionPersistence.update(lastDLFileVersion);
+			}
+
+			latestInputStream = DLStoreUtil.getFileAsStream(
+				dlFileEntry.getCompanyId(),
+				dlFileEntry.getDataRepositoryId(), dlFileEntry.getName(),
+				latestDLFileVersion.getVersion());
+
+			String latestChecksum = DigesterUtil.digestBase64(
+				latestInputStream);
+
+			if (lastChecksum.equals(latestChecksum)) {
 				return true;
 			}
 
-			if (lastSize != latestSize) {
-				return false;
+			latestDLFileVersion.setChecksum(latestChecksum);
+
+			dlFileVersionPersistence.update(latestDLFileVersion);
+		}
+		catch (Exception e) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(e, e);
 			}
-
-			// Checksum
-
-			InputStream lastInputStream = null;
-			InputStream latestInputStream = null;
-
-			try {
-				String lastChecksum = lastDLFileVersion.getChecksum();
-
-				if (Validator.isNull(lastChecksum)) {
-					lastInputStream = DLStoreUtil.getFileAsStream(
-						dlFileEntry.getCompanyId(),
-						dlFileEntry.getDataRepositoryId(),
-						dlFileEntry.getName(), lastDLFileVersion.getVersion());
-
-					lastChecksum = DigesterUtil.digestBase64(lastInputStream);
-
-					lastDLFileVersion.setChecksum(lastChecksum);
-
-					dlFileVersionPersistence.update(lastDLFileVersion);
-				}
-
-				latestInputStream = DLStoreUtil.getFileAsStream(
-					dlFileEntry.getCompanyId(),
-					dlFileEntry.getDataRepositoryId(), dlFileEntry.getName(),
-					latestDLFileVersion.getVersion());
-
-				String latestChecksum = DigesterUtil.digestBase64(
-					latestInputStream);
-
-				if (lastChecksum.equals(latestChecksum)) {
-					return true;
-				}
-
-				latestDLFileVersion.setChecksum(latestChecksum);
-
-				dlFileVersionPersistence.update(latestDLFileVersion);
-			}
-			catch (Exception e) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(e, e);
-				}
-			}
-			finally {
-				StreamUtil.cleanUp(lastInputStream);
-				StreamUtil.cleanUp(latestInputStream);
-			}
+		}
+		finally {
+			StreamUtil.cleanUp(lastInputStream);
+			StreamUtil.cleanUp(latestInputStream);
 		}
 
 		return false;
