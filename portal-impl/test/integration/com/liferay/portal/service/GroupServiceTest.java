@@ -43,6 +43,7 @@ import com.liferay.portal.util.GroupTestUtil;
 import com.liferay.portal.util.LayoutTestUtil;
 import com.liferay.portal.util.TestPropsValues;
 import com.liferay.portal.util.UserTestUtil;
+import com.liferay.portlet.asset.service.AssetTagLocalServiceUtil;
 import com.liferay.portlet.blogs.model.BlogsEntry;
 import com.liferay.portlet.blogs.service.BlogsEntryLocalServiceUtil;
 import com.liferay.portlet.blogs.util.BlogsTestUtil;
@@ -145,6 +146,20 @@ public class GroupServiceTest {
 	public void testDeleteSite() throws Exception {
 		Group group = GroupTestUtil.addGroup();
 
+		ServiceContext serviceContext = ServiceTestUtil.getServiceContext(
+			group.getGroupId());
+
+		int initialTagsCount = AssetTagLocalServiceUtil.getGroupTagsCount(
+			group.getGroupId());
+
+		AssetTagLocalServiceUtil.addTag(
+			TestPropsValues.getUserId(), ServiceTestUtil.randomString(), null,
+			serviceContext);
+
+		Assert.assertEquals(
+			initialTagsCount + 1,
+			AssetTagLocalServiceUtil.getGroupTagsCount(group.getGroupId()));
+
 		User user = UserTestUtil.addUser(
 			ServiceTestUtil.randomString(), group.getGroupId());
 
@@ -157,6 +172,9 @@ public class GroupServiceTest {
 
 		GroupLocalServiceUtil.deleteGroup(group.getGroupId());
 
+		Assert.assertEquals(
+			initialTagsCount,
+			AssetTagLocalServiceUtil.getGroupTagsCount(group.getGroupId()));
 		Assert.assertNull(
 			BlogsEntryLocalServiceUtil.fetchBlogsEntry(
 				blogsEntry.getEntryId()));
