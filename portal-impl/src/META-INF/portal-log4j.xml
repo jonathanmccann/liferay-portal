@@ -394,6 +394,10 @@
 		<priority value="INFO" />
 	</category>
 
+	<category name="com.liferay.portal.metadata.TikaRawMetadataProcessor">
+		<priority value="WARN" />
+	</category>
+
 	<category name="com.liferay.portal.model.Image">
 		<priority value="ERROR" />
 	</category>

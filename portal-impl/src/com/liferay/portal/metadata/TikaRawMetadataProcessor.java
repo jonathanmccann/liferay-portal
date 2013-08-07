@@ -38,6 +38,7 @@ import org.apache.commons.compress.archivers.zip.UnsupportedZipFeatureException;
 import org.apache.commons.lang.exception.ExceptionUtils;
 import org.apache.pdfbox.exceptions.CryptographyException;
 import org.apache.poi.EncryptedDocumentException;
+import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.ParseContext;
 import org.apache.tika.parser.Parser;
@@ -87,7 +88,14 @@ public class TikaRawMetadataProcessor extends XugglerRawMetadataProcessor {
 				}
 			}
 			else {
-				_log.error(e, e);
+				if (e instanceof TikaException) {
+					if (_log.isWarnEnabled()) {
+						_log.warn("Unable to extract metadata");
+					}
+				}
+				else {
+					_log.error(e, e);
+				}
 			}
 
 			throw new IOException(e.getMessage());
