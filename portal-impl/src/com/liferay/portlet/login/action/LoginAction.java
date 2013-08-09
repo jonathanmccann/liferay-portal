@@ -202,10 +202,7 @@ public class LoginAction extends PortletAction {
 				boolean doActionAfterLogin = ParamUtil.getBoolean(
 					actionRequest, "doActionAfterLogin");
 
-				if (doActionAfterLogin) {
-					return;
-				}
-				else {
+				if (!doActionAfterLogin) {
 					actionResponse.sendRedirect(themeDisplay.getPathMain());
 				}
 			}

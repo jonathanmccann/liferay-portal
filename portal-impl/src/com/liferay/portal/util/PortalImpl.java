@@ -1657,15 +1657,11 @@ public class PortalImpl implements Portal {
 			createAccountURL.setPortletMode(PortletMode.VIEW);
 			createAccountURL.setWindowState(WindowState.MAXIMIZED);
 
-			if (!PropsValues.COMPANY_SECURITY_AUTH_REQUIRES_HTTPS) {
-				return createAccountURL.toString();
+			if (PropsValues.COMPANY_SECURITY_AUTH_REQUIRES_HTTPS) {
+				createAccountURL.setSecure(true);
 			}
 
-			String portalURL = getPortalURL(request, false);
-			String portalURLSecure = getPortalURL(request, true);
-
-			return StringUtil.replaceFirst(
-				createAccountURL.toString(), portalURL, portalURLSecure);
+			return createAccountURL.toString();
 		}
 
 		try {
