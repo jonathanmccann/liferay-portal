@@ -1661,7 +1661,7 @@ public class PortalImpl implements Portal {
 				return createAccountURL.toString();
 			}
 
-			String portalURL = getPortalURL(request);
+			String portalURL = getPortalURL(request, false);
 			String portalURLSecure = getPortalURL(request, true);
 
 			return StringUtil.replaceFirst(
