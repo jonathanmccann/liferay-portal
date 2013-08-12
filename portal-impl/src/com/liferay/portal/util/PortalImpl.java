@@ -1656,15 +1656,11 @@ public class PortalImpl implements Portal {
 			createAccountURL.setPortletMode(PortletMode.VIEW);
 			createAccountURL.setWindowState(WindowState.MAXIMIZED);
 
-			if (!PropsValues.COMPANY_SECURITY_AUTH_REQUIRES_HTTPS) {
-				return createAccountURL.toString();
+			if (PropsValues.COMPANY_SECURITY_AUTH_REQUIRES_HTTPS) {
+				createAccountURL.setSecure(true);
 			}
 
-			String portalURL = getPortalURL(request);
-			String portalURLSecure = getPortalURL(request, true);
-
-			return StringUtil.replaceFirst(
-				createAccountURL.toString(), portalURL, portalURLSecure);
+			return createAccountURL.toString();
 		}
 
 		try {
@@ -6163,28 +6159,26 @@ public class PortalImpl implements Portal {
 
 	@Override
 	public boolean isSecure(HttpServletRequest request) {
-		HttpSession session = request.getSession();
+		if (!PropsValues.COMPANY_SECURITY_AUTH_REQUIRES_HTTPS ||
+			PropsValues.SESSION_ENABLE_PHISHING_PROTECTION) {
 
-		if (session == null) {
 			return request.isSecure();
 		}
 
-		Boolean httpsInitial = (Boolean)session.getAttribute(
-			WebKeys.HTTPS_INITIAL);
+		String ppid = ParamUtil.getString(request, "p_p_id", StringPool.BLANK);
 
-		boolean secure = false;
-
-		if (PropsValues.COMPANY_SECURITY_AUTH_REQUIRES_HTTPS &&
-			!PropsValues.SESSION_ENABLE_PHISHING_PROTECTION &&
-			(httpsInitial != null) && !httpsInitial.booleanValue()) {
-
-			secure = false;
-		}
-		else {
-			secure = request.isSecure();
+		if (!ppid.equals(PortletKeys.LOGIN)) {
+			return false;
 		}
 
-		return secure;
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		if (themeDisplay == null) {
+			return request.isSecure();
+		}
+
+		return !themeDisplay.isSignedIn();
 	}
 
 	@Override
