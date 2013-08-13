@@ -76,6 +76,12 @@ public class DeviceServicePreAction extends Action {
 			return;
 		}
 
+		String brand = device.getBrand();
+
+		if (brand.equals("Desktop")) {
+			return;
+		}
+
 		MDRRuleGroupInstance mdrRuleGroupInstance = null;
 
 		try {
