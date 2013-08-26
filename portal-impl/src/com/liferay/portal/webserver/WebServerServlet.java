@@ -363,8 +363,15 @@ public class WebServerServlet extends HttpServlet {
 		}
 		else if (pathArray.length == 3) {
 			long groupId = GetterUtil.getLong(pathArray[0]);
+
+			String uuid = pathArray[2];
+
+			return DLAppServiceUtil.getFileEntryByUuidAndGroupId(uuid, groupId);
+		}
+		else {
+			long groupId = GetterUtil.getLong(pathArray[0]);
 			long folderId = GetterUtil.getLong(pathArray[1]);
-			String fileName = HttpUtil.decodeURL(pathArray[2]);
+			String fileName = HttpUtil.decodeURL(pathArray[3]);
 
 			if (fileName.contains(StringPool.QUESTION)) {
 				fileName = fileName.substring(
@@ -372,13 +379,6 @@ public class WebServerServlet extends HttpServlet {
 			}
 
 			return DLAppServiceUtil.getFileEntry(groupId, folderId, fileName);
-		}
-		else {
-			long groupId = GetterUtil.getLong(pathArray[0]);
-
-			String uuid = pathArray[3];
-
-			return DLAppServiceUtil.getFileEntryByUuidAndGroupId(uuid, groupId);
 		}
 	}
 
@@ -1176,23 +1176,23 @@ public class WebServerServlet extends HttpServlet {
 		}
 		else if (pathArray.length == 3) {
 			long groupId = GetterUtil.getLong(pathArray[0]);
-			long folderId = GetterUtil.getLong(pathArray[1]);
-			String fileName = HttpUtil.decodeURL(pathArray[2]);
+
+			String uuid = pathArray[2];
 
 			try {
-				DLAppLocalServiceUtil.getFileEntry(groupId, folderId, fileName);
+				DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
+				uuid, groupId);
 			}
 			catch (RepositoryException re) {
 			}
 		}
 		else {
 			long groupId = GetterUtil.getLong(pathArray[0]);
-
-			String uuid = pathArray[3];
+			long folderId = GetterUtil.getLong(pathArray[1]);
+			String fileName = HttpUtil.decodeURL(pathArray[3]);
 
 			try {
-				DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
-					uuid, groupId);
+				DLAppLocalServiceUtil.getFileEntry(groupId, folderId, fileName);
 			}
 			catch (RepositoryException re) {
 			}
