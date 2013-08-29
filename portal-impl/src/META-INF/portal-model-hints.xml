@@ -2090,6 +2090,7 @@
 		<field name="rootMessageUserId" type="long" />
 		<field name="messageCount" type="int" />
 		<field name="viewCount" type="int" />
+		<field name="lastBumpDate" type="Date" />
 		<field name="lastPostByUserId" type="long" />
 		<field name="lastPostDate" type="Date" />
 		<field name="priority" type="double" />

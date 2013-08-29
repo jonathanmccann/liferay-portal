@@ -44,6 +44,7 @@ public class MBThreadSoap implements Serializable {
 		soapModel.setRootMessageUserId(model.getRootMessageUserId());
 		soapModel.setMessageCount(model.getMessageCount());
 		soapModel.setViewCount(model.getViewCount());
+		soapModel.setLastBumpDate(model.getLastBumpDate());
 		soapModel.setLastPostByUserId(model.getLastPostByUserId());
 		soapModel.setLastPostDate(model.getLastPostDate());
 		soapModel.setPriority(model.getPriority());
@@ -208,6 +209,14 @@ public class MBThreadSoap implements Serializable {
 		_viewCount = viewCount;
 	}
 
+	public Date getLastBumpDate() {
+		return _lastBumpDate;
+	}
+
+	public void setLastBumpDate(Date lastBumpDate) {
+		_lastBumpDate = lastBumpDate;
+	}
+
 	public long getLastPostByUserId() {
 		return _lastPostByUserId;
 	}
@@ -289,6 +298,7 @@ public class MBThreadSoap implements Serializable {
 	private long _rootMessageUserId;
 	private int _messageCount;
 	private int _viewCount;
+	private Date _lastBumpDate;
 	private long _lastPostByUserId;
 	private Date _lastPostDate;
 	private double _priority;

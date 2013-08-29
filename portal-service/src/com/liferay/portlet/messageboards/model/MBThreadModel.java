@@ -295,6 +295,20 @@ public interface MBThreadModel extends BaseModel<MBThread>, ContainerModel,
 	public void setViewCount(int viewCount);
 
 	/**
+	 * Returns the last bump date of this message boards thread.
+	 *
+	 * @return the last bump date of this message boards thread
+	 */
+	public Date getLastBumpDate();
+
+	/**
+	 * Sets the last bump date of this message boards thread.
+	 *
+	 * @param lastBumpDate the last bump date of this message boards thread
+	 */
+	public void setLastBumpDate(Date lastBumpDate);
+
+	/**
 	 * Returns the last post by user ID of this message boards thread.
 	 *
 	 * @return the last post by user ID of this message boards thread

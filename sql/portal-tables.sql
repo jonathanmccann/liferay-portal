@@ -1243,6 +1243,7 @@ create table MBThread (
 	rootMessageUserId LONG,
 	messageCount INTEGER,
 	viewCount INTEGER,
+	lastBumpDate DATE null,
 	lastPostByUserId LONG,
 	lastPostDate DATE null,
 	priority DOUBLE,

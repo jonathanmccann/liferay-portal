@@ -2963,6 +2963,9 @@
 			<basic name="rootMessageUserId" />
 			<basic name="messageCount" />
 			<basic name="viewCount" />
+			<basic name="lastBumpDate">
+				<temporal>TIMESTAMP</temporal>
+			</basic>
 			<basic name="lastPostByUserId" />
 			<basic name="lastPostDate">
 				<temporal>TIMESTAMP</temporal>

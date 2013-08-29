@@ -37,7 +37,7 @@ import java.util.Date;
 public class MBThreadCacheModel implements CacheModel<MBThread>, Externalizable {
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(45);
 
 		sb.append("{uuid=");
 		sb.append(uuid);
@@ -65,6 +65,8 @@ public class MBThreadCacheModel implements CacheModel<MBThread>, Externalizable 
 		sb.append(messageCount);
 		sb.append(", viewCount=");
 		sb.append(viewCount);
+		sb.append(", lastBumpDate=");
+		sb.append(lastBumpDate);
 		sb.append(", lastPostByUserId=");
 		sb.append(lastPostByUserId);
 		sb.append(", lastPostDate=");
@@ -128,6 +130,14 @@ public class MBThreadCacheModel implements CacheModel<MBThread>, Externalizable 
 		mbThreadImpl.setRootMessageUserId(rootMessageUserId);
 		mbThreadImpl.setMessageCount(messageCount);
 		mbThreadImpl.setViewCount(viewCount);
+
+		if (lastBumpDate == Long.MIN_VALUE) {
+			mbThreadImpl.setLastBumpDate(null);
+		}
+		else {
+			mbThreadImpl.setLastBumpDate(new Date(lastBumpDate));
+		}
+
 		mbThreadImpl.setLastPostByUserId(lastPostByUserId);
 
 		if (lastPostDate == Long.MIN_VALUE) {
@@ -176,6 +186,7 @@ public class MBThreadCacheModel implements CacheModel<MBThread>, Externalizable 
 		rootMessageUserId = objectInput.readLong();
 		messageCount = objectInput.readInt();
 		viewCount = objectInput.readInt();
+		lastBumpDate = objectInput.readLong();
 		lastPostByUserId = objectInput.readLong();
 		lastPostDate = objectInput.readLong();
 		priority = objectInput.readDouble();
@@ -215,6 +226,7 @@ public class MBThreadCacheModel implements CacheModel<MBThread>, Externalizable 
 		objectOutput.writeLong(rootMessageUserId);
 		objectOutput.writeInt(messageCount);
 		objectOutput.writeInt(viewCount);
+		objectOutput.writeLong(lastBumpDate);
 		objectOutput.writeLong(lastPostByUserId);
 		objectOutput.writeLong(lastPostDate);
 		objectOutput.writeDouble(priority);
@@ -245,6 +257,7 @@ public class MBThreadCacheModel implements CacheModel<MBThread>, Externalizable 
 	public long rootMessageUserId;
 	public int messageCount;
 	public int viewCount;
+	public long lastBumpDate;
 	public long lastPostByUserId;
 	public long lastPostDate;
 	public double priority;

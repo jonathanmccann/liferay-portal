@@ -81,6 +81,7 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 			{ "rootMessageUserId", Types.BIGINT },
 			{ "messageCount", Types.INTEGER },
 			{ "viewCount", Types.INTEGER },
+			{ "lastBumpDate", Types.TIMESTAMP },
 			{ "lastPostByUserId", Types.BIGINT },
 			{ "lastPostDate", Types.TIMESTAMP },
 			{ "priority", Types.DOUBLE },
@@ -90,7 +91,7 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 			{ "statusByUserName", Types.VARCHAR },
 			{ "statusDate", Types.TIMESTAMP }
 		};
-	public static final String TABLE_SQL_CREATE = "create table MBThread (uuid_ VARCHAR(75) null,threadId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,categoryId LONG,rootMessageId LONG,rootMessageUserId LONG,messageCount INTEGER,viewCount INTEGER,lastPostByUserId LONG,lastPostDate DATE null,priority DOUBLE,question BOOLEAN,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
+	public static final String TABLE_SQL_CREATE = "create table MBThread (uuid_ VARCHAR(75) null,threadId LONG not null primary key,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,categoryId LONG,rootMessageId LONG,rootMessageUserId LONG,messageCount INTEGER,viewCount INTEGER,lastBumpDate DATE null,lastPostByUserId LONG,lastPostDate DATE null,priority DOUBLE,question BOOLEAN,status INTEGER,statusByUserId LONG,statusByUserName VARCHAR(75) null,statusDate DATE null)";
 	public static final String TABLE_SQL_DROP = "drop table MBThread";
 	public static final String ORDER_BY_JPQL = " ORDER BY mbThread.priority DESC, mbThread.lastPostDate DESC";
 	public static final String ORDER_BY_SQL = " ORDER BY MBThread.priority DESC, MBThread.lastPostDate DESC";
@@ -141,6 +142,7 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 		model.setRootMessageUserId(soapModel.getRootMessageUserId());
 		model.setMessageCount(soapModel.getMessageCount());
 		model.setViewCount(soapModel.getViewCount());
+		model.setLastBumpDate(soapModel.getLastBumpDate());
 		model.setLastPostByUserId(soapModel.getLastPostByUserId());
 		model.setLastPostDate(soapModel.getLastPostDate());
 		model.setPriority(soapModel.getPriority());
@@ -226,6 +228,7 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 		attributes.put("rootMessageUserId", getRootMessageUserId());
 		attributes.put("messageCount", getMessageCount());
 		attributes.put("viewCount", getViewCount());
+		attributes.put("lastBumpDate", getLastBumpDate());
 		attributes.put("lastPostByUserId", getLastPostByUserId());
 		attributes.put("lastPostDate", getLastPostDate());
 		attributes.put("priority", getPriority());
@@ -316,6 +319,12 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 
 		if (viewCount != null) {
 			setViewCount(viewCount);
+		}
+
+		Date lastBumpDate = (Date)attributes.get("lastBumpDate");
+
+		if (lastBumpDate != null) {
+			setLastBumpDate(lastBumpDate);
 		}
 
 		Long lastPostByUserId = (Long)attributes.get("lastPostByUserId");
@@ -595,6 +604,17 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 	@Override
 	public void setViewCount(int viewCount) {
 		_viewCount = viewCount;
+	}
+
+	@JSON
+	@Override
+	public Date getLastBumpDate() {
+		return _lastBumpDate;
+	}
+
+	@Override
+	public void setLastBumpDate(Date lastBumpDate) {
+		_lastBumpDate = lastBumpDate;
 	}
 
 	@JSON
@@ -924,6 +944,7 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 		mbThreadImpl.setRootMessageUserId(getRootMessageUserId());
 		mbThreadImpl.setMessageCount(getMessageCount());
 		mbThreadImpl.setViewCount(getViewCount());
+		mbThreadImpl.setLastBumpDate(getLastBumpDate());
 		mbThreadImpl.setLastPostByUserId(getLastPostByUserId());
 		mbThreadImpl.setLastPostDate(getLastPostDate());
 		mbThreadImpl.setPriority(getPriority());
@@ -1087,6 +1108,15 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 
 		mbThreadCacheModel.viewCount = getViewCount();
 
+		Date lastBumpDate = getLastBumpDate();
+
+		if (lastBumpDate != null) {
+			mbThreadCacheModel.lastBumpDate = lastBumpDate.getTime();
+		}
+		else {
+			mbThreadCacheModel.lastBumpDate = Long.MIN_VALUE;
+		}
+
 		mbThreadCacheModel.lastPostByUserId = getLastPostByUserId();
 
 		Date lastPostDate = getLastPostDate();
@@ -1128,7 +1158,7 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(43);
+		StringBundler sb = new StringBundler(45);
 
 		sb.append("{uuid=");
 		sb.append(getUuid());
@@ -1156,6 +1186,8 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 		sb.append(getMessageCount());
 		sb.append(", viewCount=");
 		sb.append(getViewCount());
+		sb.append(", lastBumpDate=");
+		sb.append(getLastBumpDate());
 		sb.append(", lastPostByUserId=");
 		sb.append(getLastPostByUserId());
 		sb.append(", lastPostDate=");
@@ -1179,7 +1211,7 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(67);
+		StringBundler sb = new StringBundler(70);
 
 		sb.append("<model><model-name>");
 		sb.append("com.liferay.portlet.messageboards.model.MBThread");
@@ -1236,6 +1268,10 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 		sb.append(
 			"<column><column-name>viewCount</column-name><column-value><![CDATA[");
 		sb.append(getViewCount());
+		sb.append("]]></column-value></column>");
+		sb.append(
+			"<column><column-name>lastBumpDate</column-name><column-value><![CDATA[");
+		sb.append(getLastBumpDate());
 		sb.append("]]></column-value></column>");
 		sb.append(
 			"<column><column-name>lastPostByUserId</column-name><column-value><![CDATA[");
@@ -1303,6 +1339,7 @@ public class MBThreadModelImpl extends BaseModelImpl<MBThread>
 	private String _rootMessageUserUuid;
 	private int _messageCount;
 	private int _viewCount;
+	private Date _lastBumpDate;
 	private long _lastPostByUserId;
 	private String _lastPostByUserUuid;
 	private Date _lastPostDate;

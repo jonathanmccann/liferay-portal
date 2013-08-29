@@ -13419,6 +13419,7 @@ public class MBThreadPersistenceImpl extends BasePersistenceImpl<MBThread>
 		mbThreadImpl.setRootMessageUserId(mbThread.getRootMessageUserId());
 		mbThreadImpl.setMessageCount(mbThread.getMessageCount());
 		mbThreadImpl.setViewCount(mbThread.getViewCount());
+		mbThreadImpl.setLastBumpDate(mbThread.getLastBumpDate());
 		mbThreadImpl.setLastPostByUserId(mbThread.getLastPostByUserId());
 		mbThreadImpl.setLastPostDate(mbThread.getLastPostDate());
 		mbThreadImpl.setPriority(mbThread.getPriority());

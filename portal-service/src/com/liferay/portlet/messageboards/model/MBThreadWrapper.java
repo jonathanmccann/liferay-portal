@@ -63,6 +63,7 @@ public class MBThreadWrapper implements MBThread, ModelWrapper<MBThread> {
 		attributes.put("rootMessageUserId", getRootMessageUserId());
 		attributes.put("messageCount", getMessageCount());
 		attributes.put("viewCount", getViewCount());
+		attributes.put("lastBumpDate", getLastBumpDate());
 		attributes.put("lastPostByUserId", getLastPostByUserId());
 		attributes.put("lastPostDate", getLastPostDate());
 		attributes.put("priority", getPriority());
@@ -153,6 +154,12 @@ public class MBThreadWrapper implements MBThread, ModelWrapper<MBThread> {
 
 		if (viewCount != null) {
 			setViewCount(viewCount);
+		}
+
+		Date lastBumpDate = (Date)attributes.get("lastBumpDate");
+
+		if (lastBumpDate != null) {
+			setLastBumpDate(lastBumpDate);
 		}
 
 		Long lastPostByUserId = (Long)attributes.get("lastPostByUserId");
@@ -526,6 +533,26 @@ public class MBThreadWrapper implements MBThread, ModelWrapper<MBThread> {
 	@Override
 	public void setViewCount(int viewCount) {
 		_mbThread.setViewCount(viewCount);
+	}
+
+	/**
+	* Returns the last bump date of this message boards thread.
+	*
+	* @return the last bump date of this message boards thread
+	*/
+	@Override
+	public java.util.Date getLastBumpDate() {
+		return _mbThread.getLastBumpDate();
+	}
+
+	/**
+	* Sets the last bump date of this message boards thread.
+	*
+	* @param lastBumpDate the last bump date of this message boards thread
+	*/
+	@Override
+	public void setLastBumpDate(java.util.Date lastBumpDate) {
+		_mbThread.setLastBumpDate(lastBumpDate);
 	}
 
 	/**

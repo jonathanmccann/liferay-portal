@@ -140,6 +140,8 @@ public class MBThreadPersistenceTest {
 
 		newMBThread.setViewCount(ServiceTestUtil.nextInt());
 
+		newMBThread.setLastBumpDate(ServiceTestUtil.nextDate());
+
 		newMBThread.setLastPostByUserId(ServiceTestUtil.nextLong());
 
 		newMBThread.setLastPostDate(ServiceTestUtil.nextDate());
@@ -187,6 +189,9 @@ public class MBThreadPersistenceTest {
 			newMBThread.getMessageCount());
 		Assert.assertEquals(existingMBThread.getViewCount(),
 			newMBThread.getViewCount());
+		Assert.assertEquals(Time.getShortTimestamp(
+				existingMBThread.getLastBumpDate()),
+			Time.getShortTimestamp(newMBThread.getLastBumpDate()));
 		Assert.assertEquals(existingMBThread.getLastPostByUserId(),
 			newMBThread.getLastPostByUserId());
 		Assert.assertEquals(Time.getShortTimestamp(
@@ -256,10 +261,10 @@ public class MBThreadPersistenceTest {
 			"threadId", true, "groupId", true, "companyId", true, "userId",
 			true, "userName", true, "createDate", true, "modifiedDate", true,
 			"categoryId", true, "rootMessageId", true, "rootMessageUserId",
-			true, "messageCount", true, "viewCount", true, "lastPostByUserId",
-			true, "lastPostDate", true, "priority", true, "question", true,
-			"status", true, "statusByUserId", true, "statusByUserName", true,
-			"statusDate", true);
+			true, "messageCount", true, "viewCount", true, "lastBumpDate",
+			true, "lastPostByUserId", true, "lastPostDate", true, "priority",
+			true, "question", true, "status", true, "statusByUserId", true,
+			"statusByUserName", true, "statusDate", true);
 	}
 
 	@Test
@@ -422,6 +427,8 @@ public class MBThreadPersistenceTest {
 		mbThread.setMessageCount(ServiceTestUtil.nextInt());
 
 		mbThread.setViewCount(ServiceTestUtil.nextInt());
+
+		mbThread.setLastBumpDate(ServiceTestUtil.nextDate());
 
 		mbThread.setLastPostByUserId(ServiceTestUtil.nextLong());
 
