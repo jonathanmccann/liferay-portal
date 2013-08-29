@@ -453,6 +453,7 @@
 		<column name="rootMessageUserId" type="long" />
 		<column name="messageCount" type="int" />
 		<column name="viewCount" type="int" />
+		<column name="lastBumpDate" type="Date" />
 		<column name="lastPostByUserId" type="long" />
 		<column name="lastPostDate" type="Date" />
 		<column name="priority" type="double" />
