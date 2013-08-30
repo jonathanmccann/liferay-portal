@@ -160,7 +160,14 @@ MBThread thread = (MBThread)request.getAttribute("edit_message.jsp-thread");
 						</c:if>
 					</div>
 
-					<%= dateFormatDateTime.format(message.getModifiedDate()) %>
+					<c:choose>
+						<c:when test="<%= message.isRoot() && (thread.getLastBumpDate() != null) %>">
+							<%= dateFormatDateTime.format(message.getModifiedDate()) + " (Last Bumped On: " + dateFormatDateTime.format(thread.getLastBumpDate()) + ")" %>
+						</c:when>
+						<c:otherwise>
+							<%= dateFormatDateTime.format(message.getModifiedDate()) %>
+						</c:otherwise>
+					</c:choose>
 
 					<c:if test="<%= (message != null) && !message.isApproved() %>">
 						<aui:model-context bean="<%= message %>" model="<%= MBMessage.class %>" />

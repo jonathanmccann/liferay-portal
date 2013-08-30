@@ -83,8 +83,14 @@ portletURL.setParameter("mbCategoryId", String.valueOf(categoryId));
 	iteratorURL="<%= portletURL %>"
 	total="<%= MBThreadServiceUtil.getThreadsCount(scopeGroupId, categoryId, WorkflowConstants.STATUS_APPROVED) %>"
 >
+
+	<%
+	List<MBThread> mbThreads = MBThreadServiceUtil.getThreads(scopeGroupId, categoryId, WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd());
+	mbThreads = MBThreadLocalServiceUtil.sortThreads(mbThreads);
+	%>
+
 	<liferay-ui:search-container-results
-		results="<%= MBThreadServiceUtil.getThreads(scopeGroupId, categoryId, WorkflowConstants.STATUS_APPROVED, searchContainer.getStart(), searchContainer.getEnd()) %>"
+		results="<%= mbThreads %>"
 	/>
 
 	<liferay-ui:search-container-row

@@ -214,8 +214,14 @@ if ((category != null) && layout.isTypeControlPanel()) {
 						total="<%= MBThreadServiceUtil.getThreadsCount(scopeGroupId, categoryId, status) %>"
 						var="threadSearchContainer"
 					>
+
+						<%
+						List<MBThread> mbThreads = MBThreadServiceUtil.getThreads(scopeGroupId, categoryId, status, threadSearchContainer.getStart(), threadSearchContainer.getEnd());
+						mbThreads = MBThreadLocalServiceUtil.sortThreads(mbThreads);
+						%>
+
 						<liferay-ui:search-container-results
-							results="<%= MBThreadServiceUtil.getThreads(scopeGroupId, categoryId, status, threadSearchContainer.getStart(), threadSearchContainer.getEnd()) %>"
+							results="<%= mbThreads %>"
 						/>
 
 						<liferay-ui:search-container-row
@@ -275,6 +281,16 @@ if ((category != null) && layout.isTypeControlPanel()) {
 									buffer.append(themeDisplay.getPathThemeImages() + "/common/lock.png");
 									buffer.append("\" title=\"");
 									buffer.append(LanguageUtil.get(pageContext, "thread-locked"));
+									buffer.append("\" />");
+								}
+
+								if ((thread.getLastBumpDate() != null) && thread.getLastBumpDate().after(thread.getLastPostDate())) {
+									buffer.append("<img class=\"thread-priority\" alt=\"");
+									buffer.append(LanguageUtil.get(pageContext, "thread-bumped"));
+									buffer.append("\" src=\"");
+									buffer.append(themeDisplay.getPathThemeImages() + "/common/top.png");
+									buffer.append("\" title=\"");
+									buffer.append(LanguageUtil.get(pageContext, "thread-bumped"));
 									buffer.append("\" />");
 								}
 

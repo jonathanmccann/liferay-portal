@@ -43,6 +43,16 @@
 		buffer.append("\" />");
 	}
 
+	if ((thread.getLastBumpDate() != null) && thread.getLastBumpDate().after(thread.getLastPostDate())) {
+		buffer.append("<img class=\"thread-priority\" alt=\"");
+		buffer.append(LanguageUtil.get(pageContext, "thread-bumped"));
+		buffer.append("\" src=\"");
+		buffer.append(themeDisplay.getPathThemeImages() + "/common/top.png");
+		buffer.append("\" title=\"");
+		buffer.append(LanguageUtil.get(pageContext, "thread-bumped"));
+		buffer.append("\" />");
+	}
+
 	buffer.append(message.getSubject());
 	%>
 

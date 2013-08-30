@@ -52,10 +52,12 @@ import com.liferay.portlet.messageboards.model.MBThreadConstants;
 import com.liferay.portlet.messageboards.model.MBTreeWalker;
 import com.liferay.portlet.messageboards.service.base.MBThreadLocalServiceBaseImpl;
 import com.liferay.portlet.messageboards.util.MBUtil;
+import com.liferay.portlet.messageboards.util.comparator.ThreadLastBumpDateComparator;
 import com.liferay.portlet.social.model.SocialActivityConstants;
 import com.liferay.portlet.trash.model.TrashEntry;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -874,6 +876,19 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 		searchContext.setUserId(userId);
 
 		return indexer.search(searchContext);
+	}
+
+	@Override
+	public List<MBThread> sortThreads(List<MBThread> mbThreads) {
+		List<MBThread> mbThreadsList = new ArrayList<MBThread>();
+
+		for (MBThread mbThread : mbThreads) {
+			mbThreadsList.add(mbThread);
+		}
+
+		Collections.sort(mbThreadsList, new ThreadLastBumpDateComparator());
+
+		return mbThreadsList;
 	}
 
 	@Override
