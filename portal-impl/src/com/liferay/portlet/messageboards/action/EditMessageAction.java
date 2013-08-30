@@ -95,6 +95,9 @@ public class EditMessageAction extends PortletAction {
 			if (cmd.equals(Constants.ADD) || cmd.equals(Constants.UPDATE)) {
 				message = updateMessage(actionRequest, actionResponse);
 			}
+			else if (cmd.equals(Constants.BUMP_THREAD)) {
+				bumpThread(actionRequest);
+			}
 			else if (cmd.equals(Constants.DELETE)) {
 				deleteMessage(actionRequest);
 			}
@@ -183,6 +186,12 @@ public class EditMessageAction extends PortletAction {
 
 		return actionMapping.findForward(
 			getForward(renderRequest, "portlet.message_boards.edit_message"));
+	}
+
+	protected void bumpThread(ActionRequest actionRequest) throws Exception {
+		long threadId = ParamUtil.getLong(actionRequest, "threadId");
+
+		MBThreadLocalServiceUtil.bumpThread(threadId);
 	}
 
 	protected void deleteMessage(ActionRequest actionRequest) throws Exception {

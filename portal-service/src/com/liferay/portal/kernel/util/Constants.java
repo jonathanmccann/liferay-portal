@@ -33,6 +33,8 @@ public interface Constants {
 
 	public static final String ASSIGN = "assign";
 
+	public static final String BUMP_THREAD = "bump_thread";
+
 	public static final String CANCEL = "cancel";
 
 	public static final String CANCEL_CHECKOUT = "cancel_checkout";

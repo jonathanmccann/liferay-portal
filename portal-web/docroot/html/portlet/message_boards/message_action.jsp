@@ -161,6 +161,21 @@ MBThread thread = message.getThread();
 		/>
 	</c:if>
 
+	<c:if test="<%= themeDisplay.getUserId() == thread.getUserId() %>">
+		<portlet:actionURL var="bumpThreadURL">
+			<portlet:param name="struts_action" value="/message_boards/edit_message" />
+			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.BUMP_THREAD %>" />
+			<portlet:param name="redirect" value="<%= currentURL %>" />
+			<portlet:param name="threadId" value="<%= String.valueOf(message.getThreadId()) %>" />
+		</portlet:actionURL>
+
+		<liferay-ui:icon
+			image="top"
+			message="bump-thread"
+			url="<%= bumpThreadURL %>"
+		/>
+	</c:if>
+
 	<c:if test="<%= MBMessagePermission.contains(permissionChecker, message, ActionKeys.DELETE) && !thread.isLocked() %>">
 		<portlet:actionURL var="deleteURL">
 			<portlet:param name="struts_action" value="/message_boards/delete_thread" />

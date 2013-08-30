@@ -131,6 +131,17 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 	}
 
 	@Override
+	public void bumpThread(long threadId)
+		throws PortalException, SystemException {
+
+		MBThread thread = mbThreadPersistence.findByPrimaryKey(threadId);
+
+		thread.setLastBumpDate(new Date());
+
+		mbThreadPersistence.update(thread);
+	}
+
+	@Override
 	public void deleteThread(long threadId)
 		throws PortalException, SystemException {
 
