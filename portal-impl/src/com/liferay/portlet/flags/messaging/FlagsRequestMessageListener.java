@@ -81,7 +81,7 @@ public class FlagsRequestMessageListener extends BaseMessageListener {
 
 		Group group = layout.getGroup();
 
-		String groupName = HtmlUtil.escape(group.getDescriptiveName());
+		String groupName = group.getDescriptiveName();
 
 		// Reporter user
 
@@ -111,10 +111,10 @@ public class FlagsRequestMessageListener extends BaseMessageListener {
 			flagsRequest.getReportedUserId());
 
 		if (reportedUser.isDefaultUser()) {
-			reportedUserName = HtmlUtil.escape(group.getDescriptiveName());
+			reportedUserName = group.getDescriptiveName();
 		}
 		else {
-			reportedUserName = HtmlUtil.escape(reportedUser.getFullName());
+			reportedUserName = reportedUser.getFullName();
 			reportedEmailAddress = reportedUser.getEmailAddress();
 			reportedURL = reportedUser.getDisplayURL(
 				serviceContext.getPortalURL(), serviceContext.getPathMain());
