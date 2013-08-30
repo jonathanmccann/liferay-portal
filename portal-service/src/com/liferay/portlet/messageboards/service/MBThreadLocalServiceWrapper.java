@@ -356,6 +356,13 @@ public class MBThreadLocalServiceWrapper implements MBThreadLocalService,
 	}
 
 	@Override
+	public void bumpThread(long threadId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		_mbThreadLocalService.bumpThread(threadId);
+	}
+
+	@Override
 	public void deleteThread(long threadId)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
