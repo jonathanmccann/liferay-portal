@@ -81,7 +81,7 @@ public class FlagsRequestMessageListener extends BaseMessageListener {
 
 		Group group = layout.getGroup();
 
-		String groupName = HtmlUtil.escape(group.getDescriptiveName());
+		String groupName = HtmlUtil.unescape(group.getDescriptiveName());
 
 		// Reporter user
 
@@ -111,10 +111,10 @@ public class FlagsRequestMessageListener extends BaseMessageListener {
 			flagsRequest.getReportedUserId());
 
 		if (reportedUser.isDefaultUser()) {
-			reportedUserName = HtmlUtil.escape(group.getDescriptiveName());
+			reportedUserName = group.getDescriptiveName();
 		}
 		else {
-			reportedUserName = HtmlUtil.escape(reportedUser.getFullName());
+			reportedUserName = reportedUser.getFullName();
 			reportedEmailAddress = reportedUser.getEmailAddress();
 			reportedURL = reportedUser.getDisplayURL(
 				serviceContext.getPortalURL(), serviceContext.getPathMain());
@@ -148,13 +148,16 @@ public class FlagsRequestMessageListener extends BaseMessageListener {
 		List<User> recipients = getRecipients(
 			companyId, serviceContext.getScopeGroupId());
 
+		String contentTitle = HtmlUtil.unescape(flagsRequest.getContentTitle());
+		String contentURL = HtmlUtil.unescape(flagsRequest.getContentURL());
+		
 		for (User recipient : recipients) {
 			try {
 				notify(
 					company, groupName, reporterEmailAddress, reporterUserName,
 					reportedEmailAddress, reportedUserName, reportedURL,
-					flagsRequest.getClassPK(), flagsRequest.getContentTitle(),
-					contentType, flagsRequest.getContentURL(), reason, fromName,
+					flagsRequest.getClassPK(), contentTitle,
+					contentType, contentURL, reason, fromName,
 					fromAddress, recipient.getFullName(),
 					recipient.getEmailAddress(), subject, body, serviceContext);
 			}
