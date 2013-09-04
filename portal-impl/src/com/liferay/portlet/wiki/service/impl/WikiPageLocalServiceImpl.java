@@ -1889,14 +1889,15 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 					}
 				}
 				else if (cmd.equals("rename")) {
+					long nodeId = page.getNodeId();
+					long resourcePrimKey = page.getResourcePrimKey();
 					String title = page.getTitle();
 
 					// All versions
 
 					List<WikiPage> versionPages = wikiPagePersistence.findByR_N(
-						page.getResourcePrimKey(), page.getNodeId(),
-						QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-						new PageVersionComparator());
+						resourcePrimKey, nodeId, QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS, new PageVersionComparator());
 
 					WikiPage oldPage = versionPages.get(1);
 
@@ -1911,15 +1912,13 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 					// Children
 
 					List<WikiPage> children = wikiPagePersistence.findByN_P(
-						page.getNodeId(), oldTitle);
+						nodeId, oldTitle);
 
 					for (WikiPage child : children) {
 						child.setParentTitle(title);
 
 						wikiPagePersistence.update(child);
 					}
-
-					long resourcePrimKey = page.getResourcePrimKey();
 
 					// Page resource
 
@@ -1934,14 +1933,12 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 					// Create stub page at the old location
 
 					double version = WikiPageConstants.VERSION_DEFAULT;
-					String summary =
-						WikiPageConstants.MOVED + " to " + page.getTitle();
+					String summary = WikiPageConstants.MOVED + " to " + title;
 					String format = oldPage.getFormat();
 					boolean head = true;
 					String parentTitle = oldPage.getParentTitle();
-					String redirectTitle = title;
 					String content =
-						StringPool.DOUBLE_OPEN_BRACKET + redirectTitle +
+						StringPool.DOUBLE_OPEN_BRACKET + title +
 							StringPool.DOUBLE_CLOSE_BRACKET;
 
 					serviceContext.setAddGroupPermissions(true);
@@ -1951,14 +1948,13 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 					addPage(
 						userId, oldPage.getNodeId(), oldTitle, version, content,
-						summary, false, format, head, parentTitle,
-						redirectTitle, serviceContext);
+						summary, false, format, head, parentTitle, title,
+						serviceContext);
 
 					// Move redirects to point to the page with the new title
 
 					List<WikiPage> redirectedPages =
-						wikiPagePersistence.findByN_R(
-							page.getNodeId(), oldTitle);
+						wikiPagePersistence.findByN_R(nodeId, oldTitle);
 
 					for (WikiPage redirectedPage : redirectedPages) {
 						redirectedPage.setRedirectTitle(title);
@@ -1980,8 +1976,7 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 					indexer.delete(
 						new Object[] {
-							page.getCompanyId(), page.getNodeId(),
-							oldPage.getTitle()});
+							page.getCompanyId(), nodeId, oldTitle});
 				}
 			}
 
