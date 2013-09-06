@@ -356,10 +356,11 @@ public class MBThreadLocalServiceWrapper implements MBThreadLocalService,
 	}
 
 	@Override
-	public void bumpThread(long threadId)
+	public void bumpThread(long threadId,
+		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		_mbThreadLocalService.bumpThread(threadId);
+		_mbThreadLocalService.bumpThread(threadId, serviceContext);
 	}
 
 	@Override

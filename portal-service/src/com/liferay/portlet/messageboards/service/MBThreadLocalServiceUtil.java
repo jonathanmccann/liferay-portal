@@ -337,10 +337,11 @@ public class MBThreadLocalServiceUtil {
 		return getService().addThread(categoryId, message, serviceContext);
 	}
 
-	public static void bumpThread(long threadId)
+	public static void bumpThread(long threadId,
+		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException {
-		getService().bumpThread(threadId);
+		getService().bumpThread(threadId, serviceContext);
 	}
 
 	public static void deleteThread(long threadId)
