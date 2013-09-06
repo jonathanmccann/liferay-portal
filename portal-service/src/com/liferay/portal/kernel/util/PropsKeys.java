@@ -1615,6 +1615,12 @@ public interface PropsKeys {
 
 	public static final String MESSAGE_BOARDS_EMAIL_MESSAGE_UPDATED_SUBJECT = "message.boards.email.message.updated.subject";
 
+	public static final String MESSAGE_BOARDS_EMAIL_THREAD_BUMPED_BODY = "message.boards.email.thread.bumped.body";
+
+	public static final String MESSAGE_BOARDS_EMAIL_THREAD_BUMPED_ENABLED = "message.boards.email.thread.bumped.enabled";
+
+	public static final String MESSAGE_BOARDS_EMAIL_THREAD_BUMPED_SUBJECT = "message.boards.email.thread.bumped.subject";
+
 	public static final String MESSAGE_BOARDS_EXPIRE_BAN_INTERVAL = "message.boards.expire.ban.interval";
 
 	public static final String MESSAGE_BOARDS_EXPIRE_BAN_JOB_INTERVAL = "message.boards.expire.ban.job.interval";

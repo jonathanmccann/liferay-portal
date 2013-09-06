@@ -191,7 +191,10 @@ public class EditMessageAction extends PortletAction {
 	protected void bumpThread(ActionRequest actionRequest) throws Exception {
 		long threadId = ParamUtil.getLong(actionRequest, "threadId");
 
-		MBThreadLocalServiceUtil.bumpThread(threadId);
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			MBMessage.class.getName(), actionRequest);
+
+		MBThreadLocalServiceUtil.bumpThread(threadId, serviceContext);
 	}
 
 	protected void deleteMessage(ActionRequest actionRequest) throws Exception {

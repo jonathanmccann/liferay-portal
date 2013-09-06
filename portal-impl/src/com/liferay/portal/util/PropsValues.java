@@ -1188,6 +1188,12 @@ public class PropsValues {
 
 	public static final String MESSAGE_BOARDS_EMAIL_MESSAGE_UPDATED_SUBJECT = PropsUtil.get(PropsKeys.MESSAGE_BOARDS_EMAIL_MESSAGE_UPDATED_SUBJECT);
 
+	public static final String MESSAGE_BOARDS_EMAIL_THREAD_BUMPED_BODY = PropsUtil.get(PropsKeys.MESSAGE_BOARDS_EMAIL_THREAD_BUMPED_BODY);
+
+	public static final boolean MESSAGE_BOARDS_EMAIL_THREAD_BUMPED_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.MESSAGE_BOARDS_EMAIL_THREAD_BUMPED_ENABLED));
+
+	public static final String MESSAGE_BOARDS_EMAIL_THREAD_BUMPED_SUBJECT = PropsUtil.get(PropsKeys.MESSAGE_BOARDS_EMAIL_THREAD_BUMPED_SUBJECT);
+
 	public static final int MESSAGE_BOARDS_EXPIRE_BAN_INTERVAL = GetterUtil.getInteger(PropsUtil.get(PropsKeys.MESSAGE_BOARDS_EXPIRE_BAN_INTERVAL));
 
 	public static final long MESSAGE_BOARDS_EXPIRE_BAN_JOB_INTERVAL = GetterUtil.getLong(PropsUtil.get(PropsKeys.MESSAGE_BOARDS_EXPIRE_BAN_JOB_INTERVAL));
