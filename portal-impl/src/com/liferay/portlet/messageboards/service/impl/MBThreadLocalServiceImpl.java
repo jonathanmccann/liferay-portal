@@ -39,6 +39,7 @@ import com.liferay.portal.model.User;
 import com.liferay.portal.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.util.PortletKeys;
+import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.asset.model.AssetEntry;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
 import com.liferay.portlet.messageboards.NoSuchCategoryException;
@@ -57,6 +58,7 @@ import com.liferay.portlet.social.model.SocialActivityConstants;
 import com.liferay.portlet.trash.model.TrashEntry;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
@@ -674,6 +676,25 @@ public class MBThreadLocalServiceImpl extends MBThreadLocalServiceBaseImpl {
 		mbThreadPersistence.update(thread);
 
 		return thread;
+	}
+
+	@Override
+	public boolean isAfterBumpTimeout(MBThread thread) {
+		boolean afterBumpTimeout = true;
+
+		if (thread.getLastBumpDate() != null) {
+			Calendar cal = Calendar.getInstance();
+			cal.setTime(thread.getLastBumpDate());
+			cal.add(Calendar.HOUR, PropsValues.MESSAGE_BOARDS_BUMP_TIMEOUT);
+
+			Date bumpTimeoutDate = cal.getTime();
+
+			Date currentDate = new Date();
+
+			afterBumpTimeout = currentDate.after(bumpTimeoutDate);
+		}
+
+		return afterBumpTimeout;
 	}
 
 	@Override

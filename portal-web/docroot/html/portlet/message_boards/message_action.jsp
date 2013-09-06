@@ -161,7 +161,7 @@ MBThread thread = message.getThread();
 		/>
 	</c:if>
 
-	<c:if test="<%= themeDisplay.getUserId() == thread.getUserId() %>">
+	<c:if test="<%= themeDisplay.getUserId() == thread.getUserId() && MBThreadLocalServiceUtil.isAfterBumpTimeout(thread) %>">
 		<portlet:actionURL var="bumpThreadURL">
 			<portlet:param name="struts_action" value="/message_boards/edit_message" />
 			<portlet:param name="<%= Constants.CMD %>" value="<%= Constants.BUMP_THREAD %>" />

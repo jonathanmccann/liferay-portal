@@ -1162,6 +1162,8 @@ public class PropsValues {
 
 	public static final boolean MESSAGE_BOARDS_ANONYMOUS_POSTING_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.MESSAGE_BOARDS_ANONYMOUS_POSTING_ENABLED));
 
+	public static final int MESSAGE_BOARDS_BUMP_TIMEOUT = GetterUtil.getInteger(PropsUtil.get(PropsKeys.MESSAGE_BOARDS_BUMP_TIMEOUT));
+
 	public static final boolean MESSAGE_BOARDS_EMAIL_BULK = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.MESSAGE_BOARDS_EMAIL_BULK));
 
 	public static final String MESSAGE_BOARDS_EMAIL_FROM_ADDRESS = PropsUtil.get(PropsKeys.MESSAGE_BOARDS_EMAIL_FROM_ADDRESS);

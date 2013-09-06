@@ -1585,6 +1585,8 @@ public interface PropsKeys {
 
 	public static final String MESSAGE_BOARDS_ANONYMOUS_POSTING_ENABLED = "message.boards.anonymous.posting.enabled";
 
+	public static final String MESSAGE_BOARDS_BUMP_TIMEOUT = "message.boards.bump.timeout";
+
 	public static final String MESSAGE_BOARDS_CATEGORY_DISPLAY_STYLES = "message.boards.category.display.styles";
 
 	public static final String MESSAGE_BOARDS_CATEGORY_DISPLAY_STYLES_DEFAULT = "message.boards.category.display.styles.default";
