@@ -696,6 +696,12 @@ public class MBThreadLocalServiceWrapper implements MBThreadLocalService,
 	}
 
 	@Override
+	public java.util.List<com.liferay.portlet.messageboards.model.MBThread> sortThreads(
+		java.util.List<com.liferay.portlet.messageboards.model.MBThread> mbThreads) {
+		return _mbThreadLocalService.sortThreads(mbThreads);
+	}
+
+	@Override
 	public com.liferay.portlet.messageboards.model.MBThread splitThread(
 		long messageId, java.lang.String subject,
 		com.liferay.portal.service.ServiceContext serviceContext)

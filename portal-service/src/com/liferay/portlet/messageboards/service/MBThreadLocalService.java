@@ -536,6 +536,9 @@ public interface MBThreadLocalService extends BaseLocalService,
 		throws com.liferay.portal.kernel.exception.PortalException,
 			com.liferay.portal.kernel.exception.SystemException;
 
+	public java.util.List<com.liferay.portlet.messageboards.model.MBThread> sortThreads(
+		java.util.List<com.liferay.portlet.messageboards.model.MBThread> mbThreads);
+
 	public com.liferay.portlet.messageboards.model.MBThread splitThread(
 		long messageId, java.lang.String subject,
 		com.liferay.portal.service.ServiceContext serviceContext)

@@ -636,6 +636,11 @@ public class MBThreadLocalServiceUtil {
 			status, start, end);
 	}
 
+	public static java.util.List<com.liferay.portlet.messageboards.model.MBThread> sortThreads(
+		java.util.List<com.liferay.portlet.messageboards.model.MBThread> mbThreads) {
+		return getService().sortThreads(mbThreads);
+	}
+
 	public static com.liferay.portlet.messageboards.model.MBThread splitThread(
 		long messageId, java.lang.String subject,
 		com.liferay.portal.service.ServiceContext serviceContext)
