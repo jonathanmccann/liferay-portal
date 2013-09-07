@@ -1,4 +1,3 @@
-<%--
 /**
  * Copyright (c) 2000-2013 Liferay, Inc. All rights reserved.
  *
@@ -12,16 +11,18 @@
  * FOR A PARTICULAR PURPOSE. See the GNU Lesser General Public License for more
  * details.
  */
---%>
 
-<%@ include file="/html/portlet/directory/init.jsp" %>
+package com.liferay.portalweb.portal.util.liferayselenium;
 
-<%
-UserGroupSearch searchContainer = (UserGroupSearch)request.getAttribute("liferay-ui:search:searchContainer");
+import org.openqa.selenium.safari.SafariDriver;
 
-UserGroupDisplayTerms displayTerms = (UserGroupDisplayTerms)searchContainer.getDisplayTerms();
-%>
+/**
+ * @author Brian Wing Shun Chan
+ */
+public class SafariWebDriverImpl extends BaseWebDriverImpl {
 
-<div class="form-search">
-	<liferay-ui:input-search autoFocus="<%= windowState.equals(WindowState.MAXIMIZED) %>" name="<%= displayTerms.KEYWORDS %>" placeholder='<%= LanguageUtil.get(locale, "keywords") %>' />
-</div>
+	public SafariWebDriverImpl(String projectDir, String browserURL) {
+		super(projectDir, browserURL, new SafariDriver());
+	}
+
+}

@@ -239,6 +239,7 @@ public class SocialActivitySetLocalServiceImpl
 			activityId);
 
 		activitySet.setModifiedDate(activity.getCreateDate());
+		activitySet.setUserId(activity.getUserId());
 
 		activitySet.setActivityCount(activitySet.getActivityCount() + 1);
 
