@@ -578,6 +578,11 @@ public class MBThreadLocalServiceUtil {
 		return getService().incrementViewCounter(threadId, increment);
 	}
 
+	public static boolean isAfterBumpTimeout(
+		com.liferay.portlet.messageboards.model.MBThread thread) {
+		return getService().isAfterBumpTimeout(thread);
+	}
+
 	public static com.liferay.portlet.messageboards.model.MBThread moveThread(
 		long groupId, long categoryId, long threadId)
 		throws com.liferay.portal.kernel.exception.PortalException,

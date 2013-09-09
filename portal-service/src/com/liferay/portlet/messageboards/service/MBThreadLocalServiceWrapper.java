@@ -630,6 +630,12 @@ public class MBThreadLocalServiceWrapper implements MBThreadLocalService,
 	}
 
 	@Override
+	public boolean isAfterBumpTimeout(
+		com.liferay.portlet.messageboards.model.MBThread thread) {
+		return _mbThreadLocalService.isAfterBumpTimeout(thread);
+	}
+
+	@Override
 	public com.liferay.portlet.messageboards.model.MBThread moveThread(
 		long groupId, long categoryId, long threadId)
 		throws com.liferay.portal.kernel.exception.PortalException,
