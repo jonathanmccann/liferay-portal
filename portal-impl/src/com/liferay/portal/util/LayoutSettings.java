@@ -38,6 +38,15 @@ public class LayoutSettings {
 		return _layoutSettingsMap.get(type);
 	}
 
+	public static void addNewLayoutSettings(String[] types) {
+		for (String type : types) {
+
+			if (!_layoutSettingsMap.containsKey(type)) {
+				new LayoutSettings(type);
+			}
+		}
+	}
+
 	public String[] getConfigurationActionDelete() {
 		return _configurationActionDelete;
 	}
