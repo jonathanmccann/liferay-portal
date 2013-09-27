@@ -102,7 +102,9 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 			String content = entry.getValue();
 
 			if (content.contains("<%@ include file=\"" + fileName) &&
-				!includeFileNames.contains(referenceFileName)) {
+				!includeFileNames.contains(referenceFileName) ||
+					content.contains("<%@include file=\"" + fileName) &&
+						!includeFileNames.contains(referenceFileName)) {
 
 				includeFileNames.add(referenceFileName);
 			}
@@ -277,12 +279,12 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 		newContent = StringUtil.replace(
 			newContent,
 			new String[] {
-				"<br/>", "\"/>", "\" >", "@page import", "\"%>", ")%>", "else{",
+				"<br/>", "\"/>", "\" >","@include file", "@page import", "\"%>", ")%>", "else{",
 				"for(", "function (", "if(", "javascript: ", "while(", "){\n",
 				"\n\n\n"
 			},
 			new String[] {
-				"<br />", "\" />", "\">", "@ page import", "\" %>", ") %>",
+				"<br />", "\" />", "\">","@ include file", "@ page import", "\" %>", ") %>",
 				"else {", "for (", "function(", "if (", "javascript:",
 				"while (", ") {\n", "\n\n"
 			});
