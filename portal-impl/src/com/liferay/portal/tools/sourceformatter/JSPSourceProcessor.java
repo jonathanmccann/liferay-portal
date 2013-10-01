@@ -244,6 +244,34 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 
 			String content = fileUtil.read(file);
 
+			content = StringUtil.replace(
+					content,
+					new String[] {
+							"<br/>", "\"/>", "\" >","@include file", "@page import", "\"%>", ")%>", "else{",
+							"for(", "function (", "if(", "javascript: ", "while(", "){\n",
+							"\n\n\n"
+					},
+					new String[] {
+							"<br />", "\" />", "\">","@ include file", "@ page import", "\" %>", ") %>",
+							"else {", "for (", "function(", "if (", "javascript:",
+							"while (", ") {\n", "\n\n"
+					});
+
+			content = StringUtil.replace(
+					content,
+					new String[] {
+							"alert('<%= LanguageUtil.", "alert(\"<%= LanguageUtil.",
+							"confirm('<%= LanguageUtil.", "confirm(\"<%= LanguageUtil."
+					},
+					new String[] {
+							"alert('<%= UnicodeLanguageUtil.",
+							"alert(\"<%= UnicodeLanguageUtil.",
+							"confirm('<%= UnicodeLanguageUtil.",
+							"confirm(\"<%= UnicodeLanguageUtil."
+					});
+
+			fileUtil.write(file,content);
+
 			_jspContents.put(fileName, content);
 		}
 
@@ -274,19 +302,6 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 			oldContent = newContent;
 		}
 
-		newContent = StringUtil.replace(
-			newContent,
-			new String[] {
-				"<br/>", "\"/>", "\" >", "@include file", "@page import", "\"%>", ")%>", "else{",
-				"for(", "function (", "if(", "javascript: ", "while(", "){\n",
-				"\n\n\n"
-			},
-			new String[] {
-				"<br />", "\" />", "\">", "@ include file", "@ page import", "\" %>", ") %>",
-				"else {", "for (", "function(", "if (", "javascript:",
-				"while (", ") {\n", "\n\n"
-			});
-
 		newContent = fixCompatClassImports(file, newContent);
 
 		if (_stripJSPImports && !_jspContents.isEmpty()) {
@@ -300,19 +315,6 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 
 		newContent = fixCopyright(
 			newContent, getCopyright(), getOldCopyright(), file, fileName);
-
-		newContent = StringUtil.replace(
-			newContent,
-			new String[] {
-				"alert('<%= LanguageUtil.", "alert(\"<%= LanguageUtil.",
-				"confirm('<%= LanguageUtil.", "confirm(\"<%= LanguageUtil."
-			},
-			new String[] {
-				"alert('<%= UnicodeLanguageUtil.",
-				"alert(\"<%= UnicodeLanguageUtil.",
-				"confirm('<%= UnicodeLanguageUtil.",
-				"confirm(\"<%= UnicodeLanguageUtil."
-			});
 
 		if (newContent.contains("    ")) {
 			if (!fileName.matches(".*template.*\\.vm$")) {
