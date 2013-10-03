@@ -31,6 +31,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.security.auth.AuthException;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.auth.RemoteAuthException;
+import com.liferay.portal.util.PortalUtil;
+import com.liferay.portal.util.SessionTreeJSClicks;
 import com.liferay.portlet.sites.action.ActionUtil;
 
 import java.util.Date;
@@ -44,6 +46,8 @@ import javax.portlet.RenderRequest;
 import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
+
+import javax.servlet.http.HttpServletRequest;
 
 import org.apache.struts.action.ActionForm;
 import org.apache.struts.action.ActionForward;
@@ -108,6 +112,20 @@ public class PublishLayoutsAction extends EditLayoutsAction {
 				}
 				else if (cmd.equals("unschedule_publish_to_remote")) {
 					StagingUtil.unschedulePublishToRemote(actionRequest);
+				}
+
+				if (cmd.equals("publish_to_live") ||
+					cmd.equals("publish_to_remote") ||
+					cmd.equals("schedule_publish_to_live") ||
+					cmd.equals("schedule_publish_to_remote")) {
+
+					HttpServletRequest request =
+						PortalUtil.getHttpServletRequest(actionRequest);
+
+					String treeId = ParamUtil.getString(
+						actionRequest, "treeId");
+
+					SessionTreeJSClicks.closeNodes(request, treeId);
 				}
 
 				sendRedirect(
