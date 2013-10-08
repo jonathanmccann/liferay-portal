@@ -90,9 +90,11 @@ public class MBPermissionPropagatorImpl extends BasePermissionPropagator {
 		MBCategory category = MBCategoryLocalServiceUtil.getCategory(
 			categoryId);
 
+		long categoryGroupId = category.getGroupId();
+
 		List<Object> categoriesAndThreads =
 			MBCategoryLocalServiceUtil.getCategoriesAndThreads(
-				category.getGroupId(), categoryId);
+				categoryGroupId, categoryId);
 
 		for (Object categoryOrThread : categoriesAndThreads) {
 			if (categoryOrThread instanceof MBThread) {
@@ -116,8 +118,7 @@ public class MBPermissionPropagatorImpl extends BasePermissionPropagator {
 				categoryIds.add(category.getCategoryId());
 
 				categoryIds = MBCategoryLocalServiceUtil.getSubcategoryIds(
-					categoryIds, category.getGroupId(),
-					category.getCategoryId());
+					categoryIds, categoryGroupId, categoryIds.get(0));
 
 				for (final long addCategoryId : categoryIds) {
 					propagateCategoryRolePermissions(
@@ -149,7 +150,7 @@ public class MBPermissionPropagatorImpl extends BasePermissionPropagator {
 
 					};
 
-					actionableDynamicQuery.setGroupId(category.getGroupId());
+					actionableDynamicQuery.setGroupId(categoryGroupId);
 
 					actionableDynamicQuery.performActions();
 				}
