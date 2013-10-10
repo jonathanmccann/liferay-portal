@@ -114,6 +114,17 @@ public class JournalArticlePermission {
 				return hasPermission.booleanValue();
 			}
 		}
+		else if (article.isDraft()) {
+			if ((permissionChecker.getUserId() == article.getUserId()) ||
+				permissionChecker.hasAdminPermission(
+					article.getGroupId(), JournalArticle.class.getName(),
+					article.getResourcePrimKey(), actionId)) {
+
+				return true;
+			}
+
+			return false;
+		}
 
 		if ((article.getFolderId() !=
 				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) &&

@@ -69,6 +69,17 @@ public class BlogsEntryPermission {
 				return hasPermission.booleanValue();
 			}
 		}
+		else if (entry.isDraft()) {
+			if ((permissionChecker.getUserId() == entry.getUserId()) ||
+				permissionChecker.hasAdminPermission(
+					entry.getGroupId(), BlogsEntry.class.getName(),
+					entry.getEntryId(), actionId)) {
+
+				return true;
+			}
+
+			return false;
+		}
 
 		if (permissionChecker.hasOwnerPermission(
 				entry.getCompanyId(), BlogsEntry.class.getName(),

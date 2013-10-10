@@ -171,11 +171,22 @@ public class WikiPagePermission {
 				return true;
 			}
 		}
+		else if (page.isDraft()) {
+			if (actionId.equals(ActionKeys.DELETE) &&
+				(page.getStatusByUserId() == permissionChecker.getUserId())) {
 
-		if (page.isDraft() && actionId.equals(ActionKeys.DELETE) &&
-			(page.getStatusByUserId() == permissionChecker.getUserId())) {
+				return true;
+			}
 
-			return true;
+			if ((permissionChecker.getUserId() == page.getUserId()) ||
+				permissionChecker.hasAdminPermission(
+					page.getGroupId(), WikiPage.class.getName(),
+					page.getResourcePrimKey(), actionId)) {
+
+				return true;
+			}
+
+			return false;
 		}
 
 		return _hasPermission(permissionChecker, page, actionId);

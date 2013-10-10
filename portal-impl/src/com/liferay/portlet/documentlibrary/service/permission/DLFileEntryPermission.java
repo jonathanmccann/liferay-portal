@@ -95,6 +95,19 @@ public class DLFileEntryPermission {
 				return hasPermission.booleanValue();
 			}
 		}
+		else if (latestDLFileVersion.isDraft()) {
+			if ((permissionChecker.getUserId() ==
+					latestDLFileVersion.getUserId()) ||
+				permissionChecker.hasAdminPermission(
+					latestDLFileVersion.getGroupId(),
+					DLFileEntry.class.getName(),
+					latestDLFileVersion.getFileEntryId(), actionId)) {
+
+				return true;
+			}
+
+			return false;
+		}
 
 		if (actionId.equals(ActionKeys.VIEW) &&
 			PropsValues.PERMISSIONS_VIEW_DYNAMIC_INHERITANCE) {
