@@ -89,12 +89,14 @@ import com.liferay.portlet.wiki.util.comparator.PageVersionComparator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -1829,6 +1831,24 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		page.setExpandoBridgeAttributes(serviceContext);
 
+		boolean keepPageVersion = false;
+
+		int workflowAction = serviceContext.getWorkflowAction();
+
+		if (workflowAction == WorkflowConstants.ACTION_PUBLISH) {
+			keepPageVersion = isKeepPageVersion(page);
+		}
+
+		if (keepPageVersion) {
+			try {
+				wikiPagePersistence.remove(page.getPageId());
+			}
+			catch (NoSuchPageException nspe) {
+			}
+
+			page = getPage(oldPage.getNodeId(), oldPage.getTitle());
+		}
+
 		wikiPagePersistence.update(page);
 
 		// Node
@@ -1845,6 +1865,10 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			userId, page, serviceContext.getAssetCategoryIds(),
 			serviceContext.getAssetTagNames(),
 			serviceContext.getAssetLinkEntryIds());
+
+		if (keepPageVersion) {
+			return page;
+		}
 
 		// Social
 
@@ -2248,6 +2272,72 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		}
 
 		return getPage(page.getNodeId(), page.getTitle(), previousVersion);
+	}
+
+	protected boolean isKeepPageVersion(WikiPage newPage)
+		throws PortalException, SystemException {
+
+		WikiPage oldPage = null;
+
+		try {
+			oldPage = getPage(newPage.getNodeId(), newPage.getTitle());
+		}
+		catch (NoSuchPageException nspe) {
+			return false;
+		}
+
+		String oldContent = oldPage.getContent();
+		String newContent = newPage.getContent();
+
+		if (!Validator.equals(oldContent, newContent)) {
+			return false;
+		}
+
+		ExpandoBridge oldExpandoBridge = oldPage.getExpandoBridge();
+		ExpandoBridge newExpandoBridge = newPage.getExpandoBridge();
+
+		Map<String, Serializable> oldExpandoBridgeAttributes =
+			oldExpandoBridge.getAttributes();
+		Map<String, Serializable> newExpandoBridgeAttributes =
+			newExpandoBridge.getAttributes();
+
+		if (!oldExpandoBridgeAttributes.equals(newExpandoBridgeAttributes)) {
+			return false;
+		}
+
+		Set<String> keySet = oldExpandoBridgeAttributes.keySet();
+
+		for (String key : keySet) {
+			Serializable oldAttribute = oldExpandoBridgeAttributes.get(key);
+			Serializable newAttribute = newExpandoBridgeAttributes.get(key);
+
+			if (!Validator.equals(oldAttribute, newAttribute)) {
+				return false;
+			}
+		}
+
+		String oldFormat = oldPage.getFormat();
+		String newFormat = newPage.getFormat();
+
+		if (!Validator.equals(oldFormat, newFormat)) {
+			return false;
+		}
+
+		String oldRedirectTitle = oldPage.getRedirectTitle();
+		String newRedirectTitle = newPage.getRedirectTitle();
+
+		if (!Validator.equals(oldRedirectTitle, newRedirectTitle)) {
+			return false;
+		}
+
+		String oldTitle = oldPage.getTitle();
+		String newTitle = newPage.getTitle();
+
+		if (!Validator.equals(oldTitle, newTitle)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	protected boolean isLinkedTo(WikiPage page, String targetTitle)
