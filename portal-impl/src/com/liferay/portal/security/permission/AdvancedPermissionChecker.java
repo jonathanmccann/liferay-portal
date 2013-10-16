@@ -465,6 +465,20 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 	}
 
 	@Override
+	public boolean hasAdminPermission(
+		long groupId, String name, String primKey, String actionId) {
+
+		try {
+			return hasAdminPermissionImpl(groupId, name, primKey, actionId);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			return false;
+		}
+	}
+
+	@Override
 	public boolean hasOwnerPermission(
 		long companyId, String name, String primKey, long ownerId,
 		String actionId) {
@@ -878,6 +892,49 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		return organizations;
 	}
 
+	protected boolean hasAdminPermissionImpl(
+			long groupId, String name, String primKey, String actionId)
+		throws Exception {
+
+		long companyId = user.getCompanyId();
+
+		if (groupId > 0) {
+			Group group = GroupLocalServiceUtil.getGroup(groupId);
+
+			companyId = group.getCompanyId();
+		}
+
+		boolean hasLayoutManagerPermission = true;
+
+		// Check if the layout manager has permission to do this action for the
+		// current portlet
+
+		if (Validator.isNotNull(name) && Validator.isNotNull(primKey) &&
+			primKey.contains(PortletConstants.LAYOUT_SEPARATOR)) {
+
+			hasLayoutManagerPermission =
+				PortletPermissionUtil.hasLayoutManagerPermission(
+					name, actionId);
+		}
+
+		if (isCompanyAdminImpl(companyId)) {
+			return true;
+		}
+
+		if (name.equals(Organization.class.getName())) {
+			long organizationId = GetterUtil.getInteger(primKey);
+
+			if (isOrganizationAdminImpl(organizationId)) {
+				return true;
+			}
+		}
+		else if (isGroupAdminImpl(groupId) && hasLayoutManagerPermission) {
+			return true;
+		}
+
+		return false;
+	}
+
 	protected boolean hasGuestPermission(
 			long groupId, String name, String primKey, String actionId)
 		throws Exception {
@@ -987,42 +1044,18 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			stopWatch.start();
 		}
 
+		if (checkAdmin &&
+			hasAdminPermissionImpl(groupId, name, primKey, actionId)) {
+
+			return true;
+		}
+
 		long companyId = user.getCompanyId();
 
 		if (groupId > 0) {
 			Group group = GroupLocalServiceUtil.getGroup(groupId);
 
 			companyId = group.getCompanyId();
-		}
-
-		boolean hasLayoutManagerPermission = true;
-
-		// Check if the layout manager has permission to do this action for the
-		// current portlet
-
-		if (Validator.isNotNull(name) && Validator.isNotNull(primKey) &&
-			primKey.contains(PortletConstants.LAYOUT_SEPARATOR)) {
-
-			hasLayoutManagerPermission =
-				PortletPermissionUtil.hasLayoutManagerPermission(
-					name, actionId);
-		}
-
-		if (checkAdmin) {
-			if (isCompanyAdminImpl(companyId)) {
-				return true;
-			}
-
-			if (name.equals(Organization.class.getName())) {
-				long organizationId = GetterUtil.getInteger(primKey);
-
-				if (isOrganizationAdminImpl(organizationId)) {
-					return true;
-				}
-			}
-			else if (isGroupAdminImpl(groupId) && hasLayoutManagerPermission) {
-				return true;
-			}
 		}
 
 		return doCheckPermission(

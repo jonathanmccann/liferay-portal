@@ -89,6 +89,17 @@ public class MBMessagePermission {
 				return hasPermission.booleanValue();
 			}
 		}
+		else if (message.isDraft()) {
+			if ((permissionChecker.getUserId() == message.getUserId()) ||
+				permissionChecker.hasAdminPermission(
+					message.getGroupId(), message.getWorkflowClassName(),
+					message.getMessageId(), actionId)) {
+
+				return true;
+			}
+
+			return false;
+		}
 
 		if (MBBanLocalServiceUtil.hasBan(
 				message.getGroupId(), permissionChecker.getUserId())) {

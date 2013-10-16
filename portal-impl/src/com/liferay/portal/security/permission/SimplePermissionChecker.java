@@ -25,6 +25,13 @@ public class SimplePermissionChecker extends BasePermissionChecker {
 	}
 
 	@Override
+	public boolean hasAdminPermission(
+		long groupId, String name, String primKey, String actionId) {
+
+		return hasPermission(actionId);
+	}
+
+	@Override
 	public boolean hasOwnerPermission(
 		long companyId, String name, String primKey, long ownerId,
 		String actionId) {

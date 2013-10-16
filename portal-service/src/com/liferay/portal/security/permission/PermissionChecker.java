@@ -73,6 +73,36 @@ public interface PermissionChecker extends Cloneable {
 	public long getUserId();
 
 	/**
+	 * Returns <code>true</code> if the user has administrator privileges on the
+	 * resource.
+	 *
+	 * @param  groupId the primary key of the group containing the resource
+	 * @param  name the resource's name, which can be either a class name or a
+	 *         portlet ID
+	 * @param  primKey the primary key of the resource
+	 * @param  actionId the action ID
+	 * @return <code>true</code> if the user has administrator privileges on the
+	 *         resource; <code>false</code> otherwise
+	 */
+	public boolean hasAdminPermission(
+		long groupId, String name, long primKey, String actionId);
+
+	/**
+	 * Returns <code>true</code> if the user has administrator privileges on the
+	 * resource.
+	 *
+	 * @param  groupId the primary key of the group containing the resource
+	 * @param  name the resource's name, which can be either a class name or a
+	 *         portlet ID
+	 * @param  primKey the primary key of the resource
+	 * @param  actionId the action ID
+	 * @return <code>true</code> if the user has administrator privileges on the
+	 *         resource; <code>false</code> otherwise
+	 */
+	public boolean hasAdminPermission(
+		long groupId, String name, String primKey, String actionId);
+
+	/**
 	 * Returns <code>true</code> if the user is the owner of the resource and
 	 * has permission to perform the action.
 	 *

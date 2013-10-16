@@ -85,6 +85,14 @@ public abstract class BasePermissionChecker implements PermissionChecker {
 	}
 
 	@Override
+	public boolean hasAdminPermission(
+		long groupId, String name, long primKey, String actionId) {
+
+		return hasAdminPermission(
+			groupId, name, String.valueOf(primKey), actionId);
+	}
+
+	@Override
 	public boolean hasOwnerPermission(
 		long companyId, String name, long primKey, long ownerId,
 		String actionId) {
