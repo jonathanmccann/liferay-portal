@@ -14,6 +14,7 @@
 
 package com.liferay.portlet.wiki.service.impl;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -89,6 +90,7 @@ import com.liferay.portlet.wiki.util.comparator.PageVersionComparator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -1829,6 +1831,41 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		page.setExpandoBridgeAttributes(serviceContext);
 
+		boolean keepPageVersion = isKeepPageVersion(
+			page, serviceContext.getWorkflowAction());
+
+		if (keepPageVersion) {
+			List<SocialActivity> socialActivities =
+				socialActivityLocalService.getActivities(
+					0, WikiPage.class.getName(), page.getResourcePrimKey(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+			for (SocialActivity socialActivity : socialActivities) {
+				if (Validator.isNull(socialActivity.getExtraData())) {
+					continue;
+				}
+
+				JSONObject extraDataJSONObject =
+					JSONFactoryUtil.createJSONObject(
+						socialActivity.getExtraData());
+
+				double pageVersion = extraDataJSONObject.getDouble("version");
+
+				if (pageVersion == page.getVersion()) {
+					socialActivityLocalService.deleteActivity(
+						socialActivity.getActivityId());
+				}
+			}
+
+			try {
+				wikiPagePersistence.remove(page.getPageId());
+			}
+			catch (NoSuchPageException nspe) {
+			}
+
+			page = getPage(oldPage.getNodeId(), oldPage.getTitle());
+		}
+
 		wikiPagePersistence.update(page);
 
 		// Node
@@ -1845,6 +1882,10 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			userId, page, serviceContext.getAssetCategoryIds(),
 			serviceContext.getAssetTagNames(),
 			serviceContext.getAssetLinkEntryIds());
+
+		if (keepPageVersion) {
+			return page;
+		}
 
 		// Social
 
@@ -2248,6 +2289,48 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		}
 
 		return getPage(page.getNodeId(), page.getTitle(), previousVersion);
+	}
+
+	protected boolean isKeepPageVersion(WikiPage newPage, int workflowAction)
+		throws PortalException, SystemException {
+
+		if (workflowAction == WorkflowConstants.ACTION_SAVE_DRAFT) {
+			return false;
+		}
+
+		WikiPage oldPage = getPage(newPage.getNodeId(), newPage.getTitle());
+
+		if (!Validator.equals(oldPage.getContent(), newPage.getContent())) {
+			return false;
+		}
+
+		ExpandoBridge oldExpandoBridge = oldPage.getExpandoBridge();
+		ExpandoBridge newExpandoBridge = newPage.getExpandoBridge();
+
+		Map<String, Serializable> oldAttributes =
+			oldExpandoBridge.getAttributes();
+		Map<String, Serializable> newAttributes =
+			newExpandoBridge.getAttributes();
+
+		if (!Validator.equals(oldAttributes, newAttributes)) {
+			return false;
+		}
+
+		if (!Validator.equals(oldPage.getFormat(), newPage.getFormat())) {
+			return false;
+		}
+
+		if (!Validator.equals(
+				oldPage.getRedirectTitle(), newPage.getRedirectTitle())) {
+
+			return false;
+		}
+
+		if (!Validator.equals(oldPage.getTitle(), newPage.getTitle())) {
+			return false;
+		}
+
+		return true;
 	}
 
 	protected boolean isLinkedTo(WikiPage page, String targetTitle)
