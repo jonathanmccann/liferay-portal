@@ -93,6 +93,7 @@ import com.liferay.portlet.dynamicdatamapping.model.DDMStructure;
 import com.liferay.portlet.dynamicdatamapping.model.DDMTemplate;
 import com.liferay.portlet.dynamicdatamapping.storage.FieldConstants;
 import com.liferay.portlet.dynamicdatamapping.util.DDMXMLUtil;
+import com.liferay.portlet.expando.model.ExpandoBridge;
 import com.liferay.portlet.journal.ArticleContentException;
 import com.liferay.portlet.journal.ArticleDisplayDateException;
 import com.liferay.portlet.journal.ArticleExpirationDateException;
@@ -128,6 +129,7 @@ import java.io.IOException;
 import java.io.Serializable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -4750,6 +4752,24 @@ public class JournalArticleLocalServiceImpl
 
 		article.setExpandoBridgeAttributes(serviceContext);
 
+		boolean keepArticleVersion = isKeepArticleVersion(
+			latestArticle, article, smallImageBytes,
+			serviceContext.getWorkflowAction());
+
+		if (keepArticleVersion) {
+			try {
+				journalArticlePersistence.remove(article.getId());
+			}
+			catch (NoSuchArticleException nsae) {
+			}
+
+			article = latestArticle;
+
+			article.setDisplayDate(displayDate);
+			article.setExpirationDate(expirationDate);
+			article.setReviewDate(reviewDate);
+		}
+
 		journalArticlePersistence.update(article);
 
 		// Asset
@@ -4766,6 +4786,10 @@ public class JournalArticleLocalServiceImpl
 
 			updateDDMStructureXSD(
 				article.getClassPK(), content, serviceContext);
+		}
+
+		if (keepArticleVersion) {
+			return journalArticlePersistence.findByPrimaryKey(article.getId());
 		}
 
 		// Small image
@@ -6145,6 +6169,99 @@ public class JournalArticleLocalServiceImpl
 		catch (NoSuchArticleException nsae) {
 			return true;
 		}
+	}
+
+	protected boolean isKeepArticleVersion(
+			JournalArticle latestArticle, JournalArticle lastArticle,
+			byte[] lastImageBytes, int workflowAction)
+		throws PortalException, SystemException {
+
+		if (workflowAction == WorkflowConstants.ACTION_SAVE_DRAFT) {
+			return false;
+		}
+
+		if (!Validator.equals(
+				lastArticle.getContent(), latestArticle.getContent())) {
+
+			return false;
+		}
+
+		if (!Validator.equals(
+				lastArticle.getDescriptionMap(),
+				latestArticle.getDescriptionMap())) {
+
+			return false;
+		}
+
+		ExpandoBridge lastExpandoBridge = lastArticle.getExpandoBridge();
+		ExpandoBridge latestExpandoBridge = latestArticle.getExpandoBridge();
+
+		Map<String, Serializable> lastExpandoAttributes =
+			lastExpandoBridge.getAttributes();
+		Map<String, Serializable> latestExpandoAttributes =
+			latestExpandoBridge.getAttributes();
+
+		if (!Validator.equals(lastExpandoAttributes, latestExpandoAttributes)) {
+			return false;
+		}
+
+		if (!Validator.equals(
+				lastArticle.getIndexable(), latestArticle.getIndexable())) {
+
+			return false;
+		}
+
+		if (lastArticle.isSmallImage() || latestArticle.isSmallImage()) {
+			if (lastArticle.isSmallImage() != latestArticle.isSmallImage()) {
+				return false;
+			}
+
+			if (!Validator.equals(
+					lastArticle.getSmallImageURL(),
+					latestArticle.getSmallImageURL())) {
+
+				return false;
+			}
+
+			if (lastImageBytes != null) {
+				Image latestImage = imageLocalService.getImage(
+					latestArticle.getSmallImageId());
+
+				if (!Arrays.equals(lastImageBytes, latestImage.getTextObj())) {
+					return false;
+				}
+			}
+		}
+
+		if (!Validator.equals(
+				lastArticle.getStructureId(), latestArticle.getStructureId())) {
+
+			return false;
+		}
+
+		if (!Validator.equals(
+				lastArticle.getTemplateId(), latestArticle.getTemplateId())) {
+
+			return false;
+		}
+
+		if (!Validator.equals(
+				lastArticle.getTitleMap(), latestArticle.getTitleMap())) {
+
+			return false;
+		}
+
+		if (!Validator.equals(lastArticle.getType(), latestArticle.getType())) {
+			return false;
+		}
+
+		if (!Validator.equals(
+				lastArticle.getUrlTitle(), latestArticle.getUrlTitle())) {
+
+			return false;
+		}
+
+		return true;
 	}
 
 	protected void notifySubscribers(
