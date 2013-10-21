@@ -89,6 +89,7 @@ import com.liferay.portlet.wiki.util.comparator.PageVersionComparator;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -1829,6 +1830,24 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 
 		page.setExpandoBridgeAttributes(serviceContext);
 
+		boolean keepPageVersion = false;
+
+		int workflowAction = serviceContext.getWorkflowAction();
+
+		if (workflowAction == WorkflowConstants.ACTION_PUBLISH) {
+			keepPageVersion = isKeepPageVersion(page);
+		}
+
+		if (keepPageVersion) {
+			try {
+				wikiPagePersistence.remove(page.getPageId());
+			}
+			catch (NoSuchPageException nspe) {
+			}
+
+			page = getPage(oldPage.getNodeId(), oldPage.getTitle());
+		}
+
 		wikiPagePersistence.update(page);
 
 		// Node
@@ -1845,6 +1864,10 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 			userId, page, serviceContext.getAssetCategoryIds(),
 			serviceContext.getAssetTagNames(),
 			serviceContext.getAssetLinkEntryIds());
+
+		if (keepPageVersion) {
+			return page;
+		}
 
 		// Social
 
@@ -2248,6 +2271,51 @@ public class WikiPageLocalServiceImpl extends WikiPageLocalServiceBaseImpl {
 		}
 
 		return getPage(page.getNodeId(), page.getTitle(), previousVersion);
+	}
+
+	protected boolean isKeepPageVersion(WikiPage newPage)
+		throws PortalException, SystemException {
+
+		WikiPage oldPage = null;
+
+		try {
+			oldPage = getPage(newPage.getNodeId(), newPage.getTitle());
+		}
+		catch (NoSuchPageException nspe) {
+			return false;
+		}
+
+		if (!Validator.equals(oldPage.getContent(), newPage.getContent())) {
+			return false;
+		}
+
+		ExpandoBridge oldExpandoBridge = oldPage.getExpandoBridge();
+		ExpandoBridge newExpandoBridge = newPage.getExpandoBridge();
+
+		Map<String, Serializable> oldAttributes =
+			oldExpandoBridge.getAttributes();
+		Map<String, Serializable> newAttributes =
+			newExpandoBridge.getAttributes();
+
+		if (!Validator.equals(oldAttributes, newAttributes)) {
+			return false;
+		}
+
+		if (!Validator.equals(oldPage.getFormat(), newPage.getFormat())) {
+			return false;
+		}
+
+		if (!Validator.equals(
+				oldPage.getRedirectTitle(), newPage.getRedirectTitle())) {
+
+			return false;
+		}
+
+		if (!Validator.equals(oldPage.getTitle(), newPage.getTitle())) {
+			return false;
+		}
+
+		return true;
 	}
 
 	protected boolean isLinkedTo(WikiPage page, String targetTitle)
