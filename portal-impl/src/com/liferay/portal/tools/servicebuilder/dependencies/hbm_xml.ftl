@@ -24,7 +24,7 @@
 							column="${column.DBName}"
 						</#if>
 
-						<#if column.isPrimitiveType() || column.type == "String">
+						<#if column.isPrimitiveType() || column.type == "String" || column.type == "Version">
 							type="com.liferay.portal.dao.orm.hibernate.${serviceBuilder.getPrimitiveObj("${column.type}")}Type"
 						</#if>
 
@@ -90,7 +90,7 @@
 						access="com.liferay.portal.dao.orm.hibernate.CamelCasePropertyAccessor"
 					</#if>
 
-					<#if column.isPrimitiveType() || column.type == "String">
+					<#if column.isPrimitiveType() || column.type == "String" || column.type == "Version">
 						type="com.liferay.portal.dao.orm.hibernate.${serviceBuilder.getPrimitiveObj("${column.type}")}Type"
 					<#else>
 						<#if column.type == "Date">
