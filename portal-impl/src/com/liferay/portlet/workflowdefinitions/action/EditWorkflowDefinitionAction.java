@@ -217,10 +217,15 @@ public class EditWorkflowDefinitionAction extends PortletAction {
 				version, getTitle(titleMap));
 		}
 		else {
-			workflowDefinition =
-				WorkflowDefinitionManagerUtil.deployWorkflowDefinition(
-					themeDisplay.getCompanyId(), themeDisplay.getUserId(),
-					getTitle(titleMap), FileUtil.getBytes(file));
+			try {
+				workflowDefinition =
+					WorkflowDefinitionManagerUtil.deployWorkflowDefinition(
+						themeDisplay.getCompanyId(), themeDisplay.getUserId(),
+						getTitle(titleMap), FileUtil.getBytes(file));
+			}
+			catch (Exception e) {
+				throw new WorkflowDefinitionFileException();
+			}
 		}
 
 		actionRequest.setAttribute(
