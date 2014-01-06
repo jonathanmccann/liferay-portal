@@ -88,6 +88,8 @@ public class EditWorkflowDefinitionAction extends PortletAction {
 			}
 			else if (e instanceof WorkflowDefinitionFileException) {
 				SessionErrors.add(actionRequest, e.getClass());
+
+				hideDefaultErrorMessage(actionRequest);
 			}
 			else if (e instanceof WorkflowException) {
 				_log.error(e, e);
@@ -202,7 +204,7 @@ public class EditWorkflowDefinitionAction extends PortletAction {
 
 		WorkflowDefinition workflowDefinition = null;
 
-		if (file == null) {
+		if (!file.isFile()) {
 			String name = ParamUtil.getString(actionRequest, "name");
 			int version = ParamUtil.getInteger(actionRequest, "version");
 
@@ -215,10 +217,15 @@ public class EditWorkflowDefinitionAction extends PortletAction {
 				version, getTitle(titleMap));
 		}
 		else {
-			workflowDefinition =
-				WorkflowDefinitionManagerUtil.deployWorkflowDefinition(
-					themeDisplay.getCompanyId(), themeDisplay.getUserId(),
-					getTitle(titleMap), FileUtil.getBytes(file));
+			try {
+				workflowDefinition =
+					WorkflowDefinitionManagerUtil.deployWorkflowDefinition(
+						themeDisplay.getCompanyId(), themeDisplay.getUserId(),
+						getTitle(titleMap), FileUtil.getBytes(file));
+			}
+			catch (Exception e) {
+				throw new WorkflowDefinitionFileException();
+			}
 		}
 
 		actionRequest.setAttribute(
