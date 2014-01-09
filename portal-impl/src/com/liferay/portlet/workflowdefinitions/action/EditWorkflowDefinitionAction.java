@@ -88,6 +88,8 @@ public class EditWorkflowDefinitionAction extends PortletAction {
 			}
 			else if (e instanceof WorkflowDefinitionFileException) {
 				SessionErrors.add(actionRequest, e.getClass());
+
+				hideDefaultErrorMessage(actionRequest);
 			}
 			else if (e instanceof WorkflowException) {
 				_log.error(e, e);
