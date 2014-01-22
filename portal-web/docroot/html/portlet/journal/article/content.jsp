@@ -255,7 +255,7 @@ if (Validator.isNotNull(content)) {
 
 									<c:if test="<%= ddmTemplate != null %>">
 										<c:if test="<%= ddmTemplate.isSmallImage() %>">
-											<img class="article-template-image" id="<portlet:namespace />templateImage" src="<%= _getTemplateImage(themeDisplay, ddmTemplate) %>" />
+											<img class="article-template-image" id="<portlet:namespace />templateImage" src="<%= Validator.isNotNull(ddmTemplate.getSmallImageURL()) ? HtmlUtil.escape(ddmTemplate.getSmallImageURL()) : themeDisplay.getPathImage() + "/journal/template?img_id=" + ddmTemplate.getSmallImageId() + "&t=" + WebServerServletTokenUtil.getToken(ddmTemplate.getSmallImageId()) %>" />
 										</c:if>
 
 										<c:if test="<%= DDMTemplatePermission.contains(permissionChecker, ddmTemplate, PortletKeys.JOURNAL, ActionKeys.UPDATE) %>">
@@ -769,19 +769,4 @@ if (Validator.isNotNull(content)) {
 
 <%!
 public static final String EDITOR_WYSIWYG_IMPL_KEY = "editor.wysiwyg.portal-web.docroot.html.portlet.journal.edit_article_content.jsp";
-
-private String _getTemplateImage(ThemeDisplay themeDisplay, DDMTemplate ddmTemplate) {
-	String imageURL = null;
-
-	if (ddmTemplate.isSmallImage()) {
-		if (Validator.isNotNull(ddmTemplate.getSmallImageURL())) {
-			imageURL = ddmTemplate.getSmallImageURL();
-		}
-		else {
-			imageURL = themeDisplay.getPathImage() + "/journal/template?img_id=" + ddmTemplate.getSmallImageId() + "&t=" + WebServerServletTokenUtil.getToken(ddmTemplate.getSmallImageId());
-		}
-	}
-
-	return imageURL;
-}
 %>
