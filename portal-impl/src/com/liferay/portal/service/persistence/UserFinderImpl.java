@@ -251,6 +251,19 @@ public class UserFinderImpl
 			groupIds = (Long[])params.get("usersGroups");
 		}
 
+		Long[] roleIds = null;
+
+		if (params.get("usersRoles") instanceof Long) {
+			Long roleId = (Long)params.get("usersRoles");
+
+			if (roleId > 0) {
+				roleIds = new Long[] {roleId};
+			}
+		}
+		else {
+			roleIds = (Long[])params.get("usersRoles");
+		}
+
 		boolean inherit = GetterUtil.getBoolean(params.get("inherit"));
 
 		Session session = null;
@@ -268,26 +281,31 @@ public class UserFinderImpl
 			if (ArrayUtil.isNotEmpty(groupIds) && inherit) {
 				for (long groupId : groupIds) {
 					userIds.addAll(
-						countByUsersOrganizations(
+						countUsers(
 							session, groupId, companyId, firstNames,
 							middleNames, lastNames, screenNames, emailAddresses,
-							status, andOperator));
-				}
+							status, andOperator, COUNT_BY_USER_ORGANIZATIONS));
 
-				for (long groupId : groupIds) {
 					userIds.addAll(
-						countByUsersUserGroups(
+						countUsers(
 							session, groupId, companyId, firstNames,
 							middleNames, lastNames, screenNames, emailAddresses,
-							status, andOperator));
+							status, andOperator, COUNT_BY_USER_USERS_GROUPS));
 				}
+			}
 
-				for (long groupId : groupIds) {
-					userIds.addAll(
-						countByUsersGroups(
-							session, groupId, companyId, firstNames,
-							middleNames, lastNames, screenNames, emailAddresses,
-							status, andOperator));
+			if (ArrayUtil.isNotEmpty(roleIds) && inherit) {
+				for (long roleId : roleIds) {
+					List<Group> groups = RoleUtil.getGroups(roleId);
+
+					for (Group group : groups) {
+						userIds.addAll(
+							countUsers(
+								session, group.getGroupId(), companyId,
+								firstNames,	middleNames, lastNames, screenNames,
+								emailAddresses, status, andOperator,
+								COUNT_BY_USER_GROUPS));
+					}
 				}
 			}
 
@@ -301,110 +319,13 @@ public class UserFinderImpl
 		}
 	}
 
-	public List<Long> countByUsersOrganizations(
+	public List<Long> countUsers(
 		Session session, long groupId, long companyId, String[] firstNames,
 		String[] middleNames, String[] lastNames, String[] screenNames,
-		String[] emailAddresses, int status, boolean andOperator) {
+		String[] emailAddresses, int status, boolean andOperator,
+		String sqlQuery) {
 
-		String sql = CustomSQLUtil.get(COUNT_BY_USER_ORGANIZATIONS);
-
-		sql = CustomSQLUtil.replaceKeywords(
-			sql, "lower(User_.firstName)", StringPool.LIKE, false, firstNames);
-		sql = CustomSQLUtil.replaceKeywords(
-			sql, "lower(User_.middleName)", StringPool.LIKE, false,
-			middleNames);
-		sql = CustomSQLUtil.replaceKeywords(
-			sql, "lower(User_.lastName)", StringPool.LIKE, false, lastNames);
-		sql = CustomSQLUtil.replaceKeywords(
-			sql, "lower(User_.screenName)", StringPool.LIKE, false,
-			screenNames);
-		sql = CustomSQLUtil.replaceKeywords(
-			sql, "lower(User_.emailAddress)", StringPool.LIKE, true,
-			emailAddresses);
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			sql = StringUtil.replace(sql, _STATUS_SQL, StringPool.BLANK);
-		}
-
-		sql = CustomSQLUtil.replaceAndOperator(sql, andOperator);
-
-		SQLQuery q = session.createSynchronizedSQLQuery(sql);
-
-		q.addScalar("userId", Type.LONG);
-
-		QueryPos qPos = QueryPos.getInstance(q);
-
-		qPos.add(groupId);
-		qPos.add(companyId);
-		qPos.add(false);
-		qPos.add(firstNames, 2);
-		qPos.add(middleNames, 2);
-		qPos.add(lastNames, 2);
-		qPos.add(screenNames, 2);
-		qPos.add(emailAddresses, 2);
-
-		if (status != WorkflowConstants.STATUS_ANY) {
-			qPos.add(status);
-		}
-
-		return q.list(true);
-	}
-
-	public List<Long> countByUsersUserGroups(
-		Session session, long groupId, long companyId, String[] firstNames,
-		String[] middleNames, String[] lastNames, String[] screenNames,
-		String[] emailAddresses, int status, boolean andOperator) {
-
-		String sql = CustomSQLUtil.get(COUNT_BY_USER_USERS_GROUPS);
-
-		sql = CustomSQLUtil.replaceKeywords(
-			sql, "lower(User_.firstName)", StringPool.LIKE, false, firstNames);
-		sql = CustomSQLUtil.replaceKeywords(
-			sql, "lower(User_.middleName)", StringPool.LIKE, false,
-			middleNames);
-		sql = CustomSQLUtil.replaceKeywords(
-			sql, "lower(User_.lastName)", StringPool.LIKE, false, lastNames);
-		sql = CustomSQLUtil.replaceKeywords(
-			sql, "lower(User_.screenName)", StringPool.LIKE, false,
-			screenNames);
-		sql = CustomSQLUtil.replaceKeywords(
-			sql, "lower(User_.emailAddress)", StringPool.LIKE, true,
-			emailAddresses);
-
-		if (status == WorkflowConstants.STATUS_ANY) {
-			sql = StringUtil.replace(sql, _STATUS_SQL, StringPool.BLANK);
-		}
-
-		sql = CustomSQLUtil.replaceAndOperator(sql, andOperator);
-
-		SQLQuery q = session.createSynchronizedSQLQuery(sql);
-
-		q.addScalar("userId", Type.LONG);
-
-		QueryPos qPos = QueryPos.getInstance(q);
-
-		qPos.add(groupId);
-		qPos.add(companyId);
-		qPos.add(false);
-		qPos.add(firstNames, 2);
-		qPos.add(middleNames, 2);
-		qPos.add(lastNames, 2);
-		qPos.add(screenNames, 2);
-		qPos.add(emailAddresses, 2);
-
-		if (status != WorkflowConstants.STATUS_ANY) {
-			qPos.add(status);
-		}
-
-		return q.list(true);
-	}
-
-	public List<Long> countByUsersGroups(
-		Session session, long groupId, long companyId, String[] firstNames,
-		String[] middleNames, String[] lastNames, String[] screenNames,
-		String[] emailAddresses, int status, boolean andOperator) {
-
-		String sql = CustomSQLUtil.get(COUNT_BY_USER_GROUPS);
+		String sql = CustomSQLUtil.get(sqlQuery);
 
 		sql = CustomSQLUtil.replaceKeywords(
 			sql, "lower(User_.firstName)", StringPool.LIKE, false, firstNames);
