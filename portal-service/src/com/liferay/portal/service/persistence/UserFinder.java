@@ -46,7 +46,7 @@ public interface UserFinder {
 		boolean andOperator)
 		throws com.liferay.portal.kernel.exception.SystemException;
 
-	public java.util.List<java.lang.Long> countUsers(
+	public int countUsers(
 		com.liferay.portal.kernel.dao.orm.Session session, long groupId,
 		long companyId, java.lang.String[] firstNames,
 		java.lang.String[] middleNames, java.lang.String[] lastNames,

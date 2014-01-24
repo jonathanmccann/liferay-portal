@@ -62,7 +62,7 @@ public class UserFinderUtil {
 			params, andOperator);
 	}
 
-	public static java.util.List<java.lang.Long> countUsers(
+	public static int countUsers(
 		com.liferay.portal.kernel.dao.orm.Session session, long groupId,
 		long companyId, java.lang.String[] firstNames,
 		java.lang.String[] middleNames, java.lang.String[] lastNames,

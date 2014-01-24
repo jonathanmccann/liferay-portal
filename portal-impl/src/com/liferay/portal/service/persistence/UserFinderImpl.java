@@ -39,12 +39,10 @@ import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author Brian Wing Shun Chan
@@ -271,26 +269,23 @@ public class UserFinderImpl
 		try {
 			session = openSession();
 
-			Set<Long> userIds = new HashSet<Long>();
+			int userCount = 0;
 
-			userIds.addAll(
-				countByC_FN_MN_LN_SN_EA_S(
+			userCount = userCount + countByC_FN_MN_LN_SN_EA_S(
 					session, companyId, firstNames, middleNames, lastNames,
-					screenNames, emailAddresses, status, params1, andOperator));
+					screenNames, emailAddresses, status, params1, andOperator);
 
 			if (ArrayUtil.isNotEmpty(groupIds) && inherit) {
 				for (long groupId : groupIds) {
-					userIds.addAll(
-						countUsers(
+					userCount = userCount + countUsers(
 							session, groupId, companyId, firstNames,
 							middleNames, lastNames, screenNames, emailAddresses,
-							status, andOperator, COUNT_BY_USER_ORGANIZATIONS));
+							status, andOperator, COUNT_BY_USER_ORGANIZATIONS);
 
-					userIds.addAll(
-						countUsers(
+					userCount = userCount + countUsers(
 							session, groupId, companyId, firstNames,
 							middleNames, lastNames, screenNames, emailAddresses,
-							status, andOperator, COUNT_BY_USER_USERS_GROUPS));
+							status, andOperator, COUNT_BY_USER_USERS_GROUPS);
 				}
 			}
 
@@ -299,17 +294,16 @@ public class UserFinderImpl
 					List<Group> groups = RoleUtil.getGroups(roleId);
 
 					for (Group group : groups) {
-						userIds.addAll(
-							countUsers(
+						userCount = userCount + countUsers(
 								session, group.getGroupId(), companyId,
-								firstNames,	middleNames, lastNames, screenNames,
+								firstNames, middleNames, lastNames, screenNames,
 								emailAddresses, status, andOperator,
-								COUNT_BY_USER_GROUPS));
+								COUNT_BY_USER_GROUPS);
 					}
 				}
 			}
 
-			return userIds.size();
+			return userCount;
 		}
 		catch (Exception e) {
 			throw new SystemException(e);
@@ -319,7 +313,7 @@ public class UserFinderImpl
 		}
 	}
 
-	public List<Long> countUsers(
+	public int countUsers(
 		Session session, long groupId, long companyId, String[] firstNames,
 		String[] middleNames, String[] lastNames, String[] screenNames,
 		String[] emailAddresses, int status, boolean andOperator,
@@ -349,7 +343,7 @@ public class UserFinderImpl
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
-		q.addScalar("userId", Type.LONG);
+		q.addScalar(COUNT_COLUMN_NAME, Type.LONG);
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
@@ -366,7 +360,17 @@ public class UserFinderImpl
 			qPos.add(status);
 		}
 
-		return q.list(true);
+		Iterator<Long> itr = q.iterate();
+
+		if (itr.hasNext()) {
+			Long count = itr.next();
+
+			if (count != null) {
+				return count.intValue();
+			}
+		}
+
+		return 0;
 	}
 
 	@Override
@@ -815,7 +819,7 @@ public class UserFinderImpl
 		}
 	}
 
-	protected List<Long> countByC_FN_MN_LN_SN_EA_S(
+	protected int countByC_FN_MN_LN_SN_EA_S(
 		Session session, long companyId, String[] firstNames,
 		String[] middleNames, String[] lastNames, String[] screenNames,
 		String[] emailAddresses, int status,
@@ -846,7 +850,7 @@ public class UserFinderImpl
 
 		SQLQuery q = session.createSynchronizedSQLQuery(sql);
 
-		q.addScalar("userId", Type.LONG);
+		q.addScalar(COUNT_COLUMN_NAME, Type.LONG);
 
 		QueryPos qPos = QueryPos.getInstance(q);
 
@@ -864,7 +868,17 @@ public class UserFinderImpl
 			qPos.add(status);
 		}
 
-		return q.list(true);
+		Iterator<Long> itr = q.iterate();
+
+		if (itr.hasNext()) {
+			Long count = itr.next();
+
+			if (count != null) {
+				return count.intValue();
+			}
+		}
+
+		return 0;
 	}
 
 	protected String getJoin(LinkedHashMap<String, Object> params) {
