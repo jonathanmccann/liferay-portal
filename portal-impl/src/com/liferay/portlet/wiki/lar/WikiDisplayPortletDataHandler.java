@@ -104,17 +104,6 @@ public class WikiDisplayPortletDataHandler extends WikiPortletDataHandler {
 
 		portletDataContext.addPortletPermissions(WikiPermission.RESOURCE_NAME);
 
-		StagedModelDataHandlerUtil.exportReferenceStagedModel(
-			portletDataContext, portletId, node);
-
-		List<WikiPage> pages = WikiPageLocalServiceUtil.getPages(
-			node.getNodeId(), QueryUtil.ALL_POS, QueryUtil.ALL_POS);
-
-		for (WikiPage page : pages) {
-			StagedModelDataHandlerUtil.exportReferenceStagedModel(
-				portletDataContext, portletId, page);
-		}
-
 		return portletPreferences;
 	}
 
@@ -126,12 +115,6 @@ public class WikiDisplayPortletDataHandler extends WikiPortletDataHandler {
 
 		portletDataContext.importPortletPermissions(
 			WikiPermission.RESOURCE_NAME);
-
-		StagedModelDataHandlerUtil.importReferenceStagedModels(
-			portletDataContext, WikiNode.class);
-
-		StagedModelDataHandlerUtil.importReferenceStagedModels(
-			portletDataContext, WikiPage.class);
 
 		long nodeId = GetterUtil.getLong(
 			portletPreferences.getValue("nodeId", StringPool.BLANK));
