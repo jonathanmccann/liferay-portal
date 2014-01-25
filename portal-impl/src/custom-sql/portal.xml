@@ -1356,20 +1356,15 @@
 	<sql id="com.liferay.portal.service.persistence.UserFinder.countByUserOrganizations">
 		<![CDATA[
 			SELECT
-				COUNT(DISTINCT User_.userId) AS COUNT_VALUE
+				COUNT(User_.userId) AS COUNT_VALUE
 			FROM
 				User_
 			INNER JOIN
 				Users_Orgs on (Users_Orgs.userId = User_.userId)
+			INNER JOIN
+				Groups_Orgs on (Groups_Orgs.organizationId = Users_Orgs.organizationId)
 			WHERE
-				(Users_Orgs.organizationId IN (
-					SELECT
-						organizationId
-					FROM
-						Groups_Orgs
-					WHERE
-						groupId = ?
-				)) AND
+				(Groups_Orgs.groupId = ?) AND
 				(User_.companyId = ?) AND
 				(User_.defaultUser = ?) AND
 				(
@@ -1384,20 +1379,15 @@
 	<sql id="com.liferay.portal.service.persistence.UserFinder.countByUserUsersGroups">
 		<![CDATA[
 			SELECT
-				COUNT(DISTINCT User_.userId) AS COUNT_VALUE
+				COUNT(User_.userId) AS COUNT_VALUE
 			FROM
 				User_
 			INNER JOIN
 				Users_UserGroups on (Users_UserGroups.userId = User_.userId)
+			INNER JOIN
+				Groups_userGroups on (Groups_userGroups.userGroupId = Users_UserGroups.userGroupId)
 			WHERE
-				(Users_UserGroups.userGroupId IN (
-					SELECT
-						userGroupId
-					FROM
-						Groups_userGroups
-					WHERE
-						groupId = ?
-				)) AND
+				(Groups_userGroups.groupId = ?) AND
 				(User_.companyId = ?) AND
 				(User_.defaultUser = ?) AND
 				(
@@ -1412,20 +1402,13 @@
 	<sql id="com.liferay.portal.service.persistence.UserFinder.countByUserGroups">
 		<![CDATA[
 			SELECT
-				COUNT(DISTINCT User_.userId) AS COUNT_VALUE
+				COUNT(User_.userId) AS COUNT_VALUE
 			FROM
 				User_
 			INNER JOIN
 				Users_Groups on (Users_Groups.userId = User_.userId)
 			WHERE
-				(Users_Groups.groupId IN (
-					SELECT
-						groupId
-					FROM
-						Groups_Roles
-					WHERE
-						groupId = ?
-				)) AND
+				(Users_Groups.groupId = ?) AND
 				(User_.companyId = ?) AND
 				(User_.defaultUser = ?) AND
 				(

@@ -234,8 +234,6 @@ public class UserFinderImpl
 			params = _emptyLinkedHashMap;
 		}
 
-		LinkedHashMap<String, Object> params1 = params;
-
 		Long[] groupIds = null;
 
 		if (params.get("usersGroups") instanceof Long) {
@@ -269,23 +267,21 @@ public class UserFinderImpl
 		try {
 			session = openSession();
 
-			int userCount = 0;
-
-			userCount = userCount + countByC_FN_MN_LN_SN_EA_S(
-					session, companyId, firstNames, middleNames, lastNames,
-					screenNames, emailAddresses, status, params1, andOperator);
+			int userCount = countByC_FN_MN_LN_SN_EA_S(
+				session, companyId, firstNames, middleNames, lastNames,
+				screenNames, emailAddresses, status, params, andOperator);
 
 			if (ArrayUtil.isNotEmpty(groupIds) && inherit) {
 				for (long groupId : groupIds) {
-					userCount = userCount + countUsers(
-							session, groupId, companyId, firstNames,
-							middleNames, lastNames, screenNames, emailAddresses,
-							status, andOperator, COUNT_BY_USER_ORGANIZATIONS);
+					userCount += countUsers(
+						session, groupId, companyId, firstNames, middleNames,
+						lastNames, screenNames, emailAddresses, status,
+						andOperator, COUNT_BY_USER_ORGANIZATIONS);
 
-					userCount = userCount + countUsers(
-							session, groupId, companyId, firstNames,
-							middleNames, lastNames, screenNames, emailAddresses,
-							status, andOperator, COUNT_BY_USER_USERS_GROUPS);
+					userCount += countUsers(
+						session, groupId, companyId, firstNames, middleNames,
+						lastNames, screenNames, emailAddresses, status,
+						andOperator, COUNT_BY_USER_USERS_GROUPS);
 				}
 			}
 
@@ -294,11 +290,10 @@ public class UserFinderImpl
 					List<Group> groups = RoleUtil.getGroups(roleId);
 
 					for (Group group : groups) {
-						userCount = userCount + countUsers(
-								session, group.getGroupId(), companyId,
-								firstNames, middleNames, lastNames, screenNames,
-								emailAddresses, status, andOperator,
-								COUNT_BY_USER_GROUPS);
+						userCount += countUsers(
+							session, group.getGroupId(), companyId, firstNames,
+							middleNames, lastNames, screenNames, emailAddresses,
+							status, andOperator, COUNT_BY_USER_GROUPS);
 					}
 				}
 			}
@@ -313,6 +308,7 @@ public class UserFinderImpl
 		}
 	}
 
+	@Override
 	public int countUsers(
 		Session session, long groupId, long companyId, String[] firstNames,
 		String[] middleNames, String[] lastNames, String[] screenNames,
