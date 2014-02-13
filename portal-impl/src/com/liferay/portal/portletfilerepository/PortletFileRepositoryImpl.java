@@ -18,6 +18,7 @@ import com.liferay.portal.NoSuchRepositoryEntryException;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.increment.BufferedIncrementThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -171,9 +172,12 @@ public class PortletFileRepositoryImpl implements PortletFileRepository {
 			String folderName, ServiceContext serviceContext)
 		throws PortalException, SystemException {
 
+		boolean bufferedIncrementEnabled =
+			BufferedIncrementThreadLocal.isEnabled();
 		boolean dlAppHelperEnabled = DLAppHelperThreadLocal.isEnabled();
 
 		try {
+			BufferedIncrementThreadLocal.setEnabled(false);
 			DLAppHelperThreadLocal.setEnabled(false);
 
 			return DLAppLocalServiceUtil.getFolder(
@@ -185,6 +189,7 @@ public class PortletFileRepositoryImpl implements PortletFileRepository {
 				StringPool.BLANK, serviceContext);
 		}
 		finally {
+			DLAppHelperThreadLocal.setEnabled(bufferedIncrementEnabled);
 			DLAppHelperThreadLocal.setEnabled(dlAppHelperEnabled);
 		}
 	}
