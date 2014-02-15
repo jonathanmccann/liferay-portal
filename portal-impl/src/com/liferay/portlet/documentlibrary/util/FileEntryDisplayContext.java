@@ -88,9 +88,15 @@ public class FileEntryDisplayContext {
 	public boolean isCancelCheckoutDocumentButtonVisible()
 		throws PortalException, SystemException {
 
-		if ((_hasUpdatePermission() && _isCheckedOut() && _isLockedByMe()) ||
-			(_isCheckedOut() && _hasOverrideCheckoutPermission())) {
+		if (_fileEntry == null) {
+			return true;
+		}
 
+		if (_hasUpdatePermission() && _isCheckedOut() && _isLockedByMe()) {
+			return true;
+		}
+
+		if (_isCheckedOut() && _hasOverrideCheckoutPermission()) {
 			return true;
 		}
 
@@ -104,6 +110,10 @@ public class FileEntryDisplayContext {
 	public boolean isCheckinButtonVisible()
 		throws PortalException, SystemException {
 
+		if (_fileEntry == null) {
+			return false;
+		}
+
 		if (_hasUpdatePermission() && _isLockedByMe()) {
 			return true;
 		}
@@ -113,6 +123,10 @@ public class FileEntryDisplayContext {
 
 	public boolean isCheckoutDocumentButtonVisible()
 		throws PortalException, SystemException {
+
+		if (_fileEntry == null) {
+			return false;
+		}
 
 		if (_hasUpdatePermission() && !_isCheckedOut()) {
 			return true;
@@ -194,9 +208,15 @@ public class FileEntryDisplayContext {
 	}
 
 	public boolean isPublishButtonDisabled() {
-		if ((_isCheckedOut() && !_isLockedByMe()) || (_isPending() &&
-			 _isDLFileEntryDraftsEnabled())) {
+		if (_fileEntry == null) {
+			return false;
+		}
 
+		if (_isCheckedOut() && !_isLockedByMe()) {
+			return true;
+		}
+
+		if (_isPending() && _isDLFileEntryDraftsEnabled()) {
 			return true;
 		}
 
@@ -208,6 +228,10 @@ public class FileEntryDisplayContext {
 	}
 
 	public boolean isSaveAsDraft() {
+		if (_fileEntry == null) {
+			return false;
+		}
+
 		if ((_isCheckedOut() || _isPending()) &&
 			!_isDLFileEntryDraftsEnabled()) {
 
@@ -218,7 +242,7 @@ public class FileEntryDisplayContext {
 	}
 
 	public boolean isSaveButtonDisabled() {
-		return _isCheckedOut() && !_isLockedByMe();
+		return (_fileEntry != null) && _isCheckedOut() && !_isLockedByMe();
 	}
 
 	public boolean isSaveButtonVisible() {
