@@ -4558,7 +4558,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			Group group = groupFinder.findByC_N(companyId, name);
 
 			if ((groupId <= 0) || (group.getGroupId() != groupId)) {
-				throw new DuplicateGroupException();
+				throw new DuplicateGroupException("{groupId=" + groupId + "}");
 			}
 		}
 		catch (NoSuchGroupException nsge) {
