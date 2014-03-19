@@ -2756,7 +2756,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		List<User> users = userPersistence.findByUuid(uuid);
 
 		if (users.isEmpty()) {
-			throw new NoSuchUserException();
+			throw new NoSuchUserException("{uuid=" + uuid + "}");
 		}
 		else {
 			return users.get(0);
@@ -2779,7 +2779,15 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		List<User> users = userPersistence.findByUuid_C(uuid, companyId);
 
 		if (users.isEmpty()) {
-			throw new NoSuchUserException();
+			StringBundler sb = new StringBundler(5);
+
+			sb.append("{uuid=");
+			sb.append(uuid);
+			sb.append(", companyId=");
+			sb.append(companyId);
+			sb.append("}");
+
+			throw new NoSuchUserException(sb.toString());
 		}
 		else {
 			return users.get(0);
@@ -5327,7 +5335,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		if (ticket.isExpired() ||
 			(ticket.getType() != TicketConstants.TYPE_EMAIL_ADDRESS)) {
 
-			throw new NoSuchTicketException();
+			throw new NoSuchTicketException("{ticketKey=" + ticketKey + "}");
 		}
 
 		User user = userPersistence.findByPrimaryKey(ticket.getClassPK());
@@ -5340,7 +5348,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			if (userPersistence.fetchByC_EA(
 					user.getCompanyId(), emailAddress) != null) {
 
-				throw new DuplicateUserEmailAddressException();
+				throw new DuplicateUserEmailAddressException(
+					"{userId=" + user.getUserId() + "}");
 			}
 
 			setEmailAddress(
@@ -6111,7 +6120,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			User user = userPersistence.fetchByC_EA(companyId, emailAddress);
 
 			if ((user != null) && (user.getUserId() != userId)) {
-				throw new DuplicateUserEmailAddressException();
+				throw new DuplicateUserEmailAddressException(
+					"{userId=" + userId + "}");
 			}
 		}
 
@@ -6125,7 +6135,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 					organizationPersistence.fetchByPrimaryKey(organizationId);
 
 				if (organization == null) {
-					throw new NoSuchOrganizationException();
+					throw new NoSuchOrganizationException(
+						"{organizationId=" + organizationId + "}");
 				}
 			}
 		}
@@ -6154,7 +6165,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				if (userPersistence.fetchByC_EA(
 						user.getCompanyId(), emailAddress) != null) {
 
-					throw new DuplicateUserEmailAddressException();
+					throw new DuplicateUserEmailAddressException(
+						"{userId=" + userId + "}");
 				}
 			}
 
@@ -6238,7 +6250,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			if (userPersistence.fetchByC_EA(
 					user.getCompanyId(), emailAddress1) != null) {
 
-				throw new DuplicateUserEmailAddressException();
+				throw new DuplicateUserEmailAddressException(
+					"{userId=" + user.getUserId() + "}");
 			}
 		}
 	}
@@ -6279,7 +6292,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		User user = userPersistence.fetchByC_O(companyId, openId);
 
 		if ((user != null) && (user.getUserId() != userId)) {
-			throw new DuplicateOpenIdException();
+			throw new DuplicateOpenIdException("{userId=" + userId + "}");
 		}
 	}
 
@@ -6370,7 +6383,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		User user = userPersistence.fetchByC_SN(companyId, screenName);
 
 		if ((user != null) && (user.getUserId() != userId)) {
-			throw new DuplicateUserScreenNameException();
+			throw new DuplicateUserScreenNameException(
+				"{userId=" + userId + "}");
 		}
 
 		String friendlyURL = StringPool.SLASH + screenName;
