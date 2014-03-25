@@ -14,13 +14,13 @@
  */
 --%>
 
-<c:if test="<%= themeDisplay.isSignedIn() && !PropsValues.SESSION_DISABLED %>">
+<c:if test="<%= !PropsValues.SESSION_DISABLED %>">
 
 	<%
 	String autoRememberMe = CookieKeys.getCookie(request, CookieKeys.REMEMBER_ME);
 	%>
 
-	<c:if test="<%= Validator.isNull(autoRememberMe) %>">
+	<c:if test="<%= Validator.isNull(autoRememberMe) || themeDisplay.isSignedIn() %>">
 
 		<%
 		int sessionTimeout = PropsValues.SESSION_TIMEOUT;
