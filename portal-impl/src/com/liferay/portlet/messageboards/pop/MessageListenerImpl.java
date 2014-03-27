@@ -233,8 +233,14 @@ public class MessageListenerImpl implements MessageListener {
 			}
 
 			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Delivering message takes " + stopWatch.getTime() + " ms");
+				if (stopWatch != null) {
+					_log.debug(
+						"Delivering message took " + stopWatch.getTime() +
+							" ms");
+				}
+				else {
+					_log.debug("Finished delivering message");
+				}
 			}
 		}
 		catch (PrincipalException pe) {

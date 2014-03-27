@@ -1448,9 +1448,14 @@ public class PluginPackageUtil {
 			_settingUpdateAvailable = false;
 
 			if (_log.isInfoEnabled()) {
-				_log.info(
-					"Finished checking for available updates in " +
-						stopWatch.getTime() + " ms");
+				if (stopWatch != null) {
+					_log.info(
+						"Finished checking for available updates in " +
+							stopWatch.getTime() + " ms");
+				}
+				else {
+					_log.info("Finished checking for available updates");
+				}
 			}
 		}
 	}
