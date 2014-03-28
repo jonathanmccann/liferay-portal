@@ -325,14 +325,21 @@ public class InvokerPortletImpl implements InvokerPortlet {
 		}
 
 		if (_log.isDebugEnabled()) {
+			StringBundler sb = new StringBundler(5);
+
+			sb.append("processAction for {portletId=");
+			sb.append(_portletId);
+
 			if (stopWatch != null) {
-				_log.debug(
-					"processAction for " + _portletId + " takes " +
-						stopWatch.getTime() + " ms");
+				sb.append("} took ");
+				sb.append(stopWatch.getTime());
+				sb.append(" ms");
 			}
 			else {
-				_log.debug("processAction for " + _portletId + " is finished");
+				sb.append("} is finished");
 			}
+
+			_log.debug(sb.toString());
 		}
 	}
 
@@ -352,9 +359,21 @@ public class InvokerPortletImpl implements InvokerPortlet {
 		invokeEvent(eventRequest, eventResponse);
 
 		if (_log.isDebugEnabled()) {
-			_log.debug(
-				"processEvent for " + _portletId + " takes " +
-					stopWatch.getTime() + " ms");
+			StringBundler sb = new StringBundler(5);
+
+			sb.append("processEvent for {portletId=");
+			sb.append(_portletId);
+
+			if (stopWatch != null) {
+				sb.append("} took ");
+				sb.append(stopWatch.getTime());
+				sb.append(" ms");
+			}
+			else {
+				sb.append("} is finished");
+			}
+
+			_log.debug(sb.toString());
 		}
 	}
 
@@ -447,9 +466,21 @@ public class InvokerPortletImpl implements InvokerPortlet {
 		}
 
 		if (_log.isDebugEnabled()) {
-			_log.debug(
-				"render for " + _portletId + " takes " + stopWatch.getTime() +
-					" ms");
+			StringBundler sb = new StringBundler(5);
+
+			sb.append("render for {portletId=");
+			sb.append(_portletId);
+
+			if (stopWatch != null) {
+				sb.append("} took ");
+				sb.append(stopWatch.getTime());
+				sb.append(" ms");
+			}
+			else {
+				sb.append("} is finished");
+			}
+
+			_log.debug(sb.toString());
 		}
 	}
 
@@ -475,9 +506,21 @@ public class InvokerPortletImpl implements InvokerPortlet {
 		}
 
 		if (_log.isDebugEnabled()) {
-			_log.debug(
-				"serveResource for " + _portletId + " takes " +
-					stopWatch.getTime() + " ms");
+			StringBundler sb = new StringBundler(5);
+
+			sb.append("serveResource for {portletId=");
+			sb.append(_portletId);
+
+			if (stopWatch != null) {
+				sb.append("} took ");
+				sb.append(stopWatch.getTime());
+				sb.append(" ms");
+			}
+			else {
+				sb.append("} is finished");
+			}
+
+			_log.debug(sb.toString());
 		}
 	}
 
