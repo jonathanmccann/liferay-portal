@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.bean.BeanReference;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.io.ByteArrayFileInputStream;
+import com.liferay.portal.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.BooleanQueryFactoryUtil;
@@ -646,7 +647,8 @@ public class DLStoreImpl implements DLStore {
 
 		validate(fileName, validateFileExtension);
 
-		if ((PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
+		if (!ExportImportThreadLocal.isExportInProcess() &&
+			(PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
 			((bytes == null) ||
 			 (bytes.length >
 				 PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE)))) {
@@ -662,7 +664,8 @@ public class DLStoreImpl implements DLStore {
 
 		validate(fileName, validateFileExtension);
 
-		if ((PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
+		if (!ExportImportThreadLocal.isExportInProcess() &&
+			(PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
 			((file == null) ||
 			 (file.length() >
 				PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE)))) {
@@ -681,10 +684,10 @@ public class DLStoreImpl implements DLStore {
 		// LEP-4851
 
 		try {
-			if ((is == null) ||
-				((PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
-				 (is.available() >
-					PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE)))) {
+			if (!ExportImportThreadLocal.isExportInProcess() && ((is == null) ||
+				 ((PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
+				  (is.available() >
+					PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE))))) {
 
 				throw new FileSizeException(fileName);
 			}
@@ -704,7 +707,7 @@ public class DLStoreImpl implements DLStore {
 			fileName, fileExtension, sourceFileName, validateFileExtension,
 			StringPool.BLANK);
 
-		if ((file != null) &&
+		if (!ExportImportThreadLocal.isExportInProcess() && (file != null) &&
 			(PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
 			(file.length() >
 				PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE))) {
@@ -724,7 +727,7 @@ public class DLStoreImpl implements DLStore {
 			StringPool.BLANK);
 
 		try {
-			if ((is != null) &&
+			if (!ExportImportThreadLocal.isExportInProcess() && (is != null) &&
 				(PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE) > 0) &&
 				(is.available() >
 					PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE))) {
