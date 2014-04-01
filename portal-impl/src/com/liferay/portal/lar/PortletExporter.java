@@ -412,14 +412,8 @@ public class PortletExporter {
 		ExportImportHelperUtil.writeManifestSummary(
 			document, portletDataContext.getManifestSummary());
 
-		if (_log.isInfoEnabled()) {
-			if (stopWatch != null) {
-				_log.info(
-					"Exporting portlet took " + stopWatch.getTime() + " ms");
-			}
-			else {
-				_log.info("Exporting portlets is finished");
-			}
+		if (_log.isInfoEnabled() && (stopWatch != null)) {
+			_log.info("Exporting portlet took " + stopWatch.getTime() + " ms");
 		}
 
 		try {

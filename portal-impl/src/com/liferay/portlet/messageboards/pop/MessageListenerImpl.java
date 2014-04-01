@@ -231,15 +231,9 @@ public class MessageListenerImpl implements MessageListener {
 					inputStreamOVPs, false, 0.0, true, serviceContext);
 			}
 
-			if (_log.isDebugEnabled()) {
-				if (stopWatch != null) {
-					_log.debug(
-						"Message delivery took " + stopWatch.getTime() +
-							" ms");
-				}
-				else {
-					_log.debug("Message delivery is finished");
-				}
+			if (_log.isDebugEnabled() && (stopWatch != null)) {
+				_log.debug(
+					"Message delivery took " + stopWatch.getTime() + " ms");
 			}
 		}
 		catch (PrincipalException pe) {

@@ -984,7 +984,7 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 		long userId, long resourceId, String actionId, StopWatch stopWatch,
 		int block) {
 
-		if (!_log.isDebugEnabled()) {
+		if (!_log.isDebugEnabled() || (stopWatch == null)) {
 			return;
 		}
 
@@ -998,15 +998,9 @@ public class ResourceLocalServiceImpl extends ResourceLocalServiceBaseImpl {
 		sb.append(resourceId);
 		sb.append(", actionId=");
 		sb.append(actionId);
-
-		if (stopWatch != null) {
-			sb.append("} took ");
-			sb.append(stopWatch.getTime());
-			sb.append(" ms");
-		}
-		else {
-			sb.append("} is finished");
-		}
+		sb.append("} took ");
+		sb.append(stopWatch.getTime());
+		sb.append(" ms");
 
 		_log.debug(sb.toString());
 	}

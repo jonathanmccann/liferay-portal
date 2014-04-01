@@ -185,7 +185,7 @@ public class JournalContentImpl implements JournalContent {
 			}
 		}
 
-		if (_log.isDebugEnabled()) {
+		if (_log.isDebugEnabled() && (stopWatch != null)) {
 			StringBundler sb = new StringBundler(15);
 
 			sb.append("getDisplay for {groupId=");
@@ -200,15 +200,9 @@ public class JournalContentImpl implements JournalContent {
 			sb.append(languageId);
 			sb.append(", page=");
 			sb.append(page);
-
-			if (stopWatch != null) {
-				sb.append("} took ");
-				sb.append(stopWatch.getTime());
-				sb.append(" ms");
-			}
-			else {
-				sb.append("} is finished");
-			}
+			sb.append("} took ");
+			sb.append(stopWatch.getTime());
+			sb.append(" ms");
 
 			_log.debug(sb.toString());
 		}

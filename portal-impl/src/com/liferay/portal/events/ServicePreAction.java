@@ -1402,13 +1402,8 @@ public class ServicePreAction extends Action {
 			throw new ActionException(e);
 		}
 
-		if (_log.isDebugEnabled()) {
-			if (stopWatch != null) {
-				_log.debug("Running took " + stopWatch.getTime() + " ms");
-			}
-			else {
-				_log.debug("Running is finished");
-			}
+		if (_log.isDebugEnabled() && (stopWatch != null)) {
+			_log.debug("Running took " + stopWatch.getTime() + " ms");
 		}
 	}
 

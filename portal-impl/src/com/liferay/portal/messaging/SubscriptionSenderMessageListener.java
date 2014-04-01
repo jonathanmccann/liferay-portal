@@ -48,20 +48,14 @@ public class SubscriptionSenderMessageListener extends BaseMessageListener {
 
 		subscriptionSender.flushNotifications();
 
-		if (_log.isInfoEnabled()) {
+		if (_log.isInfoEnabled() && (stopWatch != null)) {
 			StringBundler sb = new StringBundler(5);
 
 			sb.append("Sending notifications for {mailId=");
 			sb.append(subscriptionSender.getMailId());
-
-			if (stopWatch != null) {
-				sb.append("} took ");
-				sb.append(stopWatch.getTime() / Time.SECOND);
-				sb.append(" seconds");
-			}
-			else {
-				sb.append("} is finished");
-			}
+			sb.append("} took ");
+			sb.append(stopWatch.getTime() / Time.SECOND);
+			sb.append(" seconds");
 
 			_log.info(sb.toString());
 		}

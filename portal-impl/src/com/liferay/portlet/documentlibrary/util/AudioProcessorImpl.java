@@ -405,22 +405,16 @@ public class AudioProcessorImpl
 			fileVersion.getCompanyId(), PREVIEW_PATH,
 			getPreviewFilePath(fileVersion, containerType), destFile);
 
-		if (_log.isInfoEnabled()) {
+		if (_log.isInfoEnabled() && (stopWatch != null)) {
 			StringBundler sb = new StringBundler(7);
 
-			sb.append("Xuggler generated for {containerType=");
+			sb.append("Xuggler generation for a ");
 			sb.append(containerType);
-			sb.append(", fileVersionId=");
+			sb.append(" preview audio for ");
 			sb.append(fileVersion.getFileVersionId());
-
-			if (stopWatch != null) {
-				sb.append("} took ");
-				sb.append(stopWatch.getTime());
-				sb.append(" ms");
-			}
-			else {
-				sb.append("} is finished");
-			}
+			sb.append(" took ");
+			sb.append(stopWatch.getTime());
+			sb.append(" ms");
 
 			_log.info(sb.toString());
 		}

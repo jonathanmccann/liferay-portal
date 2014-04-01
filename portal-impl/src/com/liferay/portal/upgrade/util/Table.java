@@ -185,22 +185,16 @@ public class Table {
 				}
 			}
 
-			if (_log.isInfoEnabled()) {
+			if (_log.isInfoEnabled() && (stopWatch != null)) {
 				StringBundler sb = new StringBundler(7);
 
-				sb.append("Backup of {tableName=");
+				sb.append("Backup of ");
 				sb.append(_tableName);
-				sb.append(", tempFileName=");
+				sb.append(" to ");
 				sb.append(tempFileName);
-
-				if (stopWatch != null) {
-					sb.append("} took ");
-					sb.append(stopWatch.getTime());
-					sb.append(" ms");
-				}
-				else {
-					sb.append("} is finished");
-				}
+				sb.append(" took ");
+				sb.append(stopWatch.getTime());
+				sb.append(" ms");
 
 				_log.info(sb.toString());
 			}

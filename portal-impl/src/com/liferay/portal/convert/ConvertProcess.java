@@ -44,20 +44,14 @@ public abstract class ConvertProcess {
 
 			doConvert();
 
-			if (_log.isInfoEnabled()) {
+			if (_log.isInfoEnabled() && (stopWatch != null)) {
 				StringBundler sb = new StringBundler(5);
 
 				sb.append("Conversion for {className=");
 				sb.append(getClass().getName());
-
-				if (stopWatch != null) {
-					sb.append("} took ");
-					sb.append(stopWatch.getTime());
-					sb.append(" ms");
-				}
-				else {
-					sb.append("} is finished");
-				}
+				sb.append("} took ");
+				sb.append(stopWatch.getTime());
+				sb.append(" ms");
 
 				_log.info(sb.toString());
 			}

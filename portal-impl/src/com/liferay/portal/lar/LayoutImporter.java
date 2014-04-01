@@ -736,14 +736,8 @@ public class LayoutImporter {
 		_deletionSystemEventImporter.importDeletionSystemEvents(
 			portletDataContext);
 
-		if (_log.isInfoEnabled()) {
-			if (stopWatch != null) {
-				_log.info(
-					"Importing layouts took " + stopWatch.getTime() + " ms");
-			}
-			else {
-				_log.info("Importing layouts is finished");
-			}
+		if (_log.isInfoEnabled() && (stopWatch != null)) {
+			_log.info("Importing layouts took " + stopWatch.getTime() + " ms");
 		}
 
 		zipReader.close();

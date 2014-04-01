@@ -324,20 +324,14 @@ public class InvokerPortletImpl implements InvokerPortlet {
 				_portletId + PortletException.class.getName(), pe);
 		}
 
-		if (_log.isDebugEnabled()) {
+		if (_log.isDebugEnabled() && (stopWatch != null)) {
 			StringBundler sb = new StringBundler(5);
 
 			sb.append("processAction for {portletId=");
 			sb.append(_portletId);
-
-			if (stopWatch != null) {
-				sb.append("} took ");
-				sb.append(stopWatch.getTime());
-				sb.append(" ms");
-			}
-			else {
-				sb.append("} is finished");
-			}
+			sb.append("} took ");
+			sb.append(stopWatch.getTime());
+			sb.append(" ms");
 
 			_log.debug(sb.toString());
 		}
@@ -358,20 +352,14 @@ public class InvokerPortletImpl implements InvokerPortlet {
 
 		invokeEvent(eventRequest, eventResponse);
 
-		if (_log.isDebugEnabled()) {
+		if (_log.isDebugEnabled() && (stopWatch != null)) {
 			StringBundler sb = new StringBundler(5);
 
 			sb.append("processEvent for {portletId=");
 			sb.append(_portletId);
-
-			if (stopWatch != null) {
-				sb.append("} took ");
-				sb.append(stopWatch.getTime());
-				sb.append(" ms");
-			}
-			else {
-				sb.append("} is finished");
-			}
+			sb.append("} took ");
+			sb.append(stopWatch.getTime());
+			sb.append(" ms");
 
 			_log.debug(sb.toString());
 		}
@@ -465,20 +453,14 @@ public class InvokerPortletImpl implements InvokerPortlet {
 			renderParameters.clear();
 		}
 
-		if (_log.isDebugEnabled()) {
+		if (_log.isDebugEnabled() && (stopWatch != null)) {
 			StringBundler sb = new StringBundler(5);
 
 			sb.append("render for {portletId=");
 			sb.append(_portletId);
-
-			if (stopWatch != null) {
-				sb.append("} took ");
-				sb.append(stopWatch.getTime());
-				sb.append(" ms");
-			}
-			else {
-				sb.append("} is finished");
-			}
+			sb.append("} took ");
+			sb.append(stopWatch.getTime());
+			sb.append(" ms");
 
 			_log.debug(sb.toString());
 		}
@@ -505,20 +487,14 @@ public class InvokerPortletImpl implements InvokerPortlet {
 				_portletId + PortletException.class.getName(), pe);
 		}
 
-		if (_log.isDebugEnabled()) {
+		if (_log.isDebugEnabled() && (stopWatch != null)) {
 			StringBundler sb = new StringBundler(5);
 
 			sb.append("serveResource for {portletId=");
 			sb.append(_portletId);
-
-			if (stopWatch != null) {
-				sb.append("} took ");
-				sb.append(stopWatch.getTime());
-				sb.append(" ms");
-			}
-			else {
-				sb.append("} is finished");
-			}
+			sb.append("} took ");
+			sb.append(stopWatch.getTime());
+			sb.append(" ms");
 
 			_log.debug(sb.toString());
 		}

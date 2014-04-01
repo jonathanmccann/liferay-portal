@@ -136,15 +136,10 @@ public class LuceneIndexer implements Runnable {
 				}
 			}
 
-			if (_log.isInfoEnabled()) {
-				if (stopWatch != null) {
-					_log.info(
-						"Reindexing Lucene took " +
-							(stopWatch.getTime() / Time.SECOND) + " seconds");
-				}
-				else {
-					_log.info("Reindexing Lucene is finished");
-				}
+			if (_log.isInfoEnabled() && (stopWatch != null)) {
+				_log.info(
+					"Reindexing Lucene took " +
+						(stopWatch.getTime() / Time.SECOND) + " seconds");
 			}
 		}
 		catch (Exception e) {
@@ -175,20 +170,14 @@ public class LuceneIndexer implements Runnable {
 
 		_usedSearchEngineIds.add(indexer.getSearchEngineId());
 
-		if (_log.isInfoEnabled()) {
+		if (_log.isInfoEnabled() && (stopWatch != null)) {
 			StringBundler sb = new StringBundler(5);
 
 			sb.append("Reindexing with {indexerClass=");
 			sb.append(indexer.getClass());
-
-			if (stopWatch != null) {
-				sb.append("} took ");
-				sb.append(stopWatch.getTime() / Time.SECOND);
-				sb.append(" seconds");
-			}
-			else {
-				sb.append("} is finished");
-			}
+			sb.append("} took ");
+			sb.append(stopWatch.getTime() / Time.SECOND);
+			sb.append(" seconds");
 
 			_log.info(sb.toString());
 		}

@@ -583,7 +583,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			value = Boolean.valueOf(
 				hasPermissionImpl(groupId, name, primKey, actionId));
 
-			if (_log.isDebugEnabled()) {
+			if (_log.isDebugEnabled() && (stopWatch != null)) {
 				StringBundler sb = new StringBundler(11);
 
 				sb.append("Checking permission for {groupId=");
@@ -594,15 +594,9 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 				sb.append(primKey);
 				sb.append(", actionId=");
 				sb.append(actionId);
-
-				if (stopWatch != null) {
-					sb.append("} took ");
-					sb.append(stopWatch.getTime());
-					sb.append(" ms");
-				}
-				else {
-					sb.append("} is finished");
-				}
+				sb.append("} took ");
+				sb.append(stopWatch.getTime());
+				sb.append(" ms");
 
 				_log.debug(sb.toString());
 			}
@@ -1347,7 +1341,7 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		long groupId, String name, String primKey, String actionId,
 		StopWatch stopWatch, int block) {
 
-		if (!_log.isDebugEnabled()) {
+		if (!_log.isDebugEnabled() || (stopWatch == null)) {
 			return;
 		}
 
@@ -1363,15 +1357,9 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 		sb.append(primKey);
 		sb.append(", actionId=");
 		sb.append(actionId);
-
-		if (stopWatch != null) {
-			sb.append("} takes ");
-			sb.append(stopWatch.getTime());
-			sb.append(" ms");
-		}
-		else {
-			sb.append("} finished");
-		}
+		sb.append("} took ");
+		sb.append(stopWatch.getTime());
+		sb.append(" ms");
 
 		_log.debug(sb.toString());
 	}

@@ -70,7 +70,7 @@ public class WikiCacheUtil {
 			_portalCache.put(key, pageDisplay);
 		}
 
-		if (_log.isDebugEnabled()) {
+		if (_log.isDebugEnabled() && (stopWatch != null)) {
 			StringBundler sb = new StringBundler(11);
 
 			sb.append("getDisplay for {nodeId=");
@@ -81,15 +81,9 @@ public class WikiCacheUtil {
 			sb.append(viewPageURL);
 			sb.append(", editPageURL=");
 			sb.append(editPageURL);
-
-			if (stopWatch != null) {
-				sb.append("} took ");
-				sb.append(stopWatch.getTime());
-				sb.append(" ms");
-			}
-			else {
-				sb.append("} is finished");
-			}
+			sb.append("} took ");
+			sb.append(stopWatch.getTime());
+			sb.append(" ms");
 
 			_log.debug(sb.toString());
 		}
