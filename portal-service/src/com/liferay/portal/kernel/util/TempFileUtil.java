@@ -16,6 +16,7 @@ package com.liferay.portal.kernel.util;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.model.Repository;
@@ -43,9 +44,17 @@ public class TempFileUtil {
 
 		Folder folder = addTempFolder(groupId, userId, tempFolderName);
 
-		return PortletFileRepositoryUtil.addPortletFileEntry(
-			groupId, userId, StringPool.BLANK, 0, PortletKeys.DOCUMENT_LIBRARY,
-			folder.getFolderId(), file, fileName, mimeType, false);
+		try {
+			ExportImportThreadLocal.setPortletImportInProcess(true);
+
+			return PortletFileRepositoryUtil.addPortletFileEntry(
+				groupId, userId, StringPool.BLANK, 0,
+				PortletKeys.DOCUMENT_LIBRARY, folder.getFolderId(), file,
+				fileName, mimeType, false);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+		}
 	}
 
 	public static FileEntry addTempFile(
@@ -55,9 +64,17 @@ public class TempFileUtil {
 
 		Folder folder = addTempFolder(groupId, userId, tempFolderName);
 
-		return PortletFileRepositoryUtil.addPortletFileEntry(
-			groupId, userId, StringPool.BLANK, 0, PortletKeys.DOCUMENT_LIBRARY,
-			folder.getFolderId(), inputStream, fileName, mimeType, false);
+		try {
+			ExportImportThreadLocal.setPortletImportInProcess(true);
+
+			return PortletFileRepositoryUtil.addPortletFileEntry(
+				groupId, userId, StringPool.BLANK, 0,
+				PortletKeys.DOCUMENT_LIBRARY, folder.getFolderId(), inputStream,
+				fileName, mimeType, false);
+		}
+		finally {
+			ExportImportThreadLocal.setPortletImportInProcess(false);
+		}
 	}
 
 	public static void deleteTempFile(long fileEntryId)

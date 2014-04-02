@@ -23,11 +23,13 @@ import com.liferay.portal.kernel.cluster.Clusterable;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackRegistryUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringPool;
@@ -120,11 +122,33 @@ public class BackgroundTaskLocalServiceImpl
 
 		Folder folder = backgroundTask.addAttachmentsFolder();
 
-		PortletFileRepositoryUtil.addPortletFileEntry(
-			backgroundTask.getGroupId(), userId, BackgroundTask.class.getName(),
-			backgroundTask.getPrimaryKey(), PortletKeys.BACKGROUND_TASK,
-			folder.getFolderId(), file, fileName, ContentTypes.APPLICATION_ZIP,
-			false);
+		Map<String, Serializable> taskContextMap =
+			backgroundTask.getTaskContextMap();
+
+		String cmd = (String)taskContextMap.get(Constants.CMD);
+
+		if ((cmd != null) && cmd.equals(Constants.EXPORT)) {
+			try {
+				ExportImportThreadLocal.setPortletExportInProcess(true);
+
+				PortletFileRepositoryUtil.addPortletFileEntry(
+					backgroundTask.getGroupId(), userId,
+					BackgroundTask.class.getName(),
+					backgroundTask.getPrimaryKey(), PortletKeys.BACKGROUND_TASK,
+					folder.getFolderId(), file, fileName,
+					ContentTypes.APPLICATION_ZIP, false);
+			}
+			finally {
+				ExportImportThreadLocal.setPortletExportInProcess(false);
+			}
+		}
+		else {
+			PortletFileRepositoryUtil.addPortletFileEntry(
+				backgroundTask.getGroupId(), userId,
+				BackgroundTask.class.getName(), backgroundTask.getPrimaryKey(),
+				PortletKeys.BACKGROUND_TASK, folder.getFolderId(), file,
+				fileName, ContentTypes.APPLICATION_ZIP, false);
+		}
 	}
 
 	@Override
