@@ -15,6 +15,7 @@
 package com.liferay.portlet.portletconfiguration.action;
 
 import com.liferay.portal.LARFileException;
+import com.liferay.portal.LARFileNameException;
 import com.liferay.portal.LARFileSizeException;
 import com.liferay.portal.LARTypeException;
 import com.liferay.portal.LocaleException;
@@ -156,6 +157,7 @@ public class ExportImportAction extends ImportLayoutsAction {
 			}
 			else {
 				if ((e instanceof LARFileException) ||
+					(e instanceof LARFileNameException) ||
 					(e instanceof LARFileSizeException) ||
 					(e instanceof LARTypeException) ||
 					(e instanceof LocaleException) ||
