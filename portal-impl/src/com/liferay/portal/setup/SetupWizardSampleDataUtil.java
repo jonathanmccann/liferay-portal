@@ -137,8 +137,8 @@ public class SetupWizardSampleDataUtil {
 
 		addOrganizations(defaultUser, organization);
 
-		if (_log.isInfoEnabled()) {
-			_log.info("Finished adding data in " + stopWatch.getTime() + " ms");
+		if (_log.isInfoEnabled() && (stopWatch != null)) {
+			_log.info("Adding data took " + stopWatch.getTime() + " ms");
 		}
 	}
 

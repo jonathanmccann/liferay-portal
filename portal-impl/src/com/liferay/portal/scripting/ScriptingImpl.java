@@ -95,9 +95,9 @@ public class ScriptingImpl implements Scripting {
 			throw new ScriptingException(getErrorMessage(script, e), e);
 		}
 		finally {
-			if (_log.isDebugEnabled()) {
+			if (_log.isDebugEnabled() && (stopWatch != null)) {
 				_log.debug(
-					"Evaluated script in " + stopWatch.getTime() + " ms");
+					"Evaluating script took " + stopWatch.getTime() + " ms");
 			}
 		}
 	}

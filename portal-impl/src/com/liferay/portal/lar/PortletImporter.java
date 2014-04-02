@@ -533,8 +533,8 @@ public class PortletImporter {
 		_deletionSystemEventImporter.importDeletionSystemEvents(
 			portletDataContext);
 
-		if (_log.isInfoEnabled()) {
-			_log.info("Importing portlet takes " + stopWatch.getTime() + " ms");
+		if (_log.isInfoEnabled() && (stopWatch != null)) {
+			_log.info("Importing portlet took " + stopWatch.getTime() + " ms");
 		}
 
 		zipReader.close();

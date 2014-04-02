@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.Time;
 import com.liferay.portal.model.Portlet;
 import com.liferay.portal.service.PortletLocalServiceUtil;
@@ -135,9 +136,9 @@ public class LuceneIndexer implements Runnable {
 				}
 			}
 
-			if (_log.isInfoEnabled()) {
+			if (_log.isInfoEnabled() && (stopWatch != null)) {
 				_log.info(
-					"Reindexing Lucene completed in " +
+					"Reindexing Lucene took " +
 						(stopWatch.getTime() / Time.SECOND) + " seconds");
 			}
 		}
@@ -169,11 +170,16 @@ public class LuceneIndexer implements Runnable {
 
 		_usedSearchEngineIds.add(indexer.getSearchEngineId());
 
-		if (_log.isInfoEnabled()) {
-			_log.info(
-				"Reindexing with " + indexer.getClass() +
-					" completed in " + (stopWatch.getTime() / Time.SECOND) +
-						" seconds");
+		if (_log.isInfoEnabled() && (stopWatch != null)) {
+			StringBundler sb = new StringBundler(5);
+
+			sb.append("Reindexing with {indexerClass=");
+			sb.append(indexer.getClass());
+			sb.append("} took ");
+			sb.append(stopWatch.getTime() / Time.SECOND);
+			sb.append(" seconds");
+
+			_log.info(sb.toString());
 		}
 	}
 

@@ -435,10 +435,10 @@ public class RuntimePageImpl implements RuntimePage {
 
 				request.removeAttribute(WebKeys.PARALLEL_RENDERING_MERGE_LOCK);
 
-				if (_log.isDebugEnabled()) {
+				if (_log.isDebugEnabled() && (stopWatch != null)) {
 					_log.debug(
-						"Finished parallel rendering in " +
-							stopWatch.getTime() + " ms");
+						"Parallel rendering took " + stopWatch.getTime() +
+							" ms");
 				}
 			}
 			else {
@@ -459,17 +459,22 @@ public class RuntimePageImpl implements RuntimePage {
 						portlet.getPortletId(),
 						portletRenderer.render(request, response));
 
-					if (_log.isDebugEnabled()) {
-						_log.debug(
-							"Serially rendered portlet " +
-								portlet.getPortletId() + " in " +
-									stopWatch.getTime() + " ms");
+					if (_log.isDebugEnabled() && (stopWatch != null)) {
+						StringBundler sb = new StringBundler(5);
+
+						sb.append("Serially rendering portlet {portletId=");
+						sb.append(portlet.getPortletId());
+						sb.append("} took ");
+						sb.append(stopWatch.getTime());
+						sb.append(" ms");
+
+						_log.debug(sb.toString());
 					}
 				}
 
-				if (_log.isDebugEnabled()) {
+				if (_log.isDebugEnabled() && (stopWatch != null)) {
 					_log.debug(
-						"Finished serial rendering in " + stopWatch.getTime() +
+						"Serial rendering took " + stopWatch.getTime() +
 							" ms");
 				}
 			}

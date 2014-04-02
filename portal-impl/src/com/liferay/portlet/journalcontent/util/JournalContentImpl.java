@@ -182,11 +182,26 @@ public class JournalContentImpl implements JournalContent {
 			}
 		}
 
-		if (_log.isDebugEnabled()) {
-			_log.debug(
-				"getDisplay for {" + groupId + ", " + articleId + ", " +
-					ddmTemplateKey + ", " + viewMode + ", " + languageId +
-						", " + page + "} takes " + stopWatch.getTime() + " ms");
+		if (_log.isDebugEnabled() && (stopWatch != null)) {
+			StringBundler sb = new StringBundler(15);
+
+			sb.append("getDisplay for {groupId=");
+			sb.append(groupId);
+			sb.append(", articleId=");
+			sb.append(articleId);
+			sb.append(", ddmTemplateKey=");
+			sb.append(ddmTemplateKey);
+			sb.append(", viewMode=");
+			sb.append(viewMode);
+			sb.append(", languageId=");
+			sb.append(languageId);
+			sb.append(", page=");
+			sb.append(page);
+			sb.append("} took ");
+			sb.append(stopWatch.getTime());
+			sb.append(" ms");
+
+			_log.debug(sb.toString());
 		}
 
 		return articleDisplay;
