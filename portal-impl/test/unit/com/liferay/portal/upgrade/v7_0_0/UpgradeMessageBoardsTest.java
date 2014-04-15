@@ -44,10 +44,6 @@ public class UpgradeMessageBoardsTest extends PowerMockito {
 		);
 
 		PropsUtil.setProps(props);
-
-		_portletPreferences = new MockPortletPreferences();
-
-		_upgradeMessageBoards = new UpgradeMessageBoards();
 	}
 
 	@Test
@@ -116,7 +112,9 @@ public class UpgradeMessageBoardsTest extends PowerMockito {
 			values);
 	}
 
-	private PortletPreferences _portletPreferences;
-	private UpgradeMessageBoards _upgradeMessageBoards;
+	private PortletPreferences _portletPreferences =
+		new MockPortletPreferences();
+	private UpgradeMessageBoards _upgradeMessageBoards =
+		new UpgradeMessageBoards();
 
 }

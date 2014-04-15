@@ -2036,6 +2036,23 @@ public class JournalArticleLocalServiceWrapper
 	}
 
 	@Override
+	public com.liferay.portlet.journal.model.JournalArticle getOldestArticle(
+		long groupId, java.lang.String articleId)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _journalArticleLocalService.getOldestArticle(groupId, articleId);
+	}
+
+	@Override
+	public com.liferay.portlet.journal.model.JournalArticle getOldestArticle(
+		long groupId, java.lang.String articleId, int status)
+		throws com.liferay.portal.kernel.exception.PortalException,
+			com.liferay.portal.kernel.exception.SystemException {
+		return _journalArticleLocalService.getOldestArticle(groupId, articleId,
+			status);
+	}
+
+	@Override
 	public com.liferay.portlet.journal.model.JournalArticle getPreviousApprovedArticle(
 		com.liferay.portlet.journal.model.JournalArticle article)
 		throws com.liferay.portal.kernel.exception.SystemException {

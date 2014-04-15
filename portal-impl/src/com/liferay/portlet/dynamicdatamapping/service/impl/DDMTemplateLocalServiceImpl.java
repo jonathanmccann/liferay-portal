@@ -508,8 +508,8 @@ public class DDMTemplateLocalServiceImpl
 	 * @param  classNameId the primary key of the class name for the template's
 	 *         related model
 	 * @param  templateKey the unique string identifying the template
-	 * @param  includeGlobalTemplates whether to include the global scope in the
-	 *         search
+	 * @param  includeAncestorTemplates whether to include the global scope in
+	 *         the search
 	 * @return the matching template, or <code>null</code> if a matching
 	 *         template could not be found
 	 * @throws PortalException if a portal exception occurred
@@ -518,7 +518,7 @@ public class DDMTemplateLocalServiceImpl
 	@Override
 	public DDMTemplate fetchTemplate(
 			long groupId, long classNameId, String templateKey,
-			boolean includeGlobalTemplates)
+			boolean includeAncestorTemplates)
 		throws PortalException, SystemException {
 
 		templateKey = StringUtil.toUpperCase(templateKey.trim());
@@ -526,17 +526,26 @@ public class DDMTemplateLocalServiceImpl
 		DDMTemplate template = ddmTemplatePersistence.fetchByG_C_T(
 			groupId, classNameId, templateKey);
 
-		if ((template != null) || !includeGlobalTemplates) {
+		if (template != null) {
 			return template;
 		}
 
-		Group group = groupPersistence.findByPrimaryKey(groupId);
+		if (!includeAncestorTemplates) {
+			return null;
+		}
 
-		Group companyGroup = groupLocalService.getCompanyGroup(
-			group.getCompanyId());
+		for (long ancestorSiteGroupId :
+				PortalUtil.getAncestorSiteGroupIds(groupId)) {
 
-		return ddmTemplatePersistence.fetchByG_C_T(
-			companyGroup.getGroupId(), classNameId, templateKey);
+			template = ddmTemplatePersistence.fetchByG_C_T(
+				ancestorSiteGroupId, classNameId, templateKey);
+
+			if (template != null) {
+				return template;
+			}
+		}
+
+		return null;
 	}
 
 	/**
@@ -616,9 +625,11 @@ public class DDMTemplateLocalServiceImpl
 				"No DDMTemplate exists with the template key " + templateKey);
 		}
 
-		for (long curGroupId : PortalUtil.getAncestorSiteGroupIds(groupId)) {
+		for (long ancestorSiteGroupId :
+				PortalUtil.getAncestorSiteGroupIds(groupId)) {
+
 			template = ddmTemplatePersistence.fetchByG_C_T(
-				curGroupId, classNameId, templateKey);
+				ancestorSiteGroupId, classNameId, templateKey);
 
 			if (template != null) {
 				return template;
