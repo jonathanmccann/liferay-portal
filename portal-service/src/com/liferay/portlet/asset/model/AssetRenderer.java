@@ -86,6 +86,8 @@ public interface AssetRenderer {
 	public String getSummary(
 		PortletRequest portletRequest, PortletResponse portletResponse);
 
+	public String[] getSupportedConversions();
+
 	public String getThumbnailPath(PortletRequest portletRequest)
 		throws Exception;
 
