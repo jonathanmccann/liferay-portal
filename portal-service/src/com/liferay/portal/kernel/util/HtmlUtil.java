@@ -111,6 +111,10 @@ public class HtmlUtil {
 		return getHtml().escapeURL(url);
 	}
 
+	public static String escapeXml(String xml) {
+		return getHtml().escapeXml(xml);
+	}
+
 	public static String escapeXPath(String xPath) {
 		return getHtml().escapeXPath(xPath);
 	}

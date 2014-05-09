@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -231,6 +232,12 @@ public class CustomSQL {
 	}
 
 	public String[] keywords(String keywords, boolean lowerCase) {
+		return keywords(keywords, lowerCase, false);
+	}
+
+	public String[] keywords(
+		String keywords, boolean lowerCase, boolean escapeXml) {
+
 		if (Validator.isNull(keywords)) {
 			return new String[] {null};
 		}
@@ -262,6 +269,10 @@ public class CustomSQL {
 				if (i > pos) {
 					String keyword = keywords.substring(pos, i);
 
+					if (escapeXml) {
+						keyword = HtmlUtil.escapeXml(keyword);
+					}
+
 					keywordsList.add(
 						StringUtil.quote(keyword, StringPool.PERCENT));
 				}
@@ -286,6 +297,10 @@ public class CustomSQL {
 				}
 
 				String keyword = keywords.substring(pos, i);
+
+				if (escapeXml) {
+					keyword = HtmlUtil.escapeXml(keyword);
+				}
 
 				keywordsList.add(StringUtil.quote(keyword, StringPool.PERCENT));
 			}

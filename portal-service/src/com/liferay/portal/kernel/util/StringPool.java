@@ -106,6 +106,8 @@ public class StringPool {
 
 	public static final String GREATER_THAN = ">";
 
+	public static final String GREATER_THAN_ENCODED = "&gt;";
+
 	public static final String GREATER_THAN_OR_EQUAL = ">=";
 
 	public static final String INVERTED_EXCLAMATION = "\u00A1";
@@ -123,6 +125,8 @@ public class StringPool {
 	public static final String LAQUO_CHAR = "\u00AB";
 
 	public static final String LESS_THAN = "<";
+
+	public static final String LESS_THAN_ENCODED = "&lt;";
 
 	public static final String LESS_THAN_OR_EQUAL = "<=";
 

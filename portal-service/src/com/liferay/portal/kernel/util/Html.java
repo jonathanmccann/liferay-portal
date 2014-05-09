@@ -36,6 +36,8 @@ public interface Html {
 
 	public String escapeURL(String url);
 
+	public String escapeXml(String xml);
+
 	public String escapeXPath(String xPath);
 
 	public String escapeXPathAttribute(String xPathAttribute);

@@ -312,6 +312,11 @@ public class HtmlImpl implements Html {
 		return escape(url, ESCAPE_MODE_URL);
 	}
 
+	public String escapeXml(String xml) {
+		return StringUtil.replace(
+			xml, _XML_REPLACE_CHARACTERS, _XML_REPLACEMENT_CHARACTERS);
+	}
+
 	@Override
 	public String escapeXPath(String xPath) {
 		if (Validator.isNull(xPath)) {
@@ -797,6 +802,15 @@ public class HtmlImpl implements Html {
 	private static final char[] _TAG_SCRIPT = {'s', 'c', 'r', 'i', 'p', 't'};
 
 	private static final char[] _TAG_STYLE = {'s', 't', 'y', 'l', 'e'};
+
+	private static final String[] _XML_REPLACE_CHARACTERS = new String[] {
+		StringPool.AMPERSAND, StringPool.GREATER_THAN, StringPool.LESS_THAN
+	};
+
+	private static final String[] _XML_REPLACEMENT_CHARACTERS = new String[] {
+		StringPool.AMPERSAND_ENCODED, StringPool.GREATER_THAN_ENCODED,
+		StringPool.LESS_THAN_ENCODED
+	};
 
 	// See http://www.w3.org/TR/xpath20/#lexical-structure
 
