@@ -828,6 +828,13 @@ public class OrganizationLocalServiceWrapper implements OrganizationLocalService
 	}
 
 	@Override
+	public java.util.List<com.liferay.portal.model.Organization> fetchOrganzations(
+		long groupId, long userId)
+		throws com.liferay.portal.kernel.exception.SystemException {
+		return _organizationLocalService.fetchOrganzations(groupId, userId);
+	}
+
+	@Override
 	public java.util.List<com.liferay.portal.model.Organization> getNoAssetOrganizations()
 		throws com.liferay.portal.kernel.exception.SystemException {
 		return _organizationLocalService.getNoAssetOrganizations();
