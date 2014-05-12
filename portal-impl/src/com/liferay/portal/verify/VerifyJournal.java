@@ -18,11 +18,13 @@ import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.service.ResourceLocalServiceUtil;
@@ -61,6 +63,7 @@ public class VerifyJournal extends VerifyProcess {
 	@Override
 	protected void doVerify() throws Exception {
 		updateFolderAssets();
+		verifyArticleXml();
 		verifyOracleNewLine();
 		verifyPermissionsAndAssets();
 		verifySearch();
@@ -126,6 +129,46 @@ public class VerifyJournal extends VerifyProcess {
 		}
 		finally {
 			DataAccess.cleanUp(con, ps);
+		}
+	}
+
+	protected void verifyArticleXml() throws SystemException {
+		List<JournalArticle> articles =
+			JournalArticleLocalServiceUtil.getArticles(
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		for (JournalArticle article : articles) {
+			boolean update = false;
+
+			String title = article.getTitle();
+			String description = article.getDescription();
+			String content = article.getContent();
+
+			String escapedContent = HtmlUtil.escapeXml(content);
+			String escapedDescription = HtmlUtil.escapeXml(description);
+			String escapedTitle = HtmlUtil.escapeXml(title);
+
+			if (!content.equals(escapedContent)) {
+				article.setDescription(escapedContent);
+
+				update = true;
+			}
+
+			if (!description.equals(escapedDescription)) {
+				article.setDescription(escapedDescription);
+
+				update = true;
+			}
+
+			if (!title.equals(escapedTitle)) {
+				article.setDescription(escapedTitle);
+
+				update = true;
+			}
+
+			if (update) {
+				JournalArticleLocalServiceUtil.updateJournalArticle(article);
+			}
 		}
 	}
 

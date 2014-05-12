@@ -15,6 +15,7 @@
 package com.liferay.portal.verify;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.repository.model.FileVersion;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.MimeTypesUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -304,6 +306,32 @@ public class VerifyDynamicDataMapping extends VerifyProcess {
 		DDMStructureLocalServiceUtil.updateDDMStructure(ddmStructure);
 	}
 
+	protected void updateDDMStructureXml(
+			DDMStructure ddmStructure, String name, String description)
+		throws SystemException {
+		
+		boolean update = false;
+
+		String escapedName = HtmlUtil.escapeXml(name);
+		String escapedDescription = HtmlUtil.escapeXml(description);
+
+		if (!description.equals(escapedDescription)) {
+			ddmStructure.setDescription(escapedDescription);
+
+			update = true;
+		}
+
+		if (!name.equals(escapedName)) {
+			ddmStructure.setName(escapedName);
+
+			update = true;
+		}
+
+		if (update) {
+			DDMStructureLocalServiceUtil.updateDDMStructure(ddmStructure);
+		}
+	}
+
 	protected void updateDDMTemplate(DDMTemplate template, String script)
 		throws Exception {
 
@@ -314,6 +342,32 @@ public class VerifyDynamicDataMapping extends VerifyProcess {
 		template.setScript(script);
 
 		DDMTemplateLocalServiceUtil.updateDDMTemplate(template);
+	}
+
+	protected void updateDDMTemplateXml(
+			DDMTemplate ddmTemplate, String name, String description)
+		throws SystemException {
+
+		boolean update = false;
+
+		String newName = HtmlUtil.escapeXml(name);
+		String newDescription = HtmlUtil.escapeXml(description);
+
+		if (!description.equals(newDescription)) {
+			ddmTemplate.setDescription(newDescription);
+
+			update = true;
+		}
+
+		if (!name.equals(newName)) {
+			ddmTemplate.setName(newName);
+
+			update = true;
+		}
+
+		if (update) {
+			DDMTemplateLocalServiceUtil.updateDDMTemplate(ddmTemplate);
+		}
 	}
 
 	protected void updateDLFileUploadReferences(long dlFileEntryMetadataId)
@@ -484,6 +538,10 @@ public class VerifyDynamicDataMapping extends VerifyProcess {
 			ddmStructure.getXsd(), ddmStructure.getDefaultLanguageId());
 
 		updateDDMStructure(ddmStructure, xsd);
+
+		updateDDMStructureXml(
+			ddmStructure, ddmStructure.getName(),
+			ddmStructure.getDescription());
 	}
 
 	protected void verifyDDMTemplate(DDMTemplate ddmTemplate) throws Exception {
@@ -495,6 +553,9 @@ public class VerifyDynamicDataMapping extends VerifyProcess {
 			ddmTemplate.getScript(), ddmTemplate.getDefaultLanguageId());
 
 		updateDDMTemplate(ddmTemplate, script);
+
+		updateDDMTemplateXml(
+			ddmTemplate, ddmTemplate.getName(), ddmTemplate.getDescription());
 	}
 
 	protected void verifyDDMTemplates(DDMStructure ddmStructure)

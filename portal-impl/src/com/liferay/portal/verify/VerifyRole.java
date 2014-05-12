@@ -15,6 +15,10 @@
 package com.liferay.portal.verify;
 
 import com.liferay.portal.NoSuchRoleException;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
+import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.util.HtmlUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.GroupConstants;
 import com.liferay.portal.model.ResourceConstants;
@@ -25,6 +29,8 @@ import com.liferay.portal.service.GroupLocalServiceUtil;
 import com.liferay.portal.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.util.PortalInstances;
+
+import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
@@ -96,6 +102,24 @@ public class VerifyRole extends VerifyProcess {
 				deleteImplicitAssociations(siteMemberRole);
 			}
 			catch (NoSuchRoleException nsre) {
+			}
+		}
+
+		verifyRoleXml();
+	}
+
+	protected void verifyRoleXml() throws SystemException {
+		List<Role> roles = RoleLocalServiceUtil.getRoles(
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		for (Role role : roles) {
+			String description = role.getDescription();
+			String escapedDescription = HtmlUtil.escapeXml(description);
+
+			if (!description.equals(escapedDescription)) {
+				role.setDescription(escapedDescription);
+
+				RoleLocalServiceUtil.updateRole(role);
 			}
 		}
 	}
