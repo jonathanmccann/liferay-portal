@@ -48,6 +48,9 @@ public class UserGroupFinderImpl
 	public static final String FIND_BY_C_N =
 		UserGroupFinder.class.getName() + ".findByC_N";
 
+	public static final String FIND_BY_G_U =
+		UserGroupFinder.class.getName() + ".findByG_U";
+
 	public static final String FIND_BY_C_N_D =
 		UserGroupFinder.class.getName() + ".findByC_N_D";
 
@@ -284,6 +287,35 @@ public class UserGroupFinderImpl
 			qPos.add(descriptions, 2);
 
 			return (List<UserGroup>)QueryUtil.list(q, getDialect(), start, end);
+		}
+		catch (Exception e) {
+			throw new SystemException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	public List<UserGroup> findByG_U(long groupId, long userId)
+		throws SystemException {
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(FIND_BY_G_U);
+
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
+
+			q.addEntity("UserGroup", UserGroupImpl.class);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+			qPos.add(userId);
+
+			return q.list();
 		}
 		catch (Exception e) {
 			throw new SystemException(e);

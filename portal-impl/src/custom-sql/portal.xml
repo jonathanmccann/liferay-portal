@@ -807,6 +807,23 @@
 				(Users_Orgs.organizationId = Organization_.organizationId)
 		]]>
 	</sql>
+	<sql id="com.liferay.portal.service.persistence.OrganizationFinder.findByG_U">
+		<![CDATA[
+			SELECT
+				DISTINCT {Organization_.*}
+			FROM
+				Organization_
+			INNER JOIN
+				 Groups_Orgs ON
+				 	(Groups_Orgs.organizationId = Organization_.organizationId)
+			INNER JOIN
+				Users_Orgs ON
+					(Users_Orgs.organizationId = Organization_.organizationId)
+			WHERE
+				(Groups_Orgs.groupId = ?) AND
+				(Users_Orgs.userId = ?)
+		]]>
+	</sql>
 	<sql id="com.liferay.portal.service.persistence.PasswordPolicyFinder.countByC_N">
 		<![CDATA[
 			SELECT
@@ -1629,6 +1646,23 @@
 				)
 			ORDER BY
 				UserGroup.name ASC
+		]]>
+	</sql>
+	<sql id="com.liferay.portal.service.persistence.UserGroupFinder.findByG_U">
+		<![CDATA[
+			SELECT
+				DISTINCT {UserGroup.*}
+			FROM
+				UserGroup
+			INNER JOIN
+				Groups_UserGroups ON
+					(Groups_UserGroups.userGroupId = UserGroup.userGroupId)
+			INNER JOIN
+				Users_UserGroups ON
+					(Users_UserGroups.userGroupId = UserGroup.userGroupId)
+			WHERE
+				(Groups_UserGroups.groupId = ?) AND
+				(Users_UserGroups.userId = ?)
 		]]>
 	</sql>
 	<sql id="com.liferay.portal.service.persistence.UserGroupFinder.joinByUserGroupGroupRole">
