@@ -114,11 +114,8 @@ public class VerifyRole extends VerifyProcess {
 
 		for (Role role : roles) {
 			String description = role.getDescription();
-			String escapedDescription = HtmlUtil.escapeXml(description);
 
-			if (!description.equals(escapedDescription)) {
-				role.setDescription(escapedDescription);
-
+			if (!description.equals(HtmlUtil.escapeXml(description))) {
 				RoleLocalServiceUtil.updateRole(role);
 			}
 		}

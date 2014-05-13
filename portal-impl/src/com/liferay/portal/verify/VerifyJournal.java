@@ -138,35 +138,12 @@ public class VerifyJournal extends VerifyProcess {
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (JournalArticle article : articles) {
-			boolean update = false;
-
 			String title = article.getTitle();
 			String description = article.getDescription();
-			String content = article.getContent();
 
-			String escapedContent = HtmlUtil.escapeXml(content);
-			String escapedDescription = HtmlUtil.escapeXml(description);
-			String escapedTitle = HtmlUtil.escapeXml(title);
+			if (!description.equals(HtmlUtil.escapeXml(description)) ||
+				!title.equals(HtmlUtil.escapeXml(title))) {
 
-			if (!content.equals(escapedContent)) {
-				article.setDescription(escapedContent);
-
-				update = true;
-			}
-
-			if (!description.equals(escapedDescription)) {
-				article.setDescription(escapedDescription);
-
-				update = true;
-			}
-
-			if (!title.equals(escapedTitle)) {
-				article.setDescription(escapedTitle);
-
-				update = true;
-			}
-
-			if (update) {
 				JournalArticleLocalServiceUtil.updateJournalArticle(article);
 			}
 		}

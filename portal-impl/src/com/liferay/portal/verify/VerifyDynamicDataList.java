@@ -39,27 +39,12 @@ public class VerifyDynamicDataList extends VerifyProcess {
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS);
 
 		for (DDLRecordSet ddlRecordSet : ddlRecordSets) {
-			boolean update = false;
-
 			String description = ddlRecordSet.getDescription();
 			String name = ddlRecordSet.getName();
 
-			String escapedDescription = HtmlUtil.escapeXml(description);
-			String escapedName = HtmlUtil.escapeXml(name);
+			if (!description.equals(HtmlUtil.escapeXml(description)) ||
+				!name.equals(HtmlUtil.escapeXml(name))) {
 
-			if (!description.equals(escapedDescription)) {
-				ddlRecordSet.setDescription(escapedDescription);
-
-				update = true;
-			}
-
-			if (!name.equals(escapedName)) {
-				ddlRecordSet.setDescription(escapedName);
-
-				update = true;
-			}
-
-			if (update) {
 				DDLRecordSetLocalServiceUtil.updateDDLRecordSet(ddlRecordSet);
 			}
 		}

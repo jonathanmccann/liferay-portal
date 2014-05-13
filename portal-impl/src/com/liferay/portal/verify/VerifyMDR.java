@@ -40,11 +40,8 @@ public class VerifyMDR extends VerifyProcess {
 
 		for (MDRRuleGroup MDRRuleGroup : MDRRuleGroups) {
 			String name = MDRRuleGroup.getName();
-			String escapedName = HtmlUtil.escapeXml(name);
 
-			if (!name.equals(escapedName)) {
-				MDRRuleGroup.setName(escapedName);
-
+			if (!name.equals(HtmlUtil.escapeXml(name))) {
 				MDRRuleGroupLocalServiceUtil.updateMDRRuleGroup(MDRRuleGroup);
 			}
 		}

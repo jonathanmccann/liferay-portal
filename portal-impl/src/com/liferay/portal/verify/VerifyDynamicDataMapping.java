@@ -309,25 +309,10 @@ public class VerifyDynamicDataMapping extends VerifyProcess {
 	protected void updateDDMStructureXml(
 			DDMStructure ddmStructure, String name, String description)
 		throws SystemException {
-		
-		boolean update = false;
 
-		String escapedName = HtmlUtil.escapeXml(name);
-		String escapedDescription = HtmlUtil.escapeXml(description);
+		if (!description.equals(HtmlUtil.escapeXml(description)) ||
+			!name.equals(HtmlUtil.escapeXml(name))) {
 
-		if (!description.equals(escapedDescription)) {
-			ddmStructure.setDescription(escapedDescription);
-
-			update = true;
-		}
-
-		if (!name.equals(escapedName)) {
-			ddmStructure.setName(escapedName);
-
-			update = true;
-		}
-
-		if (update) {
 			DDMStructureLocalServiceUtil.updateDDMStructure(ddmStructure);
 		}
 	}
@@ -348,24 +333,9 @@ public class VerifyDynamicDataMapping extends VerifyProcess {
 			DDMTemplate ddmTemplate, String name, String description)
 		throws SystemException {
 
-		boolean update = false;
+		if (!description.equals(HtmlUtil.escapeXml(description)) ||
+			!name.equals(HtmlUtil.escapeXml(name))) {
 
-		String newName = HtmlUtil.escapeXml(name);
-		String newDescription = HtmlUtil.escapeXml(description);
-
-		if (!description.equals(newDescription)) {
-			ddmTemplate.setDescription(newDescription);
-
-			update = true;
-		}
-
-		if (!name.equals(newName)) {
-			ddmTemplate.setName(newName);
-
-			update = true;
-		}
-
-		if (update) {
 			DDMTemplateLocalServiceUtil.updateDDMTemplate(ddmTemplate);
 		}
 	}
