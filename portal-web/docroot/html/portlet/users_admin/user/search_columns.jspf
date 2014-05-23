@@ -30,60 +30,32 @@
 	value="<%= user2.getJobTitle() %>"
 />
 
-<c:choose>
-	<c:when test="<%= organizationContextView && (organizationGroupId > 0) %>">
-		<liferay-ui:search-container-column-text
-			buffer="buffer"
-			href="<%= rowURL %>"
-			name="organization-roles"
-		>
+<liferay-ui:search-container-column-text
+	buffer="buffer"
+	href="<%= rowURL %>"
+	name="organizations"
+>
 
-			<%
-			List<UserGroupRole> userGroupRoles = UserGroupRoleLocalServiceUtil.getUserGroupRoles(user2.getUserId(), organizationGroupId);
+	<%
+	List<Organization> curOrganizations = OrganizationLocalServiceUtil.getUserOrganizations(user2.getUserId(), 0, SearchContainer.DEFAULT_DELTA + 1);
 
-			for (UserGroupRole userGroupRole : userGroupRoles) {
-				Role curRole = RoleLocalServiceUtil.getRole(userGroupRole.getRoleId());
+	for (int i = 0; i < curOrganizations.size() && i < SearchContainer.DEFAULT_DELTA; i++) {
+		Organization curOrganization = curOrganizations.get(i);
 
-				buffer.append(HtmlUtil.escape(curRole.getTitle(locale)));
-				buffer.append(StringPool.COMMA_AND_SPACE);
-			}
+		buffer.append(HtmlUtil.escape(curOrganization.getName()));
+		buffer.append(StringPool.COMMA_AND_SPACE);
+	}
 
-			if (!userGroupRoles.isEmpty()) {
-				buffer.setIndex(buffer.index() - 1);
-			}
-			%>
+	if (!curOrganizations.isEmpty()) {
+		buffer.setIndex(buffer.index() - 1);
+	}
 
-		</liferay-ui:search-container-column-text>
-	</c:when>
-	<c:otherwise>
-		<liferay-ui:search-container-column-text
-			buffer="buffer"
-			href="<%= rowURL %>"
-			name="organizations"
-		>
+	if (curOrganizations.size() > SearchContainer.DEFAULT_DELTA) {
+		buffer.append(StringPool.TRIPLE_PERIOD);
+	}
+	%>
 
-			<%
-			List<Organization> curOrganizations = OrganizationLocalServiceUtil.getUserOrganizations(user2.getUserId(), 0, SearchContainer.DEFAULT_DELTA + 1);
-
-			for (int i = 0; i < curOrganizations.size() && i < SearchContainer.DEFAULT_DELTA; i++) {
-				Organization curOrganization = curOrganizations.get(i);
-
-				buffer.append(HtmlUtil.escape(curOrganization.getName()));
-				buffer.append(StringPool.COMMA_AND_SPACE);
-			}
-
-			if (!curOrganizations.isEmpty()) {
-				buffer.setIndex(buffer.index() - 1);
-			}
-
-			if (curOrganizations.size() > SearchContainer.DEFAULT_DELTA) {
-				buffer.append(StringPool.TRIPLE_PERIOD);
-			}
-			%>
-
-		</liferay-ui:search-container-column-text>
-	</c:otherwise>
-</c:choose>
+</liferay-ui:search-container-column-text>
 
 <liferay-ui:search-container-column-text
 	buffer="buffer"
