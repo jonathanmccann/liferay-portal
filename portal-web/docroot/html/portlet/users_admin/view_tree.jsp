@@ -412,12 +412,7 @@ if (organization != null) {
 							<%= usersTitle %>
 						</liferay-util:buffer>
 
-						<c:if test="<%= (organization != null) || (usersCount != 0) || (inactiveUsersCount == 0) %>">
-
-							<%
-							boolean organizationContextView = true;
-							%>
-
+						<c:if test="<%= (usersCount != 0) || (inactiveUsersCount == 0) %>">
 							<liferay-ui:panel collapsible="<%= true %>" extended="<%= true %>" id="usersAdminUsersPanel" persistState="<%= true %>" title="<%= usersPanelTitle %>">
 								<%@ include file="/html/portlet/users_admin/view_flat_users.jspf" %>
 							</liferay-ui:panel>

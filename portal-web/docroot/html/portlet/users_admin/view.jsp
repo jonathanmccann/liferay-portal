@@ -89,11 +89,6 @@ request.setAttribute("view.jsp-portletURL", portletURL);
 			<liferay-util:include page="/html/portlet/users_admin/view_flat_organizations.jsp" />
 		</c:when>
 		<c:when test="<%= usersListView.equals(UserConstants.LIST_VIEW_FLAT_USERS) %>">
-
-			<%
-			boolean organizationContextView = false;
-			%>
-
 			<%@ include file="/html/portlet/users_admin/view_flat_users.jspf" %>
 		</c:when>
 		<c:otherwise>
