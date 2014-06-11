@@ -88,6 +88,34 @@ searchContainer.setEmptyResultsMessage(emptyResultsMessage);
 			<c:when test='<%= tabs1.equals("summary") || tabs2.equals("current") || !group.isLimitedToParentSiteMembers() %>'>
 				<%@ include file="/html/portlet/users_admin/user_search_results.jspf" %>
 			</c:when>
+			<c:when test='<%= group.isLimitedToParentSiteMembers() %>'>
+				<%
+				List<User> users = null;
+
+				if (searchTerms.isAdvancedSearch()) {
+					users = UserLocalServiceUtil.search(
+						company.getCompanyId(), searchTerms.getFirstName(), searchTerms.getMiddleName(), searchTerms.getLastName(), searchTerms.getScreenName(), searchTerms.getEmailAddress(), searchTerms.getStatus(), userParams, searchTerms.isAndOperator(), userSearchContainer.getStart(), userSearchContainer.getEnd(), userSearchContainer.getOrderByComparator());
+				}
+				else {
+					users = UserLocalServiceUtil.search(
+						company.getCompanyId(), searchTerms.getKeywords(), searchTerms.getStatus(), userParams, userSearchContainer.getStart(), userSearchContainer.getEnd(), userSearchContainer.getOrderByComparator());
+				}
+
+				List<User> parentSiteMembers = UserLocalServiceUtil.getGroupUsers(group.getParentGroupId(), userSearchContainer.getStart(), userSearchContainer.getEnd());
+				List<User> targetUsers = new ArrayList<User>();
+
+				for (User currUser : users) {
+					if (parentSiteMembers.contains(currUser)) {
+						targetUsers.add(currUser);
+					}
+				}
+
+				total = targetUsers.size();
+				searchContainer.setTotal(total);
+				results = targetUsers;
+				searchContainer.setResults(results);
+				%>
+			</c:when>
 			<c:otherwise>
 
 				<%
