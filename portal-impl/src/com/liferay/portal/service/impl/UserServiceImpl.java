@@ -878,7 +878,7 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 		throws PortalException {
 
 		UserGroupPermissionUtil.check(
-			getPermissionChecker(), userGroupId, ActionKeys.VIEW_MEMBERS);
+			getPermissionChecker(), userGroupId, ActionKeys.VIEW);
 
 		return userGroupPersistence.getUsers(userGroupId);
 	}
