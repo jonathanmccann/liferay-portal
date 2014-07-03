@@ -150,8 +150,8 @@ public class UserFinderImpl
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
-			qPos.add(socialRelationType);
 			qPos.add(userId);
+			qPos.add(socialRelationType);
 			qPos.add(companyId);
 			qPos.add(Boolean.FALSE);
 			qPos.add(status);
@@ -606,8 +606,8 @@ public class UserFinderImpl
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
-			qPos.add(socialRelationType);
 			qPos.add(userId);
+			qPos.add(socialRelationType);
 			qPos.add(companyId);
 			qPos.add(Boolean.FALSE);
 			qPos.add(status);
