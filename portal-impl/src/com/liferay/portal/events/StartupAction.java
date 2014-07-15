@@ -139,7 +139,7 @@ public class StartupAction extends SimpleAction {
 		IndexerRegistryUtil.register(new MBMessageIndexer());
 		IndexerRegistryUtil.register(new PluginPackageIndexer());
 
-		// Dynamic Data Mapping renderers
+		// Dynamic data mapping renderers
 
 		DDMFormFieldRendererRegistryUtil.register(
 			new DDMFormFieldFreeMarkerRenderer());

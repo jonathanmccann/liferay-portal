@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StreamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
@@ -73,8 +74,10 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.portlet.PortletRequest;
@@ -797,6 +800,20 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 
 		if (liveGroup.hasRemoteStagingGroup()) {
 			return;
+		}
+
+		Set<Entry<String, String>> entrySet = typeSettingsProperties.entrySet();
+
+		Iterator it = entrySet.iterator();
+
+		while (it.hasNext()) {
+			Entry entry = (Entry) it.next();
+
+			String key = (String) entry.getKey();
+
+			if (key.contains(StagingConstants.STAGED_PORTLET)) {
+				it.remove();
+			}
 		}
 
 		typeSettingsProperties.putAll(
