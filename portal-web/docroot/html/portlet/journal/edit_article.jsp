@@ -354,6 +354,7 @@ request.setAttribute("edit_article.jsp-toLanguageId", toLanguageId);
 						modelResource="<%= JournalArticle.class.getName() %>"
 						modelResourceDescription="<%= HtmlUtil.escape(article.getTitle(locale)) %>"
 						resourcePrimKey="<%= String.valueOf(article.getResourcePrimKey()) %>"
+						resourceGroupId="<%= String.valueOf(article.getGroupId()) %>"
 						var="permissionsURL"
 					/>
 
