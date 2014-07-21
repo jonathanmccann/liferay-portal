@@ -219,11 +219,6 @@ public class AssetVocabularyServiceWrapper implements AssetVocabularyService,
 			start, end, obc);
 	}
 
-	/**
-	* @deprecated As of 7.0.0, replaced by {@link
-	#AssetUtil.filterVocabularyIds(PermissionChecker, long[])}
-	*/
-	@Deprecated
 	@Override
 	public java.util.List<com.liferay.portlet.asset.model.AssetVocabulary> getVocabularies(
 		long[] vocabularyIds)
