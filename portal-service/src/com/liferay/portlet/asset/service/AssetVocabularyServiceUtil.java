@@ -205,11 +205,6 @@ public class AssetVocabularyServiceUtil {
 				   .getJSONGroupVocabularies(groupId, name, start, end, obc);
 	}
 
-	/**
-	* @deprecated As of 7.0.0, replaced by {@link
-	#AssetUtil.filterVocabularyIds(PermissionChecker, long[])}
-	*/
-	@Deprecated
 	public static java.util.List<com.liferay.portlet.asset.model.AssetVocabulary> getVocabularies(
 		long[] vocabularyIds)
 		throws com.liferay.portal.kernel.exception.PortalException {

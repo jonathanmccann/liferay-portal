@@ -172,11 +172,6 @@ public interface AssetVocabularyService extends BaseService {
 		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portlet.asset.model.AssetVocabulary> obc)
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	/**
-	* @deprecated As of 7.0.0, replaced by {@link
-	#AssetUtil.filterVocabularyIds(PermissionChecker, long[])}
-	*/
-	@java.lang.Deprecated
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public java.util.List<com.liferay.portlet.asset.model.AssetVocabulary> getVocabularies(
 		long[] vocabularyIds)
