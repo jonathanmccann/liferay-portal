@@ -351,11 +351,6 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 		return jsonObject;
 	}
 
-	/**
-	 * @deprecated As of 7.0.0, replaced by {@link
-	 *             #AssetUtil.filterVocabularyIds(PermissionChecker, long[])}
-	 */
-	@Deprecated
 	@Override
 	public List<AssetVocabulary> getVocabularies(long[] vocabularyIds)
 		throws PortalException {
@@ -440,10 +435,6 @@ public class AssetVocabularyServiceImpl extends AssetVocabularyServiceBaseImpl {
 			serviceContext);
 	}
 
-	/**
-	 * @deprecated As of 7.0.0, with no direct replacement
-	 */
-	@Deprecated
 	protected List<AssetVocabulary> filterVocabularies(
 			List<AssetVocabulary> vocabularies)
 		throws PortalException {
