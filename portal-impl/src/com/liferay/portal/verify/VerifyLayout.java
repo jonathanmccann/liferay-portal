@@ -14,6 +14,8 @@
 
 package com.liferay.portal.verify;
 
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBFactoryUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
@@ -98,9 +100,20 @@ public class VerifyLayout extends VerifyProcess {
 	}
 
 	protected void verifyLayoutPrototypeLinkEnabled() throws Exception {
-		runSQL(
-			"update Layout set layoutPrototypeLinkEnabled = 0 where type_ = " +
-				"'link_to_layout' and layoutPrototypeLinkEnabled = 1");
+		DB db = DBFactoryUtil.getDB();
+
+		String dbType = db.getType();
+
+		if (dbType.equals(DB.TYPE_POSTGRESQL)) {
+			runSQL(
+				"update Layout set layoutPrototypeLinkEnabled = false where " +
+					"layoutPrototypeLinkEnabled = true");
+		}
+		else {
+			runSQL(
+				"update Layout set layoutPrototypeLinkEnabled = 0 where " +
+					"layoutPrototypeLinkEnabled = 1");
+		}
 	}
 
 	protected void verifyUuid() throws Exception {
