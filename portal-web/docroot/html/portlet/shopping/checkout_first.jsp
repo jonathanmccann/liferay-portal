@@ -244,10 +244,17 @@ List addresses = AddressServiceUtil.getAddresses(Contact.class.getName(), contac
 
 	<aui:button-row>
 		<aui:button type="submit" value="continue" />
+
+		<aui:button onClick='<%= renderResponse.getNamespace() + "cancelCheckout();" %>' value="cancel-checkout[document]" />
 	</aui:button-row>
 </aui:form>
 
 <aui:script>
+	function <portlet:namespace />cancelCheckout() {
+		document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = '<%= Constants.DELETE %>';
+		submitForm(document.<portlet:namespace />fm);
+	}
+
 	function <portlet:namespace />updateAddress(addressId, type) {
 
 		<%
