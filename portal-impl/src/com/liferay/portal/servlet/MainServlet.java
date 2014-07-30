@@ -24,12 +24,14 @@ import com.liferay.portal.kernel.cache.ThreadLocalCacheManager;
 import com.liferay.portal.kernel.deploy.hot.HotDeployUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.lar.PortletDataHandler;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.plugin.PluginPackage;
 import com.liferay.portal.kernel.servlet.DynamicServletRequest;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.servlet.ProtectedServletRequest;
+import com.liferay.portal.kernel.staging.StagingConstants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
@@ -42,6 +44,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ReleaseInfo;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.DocumentException;
@@ -102,6 +105,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -890,6 +894,11 @@ public class MainServlet extends ActionServlet {
 			}
 		}
 
+		for (Group group : GroupLocalServiceUtil.getLiveGroups()) {
+			verifyStagingTypeSettingsProperties(
+				group.getTypeSettingsProperties());
+		}
+
 		servletContext.setAttribute(WebKeys.PLUGIN_PORTLETS, portlets);
 
 		return portlets;
@@ -1305,6 +1314,50 @@ public class MainServlet extends ActionServlet {
 		PrincipalThreadLocal.setName(name);
 
 		PrincipalThreadLocal.setPassword(password);
+	}
+
+	protected void verifyStagingTypeSettingsProperties(
+		UnicodeProperties typeSettingsProperties) {
+
+		Set<String> keys = typeSettingsProperties.keySet();
+
+		Iterator<String> iterator = keys.iterator();
+
+		while (iterator.hasNext()) {
+			String key = iterator.next();
+
+			if (!key.contains(StagingConstants.STAGED_PORTLET)) {
+				continue;
+			}
+
+			String portletId = StringUtil.replace(
+				key, StagingConstants.STAGED_PORTLET, StringPool.BLANK);
+
+			Portlet portlet = PortletLocalServiceUtil.getPortletById(portletId);
+
+			if (portlet == null) {
+				if (_log.isInfoEnabled()) {
+					_log.info("Removing type settings property " + key);
+				}
+
+				iterator.remove();
+
+				continue;
+			}
+
+			PortletDataHandler portletDataHandler =
+				portlet.getPortletDataHandlerInstance();
+
+			if ((portletDataHandler == null) ||
+				!portletDataHandler.isDataSiteLevel()) {
+
+				if (_log.isInfoEnabled()) {
+					_log.info("Removing type settings property " + key);
+				}
+
+				iterator.remove();
+			}
+		}
 	}
 
 	private static final boolean _HTTP_HEADER_VERSION_VERBOSITY_DEFAULT =
