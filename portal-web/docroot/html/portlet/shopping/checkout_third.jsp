@@ -24,18 +24,37 @@ try {
 }
 catch (Exception e) {
 }
+
+boolean cancelCheckout = ParamUtil.getBoolean(request, "cancelCheckout");
 %>
 
 <liferay-util:include page="/html/portlet/shopping/tabs1.jsp">
 	<liferay-util:param name="tabs1" value="cart" />
 </liferay-util:include>
 
-<div class="alert alert-success">
-	<liferay-ui:message key="thank-you-for-your-purchase" />
-</div>
+<c:choose>
+	<c:when test="<%= cancelCheckout %>">
+		<div class="alert alert-success">
+			<liferay-ui:message key="your-order-has-been-cancelled" />
+		</div>
+	</c:when>
+	<c:otherwise>
+		<div class="alert alert-success">
+			<liferay-ui:message key="thank-you-for-your-purchase" />
+		</div>
 
-<%
-ShoppingOrder order = ShoppingOrderLocalServiceUtil.getOrder(ParamUtil.getLong(request, "orderId"));
-%>
+		<%
+		ShoppingOrder order = ShoppingOrderLocalServiceUtil.getOrder(ParamUtil.getLong(request, "orderId"));
+		%>
 
-<liferay-ui:message key="your-order-number-is" /> <strong><%= HtmlUtil.escape(order.getNumber()) %></strong>. <liferay-ui:message key="you-will-receive-an-email-shortly-with-your-order-summary-and-further-details" />
+		<liferay-ui:message key="your-order-number-is" /> <strong><%= HtmlUtil.escape(order.getNumber()) %></strong>. <liferay-ui:message key="you-will-receive-an-email-shortly-with-your-order-summary-and-further-details" />
+	</c:otherwise>
+</c:choose>
+
+<portlet:renderURL var="continueShoppingURL">
+	<portlet:param name="mvcPath" value="/html/portlet/shopping/view.jsp" />
+</portlet:renderURL>
+
+<aui:button-row>
+	<aui:button href="<%= continueShoppingURL.toString() %>" value="continue-shopping" />
+</aui:button-row>

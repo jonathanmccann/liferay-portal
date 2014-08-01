@@ -77,6 +77,16 @@ public class CheckoutAction extends CartAction {
 
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
+		if (cmd.equals(Constants.DELETE)) {
+			cancelCheckout(actionRequest);
+
+			actionResponse.setRenderParameter("cancelCheckout", "true");
+
+			setForward(actionRequest, "portlet.shopping.checkout_third");
+
+			return;
+		}
+
 		getLatestOrder(actionRequest);
 
 		if (cmd.equals(Constants.SAVE)) {
@@ -285,6 +295,16 @@ public class CheckoutAction extends CartAction {
 			ccNumber, ccExpMonth, ccExpYear, ccVerNumber, comments);
 
 		actionRequest.setAttribute(WebKeys.SHOPPING_ORDER, order);
+	}
+
+	private void cancelCheckout(ActionRequest actionRequest) throws Exception {
+		ThemeDisplay themeDisplay = (ThemeDisplay)actionRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		ShoppingOrder order = ShoppingOrderLocalServiceUtil.getLatestOrder(
+			themeDisplay.getUserId(), themeDisplay.getScopeGroupId());
+
+		ShoppingOrderLocalServiceUtil.deleteOrder(order);
 	}
 
 	private static final boolean _CHECK_METHOD_ON_PROCESS_ACTION = false;

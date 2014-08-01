@@ -330,5 +330,14 @@ ShoppingOrder order = (ShoppingOrder)request.getAttribute(WebKeys.SHOPPING_ORDER
 
 	<aui:button-row>
 		<aui:button type="submit" value='<%= shoppingSettings.usePayPal() ? "continue" : "finished" %>' />
+
+		<aui:button onClick='<%= renderResponse.getNamespace() + "cancelCheckout();" %>' value="cancel-checkout[document]" />
 	</aui:button-row>
 </aui:form>
+
+<aui:script >
+	function <portlet:namespace />cancelCheckout() {
+		document.<portlet:namespace />fm.<portlet:namespace /><%= Constants.CMD %>.value = '<%= Constants.DELETE %>';
+		submitForm(document.<portlet:namespace />fm);
+	}
+</aui:script>
