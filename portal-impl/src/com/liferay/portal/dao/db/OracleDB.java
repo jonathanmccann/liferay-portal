@@ -294,6 +294,9 @@ public class OracleDB extends BaseDB {
 			new String[] {"\\\\", "\\'", "\\\""},
 			new String[] {"\\", "''", "\""});
 
+		template = StringUtil.replace(template, "!= ''", "is not null");
+		template = StringUtil.replace(template, "= ''", "is null");
+
 		return template;
 	}
 
