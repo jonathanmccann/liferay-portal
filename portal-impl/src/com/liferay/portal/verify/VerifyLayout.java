@@ -37,37 +37,12 @@ import java.util.List;
 public class VerifyLayout extends VerifyProcess {
 
 	protected void deleteOrphanedLayouts() throws Exception {
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
+		String sql =
+			"delete from Layout where layoutPrototypeUuid != '' and " +
+				"layoutPrototypeUuid not in (select uuid_ from " +
+					"LayoutPrototype)";
 
-		try {
-			con = DataAccess.getUpgradeOptimizedConnection();
-
-			ps = con.prepareStatement(
-				"select plid from Layout where layoutPrototypeUuid != ''");
-
-			rs = ps.executeQuery();
-
-			while (rs.next()) {
-				long plid = rs.getLong("plid");
-
-				Layout layout = LayoutLocalServiceUtil.getLayout(plid);
-
-				LayoutPrototype layoutPrototype =
-					LayoutPrototypeLocalServiceUtil.
-						fetchLayoutPrototypeByUuidAndCompanyId(
-							layout.getLayoutPrototypeUuid(),
-							layout.getCompanyId());
-
-				if (layoutPrototype == null) {
-					LayoutLocalServiceUtil.deleteLayout(layout);
-				}
-			}
-		}
-		finally {
-			DataAccess.cleanUp(con, ps, rs);
-		}
+		runSQL(sql);
 	}
 
 	@Override
