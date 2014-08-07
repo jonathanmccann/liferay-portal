@@ -37,8 +37,10 @@ import java.util.List;
 public class VerifyLayout extends VerifyProcess {
 
 	protected void deleteOrphanedLayouts() throws Exception {
-		String sql = "delete from Layout where layoutPrototypeUuid != '' and " +
-				"layoutPrototypeUuid not in (select uuid_ from LayoutPrototype)";
+		String sql =
+			"delete from Layout where layoutPrototypeUuid != '' and " +
+				"layoutPrototypeUuid not in (select uuid_ from " +
+					"LayoutPrototype)";
 
 		runSQL(sql);
 	}
