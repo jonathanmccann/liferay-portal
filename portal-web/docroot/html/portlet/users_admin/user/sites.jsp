@@ -49,23 +49,25 @@ for (UserGroupGroupRole userGroupGroupRole : userGroupGroupRoles) {
 
 	Map<Role, List<String>> roleUserGroupNames = groupRoleUserGroupNamesMap.get(group);
 
-	if (roleUserGroupNames != null) {
-		List<String> userGroupNames = roleUserGroupNames.get(role);
-
-		if (userGroupNames != null) {
-			userGroupNames.add(userGroup.getName());
-		}
-		else {
-			roleUserGroupNames.put(role, new ArrayList<String>(Arrays.asList(userGroup.getName())));
-		}
-	}
-	else {
+	if (roleUserGroupNames == null) {
 		roleUserGroupNames = new HashMap<Role, List<String>>();
 
 		roleUserGroupNames.put(role, new ArrayList<String>(Arrays.asList(userGroup.getName())));
 
 		groupRoleUserGroupNamesMap.put(group, roleUserGroupNames);
+
+		continue;
 	}
+
+	List<String> userGroupNames = roleUserGroupNames.get(role);
+
+	if (userGroupNames == null) {
+		roleUserGroupNames.put(role, new ArrayList<String>(Arrays.asList(userGroup.getName())));
+
+		continue;
+	}
+
+	userGroupNames.add(userGroup.getName());
 }
 
 for (UserGroupRole siteRole : siteRoles) {
@@ -74,18 +76,21 @@ for (UserGroupRole siteRole : siteRoles) {
 
 	Map<Role, List<String>> roleUserGroupNames = groupRoleUserGroupNamesMap.get(group);
 
-	if (roleUserGroupNames != null) {
-		if (!roleUserGroupNames.containsKey(role)) {
-			roleUserGroupNames.put(role, new ArrayList<String>());
-		}
-	}
-	else {
+	if (roleUserGroupNames == null) {
 		roleUserGroupNames = new HashMap<Role, List<String>>();
 
 		roleUserGroupNames.put(role, new ArrayList<String>());
 
 		groupRoleUserGroupNamesMap.put(group, roleUserGroupNames);
+
+		continue;
 	}
+
+	if (roleUserGroupNames.containsKey(role)) {
+		continue;
+	}
+
+	roleUserGroupNames.put(role, new ArrayList<String>());
 }
 %>
 
