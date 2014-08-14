@@ -43,9 +43,7 @@ if (hints != null) {
 	type = GetterUtil.getString(hints.get("type"), type);
 }
 
-if (type.equals("String")) {
-	cssClass += " form-control";
-}
+cssClass += " form-control";
 %>
 
 <c:if test="<%= type != null %>">
