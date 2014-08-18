@@ -40,6 +40,11 @@ public interface JournalArticleFinder {
 		java.util.List<java.lang.Long> folderIds, long classNameId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.journal.model.JournalArticle> queryDefinition);
 
+	public int countByG_U_F_C(long groupId, long userId,
+		java.util.List<java.lang.Long> folderIds, long classNameId,
+		long ownerId,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.journal.model.JournalArticle> queryDefinition);
+
 	public int countByC_G_F_C_A_V_T_D_C_T_S_T_D_R(long companyId, long groupId,
 		java.util.List<java.lang.Long> folderIds, long classNameId,
 		java.lang.String articleId, java.lang.Double version,
@@ -89,6 +94,11 @@ public interface JournalArticleFinder {
 
 	public int filterCountByG_U_F_C(long groupId, long userId,
 		java.util.List<java.lang.Long> folderIds, long classNameId,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.journal.model.JournalArticle> queryDefinition);
+
+	public int filterCountByG_U_F_C(long groupId, long userId,
+		java.util.List<java.lang.Long> folderIds, long classNameId,
+		long ownerId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.journal.model.JournalArticle> queryDefinition);
 
 	public int filterCountByC_G_F_C_A_V_T_D_C_T_S_T_D_R(long companyId,
@@ -143,6 +153,11 @@ public interface JournalArticleFinder {
 	public java.util.List<com.liferay.portlet.journal.model.JournalArticle> filterFindByG_U_F_C(
 		long groupId, long userId, java.util.List<java.lang.Long> folderIds,
 		long classNameId,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.journal.model.JournalArticle> queryDefinition);
+
+	public java.util.List<com.liferay.portlet.journal.model.JournalArticle> filterFindByG_U_F_C(
+		long groupId, long userId, java.util.List<java.lang.Long> folderIds,
+		long classNameId, long ownerId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.journal.model.JournalArticle> queryDefinition);
 
 	public java.util.List<com.liferay.portlet.journal.model.JournalArticle> filterFindByC_G_F_C_A_V_T_D_C_T_S_T_D_R(
@@ -209,6 +224,11 @@ public interface JournalArticleFinder {
 	public java.util.List<com.liferay.portlet.journal.model.JournalArticle> findByG_U_F_C(
 		long groupId, long userId, java.util.List<java.lang.Long> folderIds,
 		long classNameId,
+		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.journal.model.JournalArticle> queryDefinition);
+
+	public java.util.List<com.liferay.portlet.journal.model.JournalArticle> findByG_U_F_C(
+		long groupId, long userId, java.util.List<java.lang.Long> folderIds,
+		long classNameId, long ownerId,
 		com.liferay.portal.kernel.dao.orm.QueryDefinition<com.liferay.portlet.journal.model.JournalArticle> queryDefinition);
 
 	public java.util.List<com.liferay.portlet.journal.model.JournalArticle> findByC_G_F_C_A_V_T_D_C_T_S_T_D_R(
