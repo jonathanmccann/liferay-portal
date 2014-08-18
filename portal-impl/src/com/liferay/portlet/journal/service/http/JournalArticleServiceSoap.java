@@ -943,6 +943,25 @@ public class JournalArticleServiceSoap {
 		}
 	}
 
+	public static com.liferay.portlet.journal.model.JournalArticleSoap[] getGroupArticles(
+		long groupId, long userId, long rootFolderId, int status, long ownerId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portlet.journal.model.JournalArticle> orderByComparator)
+		throws RemoteException {
+		try {
+			java.util.List<com.liferay.portlet.journal.model.JournalArticle> returnValue =
+				JournalArticleServiceUtil.getGroupArticles(groupId, userId,
+					rootFolderId, status, ownerId, start, end, orderByComparator);
+
+			return com.liferay.portlet.journal.model.JournalArticleSoap.toSoapModels(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
 	/**
 	* Returns the number of web content articles matching the group, user, and
 	* the root folder or any of its subfolders.
@@ -976,6 +995,21 @@ public class JournalArticleServiceSoap {
 		try {
 			int returnValue = JournalArticleServiceUtil.getGroupArticlesCount(groupId,
 					userId, rootFolderId, status);
+
+			return returnValue;
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static int getGroupArticlesCount(long groupId, long userId,
+		long rootFolderId, int status, long ownerId) throws RemoteException {
+		try {
+			int returnValue = JournalArticleServiceUtil.getGroupArticlesCount(groupId,
+					userId, rootFolderId, status, ownerId);
 
 			return returnValue;
 		}
