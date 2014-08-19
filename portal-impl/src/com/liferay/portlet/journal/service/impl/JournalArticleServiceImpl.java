@@ -999,20 +999,9 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			int end, OrderByComparator<JournalArticle> orderByComparator)
 		throws PortalException {
 
-		List<Long> folderIds = new ArrayList<Long>();
-
-		if (rootFolderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
-			folderIds = journalFolderService.getFolderIds(
-				groupId, rootFolderId);
-		}
-
-		QueryDefinition<JournalArticle> queryDefinition =
-			new QueryDefinition<JournalArticle>(
-				status, start, end, orderByComparator);
-
-		return journalArticleFinder.filterFindByG_U_F_C(
-			groupId, userId, folderIds,
-			JournalArticleConstants.CLASSNAME_ID_DEFAULT, queryDefinition);
+		return getGroupArticles(
+			groupId, userId, rootFolderId, status, 0, start, end,
+			orderByComparator);
 	}
 
 	/**
@@ -1046,6 +1035,30 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			end, orderByComparator);
 	}
 
+	@Override
+	public List<JournalArticle> getGroupArticles(
+			long groupId, long userId, long rootFolderId, int status,
+			long ownerId, int start, int end,
+			OrderByComparator<JournalArticle> orderByComparator)
+		throws PortalException {
+
+		List<Long> folderIds = new ArrayList<Long>();
+
+		if (rootFolderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
+			folderIds = journalFolderService.getFolderIds(
+				groupId, rootFolderId);
+		}
+
+		QueryDefinition<JournalArticle> queryDefinition =
+			new QueryDefinition<JournalArticle>(
+				status, start, end, orderByComparator);
+
+		return journalArticleFinder.filterFindByG_U_F_C(
+			groupId, userId, folderIds,
+			JournalArticleConstants.CLASSNAME_ID_DEFAULT, ownerId,
+			queryDefinition);
+	}
+
 	/**
 	 * Returns the number of web content articles matching the group, user, and
 	 * the root folder or any of its subfolders.
@@ -1073,6 +1086,15 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 			long groupId, long userId, long rootFolderId, int status)
 		throws PortalException {
 
+		return getGroupArticlesCount(groupId, userId, rootFolderId, status, 0);
+	}
+
+	@Override
+	public int getGroupArticlesCount(
+			long groupId, long userId, long rootFolderId, int status,
+			long ownerId)
+		throws PortalException {
+
 		List<Long> folderIds = new ArrayList<Long>();
 
 		if (rootFolderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
@@ -1085,7 +1107,8 @@ public class JournalArticleServiceImpl extends JournalArticleServiceBaseImpl {
 
 		return journalArticleFinder.filterCountByG_U_F_C(
 			groupId, userId, folderIds,
-			JournalArticleConstants.CLASSNAME_ID_DEFAULT, queryDefinition);
+			JournalArticleConstants.CLASSNAME_ID_DEFAULT, ownerId,
+			queryDefinition);
 	}
 
 	/**

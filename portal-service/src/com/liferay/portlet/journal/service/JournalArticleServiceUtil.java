@@ -877,6 +877,16 @@ public class JournalArticleServiceUtil {
 	}
 
 	public static java.util.List<com.liferay.portlet.journal.model.JournalArticle> getGroupArticles(
+		long groupId, long userId, long rootFolderId, int status, long ownerId,
+		int start, int end,
+		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portlet.journal.model.JournalArticle> orderByComparator)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .getGroupArticles(groupId, userId, rootFolderId, status,
+			ownerId, start, end, orderByComparator);
+	}
+
+	public static java.util.List<com.liferay.portlet.journal.model.JournalArticle> getGroupArticles(
 		long groupId, long userId, long rootFolderId, int status, int start,
 		int end,
 		com.liferay.portal.kernel.util.OrderByComparator<com.liferay.portlet.journal.model.JournalArticle> orderByComparator)
@@ -910,6 +920,14 @@ public class JournalArticleServiceUtil {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .getGroupArticlesCount(groupId, userId, rootFolderId, status);
+	}
+
+	public static int getGroupArticlesCount(long groupId, long userId,
+		long rootFolderId, int status, long ownerId)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .getGroupArticlesCount(groupId, userId, rootFolderId,
+			status, ownerId);
 	}
 
 	/**
