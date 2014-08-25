@@ -1507,12 +1507,15 @@ public class SitesImpl implements Sites {
 
 		Date modifiedDate = layoutPrototypeLayout.getModifiedDate();
 
-		if (lastMergeTime >= modifiedDate.getTime()) {
-			return;
-		}
-
 		UnicodeProperties prototypeTypeSettingsProperties =
 			layoutPrototypeLayout.getTypeSettingsProperties();
+
+		Date lastImportDate = new Date (GetterUtil.getLong(
+			prototypeTypeSettingsProperties.get("last-import-date")));
+
+		if (lastMergeTime >= modifiedDate.getTime() || lastMergeTime >= lastImportDate.getTime()) {
+			return;
+		}
 
 		int mergeFailCount = GetterUtil.getInteger(
 			prototypeTypeSettingsProperties.getProperty(MERGE_FAIL_COUNT));
