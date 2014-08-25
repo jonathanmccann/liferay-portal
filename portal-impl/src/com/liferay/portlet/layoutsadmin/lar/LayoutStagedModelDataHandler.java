@@ -80,6 +80,7 @@ import com.liferay.portlet.sites.util.SitesUtil;
 
 import java.io.IOException;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -535,6 +536,15 @@ public class LayoutStagedModelDataHandler
 			sb.append(parentLayoutId);
 
 			_log.debug(sb.toString());
+		}
+
+		if (layout.getLayoutPrototypeUuid() != null) {
+			UnicodeProperties prototypeTypeSettingsProperties =
+				layout.getTypeSettingsProperties();
+
+			prototypeTypeSettingsProperties.put(
+				"last-import-date", StringUtil.valueOf(
+					(new Date()).getTime() ));
 		}
 
 		importedLayout.setCompanyId(portletDataContext.getCompanyId());
