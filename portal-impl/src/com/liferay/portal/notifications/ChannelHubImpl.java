@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.notifications.ChannelHubManagerUtil;
 import com.liferay.portal.kernel.notifications.ChannelListener;
 import com.liferay.portal.kernel.notifications.NotificationEvent;
 import com.liferay.portal.kernel.notifications.UnknownChannelException;
+import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.model.CompanyConstants;
 import com.liferay.portal.service.UserNotificationEventLocalServiceUtil;
 import com.liferay.portal.util.PropsValues;
@@ -357,15 +358,27 @@ public class ChannelHubImpl implements ChannelHub {
 			return;
 		}
 
+		Thread currentThread = Thread.currentThread();
+
+		ClassLoader classLoader = currentThread.getContextClassLoader();
+
 		try {
 			UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
 				userId, notificationEvent);
+
+			ClassLoader portalClassLoader =
+				PortalClassLoaderUtil.getClassLoader();
+
+			currentThread.setContextClassLoader(portalClassLoader);
 
 			ChannelHubManagerUtil.sendClusterNotificationEvent(
 				_companyId, userId, notificationEvent);
 		}
 		catch (Exception e) {
 			throw new ChannelException("Unable to send event", e);
+		}
+		finally {
+			currentThread.setContextClassLoader(classLoader);
 		}
 	}
 
