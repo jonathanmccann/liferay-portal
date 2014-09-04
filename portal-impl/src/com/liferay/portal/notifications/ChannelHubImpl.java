@@ -318,6 +318,18 @@ public class ChannelHubImpl implements ChannelHub {
 		}
 	}
 
+	public void storeNotificationEvent(
+		long userId, NotificationEvent notificationEvent)
+		throws ChannelException {
+
+		Channel channel = fetchChannel(userId);
+
+		if (channel != null) {
+			channel.storeNotificationEvent(
+				notificationEvent, System.currentTimeMillis());
+		}
+	}
+
 	@Override
 	public void sendNotificationEvent(
 			long userId, NotificationEvent notificationEvent)

@@ -14,15 +14,21 @@
 
 package com.liferay.portal.notifications;
 
+import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
+import com.liferay.portal.kernel.cluster.ClusterRequest;
 import com.liferay.portal.kernel.notifications.Channel;
 import com.liferay.portal.kernel.notifications.ChannelException;
 import com.liferay.portal.kernel.notifications.ChannelHub;
 import com.liferay.portal.kernel.notifications.ChannelHubManager;
+import com.liferay.portal.kernel.notifications.ChannelHubManagerUtil;
 import com.liferay.portal.kernel.notifications.ChannelListener;
 import com.liferay.portal.kernel.notifications.DuplicateChannelHubException;
 import com.liferay.portal.kernel.notifications.NotificationEvent;
 import com.liferay.portal.kernel.notifications.UnknownChannelHubException;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
+import com.liferay.portal.kernel.util.MethodHandler;
+import com.liferay.portal.kernel.util.MethodKey;
+import com.liferay.portal.service.UserNotificationEventLocalServiceUtil;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -303,8 +309,37 @@ public class ChannelHubManagerImpl implements ChannelHubManager {
 	}
 
 	@Override
-	public void sendNotificationEvent(
+	public void sendClusterNotificationEvent(
 			long companyId, long userId, NotificationEvent notificationEvent)
+		throws ChannelException {
+
+		sendNotificationEvent(companyId, userId, notificationEvent);
+
+		MethodKey methodKey = new MethodKey(
+			ChannelHubManagerUtil.class, "storeNotificationEvent",
+			long.class, long.class, NotificationEvent.class);
+
+		MethodHandler methodHandler =
+			new MethodHandler(
+				methodKey, companyId, userId, notificationEvent);
+
+		ClusterRequest clusterRequest =
+			ClusterRequest.createMulticastRequest(methodHandler, true);
+
+		try {
+			UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
+				userId, notificationEvent);
+		}
+		catch (Exception e) {
+			throw new ChannelException("Unable to send event", e);
+		}
+
+		ClusterExecutorUtil.execute(clusterRequest);
+	}
+
+	@Override
+	public void sendNotificationEvent(
+		long companyId, long userId, NotificationEvent notificationEvent)
 		throws ChannelException {
 
 		ChannelHub channelHub = getChannelHub(companyId);
@@ -321,6 +356,16 @@ public class ChannelHubManagerImpl implements ChannelHubManager {
 		ChannelHub channelHub = getChannelHub(companyId);
 
 		channelHub.sendNotificationEvents(userId, notificationEvents);
+	}
+
+	public void storeNotificationEvent(
+		long companyId, long userId, NotificationEvent notificationEvent)
+		throws ChannelException {
+
+		ChannelHub channelHub = getChannelHub(companyId);
+
+		channelHub.storeNotificationEvent(
+			userId, notificationEvent);
 	}
 
 	public void setChannelHubPrototype(ChannelHub channelHub) {
