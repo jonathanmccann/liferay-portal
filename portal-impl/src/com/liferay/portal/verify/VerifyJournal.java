@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.service.ResourceLocalServiceUtil;
 import com.liferay.portal.util.PortalInstances;
@@ -59,6 +60,7 @@ public class VerifyJournal extends VerifyProcess {
 
 	@Override
 	protected void doVerify() throws Exception {
+		updateJournalContent();
 		updateFolderAssets();
 		verifyOracleNewLine();
 		verifyPermissionsAndAssets();
@@ -93,6 +95,58 @@ public class VerifyJournal extends VerifyProcess {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Assets verified for folders");
 		}
+	}
+
+	protected void updateJournalContent() throws Exception {
+		ActionableDynamicQuery actionableDynamicQuery =
+				JournalArticleLocalServiceUtil.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setPerformActionMethod(
+				new ActionableDynamicQuery.PerformActionMethod() {
+
+					@Override
+					public void performAction(Object object)
+							throws PortalException {
+						JournalArticle article = (JournalArticle) object;
+
+						String[] newArray = StringUtil.split(
+								article.getContent(), StringPool.FORWARD_SLASH);
+						String tempString = newArray[4].toString();
+
+						String[] tempArray = StringUtil.split(
+								tempString, StringPool.PERIOD);
+
+						StringBuilder newContentString = new StringBuilder();
+						newContentString.append(tempArray[0].toString());
+						Connection con = null;
+						PreparedStatement ps = null;
+						ResultSet rs = null;
+
+						try {
+							con = DataAccess.getUpgradeOptimizedConnection();
+							ps = con.prepareStatement(
+								"select * from DLFileEntry where Title LIKE " +
+										"'%" + newContentString + "%';");
+							rs = ps.executeQuery();
+							while (rs.next()) {
+								String uuid = rs.getString("uuid_");
+								newContentString.append("/" + uuid + "]]><");
+								newArray[4] = newContentString.toString();
+								article.setContent(
+										StringUtil.merge(
+										newArray, StringPool.FORWARD_SLASH));
+								JournalArticleLocalServiceUtil.
+									updateJournalArticle(article);
+							}
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+						finally {
+							DataAccess.cleanUp(con, ps, rs);
+						}
+					}
+				});
+		actionableDynamicQuery.performActions();
 	}
 
 	protected void updateURLTitle(
