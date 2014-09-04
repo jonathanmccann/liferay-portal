@@ -14,20 +14,9 @@
  */
 --%>
 
-<c:if test="<%= dlActionsDisplayContext.isShowActions() && dlFileVersionActionsDisplayContext.isMoveButtonVisible() %>">
+<%@ include file="/html/taglib/init.jsp" %>
 
-	<%
-	PortletURL moveURL = liferayPortletResponse.createRenderURL();
-
-	moveURL.setParameter("struts_action", "/document_library/move_entry");
-	moveURL.setParameter("fileShortcutIds", String.valueOf(fileShortcut.getFileShortcutId()));
-
-	moveURL.setParameter("redirect", viewFolderURL.toString());
-	%>
-
-	<liferay-ui:icon
-		iconCssClass="icon-move"
-		message="move"
-		url="<%= moveURL.toString() %>"
-	/>
-</c:if>
+<%@ page import="com.liferay.portal.kernel.servlet.taglib.ui.DeleteMenuItem" %><%@
+page import="com.liferay.portal.kernel.servlet.taglib.ui.JavascriptMenuItem" %><%@
+page import="com.liferay.portal.kernel.servlet.taglib.ui.MenuItem" %><%@
+page import="com.liferay.portal.kernel.servlet.taglib.ui.URLMenuItem" %>
