@@ -416,6 +416,7 @@ public class VerifyDocumentLibrary extends VerifyProcess {
 		checkMimeTypes();
 		checkTitles();
 		deleteOrphanedDLFileEntries();
+		updateClassNameId();
 		updateFileEntryAssets();
 		updateFolderAssets();
 		verifyTree();
@@ -432,6 +433,30 @@ public class VerifyDocumentLibrary extends VerifyProcess {
 		}
 
 		return mimeType;
+	}
+
+	protected void updateClassNameId() {
+		try {
+			StringBuilder sb = new StringBuilder(2);
+
+			sb.append("update DLFileEntry set classNameId = 0 ");
+			sb.append("where classNameId is null");
+
+			runSQL(sb.toString());
+		}
+		catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(
+					"unable to update classNameId column for file entries " +
+						"where classNameId is null", e);
+			}
+
+			return;
+		}
+
+		if (_log.isDebugEnabled()) {
+			_log.debug("classNameId column verified for file entries");
+		}
 	}
 
 	protected void updateFileEntryAssets() throws Exception {
