@@ -269,6 +269,16 @@ public class HtmlImplTest {
 		Assert.assertNull(_htmlImpl.stripComments(null));
 	}
 
+	@Test
+	public void testUnescapeHtmlEncodingAmpersand() {
+		Assert.assertEquals("&", _htmlImpl.unescape("&amp;"));
+	}
+
+	@Test
+	public void testUnescapeHtmlEncodingAmpersandInBetween() {
+		Assert.assertEquals("You & Me", _htmlImpl.unescape("You &amp; Me"));
+	}
+
 	protected void assertUnchangedEscape(String input) {
 		Assert.assertEquals(input, _htmlImpl.escape(input));
 	}
