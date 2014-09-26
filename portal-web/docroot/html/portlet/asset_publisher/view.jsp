@@ -152,7 +152,8 @@ boolean hasAddPortletURLs = false;
 </div>
 
 <%
-PortletURL portletURL = renderResponse.createRenderURL();
+RenderResponseImpl renderResponseImpl = (RenderResponseImpl)renderResponse;
+PortletURL portletURL = renderResponseImpl.createLiferayPortletURL(renderResponseImpl.getPlid(), renderResponseImpl.getPortletName(), PortletRequest.RENDER_PHASE, false);
 
 SearchContainer searchContainer = new SearchContainer(renderRequest, null, null, SearchContainer.DEFAULT_CUR_PARAM, assetPublisherDisplayContext.getDelta(), portletURL, null, null);
 
