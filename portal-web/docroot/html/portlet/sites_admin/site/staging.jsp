@@ -173,20 +173,6 @@ BackgroundTask lastCompletedInitialPublicationBackgroundTask = BackgroundTaskLoc
 
 			<%@ include file="/html/portlet/layouts_admin/error_remote_export_exception.jspf" %>
 
-			<liferay-ui:error exception="<%= RemoteExportException.class %>">
-
-				<%
-					RemoteExportException ree2 = (RemoteExportException)errorException;
-				%>
-
-				<liferay-ui:message key="force-disable-help" />
-
-				<c:if test="<%= ree2 != null && ree2.getType() == RemoteExportException.BAD_CONNECTION %>">
-					<aui:input checked="false" id="forceDisable" name="forceDisable" onClick='<%= renderResponse.getNamespace() + "forceDisableAlert();" %>' type="checkbox" />
-				</c:if>
-
-			</liferay-ui:error>
-
 			<aui:fieldset label="remote-live-connection-settings">
 				<%@ include file="/html/portlet/layouts_admin/error_remote_options_exception.jspf" %>
 
