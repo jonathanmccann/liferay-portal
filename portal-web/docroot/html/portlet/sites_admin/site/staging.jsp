@@ -259,9 +259,9 @@ BackgroundTask lastCompletedInitialPublicationBackgroundTask = BackgroundTaskLoc
 		</aui:script>
 
 		<aui:script>
-			function <portlet:namespace />forceDisableAlert() {
-				if (document.getElementById('<portlet:namespace />forceDisable').checked) {
-					alert('<liferay-ui:message key="force-disable-alert-message" />');
+			function <portlet:namespace />forceStagingOptionsAlert() {
+				if (document.getElementById('<portlet:namespace />forceStagingOptions').checked) {
+					alert('<liferay-ui:message key="force-staging-options-alert-message" />');
 				}
 			}
 		</aui:script>

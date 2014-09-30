@@ -204,11 +204,11 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 				disableRemoteStaging(remoteURL, remoteGroupId);
 			}
 			catch (RemoteExportException ree) {
-				boolean forceDisable = ParamUtil.getBoolean(
-					serviceContext, "forceDisable");
+				boolean forceStagingOptions = ParamUtil.getBoolean(
+					serviceContext, "forceStagingOptions");
 
 				if ((ree.getType() != RemoteExportException.BAD_CONNECTION) ||
-					!forceDisable) {
+					!forceStagingOptions) {
 
 					throw ree;
 				}
