@@ -261,7 +261,7 @@ BackgroundTask lastCompletedInitialPublicationBackgroundTask = BackgroundTaskLoc
 		<aui:script>
 			function <portlet:namespace />forceStagingOptionsAlert() {
 				if (document.getElementById('<portlet:namespace />forceStagingOptions').checked) {
-					alert('<liferay-ui:message key="force-staging-options-alert-message" />');
+					alert('<liferay-ui:message key="force-staging-options-alert" />');
 				}
 			}
 		</aui:script>
