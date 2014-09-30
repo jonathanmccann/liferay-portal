@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PropertiesParamUtil;
 import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.StreamUtil;
@@ -199,7 +200,19 @@ public class StagingLocalServiceImpl extends StagingLocalServiceBaseImpl {
 			long remoteGroupId = GetterUtil.getLong(
 				typeSettingsProperties.getProperty("remoteGroupId"));
 
-			disableRemoteStaging(remoteURL, remoteGroupId);
+			try {
+				disableRemoteStaging(remoteURL, remoteGroupId);
+			}
+			catch (RemoteExportException ree) {
+				boolean forceDisable = ParamUtil.getBoolean(
+					serviceContext, "forceDisable");
+
+				if ((ree.getType() != RemoteExportException.BAD_CONNECTION) ||
+					!forceDisable) {
+
+					throw ree;
+				}
+			}
 		}
 
 		typeSettingsProperties.remove("branchingPrivate");
