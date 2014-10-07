@@ -39,7 +39,9 @@ import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFileEntry;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFileVersion;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFolder;
+import com.liferay.portal.service.ServiceContextThreadLocal;
 import com.liferay.portal.util.PortalInstances;
+import com.liferay.portal.util.PortalUtil;
 import com.liferay.portlet.documentlibrary.DuplicateFileException;
 import com.liferay.portlet.documentlibrary.DuplicateFolderNameException;
 import com.liferay.portlet.documentlibrary.model.DLFileEntry;
@@ -67,6 +69,7 @@ import com.liferay.portlet.trash.service.TrashEntryLocalServiceUtil;
 
 import java.io.InputStream;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -531,6 +534,7 @@ public class VerifyDocumentLibrary extends VerifyProcess {
 		updateClassNameId();
 		updateFileEntryAssets();
 		updateFolderAssets();
+		updateFolderFileEntryTypes();
 		verifyTree();
 	}
 
@@ -700,6 +704,68 @@ public class VerifyDocumentLibrary extends VerifyProcess {
 		if (_log.isDebugEnabled()) {
 			_log.debug("Assets verified for folders");
 		}
+	}
+
+	protected void updateFolderFileEntryTypes() throws Exception {
+		ActionableDynamicQuery actionableDynamicQuery =
+			DLFolderLocalServiceUtil.getActionableDynamicQuery();
+
+		actionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod() {
+
+			@Override
+			public void performAction(Object object) throws PortalException {
+				DLFolder dlFolder = (DLFolder)object;
+
+				Folder folder = new LiferayFolder(dlFolder);
+
+				if (folder.isSupportsMetadata()) {
+					boolean inherited = !dlFolder.isOverrideFileEntryTypes();
+
+					List<DLFileEntryType> folderFileEntryTypes =
+						Collections.emptyList();
+
+					folderFileEntryTypes =
+						DLFileEntryTypeLocalServiceUtil.getFolderFileEntryTypes(
+							PortalUtil.getCurrentAndAncestorSiteGroupIds(
+								folder.getGroupId()),
+							folder.getFolderId(), inherited);
+
+					if (folderFileEntryTypes.isEmpty()) {
+						List<Long> fileEntryTypeIds = new ArrayList<Long>();
+
+						List<DLFileEntryType> groupFileEntryTypes =
+							DLFileEntryTypeLocalServiceUtil.getFileEntryTypes(
+								PortalUtil.getCurrentAndAncestorSiteGroupIds(
+									folder.getGroupId()));
+
+						for (DLFileEntryType groupFileEntryType :
+								groupFileEntryTypes) {
+
+							fileEntryTypeIds.add(
+								groupFileEntryType.getFileEntryTypeId());
+						}
+
+						DLFileEntryType dlFileEntryType =
+							DLFileEntryTypeLocalServiceUtil.
+								fetchDLFileEntryType(
+									DLFileEntryTypeConstants.
+										FILE_ENTRY_TYPE_ID_BASIC_DOCUMENT);
+
+						fileEntryTypeIds.add(
+							dlFileEntryType.getFileEntryTypeId());
+
+						DLFileEntryTypeLocalServiceUtil.
+							updateFolderFileEntryTypes(
+								dlFolder, fileEntryTypeIds, 0,
+								ServiceContextThreadLocal.getServiceContext());
+					}
+				}
+			}
+
+		});
+
+		actionableDynamicQuery.performActions();
 	}
 
 	protected void verifyTree() throws Exception {
