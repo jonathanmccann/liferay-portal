@@ -2513,8 +2513,8 @@ public class StringUtil {
 			expression.append(StringPool.PIPE);
 		}
 
-		expression.setStringAt(StringPool.CLOSE_PARENTHESIS,
-			expression.index() - 1);
+		expression.setStringAt(
+			StringPool.CLOSE_PARENTHESIS, expression.index() - 1);
 
 		Pattern pattern = Pattern.compile(expression.toString());
 

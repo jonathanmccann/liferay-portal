@@ -271,8 +271,8 @@ public class HtmlImplTest {
 
 	@Test
 	public void testUnescapeDoubleHtmlEncoding() {
-		Assert.assertEquals("&#034;",
-			_htmlImpl.unescape(_htmlImpl.escape("&#034;")));
+		Assert.assertEquals(
+			"&#034;", _htmlImpl.unescape(_htmlImpl.escape("&#034;")));
 	}
 
 	@Test
