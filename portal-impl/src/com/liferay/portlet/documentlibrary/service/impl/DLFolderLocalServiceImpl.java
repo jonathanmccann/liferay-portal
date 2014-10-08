@@ -896,6 +896,12 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 			DLFolder dlFolder = null;
 
 			if (folderId > DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) {
+				// Pass whether or not there is a workflow for -1 (FILE_ENTRY_TYPE_ID_ALL) to bypass the check
+				// if (fileEntryTypeIds.isEmpty() {
+				// 		String workflow = ParamUtil.getString(
+				//		serviceContext, "workflowDefinition" + -1);
+				//		if (Validator.isNull(workflow) {
+				//
 				dlFolder = dlFolderLocalService.updateFolderAndFileEntryTypes(
 					serviceContext.getUserId(), folderId, parentFolderId, name,
 					description, defaultFileEntryTypeId, fileEntryTypeIds,
