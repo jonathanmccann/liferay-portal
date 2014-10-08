@@ -3985,8 +3985,8 @@ public class StringUtil {
 
 			StringBundler sb = new StringBundler(collection.size());
 
-			for (Object obj1 : collection) {
-				sb.append(toHexString(obj1));
+			for (Object object : collection) {
+				sb.append(toHexString(object));
 			}
 
 			return sb.toString();
@@ -4004,20 +4004,20 @@ public class StringUtil {
 
 			StringBundler sb = new StringBundler(entrySet.size() * 2);
 
-			for (Map.Entry obj1 : entrySet) {
-				sb.append(toHexString(obj1.getKey()));
-				sb.append(toHexString(obj1.getValue()));
+			for (Map.Entry entry : entrySet) {
+				sb.append(toHexString(entry.getKey()));
+				sb.append(toHexString(entry.getValue()));
 			}
 
 			return sb.toString();
 		}
 		else if (obj instanceof Object[]) {
-			Object[] objs = (Object[])obj;
+			Object[] objects = (Object[])obj;
 
-			StringBundler sb = new StringBundler(objs.length);
+			StringBundler sb = new StringBundler(objects.length);
 
-			for (Object obj1 : objs) {
-				sb.append(toHexString(obj1));
+			for (Object object : objects) {
+				sb.append(toHexString(object));
 			}
 
 			return sb.toString();
