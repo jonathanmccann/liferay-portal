@@ -27,12 +27,6 @@ List<DLFileEntryType> fileEntryTypes = Collections.emptyList();
 
 boolean inherited = true;
 
-if ((folder != null) && (folder.getModel() instanceof DLFolder)) {
-	DLFolder dlFolder = (DLFolder)folder.getModel();
-
-	inherited = !dlFolder.isOverrideFileEntryTypes();
-}
-
 if ((folder == null) || folder.isSupportsMetadata()) {
 	fileEntryTypes = DLFileEntryTypeServiceUtil.getFolderFileEntryTypes(PortalUtil.getCurrentAndAncestorSiteGroupIds(scopeGroupId), folderId, inherited);
 }

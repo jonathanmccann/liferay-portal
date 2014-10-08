@@ -988,10 +988,6 @@ public class DLFolderLocalServiceImpl extends DLFolderLocalServiceBaseImpl {
 			ServiceContext serviceContext)
 		throws PortalException {
 
-		if (overrideFileEntryTypes && fileEntryTypeIds.isEmpty()) {
-			throw new RequiredFileEntryTypeException();
-		}
-
 		boolean hasLock = hasFolderLock(userId, folderId);
 
 		Lock lock = null;
