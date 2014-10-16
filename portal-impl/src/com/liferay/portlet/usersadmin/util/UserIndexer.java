@@ -16,6 +16,7 @@ package com.liferay.portlet.usersadmin.util;
 
 import com.liferay.portal.NoSuchContactException;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
@@ -29,6 +30,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchEngineUtil;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.model.Contact;
@@ -41,6 +43,8 @@ import com.liferay.portal.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortletKeys;
 import com.liferay.portal.util.PropsValues;
+import com.liferay.portal.util.comparator.UserFirstNameComparator;
+import com.liferay.portlet.social.model.SocialRelationConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -210,6 +214,26 @@ public class UserIndexer extends BaseIndexer {
 		else if (key.equals("usersUserGroups")) {
 			contextQuery.addRequiredTerm("userGroupIds", String.valueOf(value));
 		}
+		else if (key.equals("socialRelationType")) {
+			if (value instanceof Long[]) {
+				Long[] values = (Long[])value;
+
+				BooleanQuery socialRelationTypeQuery =
+					BooleanQueryFactoryUtil.create(searchContext);
+
+				for (long socialRelationType : values) {
+					socialRelationTypeQuery.addTerm(
+						"friends", socialRelationType);
+				}
+
+				contextQuery.add(
+					socialRelationTypeQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				contextQuery.addRequiredTerm(
+					"friends", String.valueOf(value));
+			}
+		}
 	}
 
 	@Override
@@ -262,6 +286,21 @@ public class UserIndexer extends BaseIndexer {
 		document.addText("screenName", user.getScreenName());
 		document.addKeyword("teamIds", user.getTeamIds());
 		document.addKeyword("userGroupIds", user.getUserGroupIds());
+
+		List<User> friends = UserLocalServiceUtil.getSocialUsers(
+			user.getUserId(), SocialRelationConstants.TYPE_BI_CONNECTION,
+			StringPool.EQUAL, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			new UserFirstNameComparator(true));
+
+		Long[] friendIds = new Long[friends.size()];
+
+		for (int i = 0; i < friends.size(); i++) {
+			User friend = friends.get(i);
+
+			friendIds[i] = friend.getUserId();
+		}
+
+		document.addKeyword("friends", friendIds);
 
 		populateAddresses(document, user.getAddresses(), 0, 0);
 
