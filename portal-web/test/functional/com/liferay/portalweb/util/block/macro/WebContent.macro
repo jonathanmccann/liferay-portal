@@ -868,20 +868,22 @@
 	</command>
 
 	<command name="editDisplayPageCP">
-		<execute macro="WebContent#gotoEditPG">
+		<execute macro="WebContent#gotoEditCP">
 			<var name="webContentTitle" value="${webContentTitle}" />
 		</execute>
 
 		<execute action="CPWebcontentAddwebcontent#assertClick" locator-key1="MENU_DISPLAY_PAGE" value1="Display Page" />
-		<execute action="CPWebcontentAddwebcontent#assertClick" locator-key1="DISPLAY_PAGE_SELECT" value1="Select" />
+		<execute action="CPWebcontentAddwebcontent#assertClick" locator-key1="DISPLAY_PAGE_CHOOSE" value1="Choose" />
 
 		<var name="key_pageName" value="${pageName}" />
 
+		<execute action="CPWebcontentAddwebcontentDisplaypageConfiguration#selectFrame" locator-key1="DISPLAY_PAGE_CONFIGURATION_IFRAME" />
 		<execute action="CPWebcontentAddwebcontentDisplaypageConfiguration#assertClick" locator-key1="NAVIGATION_PUBLIC_PAGE" value1="Public Pages" />
 		<execute action="CPWebcontentAddwebcontentDisplaypageConfiguration#assertClick" locator-key1="PUBLIC_PAGES_SELECTION" value1="${pageName}" />
 		<execute action="CPWebcontentAddwebcontentDisplaypageConfiguration#assertTextEquals" locator-key1="SELECTED_PAGE_INFO_MESSAGE" value1="Public Pages > ${pageName}" />
-		<execute action="CPWebcontentAddwebcontentDisplaypageConfiguration#assertClick" locator-key1="OK_BUTTON" value1="OK" />
+		<execute action="CPWebcontentAddwebcontentDisplaypageConfiguration#assertClick" locator-key1="CHOOSE_BUTTON" value1="Choose" />
 
+		<execute action="CPWebcontentAddwebcontent#selectFrame" value1="relative=top" />
 		<execute action="CPWebcontentAddwebcontent#assertTextEquals" locator-key1="DISPLAY_PAGE_SELECTION" value1="Public Pages > ${pageName}" />
 		<execute action="CPWebcontentAddwebcontent#assertClick" locator-key1="PUBLISH_BUTTON" value1="Publish" />
 

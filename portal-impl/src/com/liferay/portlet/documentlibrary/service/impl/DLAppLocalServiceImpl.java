@@ -493,9 +493,8 @@ public class DLAppLocalServiceImpl extends DLAppLocalServiceBaseImpl {
 	public void deleteFolder(long folderId) throws PortalException {
 		LocalRepository localRepository = getFolderLocalRepository(folderId);
 
-		List<FileEntry> fileEntries =
-			localRepository.getRepositoryFileEntries(
-				folderId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		List<FileEntry> fileEntries = localRepository.getRepositoryFileEntries(
+			folderId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		for (FileEntry fileEntry : fileEntries) {
 			dlAppHelperLocalService.deleteFileEntry(fileEntry);

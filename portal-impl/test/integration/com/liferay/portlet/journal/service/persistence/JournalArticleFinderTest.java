@@ -84,9 +84,8 @@ public class JournalArticleFinderTest {
 
 		_folder = JournalTestUtil.addFolder(_group.getGroupId(), "Folder 1");
 
-		_basicWebContentDDMStructure =
-			DDMStructureTestUtil.addStructure(
-				_group.getGroupId(), JournalArticle.class.getName());
+		_basicWebContentDDMStructure = DDMStructureTestUtil.addStructure(
+			_group.getGroupId(), JournalArticle.class.getName());
 
 		DDMTemplate basicWebContentTemplate = DDMTemplateTestUtil.addTemplate(
 			_group.getGroupId(), _basicWebContentDDMStructure.getStructureId());

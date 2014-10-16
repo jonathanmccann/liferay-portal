@@ -153,9 +153,8 @@ public class RPCResponseTest {
 			defaultNoticeableFuture.cancel(true);
 
 			ConcurrentMap<Long, DefaultNoticeableFuture<Serializable>>
-				defaultNoticeableFutures =
-					ReflectionTestUtil.getFieldValue(
-						asyncBroker, "_defaultNoticeableFutures");
+				defaultNoticeableFutures = ReflectionTestUtil.getFieldValue(
+					asyncBroker, "_defaultNoticeableFutures");
 
 			defaultNoticeableFutures.put(_ID, defaultNoticeableFuture);
 
@@ -196,9 +195,8 @@ public class RPCResponseTest {
 			defaultNoticeableFuture.cancel(true);
 
 			ConcurrentMap<Long, DefaultNoticeableFuture<Serializable>>
-				defaultNoticeableFutures =
-					ReflectionTestUtil.getFieldValue(
-						asyncBroker, "_defaultNoticeableFutures");
+				defaultNoticeableFutures = ReflectionTestUtil.getFieldValue(
+					asyncBroker, "_defaultNoticeableFutures");
 
 			defaultNoticeableFutures.put(_ID, defaultNoticeableFuture);
 

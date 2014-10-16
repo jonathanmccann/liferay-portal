@@ -872,9 +872,8 @@ public class RegistryTest {
 				new AtomicReference<TrackedOne>();
 
 			ServiceTrackerCustomizer<InterfaceOne, TrackedOne>
-				serviceTrackerCustomizer =
-					new MockServiceTrackerCustomizer(
-						interfaceOneA, interfaceOneB, referenceA, referenceB);
+				serviceTrackerCustomizer = new MockServiceTrackerCustomizer(
+					interfaceOneA, interfaceOneB, referenceA, referenceB);
 
 			ServiceTracker<InterfaceOne, TrackedOne> serviceTracker =
 				getServiceTracker(serviceTrackerCustomizer);

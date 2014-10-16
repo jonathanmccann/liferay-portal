@@ -788,9 +788,8 @@ public class LayoutImporter {
 			UnicodeProperties settingsProperties =
 				layoutSet.getSettingsProperties();
 
-			String mergeFailFriendlyURLLayouts =
-				settingsProperties.getProperty(
-					Sites.MERGE_FAIL_FRIENDLY_URL_LAYOUTS);
+			String mergeFailFriendlyURLLayouts = settingsProperties.getProperty(
+				Sites.MERGE_FAIL_FRIENDLY_URL_LAYOUTS);
 
 			if (Validator.isNull(mergeFailFriendlyURLLayouts) &&
 				modifiedLayouts.isEmpty()) {
