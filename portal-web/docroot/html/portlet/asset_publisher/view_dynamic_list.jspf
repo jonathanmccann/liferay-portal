@@ -62,6 +62,23 @@ if (!portletName.equals(PortletKeys.RELATED_ASSETS) || (assetEntryQuery.getLinke
 				assetEntryQuery.setStart(start);
 
 				results = AssetEntryServiceUtil.getEntries(assetEntryQuery);
+
+				List<AssetEntry> indexableResults = new ArrayList<AssetEntry>();
+
+				for (AssetEntry assetEntry : results) {
+					if (assetEntry.getClassNameId() == PortalUtil.getClassNameId(JournalArticle.class)) {
+						JournalArticle journalArticle = JournalArticleLocalServiceUtil.getLatestArticle(assetEntry.getClassPK());
+
+						if (journalArticle.isIndexable()) {
+							indexableResults.add(assetEntry);
+						}
+					}
+					else {
+						indexableResults.add(assetEntry);
+					}
+				}
+
+				results = indexableResults;
 			}
 
 			if (!results.isEmpty() && (start < groupTotal)) {
@@ -128,6 +145,23 @@ if (!portletName.equals(PortletKeys.RELATED_ASSETS) || (assetEntryQuery.getLinke
 			assetEntryQuery.setStart(start);
 
 			results = AssetEntryServiceUtil.getEntries(assetEntryQuery);
+
+			List<AssetEntry> indexableResults = new ArrayList<AssetEntry>();
+
+			for (AssetEntry assetEntry : results) {
+				if (assetEntry.getClassNameId() == PortalUtil.getClassNameId(JournalArticle.class)) {
+					JournalArticle journalArticle = JournalArticleLocalServiceUtil.getLatestArticle(assetEntry.getClassPK());
+
+					if (journalArticle.isIndexable()) {
+						indexableResults.add(assetEntry);
+					}
+				}
+				else {
+					indexableResults.add(assetEntry);
+				}
+			}
+
+			results = indexableResults;
 		}
 
 		if (!results.isEmpty() && (start < total)) {
@@ -174,6 +208,23 @@ if (!portletName.equals(PortletKeys.RELATED_ASSETS) || (assetEntryQuery.getLinke
 				assetEntryQuery.setStart(start);
 
 				results = AssetEntryServiceUtil.getEntries(assetEntryQuery);
+
+				List<AssetEntry> indexableResults = new ArrayList<AssetEntry>();
+
+				for (AssetEntry assetEntry : results) {
+					if (assetEntry.getClassNameId() == PortalUtil.getClassNameId(JournalArticle.class)) {
+						JournalArticle journalArticle = JournalArticleLocalServiceUtil.getLatestArticle(assetEntry.getClassPK());
+
+						if (journalArticle.isIndexable()) {
+							indexableResults.add(assetEntry);
+						}
+					}
+					else {
+						indexableResults.add(assetEntry);
+					}
+				}
+
+				results = indexableResults;
 			}
 
 			searchContainer.setResults(results);
