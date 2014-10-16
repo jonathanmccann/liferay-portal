@@ -846,9 +846,8 @@ public class DefaultDLViewFileVersionDisplayContext
 	}
 
 	private LiferayPortletRequest _getLiferayPortletRequest() {
-		PortletRequest portletRequest =
-			(PortletRequest)_request.getAttribute(
-				JavaConstants.JAVAX_PORTLET_REQUEST);
+		PortletRequest portletRequest = (PortletRequest)_request.getAttribute(
+			JavaConstants.JAVAX_PORTLET_REQUEST);
 
 		return PortalUtil.getLiferayPortletRequest(portletRequest);
 	}

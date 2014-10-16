@@ -36,6 +36,15 @@ public class CombineLines extends SuperClass {
 	public void method2() throws Exception {
 		String test1 = getString("test1");
 
+		String test2 = getString(
+			"test1", "test2", "test3", "test4", "test5", "test6");
+
+		String test3 = getString(
+			"test1", "test2", "test3", "test4", "test5", "test6", "test7");
+
+		String test4 =
+			getString("test1", "test2", "test3") + getString("test4", "test5");
+
 		List<String> testList = new ArrayList<String>();
 
 		for (String test2 : testList) {

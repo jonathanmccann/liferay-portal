@@ -613,7 +613,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 				}
 
 				if (trimmedPreviousLine.equals("%>") &&
-					Validator.isNotNull(line) &&  !trimmedLine.equals("-->")) {
+					Validator.isNotNull(line) && !trimmedLine.equals("-->")) {
 
 					sb.append("\n");
 				}
@@ -646,7 +646,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 				if ((trimmedLine.startsWith("if (") ||
 					 trimmedLine.startsWith("else if (") ||
 					 trimmedLine.startsWith("while (")) &&
-					 trimmedLine.endsWith(") {")) {
+					trimmedLine.endsWith(") {")) {
 
 					checkIfClauseParentheses(trimmedLine, fileName, lineCount);
 				}
@@ -672,11 +672,11 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 								readAttributes = false;
 							}
 							else if (trimmedLine.endsWith(
-								StringPool.APOSTROPHE) &&
-								!trimmedLine.contains(StringPool.QUOTE)) {
+										StringPool.APOSTROPHE) &&
+									 !trimmedLine.contains(StringPool.QUOTE)) {
 
 								line = StringUtil.replace(
-									line, StringPool.APOSTROPHE, 
+									line, StringPool.APOSTROPHE,
 										StringPool.QUOTE);
 
 								readAttributes = false;
@@ -694,7 +694,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 									readAttributes = false;
 								}
 								else if (Validator.isNull(
-										   previousAttributeAndValue) &&
+											previousAttributeAndValue) &&
 										 (previousAttribute.compareTo(
 											 attribute) > 0)) {
 
@@ -780,7 +780,7 @@ public class JSPSourceProcessor extends BaseSourceProcessor {
 							line, StringPool.DOUBLE_SPACE, StringPool.SPACE);
 
 						trimmedLine = StringUtil.replaceLast(
-							trimmedLine, StringPool.DOUBLE_SPACE, 
+							trimmedLine, StringPool.DOUBLE_SPACE,
 							StringPool.SPACE);
 					}
 				}

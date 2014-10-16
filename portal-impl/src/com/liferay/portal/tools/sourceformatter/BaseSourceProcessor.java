@@ -1391,7 +1391,7 @@ public abstract class BaseSourceProcessor implements SourceProcessor {
 
 		StringBundler sb = new StringBundler();
 
-		try (UnsyncBufferedReader unsyncBufferedReader = 
+		try (UnsyncBufferedReader unsyncBufferedReader =
 				new UnsyncBufferedReader(new UnsyncStringReader(content))) {
 
 			String line = null;

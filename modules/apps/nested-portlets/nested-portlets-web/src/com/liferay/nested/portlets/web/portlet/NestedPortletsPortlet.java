@@ -144,9 +144,8 @@ public class NestedPortletsPortlet extends MVCPortlet {
 
 			Matcher columnIdMatcher = _columnIdPattern.matcher(content);
 
-			templateContent =
-				columnIdMatcher.replaceAll(
-					"$1" + renderResponse.getNamespace() + "$2$3");
+			templateContent = columnIdMatcher.replaceAll(
+				"$1" + renderResponse.getNamespace() + "$2$3");
 		}
 
 		checkLayout(themeDisplay.getLayout(), columnIds.values());

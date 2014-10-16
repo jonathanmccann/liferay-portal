@@ -1205,9 +1205,8 @@ public abstract class BaseIndexer implements Indexer {
 			selectedFieldNames.add(defaultLocalizedSelectedFieldName);
 
 			for (String languageId : languageIds) {
-				String localizedFieldName =
-					LocalizationUtil.getLocalizedName(
-						defaultLocalizedSelectedFieldName, languageId);
+				String localizedFieldName = LocalizationUtil.getLocalizedName(
+					defaultLocalizedSelectedFieldName, languageId);
 
 				selectedFieldNames.add(localizedFieldName);
 			}

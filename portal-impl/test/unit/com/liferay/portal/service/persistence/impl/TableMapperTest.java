@@ -991,9 +991,8 @@ public class TableMapperTest {
 
 		long leftPrimaryKey = 1;
 
-		List<Right> rights =
-			_tableMapperImpl.getRightBaseModels(
-				leftPrimaryKey, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		List<Right> rights = _tableMapperImpl.getRightBaseModels(
+			leftPrimaryKey, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 
 		Assert.assertSame(Collections.emptyList(), rights);
 

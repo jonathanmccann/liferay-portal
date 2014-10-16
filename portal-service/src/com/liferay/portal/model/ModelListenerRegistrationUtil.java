@@ -84,9 +84,8 @@ public class ModelListenerRegistrationUtil {
 
 		Registry registry = RegistryUtil.getRegistry();
 
-		ServiceRegistration<?> serviceRegistration =
-			registry.registerService(
-				ModelListener.class.getName(), modelListener);
+		ServiceRegistration<?> serviceRegistration = registry.registerService(
+			ModelListener.class.getName(), modelListener);
 
 		_serviceRegistrations.put(className, serviceRegistration);
 	}

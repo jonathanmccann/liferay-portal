@@ -850,9 +850,8 @@ public class ExpandoValueConversionTest {
 	public void testShort1() {
 		Short positiveShort = 456;
 
-		Short convertedShort =
-			_converter.convertType(
-				ExpandoColumnConstants.SHORT, positiveShort.toString());
+		Short convertedShort = _converter.convertType(
+			ExpandoColumnConstants.SHORT, positiveShort.toString());
 
 		Assert.assertEquals(positiveShort, convertedShort);
 	}

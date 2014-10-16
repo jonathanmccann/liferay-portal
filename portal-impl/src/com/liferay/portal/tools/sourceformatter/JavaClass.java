@@ -90,12 +90,6 @@ public class JavaClass {
 		JavaClass.TYPE_VARIABLE_PUBLIC, JavaClass.TYPE_VARIABLE_PUBLIC_STATIC,
 	};
 
-	public static final int[] TYPE_VARIABLE_STATIC = {
-		JavaClass.TYPE_VARIABLE_PRIVATE_STATIC,
-		JavaClass.TYPE_VARIABLE_PROTECTED_STATIC,
-		JavaClass.TYPE_VARIABLE_PUBLIC_STATIC
-	};
-
 	public static final int TYPE_VARIABLE_PRIVATE = 22;
 
 	public static final int TYPE_VARIABLE_PRIVATE_STATIC = 20;
@@ -107,6 +101,12 @@ public class JavaClass {
 	public static final int TYPE_VARIABLE_PUBLIC = 6;
 
 	public static final int TYPE_VARIABLE_PUBLIC_STATIC = 1;
+
+	public static final int[] TYPE_VARIABLE_STATIC = {
+		JavaClass.TYPE_VARIABLE_PRIVATE_STATIC,
+		JavaClass.TYPE_VARIABLE_PROTECTED_STATIC,
+		JavaClass.TYPE_VARIABLE_PUBLIC_STATIC
+	};
 
 	public JavaClass(
 			String fileName, String absolutePath, String content, int lineCount,
@@ -213,7 +213,7 @@ public class JavaClass {
 			JavaTerm javaTerm = javaTermsIterator.next();
 
 			if (!isInJavaTermTypeGroup(
-				javaTerm.getType(), TYPE_VARIABLE_STATIC)) {
+					javaTerm.getType(), TYPE_VARIABLE_STATIC)) {
 
 				newJavaTerms.add(javaTerm);
 

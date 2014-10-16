@@ -2031,9 +2031,8 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 				MapUtil.getBoolean(
 					parameterMap,
 					PortletDataHandlerKeys.PORTLET_ARCHIVED_SETUPS_ALL);
-			exportCurPortletSetup =
-				MapUtil.getBoolean(
-					parameterMap, PortletDataHandlerKeys.PORTLET_SETUP_ALL);
+			exportCurPortletSetup = MapUtil.getBoolean(
+				parameterMap, PortletDataHandlerKeys.PORTLET_SETUP_ALL);
 			exportCurPortletUserPreferences =
 				MapUtil.getBoolean(
 					parameterMap,
@@ -2097,9 +2096,8 @@ public class ExportImportHelperImpl implements ExportImportHelper {
 			long groupId = MapUtil.getLong(map, "groupId");
 
 			if (Validator.isNotNull(uuid)) {
-				fileEntry =
-					DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
-						uuid, groupId);
+				fileEntry = DLAppLocalServiceUtil.getFileEntryByUuidAndGroupId(
+					uuid, groupId);
 			}
 			else {
 				if (map.containsKey("folderId")) {

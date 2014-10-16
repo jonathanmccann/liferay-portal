@@ -138,7 +138,7 @@ public class JavaTerm {
 	private int _lineCount;
 	private String _name;
 	private List<String> _parameterTypes;
-	private Pattern _parameterTypesPattern = Pattern.compile(
+	private final Pattern _parameterTypesPattern = Pattern.compile(
 		"\t(private |protected |public )([\\s\\S]*?)\\(([\\s\\S]*?)\\)");
 	private int _type;
 

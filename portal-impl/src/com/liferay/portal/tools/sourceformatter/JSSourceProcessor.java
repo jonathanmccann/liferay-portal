@@ -97,7 +97,7 @@ public class JSSourceProcessor extends BaseSourceProcessor {
 		}
 	}
 
-	private Pattern _multipleVarsOnSingleLinePattern = Pattern.compile(
+	private final Pattern _multipleVarsOnSingleLinePattern = Pattern.compile(
 		"\t+var \\w+\\, ");
 
 }

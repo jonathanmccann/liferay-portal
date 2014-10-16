@@ -127,9 +127,8 @@ public class HotDeployEvent {
 
 			Properties properties = PropertiesUtil.load(propertiesString);
 
-			String[] pluginPackgeRequiredDeploymentContexts =
-				StringUtil.split(
-					properties.getProperty("required-deployment-contexts"));
+			String[] pluginPackgeRequiredDeploymentContexts = StringUtil.split(
+				properties.getProperty("required-deployment-contexts"));
 
 			for (String pluginPackageRequiredDeploymentContext :
 					pluginPackgeRequiredDeploymentContexts) {

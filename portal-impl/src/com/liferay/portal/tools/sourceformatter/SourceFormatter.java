@@ -162,11 +162,11 @@ public class SourceFormatter {
 		}
 	}
 
-	private boolean _autoFix;
-	private Set<String> _errorMessages = new LinkedHashSet<String>();
+	private final boolean _autoFix;
+	private final Set<String> _errorMessages = new LinkedHashSet<String>();
 	private SourceMismatchException _firstSourceMismatchException;
-	private boolean _printErrors;
-	private boolean _throwException;
-	private boolean _useProperties;
+	private final boolean _printErrors;
+	private final boolean _throwException;
+	private final boolean _useProperties;
 
 }

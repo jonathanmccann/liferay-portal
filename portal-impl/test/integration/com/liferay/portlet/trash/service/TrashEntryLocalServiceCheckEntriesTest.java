@@ -230,9 +230,8 @@ public class TrashEntryLocalServiceCheckEntriesTest {
 		if (expired) {
 			int maxAge = TrashUtil.getMaxAge(group);
 
-			TrashEntry trashEntry =
-				TrashEntryLocalServiceUtil.getEntry(
-					DLFileEntry.class.getName(), fileEntry.getFileEntryId());
+			TrashEntry trashEntry = TrashEntryLocalServiceUtil.getEntry(
+				DLFileEntry.class.getName(), fileEntry.getFileEntryId());
 
 			Date createDate = trashEntry.getCreateDate();
 
