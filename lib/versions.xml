@@ -1874,7 +1874,7 @@
 					</license>
 				</licenses>
 				<comments>
-					This includes a public patch from HHH-6286.
+					This includes public patches from HHH-6286 and HHH-8310.
 				</comments>
 			</library>
 			<library>
