@@ -18,6 +18,7 @@ import com.liferay.portal.NoSuchLayoutException;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.notifications.ChannelException;
 import com.liferay.portal.kernel.notifications.ChannelHubManagerUtil;
 import com.liferay.portal.kernel.poller.PollerHeader;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
@@ -93,10 +94,21 @@ public class PollerServlet extends HttpServlet {
 		SynchronousPollerChannelListener synchronousPollerChannelListener =
 			new SynchronousPollerChannelListener();
 
+		boolean registrationError = false;
+
 		try {
 			ChannelHubManagerUtil.registerChannelListener(
 				companyId, userId, synchronousPollerChannelListener);
+		}
+		catch (ChannelException ce) {
+			registrationError = true;
 
+			if (_log.isWarnEnabled()) {
+				_log.warn(ce.getMessage(), ce);
+			}
+		}
+
+		try {
 			JSONObject pollerResponseHeaderJSONObject =
 				PollerRequestHandlerUtil.processRequest(
 					request, pollerRequestString);
@@ -110,8 +122,10 @@ public class PollerServlet extends HttpServlet {
 				PropsValues.POLLER_REQUEST_TIMEOUT);
 		}
 		finally {
-			ChannelHubManagerUtil.unregisterChannelListener(
-				companyId, userId, synchronousPollerChannelListener);
+			if (!registrationError) {
+				ChannelHubManagerUtil.unregisterChannelListener(
+					companyId, userId, synchronousPollerChannelListener);
+			}
 		}
 	}
 
