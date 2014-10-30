@@ -138,7 +138,6 @@ else {
 						<liferay-util:include page="/html/portlet/document_library/folder_action.jsp" />
 					</aui:nav-item>
 
-					<c:if test="<%= rootFolderId == DLFolderConstants.DEFAULT_PARENT_FOLDER_ID %>">
 						<portlet:renderURL var="viewRecentDocumentsURL">
 							<portlet:param name="struts_action" value="/document_library/view" />
 							<portlet:param name="navigation" value="recent" />
@@ -187,7 +186,6 @@ else {
 								selected='<%= browseBy.equals("file-entry-type") %>'
 							/>
 						</c:if>
-					</c:if>
 
 					<%
 					List<Folder> mountFolders = DLAppServiceUtil.getMountFolders(scopeGroupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, searchContainer.getStart(), searchContainer.getEnd());
@@ -279,7 +277,7 @@ else {
 							<portlet:renderURL var="viewBasicFileEntryTypeURL">
 								<portlet:param name="struts_action" value="/document_library/view" />
 								<portlet:param name="browseBy" value="file-entry-type" />
-								<portlet:param name="folderId" value="<%= String.valueOf(DLFolderConstants.DEFAULT_PARENT_FOLDER_ID) %>" />
+								<portlet:param name="folderId" value="<%= String.valueOf(rootFolderId) %>" />
 								<portlet:param name="fileEntryTypeId" value="<%= String.valueOf(0) %>" />
 							</portlet:renderURL>
 
