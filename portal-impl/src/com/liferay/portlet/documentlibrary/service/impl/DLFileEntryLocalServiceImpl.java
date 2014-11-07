@@ -628,7 +628,7 @@ public class DLFileEntryLocalServiceImpl
 			new IntervalAction.PerformIntervalActionMethod() {
 
 				@Override
-				public void performIntervalAction(int start, int end)
+				public void performAction(int start, int end)
 					throws PortalException {
 
 					List<DLFileEntry> dlFileEntries =
@@ -641,8 +641,8 @@ public class DLFileEntryLocalServiceImpl
 
 			});
 
-		intervalActionInstance.setCount(count);
-		intervalActionInstance.performInterval();
+		intervalActionInstance.setTotal(count);
+		intervalActionInstance.performActions();
 	}
 
 	@Override
