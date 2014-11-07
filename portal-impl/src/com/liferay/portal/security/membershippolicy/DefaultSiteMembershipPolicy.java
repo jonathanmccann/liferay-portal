@@ -216,9 +216,9 @@ public class DefaultSiteMembershipPolicy extends BaseSiteMembershipPolicy {
 
 		int count = UserLocalServiceUtil.getGroupUsersCount(group.getGroupId());
 
-		final IntervalAction intervalActionInstance = new IntervalAction();
+		final IntervalAction intervalAction = new IntervalAction();
 
-		intervalActionInstance.setPerformActionMethod(
+		intervalAction.setPerformActionMethod(
 			new IntervalAction.PerformIntervalActionMethod() {
 
 				@Override
@@ -237,15 +237,15 @@ public class DefaultSiteMembershipPolicy extends BaseSiteMembershipPolicy {
 								new long[]{user.getUserId()}, null);
 						}
 						else {
-							intervalActionInstance.incrementStart();
+							intervalAction.incrementStart();
 						}
 					}
 				}
 
 			});
 
-		intervalActionInstance.setTotal(count);
-		intervalActionInstance.performActions();
+		intervalAction.setTotal(count);
+		intervalAction.performActions();
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
