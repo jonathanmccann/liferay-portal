@@ -464,18 +464,18 @@ public class AnnouncementsEntryLocalServiceImpl
 			final String toAddress, final Company company)
 		throws PortalException {
 
-		int count = 0;
+		int total = 0;
 
 		if (teamId > 0) {
-			count = userLocalService.getTeamUsersCount(teamId);
+			total = userLocalService.getTeamUsersCount(teamId);
 		}
 		else {
-			count = userLocalService.searchCount(
+			total = userLocalService.searchCount(
 				company.getCompanyId(), null, WorkflowConstants.STATUS_APPROVED,
 				params);
 		}
 
-		IntervalAction intervalAction = new IntervalAction();
+		IntervalAction intervalAction = new IntervalAction(total);
 
 		intervalAction.setPerformActionMethod(
 			new IntervalAction.PerformIntervalActionMethod() {
@@ -503,7 +503,6 @@ public class AnnouncementsEntryLocalServiceImpl
 
 			});
 
-		intervalAction.setTotal(count);
 		intervalAction.performActions();
 	}
 
