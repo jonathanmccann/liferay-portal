@@ -15,6 +15,7 @@
 package com.liferay.portal.service;
 
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.TreePathUtil;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.TreeModel;
 import com.liferay.portal.test.DeleteAfterTestRun;
@@ -44,6 +45,19 @@ public abstract class BaseLocalServiceTreeTestCase {
 	public void tearDown() throws Exception {
 		for (int i = _treeModels.size() - 1; i >= 0; i--) {
 			deleteTreeModel(_treeModels.get(i));
+		}
+	}
+
+	@Test
+	public void testGetPrimaryKeys() throws Exception {
+		for (TreeModel treeModel : _treeModels) {
+			long primaryKey = GetterUtil.getLong(treeModel.getPrimaryKeyObj());
+
+			treeModel = getTreeModel(primaryKey);
+
+			Assert.assertEquals(
+				TreePathUtil.getPrimaryKeys(treeModel.buildTreePath()),
+				TreePathUtil.getPrimaryKeys(treeModel.getTreePath()));
 		}
 	}
 
