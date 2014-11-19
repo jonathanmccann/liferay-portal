@@ -645,9 +645,7 @@ currentURLObj.setParameter("historyKey", renderResponse.getNamespace() + "roles"
 			function(event) {
 				event.selectors.each(
 					function(item, index, collection) {
-						var modifyLink = searchContainerContentBox.one('.modify-link[data-rowid="' + item.attr('data-roleid') + '"]');
-
-						if (!modifyLink) {
+						if (A.Array.indexOf(deleteRoleIds, item.attr('data-roleid')) != -1) {
 							Util.toggleDisabled(item, false);
 						}
 					}
