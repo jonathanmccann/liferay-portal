@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.transaction.TransactionCommitCallbackRegistryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ListUtil;
@@ -84,6 +85,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * Provides the local service for accessing, adding, deleting, and updating
@@ -331,6 +333,23 @@ public class OrganizationLocalServiceImpl
 				Organization.class);
 
 			indexer.reindex(organization);
+		}
+
+		if (parentOrganizationId !=
+				OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID) {
+
+			List<Organization> ancestors = getParentOrganizations(
+				organizationId);
+
+			long[] ancestorIds = new long[ancestors.size()];
+
+			for (int i = 0; i < ancestorIds.length; i++) {
+				Organization ancestor = ancestors.get(i);
+
+				ancestorIds[i] = ancestor.getOrganizationId();
+			}
+
+			reindexOrganizationUsers(ancestorIds);
 		}
 
 		return organization;
@@ -1890,7 +1909,18 @@ public class OrganizationLocalServiceImpl
 			Organization.class);
 
 		if (oldParentOrganizationId != parentOrganizationId) {
+			Organization oldParentOrganization = getOrganization(
+				oldParentOrganizationId);
+
+			long[] oldAncestors = ArrayUtil.append(
+				oldParentOrganization.getAncestorOrganizationIds(),
+				oldParentOrganizationId);
+
+			reindexOrganizationUsers(oldAncestors);
+
 			long[] organizationIds = getReindexOrganizationIds(organization);
+
+			reindexOrganizationUsers(organizationIds);
 
 			indexer.reindex(organizationIds);
 		}
@@ -2148,6 +2178,33 @@ public class OrganizationLocalServiceImpl
 		}
 
 		return true;
+	}
+
+	protected void reindexOrganizationUsers(long[] organizationIds) {
+		for (long organizationId : organizationIds) {
+			final long[] userIds = getUserPrimaryKeys(organizationId);
+
+			final Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+				User.class);
+
+			Callable<Void> callable = new Callable<Void>() {
+
+				@Override
+				public Void call() throws Exception {
+					for (long userId : userIds) {
+						User user = userLocalService.fetchUser(userId);
+
+						if (user != null) {
+							indexer.reindex(user);
+						}
+					}
+
+					return null;
+				}
+			};
+
+			TransactionCommitCallbackRegistryUtil.registerCallback(callable);
+		}
 	}
 
 	protected void validate(

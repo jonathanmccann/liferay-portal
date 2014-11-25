@@ -50,6 +50,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -205,6 +206,24 @@ public class UserIndexer extends BaseIndexer {
 			contextQuery.addRequiredTerm(
 				"organizationCount", String.valueOf(value));
 		}
+		else if (key.equals("usersOrgsTree")) {
+			if (value instanceof Long[]) {
+				Long[] values = (Long[])value;
+
+				BooleanQuery usersGroupsQuery = BooleanQueryFactoryUtil.create(
+					searchContext);
+
+				for (long organizationId : values) {
+					usersGroupsQuery.addTerm("orgTreeIds", organizationId);
+				}
+
+				contextQuery.add(usersGroupsQuery, BooleanClauseOccur.MUST);
+			}
+			else {
+				contextQuery.addRequiredTerm(
+					"orgTreeIds", String.valueOf(value));
+			}
+		}
 		else if (key.equals("usersPasswordPolicies")) {
 			contextQuery.addRequiredTerm(
 				"passwordPolicyId", String.valueOf(value));
@@ -269,6 +288,9 @@ public class UserIndexer extends BaseIndexer {
 		document.addText("screenName", user.getScreenName());
 		document.addKeyword("teamIds", user.getTeamIds());
 		document.addKeyword("userGroupIds", user.getUserGroupIds());
+
+		document.addKeyword(
+			"orgTreeIds", getOrgTreeOrganizationIds(organizationIds));
 
 		document.addKeyword(
 			"passwordPolicyId", getPasswordPolicyId(user.getUserId()));
@@ -431,6 +453,31 @@ public class UserIndexer extends BaseIndexer {
 		}
 
 		return ArrayUtil.toLongArray(ancestorOrganizationIds);
+	}
+
+	protected long[] getOrgTreeOrganizationIds(long[] organizationIds)
+		throws PortalException {
+
+		List<Organization> orgTreeOrganizations = new ArrayList<Organization>();
+
+		for (long organizationId : organizationIds) {
+			Organization organization =
+				OrganizationLocalServiceUtil.getOrganization(organizationId);
+
+			orgTreeOrganizations.add(organization);
+
+			orgTreeOrganizations.addAll(organization.getDescendants());
+		}
+
+		long[] orgTreeOrganizationIds = new long[orgTreeOrganizations.size()];
+
+		for (int i = 0; i < orgTreeOrganizations.size(); i++) {
+			Organization orgTreeOrganzation = orgTreeOrganizations.get(i);
+
+			orgTreeOrganizationIds[i] = orgTreeOrganzation.getOrganizationId();
+		}
+
+		return orgTreeOrganizationIds;
 	}
 
 	protected long getPasswordPolicyId(long userId) {
