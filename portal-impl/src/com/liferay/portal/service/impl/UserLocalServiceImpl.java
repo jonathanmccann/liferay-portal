@@ -477,6 +477,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	public void addPasswordPolicyUsers(long passwordPolicyId, long[] userIds) {
 		passwordPolicyRelLocalService.addPasswordPolicyRels(
 			passwordPolicyId, User.class.getName(), userIds);
+
+		for (long userId : userIds) {
+			User user = fetchUser(userId);
+
+			if (user != null) {
+				reindex(user);
+			}
+		}
 	}
 
 	/**
@@ -3921,6 +3929,14 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 		passwordPolicyRelLocalService.deletePasswordPolicyRels(
 			passwordPolicyId, User.class.getName(), userIds);
+
+		for (long userId : userIds) {
+			User user = fetchUser(userId);
+
+			if (user != null) {
+				reindex(user);
+			}
+		}
 	}
 
 	/**
