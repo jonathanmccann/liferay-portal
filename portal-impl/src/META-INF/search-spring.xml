@@ -187,11 +187,14 @@
 				<entry key="entryClassName" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
 				<entry key="entryClassPK" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
 				<entry key="extension" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
+				<entry key="firstName" value-ref="standardAnalyzerWithNoStopWords" />
 				<entry key="groupId" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
 				<entry key="groupRoleId" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
 				<entry key="installedVersion" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
+				<entry key="lastName" value-ref="standardAnalyzerWithNoStopWords" />
 				<entry key="layoutUuid" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
 				<entry key="license" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
+				<entry key="middleName" value-ref="standardAnalyzerWithNoStopWords" />
 				<!--<entry key="path">
 					<bean id="org.apache.lucene.analysis.miscellaneous.PatternAnalyzer" class="org.apache.lucene.analysis.miscellaneous.PatternAnalyzer">
 						<constructor-arg ref="org.apache.lucene.util.Version" />
@@ -217,6 +220,7 @@
 				<entry key="type" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
 				<entry key="userId" value-ref="org.apache.lucene.analysis.KeywordAnalyzer" />
 				<entry key="userName" value-ref="com.liferay.portal.search.lucene.LikeKeywordAnalyzer" />
+				<entry key="screenName" value-ref="standardAnalyzerWithNoStopWords" />
 				<entry key=".*_ar_SA" value-ref="org.apache.lucene.analysis.ar.ArabicAnalyzer" />
 				<entry key=".*_bg_BG" value-ref="org.apache.lucene.analysis.bg.BulgarianAnalyzer" />
 				<entry key=".*_ca_[A-Z]{2}" value-ref="org.apache.lucene.analysis.ca.CatalanAnalyzer" />
@@ -339,6 +343,12 @@
 	</bean>
 	<bean id="org.apache.lucene.util.Version" class="org.apache.lucene.util.Version" factory-method="valueOf">
 		<constructor-arg value="LUCENE_35" />
+	</bean>
+	<bean id="standardAnalyzerWithNoStopWords" class="org.apache.lucene.analysis.standard.StandardAnalyzer">
+		<constructor-arg ref="org.apache.lucene.util.Version" />
+		<constructor-arg>
+			<util:set set-class="java.util.HashSet" />
+		</constructor-arg>
 	</bean>
 
 	<!-- Configurator -->
