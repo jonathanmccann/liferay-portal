@@ -446,7 +446,6 @@ public class EntityCacheImpl
 
 	private static class CacheKey implements Externalizable {
 
-		@SuppressWarnings("unused")
 		public CacheKey() {
 		}
 

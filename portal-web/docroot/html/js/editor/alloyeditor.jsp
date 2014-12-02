@@ -127,9 +127,17 @@ boolean skipEditorLoading = GetterUtil.getBoolean((String)request.getAttribute("
 
 	var alloyEditor = new A.AlloyEditor(
 		{
+			<c:if test='<%= alloyEditorMode.equals("text") %>'>
+				allowedContent: 'p',
+			</c:if>
+
 			contentsLangDirection: '<%= HtmlUtil.escapeJS(contentsLanguageDir) %>',
 
 			contentsLanguage: '<%= contentsLanguageId.replace("iw_", "he_") %>',
+
+			<c:if test='<%= alloyEditorMode.equals("text") %>'>
+				disallowedContent: 'br',
+			</c:if>
 
 			language: '<%= languageId.replace("iw_", "he_") %>',
 
@@ -223,6 +231,32 @@ boolean skipEditorLoading = GetterUtil.getBoolean((String)request.getAttribute("
 			}
 		);
 	</c:if>
+
+	var contentFilter = new CKEDITOR.filter(
+		{
+			$1: {
+				attributes: ['alt', 'aria-*', 'height', 'href', 'src', 'width'],
+				classes: false,
+				elements: CKEDITOR.dtd,
+				styles: false
+			}
+		}
+	);
+
+	nativeEditor.on(
+		'paste',
+		function(event) {
+			var fragment = CKEDITOR.htmlParser.fragment.fromHtml(event.data.dataValue);
+
+			var writer = new CKEDITOR.htmlParser.basicWriter();
+
+			contentFilter.applyTo(fragment);
+
+			fragment.writeHtml(writer);
+
+			event.data.dataValue = writer.getHtml();
+		}
+	);
 
 	window['<%= name %>'] = {
 		destroy: function() {

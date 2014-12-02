@@ -12,19 +12,16 @@
  * details.
  */
 
-package com.liferay.portal.kernel.messaging.proxy;
+package com.liferay.portal.kernel.lar.lifecycle;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.io.Serializable;
 
 /**
- * @author Michael C. Han
+ * @author Daniel Kocsis
  */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.PARAMETER)
-public @interface ExecutingClassLoaders {
+public interface ExportImportLifecycleEventFactory {
+
+	public ExportImportLifecycleEvent create(
+		int code, Serializable... attributes);
+
 }

@@ -629,7 +629,6 @@ public class ClusterMasterExecutorImplTest {
 
 	private static class MockAddress implements org.jgroups.Address {
 
-		@SuppressWarnings("unused")
 		public MockAddress() {
 		}
 
