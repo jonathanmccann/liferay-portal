@@ -563,7 +563,9 @@ public class ServletResponseUtil {
 		}
 
 		if (contentLength > 0) {
-			response.setContentLength((int)contentLength);
+			//response.setContentLength((int)contentLength);
+			response.setHeader(
+					HttpHeaders.CONTENT_LENGTH, String.valueOf(contentLength));
 		}
 
 		response.flushBuffer();

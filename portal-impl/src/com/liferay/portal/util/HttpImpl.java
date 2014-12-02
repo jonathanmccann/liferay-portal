@@ -1533,16 +1533,8 @@ public class HttpImpl implements Http {
 			InputStream inputStream = httpMethod.getResponseBodyAsStream();
 
 			if (inputStream != null) {
-				int contentLength = 0;
-
-				Header contentLengthHeader = httpMethod.getResponseHeader(
-					HttpHeaders.CONTENT_LENGTH);
-
-				if (contentLengthHeader != null) {
-					contentLength = GetterUtil.getInteger(
-						contentLengthHeader.getValue());
-
-					response.setContentLength(contentLength);
+				for (Header header : httpMethod.getResponseHeaders()) {
+					response.addHeader(header.getName(), header.getValue());
 				}
 
 				Header contentType = httpMethod.getResponseHeader(
@@ -1550,6 +1542,32 @@ public class HttpImpl implements Http {
 
 				if (contentType != null) {
 					response.setContentType(contentType.getValue());
+				}
+
+				int contentLength = 0;
+
+				long contentLengthLong = 0;
+
+				Header contentLengthHeader = httpMethod.getResponseHeader(
+					HttpHeaders.CONTENT_LENGTH);
+
+				if (contentLengthHeader != null) {
+					contentLengthLong = GetterUtil.getLong(
+						contentLengthHeader.getValue());
+
+					response.setContentLengthLong(contentLengthLong);
+
+					if (contentLengthLong > (Integer.MAX_VALUE - 8)) {
+						response.setContentLength(-1);
+
+						throw new OutOfMemoryError();
+					}
+					else {
+						contentLength = GetterUtil.getInteger(
+							contentLengthHeader.getValue());
+
+						response.setContentLength(contentLength);
+					}
 				}
 
 				if (Validator.isNotNull(progressId) &&
@@ -1578,10 +1596,6 @@ public class HttpImpl implements Http {
 				else {
 					bytes = FileUtil.getBytes(inputStream);
 				}
-			}
-
-			for (Header header : httpMethod.getResponseHeaders()) {
-				response.addHeader(header.getName(), header.getValue());
 			}
 
 			return bytes;
