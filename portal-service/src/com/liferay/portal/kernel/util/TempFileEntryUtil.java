@@ -37,11 +37,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 
 import java.nio.charset.StandardCharsets;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -149,7 +150,8 @@ public class TempFileEntryUtil {
 		return ArrayUtil.toStringArray(fileNames);
 	}
 
-	protected static String getTempFolderName(String folderName) throws PortalException {
+	protected static String getTempFolderName(String folderName)
+		throws PortalException {
 
 		try {
 			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
@@ -162,7 +164,8 @@ public class TempFileEntryUtil {
 
 			for (int i = 0; i < hash.length; i++) {
 				String hex = Integer.toHexString(0xff & hash[i]);
-				if(hex.length() == 1) stringBuffer.append('0');
+
+				if (hex.length() == 1) stringBuffer.append('0');
 				stringBuffer.append(hex);
 			}
 
