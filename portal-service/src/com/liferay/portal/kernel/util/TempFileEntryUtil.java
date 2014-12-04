@@ -38,11 +38,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import java.nio.charset.StandardCharsets;
-
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -81,7 +76,7 @@ public class TempFileEntryUtil {
 			InputStream inputStream, String mimeType)
 		throws PortalException {
 
-		folderName = getTempFolderName(folderName);
+		folderName = DigesterUtil.digestHex("SHA-256", folderName);
 
 		TemporaryFileEntriesCapability temporaryFileEntriesCapability =
 			_getTemporaryFileEntriesCapability(groupId);
@@ -119,7 +114,7 @@ public class TempFileEntryUtil {
 			long groupId, long userId, String folderName, String fileName)
 		throws PortalException {
 
-		folderName = getTempFolderName(folderName);
+		folderName = DigesterUtil.digestHex("SHA-256", folderName);
 
 		TemporaryFileEntriesCapability temporaryFileEntriesCapability =
 			_getTemporaryFileEntriesCapability(groupId);
@@ -132,7 +127,7 @@ public class TempFileEntryUtil {
 			long groupId, long userId, String folderName)
 		throws PortalException {
 
-		folderName = getTempFolderName(folderName);
+		folderName = DigesterUtil.digestHex("SHA-256", folderName);
 
 		TemporaryFileEntriesCapability temporaryFileEntriesCapability =
 			_getTemporaryFileEntriesCapability(groupId);
@@ -148,32 +143,6 @@ public class TempFileEntryUtil {
 		}
 
 		return ArrayUtil.toStringArray(fileNames);
-	}
-
-	protected static String getTempFolderName(String folderName)
-		throws PortalException {
-
-		try {
-			MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-			byte[] bytes = folderName.getBytes(StandardCharsets.UTF_8);
-
-			messageDigest.update(bytes);
-			byte[] hash = messageDigest.digest();
-
-			StringBuffer stringBuffer = new StringBuffer();
-
-			for (int i = 0; i < hash.length; i++) {
-				String hex = Integer.toHexString(0xff & hash[i]);
-
-				if (hex.length() == 1) stringBuffer.append('0');
-				stringBuffer.append(hex);
-			}
-
-			return stringBuffer.toString();
-
-		} catch (NoSuchAlgorithmException nsae) {
-			throw new PortalException(nsae);
-		}
 	}
 
 	private static LocalRepository _addPortletRepository(
