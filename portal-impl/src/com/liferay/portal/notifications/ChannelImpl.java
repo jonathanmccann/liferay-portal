@@ -133,9 +133,7 @@ public class ChannelImpl extends BaseChannelImpl {
 		_reentrantLock.lock();
 
 		try {
-			if (_notificationEvents != null) {
-				_notificationEvents.clear();
-			}
+			_notificationEvents.clear();
 		}
 		finally {
 			_reentrantLock.unlock();
@@ -147,10 +145,6 @@ public class ChannelImpl extends BaseChannelImpl {
 		_reentrantLock.lock();
 
 		try {
-			if (_notificationEvents == null) {
-				return;
-			}
-
 			Iterator<NotificationEvent> itr = _notificationEvents.iterator();
 
 			while (itr.hasNext()) {
@@ -209,9 +203,7 @@ public class ChannelImpl extends BaseChannelImpl {
 		_reentrantLock.lock();
 
 		try {
-			if (_notificationEvents != null) {
-				_notificationEvents.removeAll(notificationEvents);
-			}
+			_notificationEvents.removeAll(notificationEvents);
 		}
 		finally {
 			_reentrantLock.unlock();
@@ -228,10 +220,6 @@ public class ChannelImpl extends BaseChannelImpl {
 		_reentrantLock.lock();
 
 		try {
-			if (_notificationEvents == null) {
-				return;
-			}
-
 			Iterator<NotificationEvent> itr = _notificationEvents.iterator();
 
 			while (itr.hasNext()) {
