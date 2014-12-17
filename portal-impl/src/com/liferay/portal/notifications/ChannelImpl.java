@@ -291,7 +291,7 @@ public class ChannelImpl extends BaseChannelImpl {
 			while (itr1.hasNext()) {
 				NotificationEvent notificationEvent = itr1.next();
 
-				if (isRemoveNotificationEvent(notificationEvent, currentTime)) {
+				if (isExpired(notificationEvent, currentTime)) {
 					itr1.remove();
 				}
 			}
@@ -311,7 +311,7 @@ public class ChannelImpl extends BaseChannelImpl {
 
 				NotificationEvent notificationEvent = entry.getValue();
 
-				if (isRemoveNotificationEvent(notificationEvent, currentTime)) {
+				if (isExpired(notificationEvent, currentTime)) {
 					invalidNotificationEventUuids.add(entry.getKey());
 
 					itr2.remove();
@@ -346,7 +346,7 @@ public class ChannelImpl extends BaseChannelImpl {
 					_unconfirmedNotificationEvents.size());
 
 		for (NotificationEvent notificationEvent : _notificationEvents) {
-			if (isRemoveNotificationEvent(notificationEvent, currentTime)) {
+			if (isExpired(notificationEvent, currentTime)) {
 				break;
 			}
 			else {
@@ -376,7 +376,7 @@ public class ChannelImpl extends BaseChannelImpl {
 
 			NotificationEvent notificationEvent = entry.getValue();
 
-			if (isRemoveNotificationEvent(notificationEvent, currentTime) &&
+			if (isExpired(notificationEvent, currentTime) &&
 				!notificationEvent.isArchived()) {
 
 				invalidNotificationEventUuids.add(notificationEvent.getUuid());
@@ -430,7 +430,7 @@ public class ChannelImpl extends BaseChannelImpl {
 
 				notificationEvent.setUuid(persistedNotificationEvent.getUuid());
 
-				if (isRemoveNotificationEvent(notificationEvent, currentTime)) {
+				if (isExpired(notificationEvent, currentTime)) {
 					invalidNotificationEventUuids.add(
 						notificationEvent.getUuid());
 				}
@@ -456,7 +456,7 @@ public class ChannelImpl extends BaseChannelImpl {
 	protected void doStoreNotificationEvent(
 		NotificationEvent notificationEvent, long currentTime) {
 
-		if (isRemoveNotificationEvent(notificationEvent, currentTime)) {
+		if (isExpired(notificationEvent, currentTime)) {
 			return;
 		}
 
@@ -480,17 +480,18 @@ public class ChannelImpl extends BaseChannelImpl {
 		}
 	}
 
-	protected boolean isRemoveNotificationEvent(
+	protected boolean isExpired(
 		NotificationEvent notificationEvent, long currentTime) {
 
-		if ((notificationEvent.getDeliverBy() != 0) &&
-			(notificationEvent.getDeliverBy() <= currentTime)) {
-
-			return true;
-		}
-		else {
+		if (notificationEvent.getDeliverBy() == 0) {
 			return false;
 		}
+
+		if (notificationEvent.getDeliverBy() <= currentTime) {
+			return true;
+		}
+
+		return false;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(ChannelImpl.class);
