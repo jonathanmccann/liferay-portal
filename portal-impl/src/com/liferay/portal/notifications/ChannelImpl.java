@@ -495,7 +495,7 @@ public class ChannelImpl extends BaseChannelImpl {
 	private static final Comparator<NotificationEvent> _comparator =
 		new NotificationEventComparator();
 
-	private TreeSet<NotificationEvent> _notificationEvents;
+	private final TreeSet<NotificationEvent> _notificationEvents;
 	private final ReentrantLock _reentrantLock;
 	private final Map<String, NotificationEvent> _unconfirmedNotificationEvents;
 
