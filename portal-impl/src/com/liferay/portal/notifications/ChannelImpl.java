@@ -241,16 +241,15 @@ public class ChannelImpl extends BaseChannelImpl {
 		_reentrantLock.lock();
 
 		try {
-			long currentTime = System.currentTimeMillis();
-
-			doStoreNotificationEvent(notificationEvent, currentTime);
-
 			if (PropsValues.USER_NOTIFICATION_EVENT_CONFIRMATION_ENABLED &&
 				notificationEvent.isDeliveryRequired()) {
 
 				UserNotificationEventLocalServiceUtil.addUserNotificationEvent(
 					getUserId(), notificationEvent);
 			}
+
+			doStoreNotificationEvent(
+				notificationEvent, System.currentTimeMillis());
 		}
 		catch (Exception e) {
 			throw new ChannelException("Unable to send event", e);
