@@ -169,9 +169,6 @@ public class ChannelImpl extends BaseChannelImpl {
 		try {
 			return doGetNotificationEvents(flush);
 		}
-		catch (ChannelException ce) {
-			throw ce;
-		}
 		catch (Exception e) {
 			throw new ChannelException(e);
 		}
