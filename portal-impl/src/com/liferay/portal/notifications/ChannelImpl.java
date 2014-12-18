@@ -486,8 +486,7 @@ public class ChannelImpl extends BaseChannelImpl {
 		if (notificationEvent.getDeliverBy() == 0) {
 			return false;
 		}
-
-		if (notificationEvent.getDeliverBy() <= currentTime) {
+		else if (notificationEvent.getDeliverBy() <= currentTime) {
 			return true;
 		}
 
