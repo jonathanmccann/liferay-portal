@@ -282,13 +282,15 @@ public class ChannelImpl extends BaseChannelImpl {
 		try {
 			long currentTime = System.currentTimeMillis();
 
-			Iterator<NotificationEvent> itr1 = _notificationEvents.iterator();
+			Iterator<NotificationEvent> notificationEventIterator =
+				_notificationEvents.iterator();
 
-			while (itr1.hasNext()) {
-				NotificationEvent notificationEvent = itr1.next();
+			while (notificationEventIterator.hasNext()) {
+				NotificationEvent notificationEvent =
+					notificationEventIterator.next();
 
 				if (isExpired(notificationEvent, currentTime)) {
-					itr1.remove();
+					notificationEventIterator.remove();
 				}
 			}
 
@@ -299,18 +301,20 @@ public class ChannelImpl extends BaseChannelImpl {
 				unconfirmedNotificationEventsSet =
 					_unconfirmedNotificationEvents.entrySet();
 
-			Iterator<Map.Entry<String, NotificationEvent>> itr2 =
-				unconfirmedNotificationEventsSet.iterator();
+			Iterator<Map.Entry<String, NotificationEvent>>
+				unconfirmedNotificationEventIterator =
+					unconfirmedNotificationEventsSet.iterator();
 
-			while (itr2.hasNext()) {
-				Map.Entry<String, NotificationEvent> entry = itr2.next();
+			while (unconfirmedNotificationEventIterator.hasNext()) {
+				Map.Entry<String, NotificationEvent> entry =
+					unconfirmedNotificationEventIterator.next();
 
 				NotificationEvent notificationEvent = entry.getValue();
 
 				if (isExpired(notificationEvent, currentTime)) {
 					invalidNotificationEventUuids.add(entry.getKey());
 
-					itr2.remove();
+					unconfirmedNotificationEventIterator.remove();
 				}
 			}
 
