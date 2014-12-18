@@ -22,6 +22,7 @@ import com.liferay.portal.NoSuchLayoutException;
 import com.liferay.portal.PortletIdException;
 import com.liferay.portal.kernel.lar.ExportImportDateUtil;
 import com.liferay.portal.kernel.lar.ExportImportHelper;
+import com.liferay.portal.kernel.lar.ExportImportHelperUtil;
 import com.liferay.portal.kernel.lar.MissingReferences;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -93,13 +94,13 @@ public class ExportImportAction extends ImportLayoutsAction {
 				if (cmd.equals(Constants.ADD_TEMP)) {
 					addTempFileEntry(
 						actionRequest,
-						ExportImportHelper.TEMP_FOLDER_NAME +
-							portlet.getPortletId());
+						ExportImportHelperUtil.getTempFolderName(
+							portlet.getPortletId()));
 
 					validateFile(
 						actionRequest, actionResponse,
-						ExportImportHelper.TEMP_FOLDER_NAME +
-							portlet.getPortletId());
+						ExportImportHelperUtil.getTempFolderName(
+							portlet.getPortletId()));
 				}
 				else if (cmd.equals("copy_from_live")) {
 					StagingUtil.copyFromLive(actionRequest, portlet);
@@ -109,8 +110,8 @@ public class ExportImportAction extends ImportLayoutsAction {
 				else if (cmd.equals(Constants.DELETE_TEMP)) {
 					deleteTempFileEntry(
 						actionRequest, actionResponse,
-						ExportImportHelper.TEMP_FOLDER_NAME +
-							portlet.getPortletId());
+						ExportImportHelperUtil.getTempFolderName(
+							portlet.getPortletId()));
 				}
 				else if (cmd.equals(Constants.EXPORT)) {
 					hideDefaultSuccessMessage(actionRequest);
@@ -124,8 +125,8 @@ public class ExportImportAction extends ImportLayoutsAction {
 
 					importData(
 						actionRequest, actionResponse,
-						ExportImportHelper.TEMP_FOLDER_NAME +
-							portlet.getPortletId());
+						ExportImportHelperUtil.getTempFolderName(
+							portlet.getPortletId()));
 
 					SessionMessages.add(
 						actionRequest,
@@ -150,8 +151,8 @@ public class ExportImportAction extends ImportLayoutsAction {
 
 				handleUploadException(
 					portletConfig, actionRequest, actionResponse,
-					ExportImportHelper.TEMP_FOLDER_NAME +
-						portlet.getPortletId(),
+					ExportImportHelperUtil.getTempFolderName(
+						portlet.getPortletId()),
 					e);
 			}
 			else {
