@@ -37,7 +37,7 @@ Layout exportableLayout = ExportImportHelperUtil.getExportableLayout(themeDispla
 	</div>
 
 	<%
-	FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(scopeGroupId, themeDisplay.getUserId(), ExportImportHelper.TEMP_FOLDER_NAME + selPortlet.getPortletId());
+	FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(scopeGroupId, themeDisplay.getUserId(), ExportImportHelperUtil.getTempFolderName(selPortlet.getPortletId()));
 	%>
 
 	<aui:button-row>
@@ -75,7 +75,7 @@ Layout exportableLayout = ExportImportHelperUtil.getExportableLayout(themeDispla
 				tempFileURL: {
 					method: Liferay.Service.bind('/layout/get-temp-file-names'),
 					params: {
-						folderName: '<%= HtmlUtil.escapeJS(ExportImportHelper.TEMP_FOLDER_NAME + selPortlet.getPortletId()) %>',
+						folderName: '<%= HtmlUtil.escapeJS(ExportImportHelperUtil.getTempFolderName(selPortlet.getPortletId())) %>',
 						groupId: <%= scopeGroupId %>
 					}
 				},

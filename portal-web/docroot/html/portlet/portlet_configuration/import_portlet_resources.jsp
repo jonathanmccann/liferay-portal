@@ -23,7 +23,7 @@ Layout exportableLayout = ExportImportHelperUtil.getExportableLayout(themeDispla
 
 long groupId = ParamUtil.getLong(request, "groupId", scopeGroupId);
 
-FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(groupId, themeDisplay.getUserId(), ExportImportHelper.TEMP_FOLDER_NAME + selPortlet.getPortletId());
+FileEntry fileEntry = ExportImportHelperUtil.getTempFileEntry(groupId, themeDisplay.getUserId(), ExportImportHelperUtil.getTempFolderName(selPortlet.getPortletId()));
 
 ManifestSummary manifestSummary = ExportImportHelperUtil.getManifestSummary(themeDisplay.getUserId(), groupId, new HashMap<String, String[]>(), fileEntry);
 %>

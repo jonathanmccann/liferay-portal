@@ -282,6 +282,10 @@ public class ExportImportHelperUtil {
 			groupId, userId, folderName);
 	}
 
+	public static String getTempFolderName(String portletId) {
+		return getExportImportHelper().getTempFolderName(portletId);
+	}
+
 	public static UserIdStrategy getUserIdStrategy(
 			long userId, String userIdStrategy)
 		throws PortalException {
