@@ -216,6 +216,8 @@ public interface ExportImportHelper {
 			long groupId, long userId, String folderName)
 		throws PortalException;
 
+	public String getTempFolderName(String portletId);
+
 	public UserIdStrategy getUserIdStrategy(long userId, String userIdStrategy)
 		throws PortalException;
 
