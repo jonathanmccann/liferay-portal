@@ -342,6 +342,10 @@
 					dataType: dataType,
 					on: {
 						failure: function(event, id, obj) {
+							if ((obj.readyState == 4) && (obj.status == 0)) {
+								return instance.addHTML(options);
+							}
+
 							placeHolder.hide();
 
 							placeHolder.placeAfter('<div class="alert alert-danger">' + Liferay.Language.get('there-was-an-unexpected-error.-please-refresh-the-current-page') + '</div>');
