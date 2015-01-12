@@ -2386,6 +2386,13 @@ public class JournalArticleLocalServiceImpl
 		return journalArticlePersistence.countByG_A(groupId, articleId);
 	}
 
+	@Override
+	public List<JournalArticle> getArticlesUsingStructure()
+		throws PortalException {
+
+		return journalArticleFinder.findByUsingStructure();
+	}
+
 	/**
 	 * Returns an ordered range of all the web content articles matching the
 	 * company, version, and workflow status.

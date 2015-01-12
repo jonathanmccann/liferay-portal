@@ -80,6 +80,9 @@ public class JournalArticleFinderImpl
 	public static final String FIND_BY_REVIEW_DATE =
 		JournalArticleFinder.class.getName() + ".findByReviewDate";
 
+	public static final String FIND_BY_USING_STRUCTURE =
+		JournalArticleFinder.class.getName() + ".findByUsingStructure";
+
 	public static final String FIND_BY_R_D =
 		JournalArticleFinder.class.getName() + ".findByR_D";
 
@@ -607,6 +610,30 @@ public class JournalArticleFinderImpl
 			qPos.add(reviewDateLT_TS);
 
 			return q.list(true);
+		}
+		catch (Exception e) {
+			throw new SystemException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	@Override
+	public List<JournalArticle> findByUsingStructure() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(FIND_BY_USING_STRUCTURE);
+
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
+
+			q.addEntity(
+				JournalArticleImpl.TABLE_NAME, JournalArticleImpl.class);
+
+			return q.list();
 		}
 		catch (Exception e) {
 			throw new SystemException(e);

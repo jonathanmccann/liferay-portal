@@ -193,6 +193,8 @@ public interface JournalArticleFinder {
 		long classNameId, java.util.Date reviewDateLT,
 		java.util.Date reviewDateGT);
 
+	public java.util.List<com.liferay.portlet.journal.model.JournalArticle> findByUsingStructure();
+
 	public com.liferay.portlet.journal.model.JournalArticle findByR_D(
 		long resourcePrimKey, java.util.Date displayDate)
 		throws com.liferay.portlet.journal.NoSuchArticleException;
