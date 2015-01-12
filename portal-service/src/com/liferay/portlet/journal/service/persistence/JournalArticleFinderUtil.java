@@ -313,6 +313,10 @@ public class JournalArticleFinderUtil {
 				   .findByReviewDate(classNameId, reviewDateLT, reviewDateGT);
 	}
 
+	public static java.util.List<com.liferay.portlet.journal.model.JournalArticle> findByUsingStructure() {
+		return getFinder().findByUsingStructure();
+	}
+
 	public static com.liferay.portlet.journal.model.JournalArticle findByR_D(
 		long resourcePrimKey, java.util.Date displayDate)
 		throws com.liferay.portlet.journal.NoSuchArticleException {

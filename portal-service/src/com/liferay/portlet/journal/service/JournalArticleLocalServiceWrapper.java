@@ -1640,6 +1640,12 @@ public class JournalArticleLocalServiceWrapper
 			status);
 	}
 
+	@Override
+	public java.util.List<com.liferay.portlet.journal.model.JournalArticle> getArticlesUsingStructure()
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _journalArticleLocalService.getArticlesUsingStructure();
+	}
+
 	/**
 	* Returns the Spring bean ID for this bean.
 	*

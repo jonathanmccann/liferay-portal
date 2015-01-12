@@ -1572,6 +1572,11 @@ public class JournalArticleLocalServiceUtil {
 		return getService().getArticlesCount(groupId, folderId, status);
 	}
 
+	public static java.util.List<com.liferay.portlet.journal.model.JournalArticle> getArticlesUsingStructure()
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().getArticlesUsingStructure();
+	}
+
 	/**
 	* Returns the Spring bean ID for this bean.
 	*
