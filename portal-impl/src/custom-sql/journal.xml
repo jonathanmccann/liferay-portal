@@ -137,6 +137,16 @@
 				(reviewDate <= ?)
 		]]>
 	</sql>
+	<sql id="com.liferay.portlet.journal.service.persistence.JournalArticleFinder.findByUsingStructure">
+		<![CDATA[
+			SELECT
+				{JournalArticle.*}
+			FROM
+				JournalArticle
+			WHERE
+				(JournalArticle.structureId != '')
+		]]>
+	</sql>
 	<sql id="com.liferay.portlet.journal.service.persistence.JournalArticleFinder.findByR_D">
 		<![CDATA[
 			SELECT
