@@ -272,9 +272,6 @@ public class BufferCacheServletResponse extends MetaInfoCacheServletResponse {
 
 	@Override
 	public void setBufferSize(int bufferSize) {
-		if (isCommitted()) {
-			throw new IllegalStateException("Set buffer size after commit");
-		}
 
 		// Buffered response cannot accept buffer size because it has an
 		// internal buffer that grows as needed

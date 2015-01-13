@@ -122,9 +122,6 @@ public class RestrictedByteBufferCacheServletResponse
 
 	@Override
 	public void setBufferSize(int bufferSize) {
-		if (isCommitted()) {
-			throw new IllegalStateException("Set buffer size after commit");
-		}
 
 		// Restricted byte buffer cache response cannot accept buffer size
 		// because it has an fixed size internal buffer.

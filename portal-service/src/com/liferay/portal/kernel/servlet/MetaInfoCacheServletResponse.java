@@ -408,10 +408,6 @@ public class MetaInfoCacheServletResponse extends HttpServletResponseWrapper {
 
 	@Override
 	public void setBufferSize(int bufferSize) {
-		if (isCommitted()) {
-			throw new IllegalStateException("Set buffer size after commit");
-		}
-
 		_metaData._bufferSize = bufferSize;
 
 		super.setBufferSize(bufferSize);
