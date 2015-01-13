@@ -272,10 +272,12 @@ public class BufferCacheServletResponse extends MetaInfoCacheServletResponse {
 
 	@Override
 	public void setBufferSize(int bufferSize) {
-
 		// Buffered response cannot accept buffer size because it has an
-		// internal buffer that grows as needed
+		// internal buffer that grows as needed, but call on the underlying
+		// response with the current buffer size to check if the application
+		// server will throw an exception.
 
+		super.setBufferSize(super.getBufferSize());
 	}
 
 	public void setByteBuffer(ByteBuffer byteBuffer) {

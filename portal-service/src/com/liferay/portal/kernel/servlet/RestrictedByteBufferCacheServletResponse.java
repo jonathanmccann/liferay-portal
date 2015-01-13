@@ -124,8 +124,11 @@ public class RestrictedByteBufferCacheServletResponse
 	public void setBufferSize(int bufferSize) {
 
 		// Restricted byte buffer cache response cannot accept buffer size
-		// because it has an fixed size internal buffer.
+		// because it has a fixed size internal buffer, but call on the
+		// underlying response with the current buffer size to check if the
+		// application server will throw an exception.
 
+		super.setBufferSize(super.getBufferSize());
 	}
 
 	@Override
