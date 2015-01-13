@@ -49,15 +49,7 @@ public class RestrictedByteBufferCacheServletResponse
 
 	@Override
 	public int getBufferSize() {
-		if (_restrictedByteArrayCacheOutputStream == null) {
-			return _cacheCapacity;
-		}
-
-		if (_restrictedByteArrayCacheOutputStream.isOverflowed()) {
-			return 0;
-		}
-
-		return _restrictedByteArrayCacheOutputStream.getCacheCapacity();
+		return _cacheCapacity;
 	}
 
 	public ByteBuffer getByteBuffer() {
