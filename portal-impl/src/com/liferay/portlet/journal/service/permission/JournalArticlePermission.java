@@ -135,6 +135,15 @@ public class JournalArticlePermission implements BaseModelPermissionChecker {
 		}
 
 		if (actionId.equals(ActionKeys.VIEW) &&
+			PropsValues.JOURNAL_ARTICLE_VIEW_PERMISSION_CHECK_ENABLED &&
+			permissionChecker.hasPermission(
+				article.getGroupId(), JournalArticle.class.getName(),
+				article.getResourcePrimKey(), actionId)) {
+
+			return true;
+		}
+
+		if (actionId.equals(ActionKeys.VIEW) &&
 			PropsValues.PERMISSIONS_VIEW_DYNAMIC_INHERITANCE) {
 
 			long folderId = article.getFolderId();
