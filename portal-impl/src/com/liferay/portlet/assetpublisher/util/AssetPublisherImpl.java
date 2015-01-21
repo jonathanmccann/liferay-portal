@@ -100,9 +100,6 @@ import javax.portlet.PortletException;
 import javax.portlet.PortletPreferences;
 import javax.portlet.PortletRequest;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-
 /**
  * @author Raymond Augé
  * @author Julio Camarero
@@ -177,13 +174,6 @@ public class AssetPublisherImpl implements AssetPublisher {
 			assetEntry.getEntryId(), assetEntryOrder, className);
 
 		portletPreferences.store();
-	}
-
-	@Override
-	public void addRecentFolderId(
-		PortletRequest portletRequest, String className, long classPK) {
-
-		_getRecentFolderIds(portletRequest).put(className, classPK);
 	}
 
 	@Override
@@ -473,8 +463,8 @@ public class AssetPublisherImpl implements AssetPublisher {
 			boolean deleteMissingAssetEntries, boolean checkPermission)
 		throws Exception {
 
-		String[] assetEntryXmls = portletPreferences.getValues(
-			"assetEntryXml", new String[0]);
+		String[] assetEntryXmls = _getAssetEntryXmls(
+			groupIds, portletPreferences);
 
 		List<AssetEntry> assetEntries = new ArrayList<>();
 
@@ -1152,20 +1142,6 @@ public class AssetPublisherImpl implements AssetPublisher {
 	}
 
 	@Override
-	public long getRecentFolderId(
-		PortletRequest portletRequest, String className) {
-
-		Long classPK = _getRecentFolderIds(portletRequest).get(className);
-
-		if (classPK == null) {
-			return 0;
-		}
-		else {
-			return classPK.longValue();
-		}
-	}
-
-	@Override
 	public String getScopeId(Group group, long scopeGroupId)
 		throws PortalException {
 
@@ -1384,15 +1360,6 @@ public class AssetPublisherImpl implements AssetPublisher {
 	}
 
 	@Override
-	public void removeRecentFolderId(
-		PortletRequest portletRequest, String className, long classPK) {
-
-		if (getRecentFolderId(portletRequest, className) == classPK) {
-			_getRecentFolderIds(portletRequest).remove(className);
-		}
-	}
-
-	@Override
 	public void subscribe(
 			PermissionChecker permissionChecker, long groupId, long plid,
 			String portletId)
@@ -1605,30 +1572,50 @@ public class AssetPublisherImpl implements AssetPublisher {
 		return xml;
 	}
 
-	private Map<String, Long> _getRecentFolderIds(
-		PortletRequest portletRequest) {
+	private String[] _getAssetEntryXmls(
+			long[] groupIds, PortletPreferences portletPreferences)
+		throws Exception {
 
-		HttpServletRequest request = PortalUtil.getHttpServletRequest(
-			portletRequest);
-		HttpSession session = request.getSession();
+		String[] assetEntryXmls = portletPreferences.getValues(
+			"assetEntryXml", new String[0]);
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)portletRequest.getAttribute(
-			WebKeys.THEME_DISPLAY);
+		List<String> filteredEntriesList = new ArrayList<>();
 
-		String key =
-			AssetPublisherUtil.class + StringPool.UNDERLINE +
-				themeDisplay.getScopeGroupId();
+		for (int i = 0; i < assetEntryXmls.length; i++) {
+			String assetEntryXml = assetEntryXmls[i];
 
-		Map<String, Long> recentFolderIds =
-			(Map<String, Long>)session.getAttribute(key);
+			Document document = SAXReaderUtil.read(assetEntryXml);
 
-		if (recentFolderIds == null) {
-			recentFolderIds = new HashMap<>();
+			Element rootElement = document.getRootElement();
+
+			String assetEntryUuid = rootElement.elementText("asset-entry-uuid");
+
+			AssetEntry assetEntry = null;
+
+			for (long groupId : groupIds) {
+				assetEntry = AssetEntryLocalServiceUtil.fetchEntry(
+					groupId, assetEntryUuid);
+
+				if (assetEntry != null) {
+					break;
+				}
+			}
+
+			if ((assetEntry != null) && assetEntry.isVisible()) {
+				filteredEntriesList.add(assetEntryXmls[i]);
+			}
 		}
 
-		session.setAttribute(key, recentFolderIds);
+		String[] filteredEntries = new String[filteredEntriesList.size()];
 
-		return recentFolderIds;
+		for (int i = 0; i < filteredEntries.length; i++) {
+			filteredEntries[i] = filteredEntriesList.get(i);
+		}
+
+		portletPreferences.setValues("assetEntryXml", filteredEntries);
+		portletPreferences.store();
+
+		return filteredEntries;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
