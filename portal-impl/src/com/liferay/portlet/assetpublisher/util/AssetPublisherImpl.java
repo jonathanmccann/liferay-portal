@@ -463,8 +463,8 @@ public class AssetPublisherImpl implements AssetPublisher {
 			boolean deleteMissingAssetEntries, boolean checkPermission)
 		throws Exception {
 
-		String[] assetEntryXmls = portletPreferences.getValues(
-			"assetEntryXml", new String[0]);
+		String[] assetEntryXmls = _getAssetEntryXmls(
+			groupIds, portletPreferences);
 
 		List<AssetEntry> assetEntries = new ArrayList<>();
 
@@ -1570,6 +1570,52 @@ public class AssetPublisherImpl implements AssetPublisher {
 		}
 
 		return xml;
+	}
+
+	private String[] _getAssetEntryXmls(
+			long[] groupIds, PortletPreferences portletPreferences)
+		throws Exception {
+
+		String[] assetEntryXmls = portletPreferences.getValues(
+			"assetEntryXml", new String[0]);
+
+		List<String> filteredEntriesList = new ArrayList<>();
+
+		for (int i = 0; i < assetEntryXmls.length; i++) {
+			String assetEntryXml = assetEntryXmls[i];
+
+			Document document = SAXReaderUtil.read(assetEntryXml);
+
+			Element rootElement = document.getRootElement();
+
+			String assetEntryUuid = rootElement.elementText("asset-entry-uuid");
+
+			AssetEntry assetEntry = null;
+
+			for (long groupId : groupIds) {
+				assetEntry = AssetEntryLocalServiceUtil.fetchEntry(
+					groupId, assetEntryUuid);
+
+				if (assetEntry != null) {
+					break;
+				}
+			}
+
+			if ((assetEntry != null) && assetEntry.isVisible()) {
+				filteredEntriesList.add(assetEntryXmls[i]);
+			}
+		}
+
+		String[] filteredEntries = new String[filteredEntriesList.size()];
+
+		for (int i = 0; i < filteredEntries.length; i++) {
+			filteredEntries[i] = filteredEntriesList.get(i);
+		}
+
+		portletPreferences.setValues("assetEntryXml", filteredEntries);
+		portletPreferences.store();
+
+		return filteredEntries;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
