@@ -73,16 +73,12 @@ boolean useInputWrapper = true;
 
 String inputWrapperClass = controlGroupCssClass;
 
-if (radioField) {
-	inputWrapperClass = baseTypeCssClass;
+if (radioField || checkboxField) {
+	inputWrapperClass += StringPool.SPACE + StringPool.PERIOD + baseTypeCssClass;
 
 	if (Validator.isNull(label)) {
 		useInputWrapper = false;
 	}
-}
-
-if (inputWrapperClass.equals("boolean")) {
-	inputWrapperClass = "checkbox";
 }
 
 String labelTag = AUIUtil.buildLabel(baseTypeCssClass, inlineField, showForLabel, forLabel);

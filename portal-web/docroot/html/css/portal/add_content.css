@@ -187,6 +187,10 @@
 					}
 				}
 
+				.checkbox {
+					padding-left: 25px;
+				}
+
 				.radio {
 					padding-left: 25px;
 				}
