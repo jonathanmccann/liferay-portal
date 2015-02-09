@@ -6032,13 +6032,32 @@ public class JournalArticleLocalServiceImpl
 			JournalArticleConstants.CLASSNAME_ID_DEFAULT, reviewDate,
 			_previousCheckDate);
 
+		List<JournalArticle> latestArticles = new ArrayList<JournalArticle>();
+
+		for (JournalArticle article : articles) {
+			long groupId = article.getGroupId();
+			String articleId = article.getArticleId();
+			double version = article.getVersion();
+
+			if (!journalArticleLocalService.isLatestVersion(
+					groupId, articleId, version)) {
+
+				article = journalArticleLocalService.getLatestArticle(
+					groupId, articleId);
+			}
+
+			if (!latestArticles.contains(article)) {
+				latestArticles.add(article);
+			}
+		}
+
 		if (_log.isDebugEnabled()) {
 			_log.debug(
-				"Sending review notifications for " + articles.size() +
+				"Sending review notifications for " + latestArticles.size() +
 					" articles");
 		}
 
-		for (JournalArticle article : articles) {
+		for (JournalArticle article : latestArticles) {
 			String articleURL = StringPool.BLANK;
 
 			long ownerId = article.getGroupId();
