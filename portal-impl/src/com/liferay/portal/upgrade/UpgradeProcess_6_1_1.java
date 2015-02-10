@@ -20,6 +20,7 @@ import com.liferay.portal.upgrade.v6_1_1.UpgradeDocumentLibrary;
 import com.liferay.portal.upgrade.v6_1_1.UpgradeLayout;
 import com.liferay.portal.upgrade.v6_1_1.UpgradeLayoutSet;
 import com.liferay.portal.upgrade.v6_1_1.UpgradeLayoutSetBranch;
+import com.liferay.portal.upgrade.v6_1_1.UpgradePermission;
 import com.liferay.portal.upgrade.v6_1_1.UpgradeSchema;
 
 /**
@@ -39,6 +40,7 @@ public class UpgradeProcess_6_1_1 extends UpgradeProcess {
 		upgrade(UpgradeLayout.class);
 		upgrade(UpgradeLayoutSet.class);
 		upgrade(UpgradeLayoutSetBranch.class);
+		upgrade(UpgradePermission.class);
 	}
 
 }
