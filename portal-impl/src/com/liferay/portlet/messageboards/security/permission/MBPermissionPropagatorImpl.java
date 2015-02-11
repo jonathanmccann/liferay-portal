@@ -59,10 +59,25 @@ public class MBPermissionPropagatorImpl extends BasePermissionPropagator {
 					actionRequest, className, messageId, message.getThreadId(),
 					roleIds);
 			}
+			else {
+				propagateMessageRolePermissions(
+					actionRequest, className, message.getRootMessageId(),
+					messageId, roleIds);
+			}
 		}
 		else if (className.equals("com.liferay.portlet.messageboards")) {
-			propagateMBRolePermissions(
-				actionRequest, className, primKey, roleIds);
+			MBMessage message = MBMessageLocalServiceUtil.fetchMBMessage(
+				GetterUtil.getLong(primKey));
+
+			if (message != null) {
+				propagateMessageRolePermissions(
+					actionRequest, className, message.getGroupId(),
+					message.getMessageId(), roleIds);
+			}
+			else {
+				propagateMBRolePermissions(
+					actionRequest, className, primKey, roleIds);
+			}
 		}
 	}
 

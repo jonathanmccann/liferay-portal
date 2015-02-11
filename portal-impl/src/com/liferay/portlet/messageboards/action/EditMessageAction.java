@@ -28,12 +28,18 @@ import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.model.Portlet;
+import com.liferay.portal.model.Role;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.permission.ActionKeys;
 import com.liferay.portal.security.permission.PermissionChecker;
+import com.liferay.portal.security.permission.PermissionPropagator;
+import com.liferay.portal.service.PortletLocalServiceUtil;
+import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.struts.PortletAction;
@@ -433,6 +439,40 @@ public class EditMessageAction extends PortletAction {
 						parentMessageId, subject, body,
 						mbSettings.getMessageFormat(), inputStreamOVPs,
 						anonymous, priority, allowPingbacks, serviceContext);
+				}
+
+				if (PropsValues.PERMISSIONS_PROPAGATION_ENABLED) {
+					List<Role> roles = RoleLocalServiceUtil.getRoles(
+						themeDisplay.getCompanyId());
+
+					long[] roleIds = new long[roles.size()];
+
+					for (int i = 0; i < roles.size(); i++) {
+						Role role = roles.get(i);
+
+						roleIds[i] = role.getRoleId();
+					}
+
+					Portlet portlet = PortletLocalServiceUtil.getPortletById(
+						themeDisplay.getCompanyId(), themeDisplay.getPpid());
+
+					PermissionPropagator permissionPropagator =
+						portlet.getPermissionPropagatorInstance();
+
+					String className = StringPool.BLANK;
+
+					if (threadId <= 0) {
+						className = "com.liferay.portlet.messageboards";
+					}
+					else {
+						className = MBMessage.class.getName();
+					}
+
+					if (permissionPropagator != null) {
+						permissionPropagator.propagateRolePermissions(
+							actionRequest, className,
+							String.valueOf(message.getMessageId()), roleIds);
+					}
 				}
 			}
 			else {
