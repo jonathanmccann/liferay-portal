@@ -30,7 +30,7 @@ import com.liferay.portal.kernel.image.ImageBag;
 import com.liferay.portal.kernel.image.ImageToolUtil;
 import com.liferay.portal.kernel.increment.BufferedIncrement;
 import com.liferay.portal.kernel.increment.NumberIncrement;
-import com.liferay.portal.kernel.interval.IntervalAction;
+import com.liferay.portal.kernel.interval.IntervalActionProcessor;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.lar.ExportImportThreadLocal;
 import com.liferay.portal.kernel.log.Log;
@@ -609,10 +609,11 @@ public class DLFileEntryLocalServiceImpl
 
 		int total = dlFileEntryFinder.countByExtraSettings();
 
-		final IntervalAction intervalAction = new IntervalAction(total);
+		final IntervalActionProcessor intervalActionProcessor =
+			new IntervalActionProcessor(total);
 
-		intervalAction.setPerformIntervalActionMethod(
-			new IntervalAction.PerformIntervalActionMethod() {
+		intervalActionProcessor.setPerformIntervalActionMethod(
+			new IntervalActionProcessor.PerformIntervalActionMethod() {
 
 				@Override
 				public void performIntervalAction(int start, int end)
@@ -625,12 +626,13 @@ public class DLFileEntryLocalServiceImpl
 						convertExtraSettings(dlFileEntry, keys);
 					}
 
-					intervalAction.incrementStart(dlFileEntries.size());
+					intervalActionProcessor.incrementStart(
+						dlFileEntries.size());
 				}
 
 			});
 
-		intervalAction.performIntervalActions();
+		intervalActionProcessor.performIntervalActions();
 	}
 
 	@Override
@@ -923,10 +925,11 @@ public class DLFileEntryLocalServiceImpl
 
 		int total = dlFileEntryPersistence.countByR_F(repositoryId, folderId);
 
-		final IntervalAction intervalAction = new IntervalAction(total);
+		final IntervalActionProcessor intervalActionProcessor =
+			new IntervalActionProcessor(total);
 
-		intervalAction.setPerformIntervalActionMethod(
-			new IntervalAction.PerformIntervalActionMethod() {
+		intervalActionProcessor.setPerformIntervalActionMethod(
+			new IntervalActionProcessor.PerformIntervalActionMethod() {
 
 				@Override
 				public void performIntervalAction(int start, int end)
@@ -944,14 +947,14 @@ public class DLFileEntryLocalServiceImpl
 								dlFileEntry);
 						}
 						else {
-							intervalAction.incrementStart();
+							intervalActionProcessor.incrementStart();
 						}
 					}
 				}
 
 			});
 
-		intervalAction.performIntervalActions();
+		intervalActionProcessor.performIntervalActions();
 	}
 
 	@Override
