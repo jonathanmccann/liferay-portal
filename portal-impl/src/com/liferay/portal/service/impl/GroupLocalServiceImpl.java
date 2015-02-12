@@ -4205,6 +4205,9 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		}
 
 		setRolePermissions(
+			group, role, PortletKeys.DOCKBAR, new String[] {ActionKeys.VIEW});
+
+		setRolePermissions(
 			group, role, Layout.class.getName(),
 			new String[] {ActionKeys.VIEW});
 
