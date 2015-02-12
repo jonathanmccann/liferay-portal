@@ -4255,7 +4255,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		setRolePermissions(group, role, BlogsPermission.RESOURCE_NAME);
 		setRolePermissions(group, role, "com.liferay.bookmarks");
 		setRolePermissions(group, role, DLPermission.RESOURCE_NAME);
-		setRolePermissions(group, role, "com.liferay.portlet.imagegallery");
 		setRolePermissions(group, role, JournalPermission.RESOURCE_NAME);
 		setRolePermissions(group, role, MBPermission.RESOURCE_NAME);
 		setRolePermissions(group, role, "com.liferay.wiki");
