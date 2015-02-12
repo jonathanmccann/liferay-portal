@@ -4248,12 +4248,12 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		setRolePermissions(group, role, "com.liferay.portlet.asset");
 		setRolePermissions(group, role, "com.liferay.portlet.blogs");
-		setRolePermissions(group, role, "com.liferay.portlet.bookmarks");
+		setRolePermissions(group, role, "com.liferay.bookmarks");
 		setRolePermissions(group, role, "com.liferay.portlet.documentlibrary");
 		setRolePermissions(group, role, "com.liferay.portlet.imagegallery");
 		setRolePermissions(group, role, "com.liferay.portlet.journal");
 		setRolePermissions(group, role, "com.liferay.portlet.messageboards");
-		setRolePermissions(group, role, "com.liferay.portlet.wiki");
+		setRolePermissions(group, role, "com.liferay.wiki");
 	}
 
 	protected boolean isParentGroup(long parentGroupId, long groupId)
