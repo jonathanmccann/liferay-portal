@@ -106,8 +106,13 @@ import com.liferay.portal.util.PropsUtil;
 import com.liferay.portal.util.PropsValues;
 import com.liferay.portal.util.comparator.GroupIdComparator;
 import com.liferay.portal.util.comparator.GroupNameComparator;
+import com.liferay.portlet.asset.service.permission.AssetPermission;
 import com.liferay.portlet.blogs.model.BlogsEntry;
+import com.liferay.portlet.blogs.service.permission.BlogsPermission;
+import com.liferay.portlet.documentlibrary.service.permission.DLPermission;
 import com.liferay.portlet.journal.model.JournalArticle;
+import com.liferay.portlet.journal.service.permission.JournalPermission;
+import com.liferay.portlet.messageboards.service.permission.MBPermission;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.io.File;
@@ -4212,7 +4217,7 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 			new String[] {ActionKeys.VIEW});
 
 		setRolePermissions(
-			group, role, "com.liferay.portlet.blogs",
+			group, role, BlogsPermission.RESOURCE_NAME,
 			new String[] {
 				ActionKeys.ADD_ENTRY, ActionKeys.PERMISSIONS,
 				ActionKeys.SUBSCRIBE});
@@ -4246,13 +4251,13 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				ActionKeys.MANAGE_LAYOUTS, ActionKeys.VIEW_SITE_ADMINISTRATION
 			});
 
-		setRolePermissions(group, role, "com.liferay.portlet.asset");
-		setRolePermissions(group, role, "com.liferay.portlet.blogs");
+		setRolePermissions(group, role, AssetPermission.RESOURCE_NAME);
+		setRolePermissions(group, role, BlogsPermission.RESOURCE_NAME);
 		setRolePermissions(group, role, "com.liferay.bookmarks");
-		setRolePermissions(group, role, "com.liferay.portlet.documentlibrary");
+		setRolePermissions(group, role, DLPermission.RESOURCE_NAME);
 		setRolePermissions(group, role, "com.liferay.portlet.imagegallery");
-		setRolePermissions(group, role, "com.liferay.portlet.journal");
-		setRolePermissions(group, role, "com.liferay.portlet.messageboards");
+		setRolePermissions(group, role, JournalPermission.RESOURCE_NAME);
+		setRolePermissions(group, role, MBPermission.RESOURCE_NAME);
 		setRolePermissions(group, role, "com.liferay.wiki");
 	}
 
