@@ -39,6 +39,7 @@ import com.liferay.portlet.sites.util.SitesUtil;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import javax.portlet.PortletMode;
 
@@ -438,9 +439,15 @@ public class PortletPermissionImpl implements PortletPermission {
 		if (access && !PropsValues.TCK_URL &&
 			portletMode.equals(PortletMode.EDIT)) {
 
-			access = contains(
-				permissionChecker, scopeGroupId, layout, portlet,
-				ActionKeys.PREFERENCES);
+			Set<String> portletModes = portlet.getAllPortletModes();
+
+			boolean hasPortletModeEdit = portletModes.contains("edit");
+
+			if (hasPortletModeEdit) {
+				access = contains(
+					permissionChecker, scopeGroupId, layout, portlet,
+					ActionKeys.PREFERENCES);
+			}
 		}
 
 		return access;
