@@ -34,6 +34,7 @@ import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.verify.model.VerifiableResourcedModel;
+import com.liferay.portlet.asset.model.AssetTag;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -90,6 +91,26 @@ public class VerifyResourcePermissions extends VerifyProcess {
 			verifiableResourcedModels.toArray(
 				new VerifiableResourcedModel[
 					verifiableResourcedModels.size()]));
+
+		deleteAssetTageResourcePermissions();
+	}
+
+	protected void deleteAssetTageResourcePermissions() throws Exception{
+		Connection con = null;
+		PreparedStatement ps = null;
+
+		try {
+			con = DataAccess.getUpgradeOptimizedConnection();
+
+			ps = con.prepareStatement(
+				"DELETE FROM ResourcePermission WHERE name=" +
+					AssetTag.class.getName());
+
+			ps.executeUpdate();
+		}
+		finally {
+			DataAccess.cleanUp(con, ps);
+		}
 	}
 
 	protected void verifyLayout(Role role) throws Exception {
