@@ -133,8 +133,15 @@ Liferay = window.Liferay || {};
 				var form = args[1];
 
 				if (isNode(form)) {
+
 					ioConfig.form = form;
+
+					if (ioConfig.form.enctype == 'multipart/form-data') {
+						ioConfig.contentType = false;
+						ioConfig.processData = false;
+					}
 				}
+
 			},
 
 			parseStringPayload: function(args) {
@@ -163,24 +170,19 @@ Liferay = window.Liferay || {};
 		_.defaults(
 			ioConfig,
 			{
-				data: {
-					cmd: JSON.stringify(payload),
-					p_auth: Liferay.authToken
-				},
+				data: new FormData(),
 				dataType: 'JSON'
 			}
 		);
 
 		if (ioConfig.form) {
-			_.forEach(
-				$(ioConfig.form).serializeArray(),
-				function(item, index) {
-					ioConfig.data[item.name] = item.value;
-				}
-			);
+			ioConfig.data = new FormData(ioConfig.form);
 
 			delete ioConfig.form;
 		}
+
+		ioConfig.data.append('cmd', JSON.stringify(payload));
+		ioConfig.data.append('p_auth', Liferay.authToken);
 
 		return $.ajax(
 			instance.URL_INVOKE,
