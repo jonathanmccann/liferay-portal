@@ -17,7 +17,14 @@
 <%@ include file="/html/portlet/dynamic_data_mapping/init.jsp" %>
 
 <%
-long groupId = ParamUtil.getLong(request, "groupId", scopeGroupId);
+	long groupId = ParamUtil.getLong(request, "groupId",
+			themeDisplay.getSiteGroupId());
+
+		if (scopeGroupId != groupId) {
+		groupId = scopeGroupId;
+
+		}
+
 long classPK = ParamUtil.getLong(request, "classPK");
 String eventName = ParamUtil.getString(request, "eventName", "selectStructure");
 %>
