@@ -376,18 +376,9 @@ public class AdvancedPermissionChecker extends BasePermissionChecker {
 			}
 
 			List<Group> groups = userPermissionCheckerBag.getGroups();
-
 			Set<Role> roles = new HashSet<>();
 
-			if (!groups.isEmpty()) {
-				List<Role> userRelatedRoles =
-					RoleLocalServiceUtil.getUserRelatedRoles(userId, groups);
-
-				roles.addAll(userRelatedRoles);
-			}
-			else {
-				roles.addAll(RoleLocalServiceUtil.getUserRoles(userId));
-			}
+			roles.addAll(userPermissionCheckerBag.getUserRoles());
 
 			List<Role> userGroupRoles = RoleLocalServiceUtil.getUserGroupRoles(
 				userId, groupId);
