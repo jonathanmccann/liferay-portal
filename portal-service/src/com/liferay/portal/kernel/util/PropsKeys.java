@@ -819,6 +819,8 @@ public interface PropsKeys {
 
 	public static final String DYNAMIC_DATA_MAPPING_IMAGE_SMALL_MAX_SIZE = "dynamic.data.mapping.image.small.max.size";
 
+	public static final String DYNAMIC_DATA_MAPPING_PUBLISH_TO_LIVE_BY_DEFAULT = "dynamic.data.mapping.publish.to.live.by.default";
+
 	public static final String DYNAMIC_DATA_MAPPING_STRUCTURE_FORCE_AUTOGENERATE_KEY = "dynamic.data.mapping.structure.force.autogenerate.key";
 
 	public static final String DYNAMIC_DATA_MAPPING_TEMPLATE_FORCE_AUTOGENERATE_KEY = "dynamic.data.mapping.template.force.autogenerate.key";
