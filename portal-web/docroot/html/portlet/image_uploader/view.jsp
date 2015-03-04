@@ -19,7 +19,7 @@
 <%
 String currentImageURL = ParamUtil.getString(request, "currentLogoURL");
 long maxFileSize = ParamUtil.getLong(request, "maxFileSize");
-long fileMaxSize=0;
+long fileMaxSize = 0;
 String tempImageFileName = ParamUtil.getString(request, "tempImageFileName");
 String randomNamespace = ParamUtil.getString(request, "randomNamespace");
 %>
@@ -65,16 +65,13 @@ String randomNamespace = ParamUtil.getString(request, "randomNamespace");
 			</liferay-ui:error>
 
 			<liferay-ui:error exception="<%= FileSizeException.class %>">
-			<% if (SessionErrors.contains(renderRequest, "dlFileMaxSize")) {
-				fileMaxSize = PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE);
+			<% fileMaxSize = PrefsPropsUtil.getLong(PropsKeys.DL_FILE_MAX_SIZE);
 
-				if (fileMaxSize == 0) {
-					fileMaxSize = PrefsPropsUtil.getLong(PropsKeys.UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE);
-				}
-			}else {
-				fileMaxSize = maxFileSize;
+			if (fileMaxSize == 0) {
+				fileMaxSize = PrefsPropsUtil.getLong(
+					PropsKeys.UPLOAD_SERVLET_REQUEST_IMPL_MAX_SIZE);
 			} %>
-			<liferay-ui:message arguments="<%= TextFormatter.formatStorageSize(fileMaxSize, locale) %>" key="please-enter-a-file-with-a-valid-file-size-no-larger-than-x" translateArguments="<%= false %>" />
+				<liferay-ui:message arguments="<%= TextFormatter.formatStorageSize((maxFileSize<fileMaxSize ? maxFileSize : fileMaxSize), locale) %>" key="please-enter-a-file-with-a-valid-file-size-no-larger-than-x" translateArguments="<%= false %>" />
 			</liferay-ui:error>
 
 			<liferay-ui:error exception="<%= NoSuchFileException.class %>" message="an-unexpected-error-occurred-while-uploading-your-file" />

@@ -91,7 +91,6 @@ public class UploadImageAction extends PortletAction {
 		String cmd = ParamUtil.getString(actionRequest, Constants.CMD);
 
 		long maxFileSize = ParamUtil.getLong(actionRequest, "maxFileSize");
-		boolean isFileSizeValid=false;
 
 		try {
 			UploadException uploadException =
@@ -128,7 +127,7 @@ public class UploadImageAction extends PortletAction {
 					if (fileEntry.getSize() > maxFileSize) {
 						throw new FileSizeException();
 					}else {
-						isFileSizeValid=validateImageSize(actionRequest);
+						validateImageSize(actionRequest,fileEntry);
 					}
 				}
 
@@ -139,7 +138,7 @@ public class UploadImageAction extends PortletAction {
 		}
 		catch (Exception e) {
 			handleUploadException(
-				actionRequest, actionResponse, cmd, maxFileSize, e,isFileSizeValid);
+				actionRequest, actionResponse, cmd, maxFileSize, e);
 		}
 	}
 
@@ -250,7 +249,7 @@ public class UploadImageAction extends PortletAction {
 
 	protected void handleUploadException(
 			ActionRequest actionRequest, ActionResponse actionResponse,
-			String cmd, long maxFileSize, Exception e,boolean isFileSizeValid)
+			String cmd, long maxFileSize, Exception e)
 		throws Exception {
 
 		if (e instanceof PrincipalException) {
@@ -317,9 +316,6 @@ public class UploadImageAction extends PortletAction {
 				writeJSON(actionRequest, actionResponse, jsonObject);
 			}
 			else {
-				if (!isFileSizeValid) {
-					SessionErrors.add(actionRequest, "dlFileMaxSize", isFileSizeValid);
-				}
 				SessionErrors.add(actionRequest, e.getClass(), e);
 			}
 		}
@@ -424,40 +420,23 @@ public class UploadImageAction extends PortletAction {
 
 		PortletResponseUtil.write(mimeResponse, bytes);
 	}
-
-	protected boolean validateImageSize(ActionRequest actionRequest)
+	
+	protected void validateImageSize(ActionRequest actionRequest,FileEntry fileEntry)
 			throws Exception {
-
-			FileEntry tempFileEntry = null;
-
-			InputStream tempImageStream = null;
 
 			String fileName = ParamUtil.getString(actionRequest, "tempImageFileName");
 
 			try {
-				tempFileEntry = getTempImageFileEntry(actionRequest);
-
-				tempImageStream = tempFileEntry.getContentStream();
-
-				ImageBag imageBag = ImageToolUtil.read(tempImageStream);
-
-				RenderedImage renderedImage = imageBag.getRenderedImage();
-
-				byte[] bytes = ImageToolUtil.getBytes(
-					renderedImage, imageBag.getType());
+				byte[] bytes = FileUtil.getBytes(fileEntry.getContentStream());
 
 				DLStoreUtil.validate(fileName, true, bytes);
 				
-				return true;
 			}
 			catch (NoSuchFileEntryException nsfee) {
 				throw new UploadException(nsfee);
 			}
 			catch (NoSuchRepositoryException nsre) {
 				throw new UploadException(nsre);
-			}
-			finally {
-				StreamUtil.cleanUp(tempImageStream);
 			}
 		}
 	private static final Log _log = LogFactoryUtil.getLog(
