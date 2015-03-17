@@ -183,6 +183,10 @@ public class DLUtil {
 			request, emailFromAddress, emailFromName);
 	}
 
+	public static int getEndLimit(int end) {
+		return getDL().getEndLimit(end);
+	}
+
 	public static List<Object> getEntries(Hits hits) {
 		return getDL().getEntries(hits);
 	}

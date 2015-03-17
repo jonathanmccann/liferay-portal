@@ -639,6 +639,17 @@ public class DLImpl implements DL {
 	}
 
 	@Override
+	public int getEndLimit(int end) {
+		int maxDisplayItems = PropsValues.DL_RECENT_FILE_MAX_DISPLAY_ITEMS;
+
+		if (end > maxDisplayItems) {
+			return maxDisplayItems;
+		}
+
+		return end;
+	}
+
+	@Override
 	public List<Object> getEntries(Hits hits) {
 		List<Object> entries = new ArrayList<>();
 
