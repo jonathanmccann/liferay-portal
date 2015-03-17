@@ -129,6 +129,8 @@ public interface DL {
 		PortletRequest portletRequest, String emailFromAddress,
 		String emailFromName);
 
+	public int getEndLimit(int end);
+
 	public List<Object> getEntries(Hits hits);
 
 	public List<FileEntry> getFileEntries(Hits hits);
