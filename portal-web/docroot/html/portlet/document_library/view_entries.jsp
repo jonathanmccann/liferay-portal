@@ -55,6 +55,7 @@ portletURL.setParameter("struts_action", "/document_library/view");
 portletURL.setParameter("curFolder", currentFolder);
 portletURL.setParameter("deltaFolder", deltaFolder);
 portletURL.setParameter("folderId", String.valueOf(folderId));
+portletURL.setParameter("navigation", navigation);
 
 SearchContainer dlSearchContainer = new SearchContainer(liferayPortletRequest, null, null, "curEntry", SearchContainer.DEFAULT_DELTA, portletURL, null, null);
 
@@ -68,7 +69,6 @@ String orderByCol = GetterUtil.getString((String)request.getAttribute("view.jsp-
 String orderByType = GetterUtil.getString((String)request.getAttribute("view.jsp-orderByType"));
 
 OrderByComparator<?> orderByComparator = DLUtil.getRepositoryModelOrderByComparator(orderByCol, orderByType);
-
 dlSearchContainer.setOrderByCol(orderByCol);
 dlSearchContainer.setOrderByComparator(orderByComparator);
 dlSearchContainer.setOrderByType(orderByType);
@@ -158,7 +158,30 @@ else {
 			results = DLAppServiceUtil.getFoldersAndFileEntriesAndFileShortcuts(repositoryId, folderId, status, false, dlSearchContainer.getStart(), dlSearchContainer.getEnd(), dlSearchContainer.getOrderByComparator());
 		}
 	}
-	else if (navigation.equals("mine") || navigation.equals("recent")) {
+	else if (navigation.equals("recent")) {
+		long groupFileEntriesUserId = 0;
+
+		total=PropsValues.DL_RECENT_FILE_MAX_DISPLAY_ITEMS;
+
+		int end = dlSearchContainer.getEnd();
+
+		if (total <= 0) {
+			total = DLAppServiceUtil.getGroupFileEntriesCount(repositoryId, groupFileEntriesUserId, folderId, null, status);
+		}else {
+			end= DLUtil.getEndLimit(end);
+		}
+
+		dlSearchContainer.setTotal(total);
+
+		orderByCol="modifiedDate";
+		orderByType="desc";
+		orderByComparator = DLUtil.getRepositoryModelOrderByComparator(orderByCol, orderByType);
+
+		dlSearchContainer.setOrderByComparator(orderByComparator);
+
+		results = DLAppServiceUtil.getGroupFileEntries(repositoryId, groupFileEntriesUserId, folderId, null, status, dlSearchContainer.getStart(), end, dlSearchContainer.getOrderByComparator());
+	}
+	else if (navigation.equals("mine")) {
 		long groupFileEntriesUserId = 0;
 
 		if (navigation.equals("mine") && themeDisplay.isSignedIn()) {
