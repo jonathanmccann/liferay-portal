@@ -85,7 +85,7 @@ public class DocumentImpl implements Document {
 			return fieldName;
 		}
 
-		if (DDMIndexerUtil.isSortableFieldName(fieldName)) {
+		if (DDMIndexerUtil.isDDMStructureFieldName(fieldName)) {
 			return DocumentImpl.getSortableFieldName(fieldName);
 		}
 

@@ -293,7 +293,7 @@ public class DDMIndexerImpl implements DDMIndexer {
 	}
 
 	@Override
-	public boolean isSortableFieldName(String fieldName) {
+	public boolean isDDMStructureFieldName(String fieldName) {
 		return fieldName.startsWith(DDMIndexer.DDM_FIELD_PREFIX);
 	}
 
