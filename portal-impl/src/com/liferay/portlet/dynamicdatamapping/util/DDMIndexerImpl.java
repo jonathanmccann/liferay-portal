@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.search.Document;
+import com.liferay.portal.kernel.search.DocumentImpl;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -75,6 +76,9 @@ public class DDMIndexerImpl implements DDMIndexer {
 					String name = encodeName(
 						ddmStructure.getStructureId(), field.getName(), locale);
 
+					String sortableFieldName =
+						DocumentImpl.getSortableFieldName(name);
+
 					Serializable value = field.getValue(locale);
 
 					if (value instanceof BigDecimal) {
@@ -85,6 +89,8 @@ public class DDMIndexerImpl implements DDMIndexer {
 					}
 					else if (value instanceof Boolean) {
 						document.addKeyword(name, (Boolean)value);
+
+						document.addKeyword(sortableFieldName, (Boolean)value);
 					}
 					else if (value instanceof Boolean[]) {
 						document.addKeyword(name, (Boolean[])value);
@@ -163,6 +169,8 @@ public class DDMIndexerImpl implements DDMIndexer {
 								document.addText(name, valueString);
 							}
 						}
+
+						document.addKeyword(sortableFieldName, valueString);
 					}
 				}
 			}
@@ -285,7 +293,7 @@ public class DDMIndexerImpl implements DDMIndexer {
 	}
 
 	@Override
-	public boolean isSortableFieldName(String fieldName) {
+	public boolean isDDMStructureFieldName(String fieldName) {
 		return fieldName.startsWith(DDMIndexer.DDM_FIELD_PREFIX);
 	}
 

@@ -56,8 +56,8 @@ public class DDMIndexerUtil {
 		return _ddmIndexer;
 	}
 
-	public static boolean isSortableFieldName(String fieldName) {
-		return getDDMIndexer().isSortableFieldName(fieldName);
+	public static boolean isDDMStructureFieldName(String fieldName) {
+		return getDDMIndexer().isDDMStructureFieldName(fieldName);
 	}
 
 	public void setDDMIndexer(DDMIndexer ddmIndexer) {
