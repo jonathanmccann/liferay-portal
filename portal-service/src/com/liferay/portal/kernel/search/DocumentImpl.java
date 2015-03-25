@@ -86,7 +86,7 @@ public class DocumentImpl implements Document {
 		}
 
 		if (DDMIndexerUtil.isSortableFieldName(fieldName)) {
-			return fieldName;
+			return DocumentImpl.getSortableFieldName(fieldName);
 		}
 
 		if ((sort.getType() == Sort.STRING_TYPE) &&
