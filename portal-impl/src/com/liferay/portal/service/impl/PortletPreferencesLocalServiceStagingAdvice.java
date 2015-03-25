@@ -213,7 +213,8 @@ public class PortletPreferencesLocalServiceStagingAdvice
 			User user = UserLocalServiceUtil.getUserById(userId);
 
 			plid = StagingUtil.getRecentLayoutRevisionId(
-				user, layoutRevision.getLayoutSetBranchId(), layout.getPlid());
+				user, layoutRevision.getLayoutSetBranchId(),
+				layoutRevision.getPlid());
 		}
 
 		if (arguments.length == 1) {
