@@ -201,6 +201,14 @@ long usedMemory = totalMemory - runtime.freeMemory();
 				<aui:button cssClass="save-server-button" data-cmd="cleanUpPermissions" value="execute" />
 			</td>
 		</tr>
+		<tr>
+			<td>
+				<liferay-ui:message key="clean-up-portlet-preferences" /> <liferay-ui:icon-help message="clean-up-portlet-preferences-help" />
+			</td>
+			<td>
+				<aui:button cssClass="save-server-button" data-cmd="cleanUpPortletPreferences" value="execute" />
+			</td>
+		</tr>
 		</table>
 	</liferay-ui:panel>
 </liferay-ui:panel-container>

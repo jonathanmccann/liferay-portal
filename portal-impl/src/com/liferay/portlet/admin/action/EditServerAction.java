@@ -103,6 +103,7 @@ import com.liferay.portal.util.ShutdownUtil;
 import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.ActionResponseImpl;
 import com.liferay.portlet.admin.util.CleanUpPermissionsUtil;
+import com.liferay.portlet.admin.util.CleanUpPortletPreferencesUtil;
 import com.liferay.portlet.documentlibrary.util.DLPreviewableProcessor;
 import com.liferay.util.log4j.Log4JUtil;
 
@@ -179,6 +180,10 @@ public class EditServerAction extends PortletAction {
 		}
 		else if (cmd.equals("cleanUpPermissions")) {
 			CleanUpPermissionsUtil.cleanUpAddToPagePermissions(actionRequest);
+		}
+		else if (cmd.equals("cleanUpPortletPreferences")) {
+			CleanUpPortletPreferencesUtil.
+				cleanUpLayoutRevisionPortletPreferences();
 		}
 		else if (cmd.startsWith("convertProcess.")) {
 			redirect = convertProcess(actionRequest, actionResponse, cmd);
