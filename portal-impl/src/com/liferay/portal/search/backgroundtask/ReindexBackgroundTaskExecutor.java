@@ -67,6 +67,7 @@ public abstract class ReindexBackgroundTaskExecutor
 			backgroundTask.getTaskContextMap();
 
 		String className = (String)taskContextMap.get("className");
+
 		long[] companyIds = (long[])taskContextMap.get("companyIds");
 
 		reindex(className, companyIds);
