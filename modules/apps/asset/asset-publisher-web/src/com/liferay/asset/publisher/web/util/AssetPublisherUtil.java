@@ -439,6 +439,19 @@ public class AssetPublisherUtil {
 			boolean deleteMissingAssetEntries, boolean checkPermission)
 		throws Exception {
 
+		return getAssetEntries(
+			portletRequest, portletPreferences, permissionChecker, groupIds,
+			deleteMissingAssetEntries, checkPermission, false);
+	}
+
+	public static List<AssetEntry> getAssetEntries(
+			PortletRequest portletRequest,
+			PortletPreferences portletPreferences,
+			PermissionChecker permissionChecker, long[] groupIds,
+			boolean deleteMissingAssetEntries, boolean checkPermission,
+			boolean manualConfiguration)
+		throws Exception {
+
 		String[] assetEntryXmls = portletPreferences.getValues(
 			"assetEntryXml", new String[0]);
 
@@ -472,7 +485,7 @@ public class AssetPublisherUtil {
 				continue;
 			}
 
-			if (!assetEntry.isVisible()) {
+			if (!assetEntry.isVisible() && !manualConfiguration) {
 				continue;
 			}
 
