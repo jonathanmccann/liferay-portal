@@ -22,39 +22,7 @@ ResultRow row = (ResultRow)request.getAttribute(WebKeys.SEARCH_CONTAINER_RESULT_
 BackgroundTask backgroundTask = (BackgroundTask)row.getObject();
 %>
 
-<strong class="background-task-status-<%= BackgroundTaskConstants.getStatusLabel(backgroundTask.getStatus()) %> <%= BackgroundTaskConstants.getStatusCssClass(backgroundTask.getStatus()) %> label">
-	<liferay-ui:message key="<%= backgroundTask.getStatusLabel() %>" />
-</strong>
-
-<c:if test="<%= backgroundTask.isInProgress() %>">
-
-	<%
-	BackgroundTaskStatus backgroundTaskStatus = BackgroundTaskStatusRegistryUtil.getBackgroundTaskStatus(backgroundTask.getBackgroundTaskId());
-	%>
-
-	<c:if test="<%= backgroundTaskStatus != null %>">
-
-		<%
-		BackgroundTaskStatusDisplay backgroundTaskStatusDisplay = BackgroundTaskStatusDisplayFactoryUtil.getBackgroundTaskStatusDisplay(backgroundTask.getBackgroundTaskId(), locale);
-
-		int percentage = backgroundTaskStatusDisplay.getPercentage();
-		%>
-
-		<div class="active progress progress-striped">
-			<div class="progress-bar" style="width: <%= percentage %>%;">
-				<c:if test="<%= backgroundTaskStatusDisplay.hasPercentage() %>">
-					<%= percentage + StringPool.PERCENT %>
-				</c:if>
-			</div>
-		</div>
-
-		<c:if test="<%= backgroundTaskStatusDisplay.hasMessage() %>">
-			<div class="progress-current-item">
-				<liferay-ui:message key="<%= backgroundTaskStatusDisplay.getMessage() %>" localizeKey="<%= false %>" />
-			</div>
-		</c:if>
-	</c:if>
-</c:if>
+<%@ include file="/html/portlet/background_task/status.jspf" %>
 
 <c:if test="<%= Validator.isNotNull(backgroundTask.getStatusMessage()) %>">
 
