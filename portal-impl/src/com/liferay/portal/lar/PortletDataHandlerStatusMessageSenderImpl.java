@@ -14,6 +14,7 @@
 
 package com.liferay.portal.lar;
 
+import com.liferay.portal.backgroundtask.messaging.BackgroundTastStatusMessageSender;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskThreadLocal;
 import com.liferay.portal.kernel.lar.ManifestSummary;
 import com.liferay.portal.kernel.lar.PortletDataHandler;
@@ -21,7 +22,6 @@ import com.liferay.portal.kernel.lar.PortletDataHandlerStatusMessageSender;
 import com.liferay.portal.kernel.lar.StagedModelDataHandler;
 import com.liferay.portal.kernel.lar.StagedModelDataHandlerRegistryUtil;
 import com.liferay.portal.kernel.messaging.Message;
-import com.liferay.portal.kernel.messaging.sender.SingleDestinationMessageSender;
 import com.liferay.portal.kernel.util.LongWrapper;
 import com.liferay.portal.model.Portlet;
 import com.liferay.portal.model.StagedModel;
@@ -34,6 +34,7 @@ import java.util.Map;
  * @author Michael C. Han
  */
 public class PortletDataHandlerStatusMessageSenderImpl
+	extends BackgroundTastStatusMessageSender
 	implements PortletDataHandlerStatusMessageSender {
 
 	/**
@@ -52,11 +53,81 @@ public class PortletDataHandlerStatusMessageSenderImpl
 	public void sendStatusMessage(
 		String messageType, String portletId, ManifestSummary manifestSummary) {
 
-		if (!BackgroundTaskThreadLocal.hasBackgroundTask()) {
-			return;
+		super.sendStatusMessage(messageType, portletId, manifestSummary);
+	}
+
+	@Override
+	public void sendStatusMessage(
+		String messageType, String[] portletIds,
+		ManifestSummary manifestSummary) {
+
+		super.sendStatusMessage(messageType, portletIds, manifestSummary);
+	}
+
+	@Override
+	public <T extends StagedModel> void sendStatusMessage(
+		String messageType, T stagedModel, ManifestSummary manifestSummary) {
+
+		StagedModelDataHandler<T> stagedModelDataHandler =
+			(StagedModelDataHandler<T>)
+				StagedModelDataHandlerRegistryUtil.getStagedModelDataHandler(
+					stagedModel.getModelClassName());
+
+		String stagedModelDisplayName = stagedModelDataHandler.getDisplayName(
+			stagedModel);
+
+		sendStatusMessage(
+			messageType, stagedModel, stagedModelDisplayName, manifestSummary);
+	}
+
+	protected Message createLayoutMessage(
+		String messageType, String[] portletIds,
+		ManifestSummary manifestSummary) {
+
+		Message message = doCreateMessage(messageType, manifestSummary);
+
+		message.put("portletIds", portletIds);
+
+		return message;
+	}
+
+	@Override
+	protected Message createMessage(Object... params) {
+		Message message = null;
+
+		String messageType = (String)params[0];
+
+		if (messageType.equals("layout")) {
+			String[] portletIds = (String[])params[1];
+			ManifestSummary manifestSummary = (ManifestSummary)params[2];
+
+			message = createLayoutMessage(
+				messageType, portletIds, manifestSummary);
+		}
+		else if (messageType.equals("portlet")) {
+			String portletId = (String)params[1];
+			ManifestSummary manifestSummary = (ManifestSummary)params[2];
+
+			message = createPortletMessage(
+				messageType, portletId, manifestSummary);
+		}
+		else if (messageType.equals("stagedModel")) {
+			StagedModel stagedModel = (StagedModel)params[1];
+			String stagedModelDisplayName = (String)params[2];
+			ManifestSummary manifestSummary = (ManifestSummary)params[3];
+
+			message = createStagedModelMessage(
+				messageType, stagedModel, stagedModelDisplayName,
+				manifestSummary);
 		}
 
-		Message message = createMessage(messageType, manifestSummary);
+		return message;
+	}
+
+	protected Message createPortletMessage(
+		String messageType, String portletId, ManifestSummary manifestSummary) {
+
+		Message message = doCreateMessage(messageType, manifestSummary);
 
 		message.put("portletId", portletId);
 
@@ -78,59 +149,26 @@ public class PortletDataHandlerStatusMessageSenderImpl
 				portletModelAdditionCountersTotal);
 		}
 
-		_singleDestinationMessageSender.send(message);
+		return message;
 	}
 
-	@Override
-	public void sendStatusMessage(
-		String messageType, String[] portletIds,
-		ManifestSummary manifestSummary) {
+	protected Message createStagedModelMessage(
+		String messageType, StagedModel stagedModel,
+		String stagedModelDisplayName, ManifestSummary manifestSummary) {
 
-		if (!BackgroundTaskThreadLocal.hasBackgroundTask()) {
-			return;
-		}
+		Message message = doCreateMessage(messageType, manifestSummary);
 
-		Message message = createMessage(messageType, manifestSummary);
-
-		message.put("portletIds", portletIds);
-
-		_singleDestinationMessageSender.send(message);
-	}
-
-	@Override
-	public <T extends StagedModel> void sendStatusMessage(
-		String messageType, T stagedModel, ManifestSummary manifestSummary) {
-
-		if (!BackgroundTaskThreadLocal.hasBackgroundTask()) {
-			return;
-		}
-
-		Message message = createMessage(messageType, manifestSummary);
-
-		StagedModelDataHandler<T> stagedModelDataHandler =
-			(StagedModelDataHandler<T>)
-				StagedModelDataHandlerRegistryUtil.getStagedModelDataHandler(
-					stagedModel.getModelClassName());
-
-		message.put(
-			"stagedModelName",
-			stagedModelDataHandler.getDisplayName(stagedModel));
+		message.put("stagedModelName", stagedModelDisplayName);
 
 		message.put(
 			"stagedModelType",
 			String.valueOf(stagedModel.getStagedModelType()));
 		message.put("uuid", stagedModel.getUuid());
 
-		_singleDestinationMessageSender.send(message);
+		return message;
 	}
 
-	public void setSingleDestinationMessageSender(
-		SingleDestinationMessageSender singleDestinationMessageSender) {
-
-		_singleDestinationMessageSender = singleDestinationMessageSender;
-	}
-
-	protected Message createMessage(
+	protected Message doCreateMessage(
 		String messageType, ManifestSummary manifestSummary) {
 
 		Message message = new Message();
@@ -156,7 +194,5 @@ public class PortletDataHandlerStatusMessageSenderImpl
 
 		return message;
 	}
-
-	private SingleDestinationMessageSender _singleDestinationMessageSender;
 
 }
