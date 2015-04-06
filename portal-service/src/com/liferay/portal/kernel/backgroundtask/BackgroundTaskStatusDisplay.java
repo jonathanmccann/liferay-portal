@@ -14,28 +14,17 @@
 
 package com.liferay.portal.kernel.backgroundtask;
 
-import com.liferay.portal.model.BackgroundTask;
-
-import java.util.Locale;
-
 /**
- * @author Michael C. Han
+ * @author Andrew Betts
  */
-public interface BackgroundTaskExecutor {
+public interface BackgroundTaskStatusDisplay {
 
-	public BackgroundTaskResult execute(BackgroundTask backgroundTask)
-		throws Exception;
+	public String getMessage();
 
-	public BackgroundTaskStatusDisplay getBackgroundTaskStatusDisplay(
-		BackgroundTask backgroundTask, Locale locale);
+	public int getPercentage();
 
-	public BackgroundTaskStatusMessageTranslator
-		getBackgroundTaskStatusMessageTranslator();
+	public boolean hasMessage();
 
-	public int getIsolationLevel();
-
-	public String handleException(BackgroundTask backgroundTask, Exception e);
-
-	public boolean isSerial();
+	public boolean hasPercentage();
 
 }
