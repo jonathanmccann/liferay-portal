@@ -343,11 +343,84 @@ public class GroupServiceTest {
 	}
 
 	@Test
-	public void testGetUserSitesGroups() throws Exception {
+	public void testGetUserSitesGroupsControlPanelGroup() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		Role role = RoleLocalServiceUtil.getRole(
+			TestPropsValues.getCompanyId(), RoleConstants.ADMINISTRATOR);
+
+		UserLocalServiceUtil.addRoleUser(role.getRoleId(), user);
+
+		Group controlPanelGroup = GroupLocalServiceUtil.getGroup(
+			user.getCompanyId(), GroupConstants.CONTROL_PANEL);
+
+		List<Group> groups = GroupServiceUtil.getUserSitesGroups(
+			user.getUserId(), null, false, QueryUtil.ALL_POS);
+
+		Assert.assertFalse(groups.contains(controlPanelGroup));
+
+		groups = GroupServiceUtil.getUserSitesGroups(
+			user.getUserId(), null, true, QueryUtil.ALL_POS);
+
+		Assert.assertTrue(groups.contains(controlPanelGroup));
+	}
+
+	@Test
+	public void testGetUserSitesGroupsOrder() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		User user = UserTestUtil.addGroupAdminUser(group);
+
+		Role administratorRole = RoleLocalServiceUtil.getRole(
+			user.getCompanyId(), RoleConstants.ADMINISTRATOR);
+
+		RoleLocalServiceUtil.addUserRole(
+			user.getUserId(), administratorRole.getRoleId());
+
+		Organization organization = OrganizationTestUtil.addOrganization(true);
+
+		Group organizationGroup = organization.getGroup();
+
+		LayoutTestUtil.addLayout(organizationGroup);
+
+		_organizations.add(organization);
+
+		UserLocalServiceUtil.addOrganizationUsers(
+			organization.getOrganizationId(), new long[] {user.getUserId()});
+
+		Group controlPanelGroup = GroupLocalServiceUtil.getGroup(
+			user.getCompanyId(), GroupConstants.CONTROL_PANEL);
+
+		Group userGroup = user.getGroup();
+
+		List<Group> groups = GroupServiceUtil.getUserSitesGroups(
+			user.getUserId(), null, true, QueryUtil.ALL_POS);
+
+		try {
+			Assert.assertEquals(4, groups.size());
+
+			Assert.assertTrue(controlPanelGroup.equals(groups.get(0)));
+			Assert.assertTrue(userGroup.equals(groups.get(1)));
+			Assert.assertTrue(organizationGroup.equals(groups.get(2)));
+			Assert.assertTrue(group.equals(groups.get(3)));
+		}
+		finally {
+			UserLocalServiceUtil.unsetOrganizationUsers(
+				organization.getOrganizationId(),
+				new long[] {user.getUserId()});
+		}
+	}
+
+	@Test
+	public void testGetUserSitesGroupsOrganizationGroups() throws Exception {
+		User user = UserTestUtil.addUser();
+
 		Organization parentOrganization = OrganizationTestUtil.addOrganization(
 			true);
 
 		Group parentOrganizationGroup = parentOrganization.getGroup();
+
+		_organizations.add(parentOrganization);
 
 		LayoutTestUtil.addLayout(parentOrganizationGroup);
 
@@ -356,23 +429,53 @@ public class GroupServiceTest {
 			RandomTestUtil.randomString(), false);
 
 		_organizations.add(organization);
-		_organizations.add(parentOrganization);
 
 		UserLocalServiceUtil.addOrganizationUsers(
-			organization.getOrganizationId(),
-			new long[] {TestPropsValues.getUserId()});
+			organization.getOrganizationId(), new long[] {user.getUserId()});
 
 		try {
 			List<Group> groups = GroupServiceUtil.getUserSitesGroups(
-				TestPropsValues.getUserId(), null, false, QueryUtil.ALL_POS);
+				user.getUserId(), null, false, QueryUtil.ALL_POS);
 
 			Assert.assertTrue(groups.contains(parentOrganizationGroup));
+			Assert.assertFalse(groups.contains(organization.getGroup()));
 		}
 		finally {
 			UserLocalServiceUtil.unsetOrganizationUsers(
 				organization.getOrganizationId(),
-				new long[] {TestPropsValues.getUserId()});
+				new long[] {user.getUserId()});
 		}
+	}
+
+	@Test
+	public void testGetUserSitesGroupsUserPersonalSite() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		List<Group> groups = GroupServiceUtil.getUserSitesGroups(
+			user.getUserId(), null, false, QueryUtil.ALL_POS);
+
+		Assert.assertTrue(groups.contains(user.getGroup()));
+	}
+
+	@Test
+	public void testGetUserSitesGroupsUsersGroups() throws Exception {
+		Group group = GroupTestUtil.addGroup();
+
+		User user = UserTestUtil.addGroupUser(group, RoleConstants.USER);
+
+		List<Group> groups = GroupServiceUtil.getUserSitesGroups(
+			user.getUserId(), null, false, QueryUtil.ALL_POS);
+
+		Assert.assertTrue(groups.contains(group));
+
+		group.setActive(false);
+
+		GroupLocalServiceUtil.updateGroup(group);
+
+		groups = GroupServiceUtil.getUserSitesGroups(
+			user.getUserId(), null, false, QueryUtil.ALL_POS);
+
+		Assert.assertFalse(groups.contains(group));
 	}
 
 	@Test
