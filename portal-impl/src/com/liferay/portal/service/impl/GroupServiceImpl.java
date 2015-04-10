@@ -689,7 +689,7 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 			return Collections.emptyList();
 		}
 
-		List<Group> userSiteGroups = new ArrayList<>();
+		Set<Group> userSiteGroups = new LinkedHashSet<>();
 
 		int start = QueryUtil.ALL_POS;
 		int end = QueryUtil.ALL_POS;
@@ -732,6 +732,11 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 			}
 		}
 
+		if ((max != QueryUtil.ALL_POS) && (max <= userSiteGroups.size())) {
+			return Collections.unmodifiableList(
+				ListUtil.subList(userSiteGroups, start, end));
+		}
+
 		if ((classNames == null) ||
 			ArrayUtil.contains(classNames, Organization.class.getName())) {
 
@@ -762,7 +767,18 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 
 					userSiteGroups.add(organization.getGroup());
 				}
+
+				if ((max != QueryUtil.ALL_POS) &&
+					(max <= userSiteGroups.size())) {
+
+					break;
+				}
 			}
+		}
+
+		if ((max != QueryUtil.ALL_POS) && (max <= userSiteGroups.size())) {
+			return Collections.unmodifiableList(
+				ListUtil.subList(userSiteGroups, start, end));
 		}
 
 		if ((classNames == null) ||
@@ -785,7 +801,7 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 		}
 
 		return Collections.unmodifiableList(
-			ListUtil.subList(ListUtil.unique(userSiteGroups), start, end));
+			ListUtil.subList(userSiteGroups, start, end));
 	}
 
 	/**
