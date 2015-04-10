@@ -73,6 +73,8 @@ else {
 	rootNodeName = LanguageUtil.get(request, "public-pages");
 }
 
+boolean showHeader = ParamUtil.getBoolean(request, "showHeader", true);
+
 String treeId = "layoutsExportTree" + liveGroupId + privateLayout;
 
 if (!cmd.equals(Constants.UPDATE)) {
@@ -103,6 +105,7 @@ portletURL.setParameter("groupId", String.valueOf(groupId));
 portletURL.setParameter("liveGroupId", String.valueOf(liveGroupId));
 portletURL.setParameter("privateLayout", String.valueOf(privateLayout));
 portletURL.setParameter("rootNodeName", rootNodeName);
+portletURL.setParameter("showHeader", String.valueOf(showHeader));
 
 String tabs2Names = StringPool.BLANK;
 
@@ -126,10 +129,12 @@ if (!cmd.equals(Constants.ADD)) {
 	<portlet:param name="groupId" value="<%= String.valueOf(groupId) %>" />
 </portlet:renderURL>
 
-<liferay-ui:header
-	backURL="<%= backURL %>"
-	title='<%= privateLayout ? LanguageUtil.get(request, "export-private-pages") : LanguageUtil.get(request, "export-public-pages") %>'
-/>
+<c:if test="<%= showHeader %>">
+	<liferay-ui:header
+		backURL="<%= backURL %>"
+		title='<%= privateLayout ? LanguageUtil.get(request, "export-private-pages") : LanguageUtil.get(request, "export-public-pages") %>'
+	/>
+</c:if>
 
 <liferay-ui:tabs
 	names="<%= tabs2Names %>"
@@ -266,6 +271,7 @@ if (!cmd.equals(Constants.ADD)) {
 		<portlet:param name="<%= SearchContainer.DEFAULT_CUR_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_CUR_PARAM) %>" />
 		<portlet:param name="<%= SearchContainer.DEFAULT_DELTA_PARAM %>" value="<%= ParamUtil.getString(request, SearchContainer.DEFAULT_DELTA_PARAM) %>" />
 		<portlet:param name="groupId" value="<%= String.valueOf(liveGroupId) %>" />
+		<portlet:param name="showHeader" value="<%= String.valueOf(showHeader) %>" />
 	</liferay-portlet:resourceURL>
 
 	new Liferay.ExportImport(

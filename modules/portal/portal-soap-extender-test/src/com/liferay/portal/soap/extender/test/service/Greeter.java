@@ -12,26 +12,16 @@
  * details.
  */
 
-package com.liferay.bookmarks.customattributes;
+package com.liferay.portal.soap.extender.test.service;
 
-import com.liferay.bookmarks.model.BookmarksFolder;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portlet.expando.model.BaseCustomAttributesDisplay;
+import javax.jws.WebService;
 
 /**
- * @author Jorge Ferrer
+ * @author Carlos Sierra Andrés
  */
-public class BookmarksFolderCustomAttributesDisplay
-	extends BaseCustomAttributesDisplay {
+@WebService
+public interface Greeter {
 
-	@Override
-	public String getClassName() {
-		return BookmarksFolder.class.getName();
-	}
-
-	@Override
-	public String getIconPath(ThemeDisplay themeDisplay) {
-		return themeDisplay.getPathThemeImages() + "/common/folder.png";
-	}
+	public String greet();
 
 }

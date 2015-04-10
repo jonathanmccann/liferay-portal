@@ -45,6 +45,7 @@ public class CMISWebServicesRepositoryFactory
 		return new CMISWebServicesRepository();
 	}
 
+	@Override
 	@Reference(unbind = "-")
 	protected void setAssetEntryLocalService(
 		AssetEntryLocalService assetEntryLocalService) {
@@ -52,6 +53,7 @@ public class CMISWebServicesRepositoryFactory
 		super.setAssetEntryLocalService(assetEntryLocalService);
 	}
 
+	@Override
 	@Reference(unbind = "-")
 	protected void setCompanyLocalService(
 		CompanyLocalService companyLocalService) {
@@ -59,6 +61,7 @@ public class CMISWebServicesRepositoryFactory
 		super.setCompanyLocalService(companyLocalService);
 	}
 
+	@Override
 	@Reference(unbind = "-")
 	protected void setDLAppHelperLocalService(
 		DLAppHelperLocalService dlAppHelperLocalService) {
@@ -66,6 +69,7 @@ public class CMISWebServicesRepositoryFactory
 		super.setDLAppHelperLocalService(dlAppHelperLocalService);
 	}
 
+	@Override
 	@Reference(unbind = "-")
 	protected void setDLFolderLocalService(
 		DLFolderLocalService dlFolderLocalService) {
@@ -73,6 +77,7 @@ public class CMISWebServicesRepositoryFactory
 		super.setDLFolderLocalService(dlFolderLocalService);
 	}
 
+	@Override
 	@Reference(unbind = "-")
 	protected void setRepositoryEntryLocalService(
 		RepositoryEntryLocalService repositoryEntryLocalService) {
@@ -80,6 +85,7 @@ public class CMISWebServicesRepositoryFactory
 		super.setRepositoryEntryLocalService(repositoryEntryLocalService);
 	}
 
+	@Override
 	@Reference(unbind = "-")
 	protected void setRepositoryLocalService(
 		RepositoryLocalService repositoryLocalService) {
@@ -87,6 +93,7 @@ public class CMISWebServicesRepositoryFactory
 		super.setRepositoryLocalService(repositoryLocalService);
 	}
 
+	@Override
 	@Reference(unbind = "-")
 	protected void setUserLocalService(UserLocalService userLocalService) {
 		super.setUserLocalService(userLocalService);

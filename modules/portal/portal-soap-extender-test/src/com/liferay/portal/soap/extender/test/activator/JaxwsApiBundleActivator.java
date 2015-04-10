@@ -12,26 +12,30 @@
  * details.
  */
 
-package com.liferay.bookmarks.customattributes;
+package com.liferay.portal.soap.extender.test.activator;
 
-import com.liferay.bookmarks.model.BookmarksEntry;
-import com.liferay.portal.theme.ThemeDisplay;
-import com.liferay.portlet.expando.model.BaseCustomAttributesDisplay;
+import com.liferay.portal.soap.extender.test.service.GreeterImpl;
+
+import javax.xml.ws.Endpoint;
+
+import org.osgi.framework.BundleActivator;
+import org.osgi.framework.BundleContext;
 
 /**
- * @author Jorge Ferrer
+ * @author Carlos Sierra Andrés
  */
-public class BookmarksEntryCustomAttributesDisplay
-	extends BaseCustomAttributesDisplay {
+public class JaxwsApiBundleActivator implements BundleActivator {
 
 	@Override
-	public String getClassName() {
-		return BookmarksEntry.class.getName();
+	public void start(BundleContext bundleContext) throws Exception {
+		_endpoint = Endpoint.publish("/greeterApi", new GreeterImpl());
 	}
 
 	@Override
-	public String getIconPath(ThemeDisplay themeDisplay) {
-		return themeDisplay.getPathThemeImages() + "/ratings/star_hover.png";
+	public void stop(BundleContext bundleContext) throws Exception {
+		_endpoint.stop();
 	}
+
+	private Endpoint _endpoint;
 
 }

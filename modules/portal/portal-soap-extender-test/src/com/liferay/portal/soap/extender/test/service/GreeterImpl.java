@@ -12,15 +12,22 @@
  * details.
  */
 
-package com.liferay.portal.kernel.search;
+package com.liferay.portal.soap.extender.test.service;
+
+import org.osgi.service.component.annotations.Component;
 
 /**
- * @author Raymond Augé
+ * @author Carlos Sierra Andrés
  */
-public interface QueryTranslator<T> {
+@Component(
+	immediate = true, property = {"jaxws=true", "soap.address=/greeter"},
+	service = Greeter.class
+)
+public class GreeterImpl implements Greeter {
 
-	public T translate(Query query) throws ParseException;
-
-	public Object translateForSolr(Query query) throws ParseException;
+	@Override
+	public String greet() {
+		return "Greetings!";
+	}
 
 }

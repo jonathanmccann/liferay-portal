@@ -701,7 +701,9 @@ public class CMISRepository extends BaseCmisRepository {
 			folderId);
 
 		if ((foldersAndFileEntries == null) || (mimeTypes != null)) {
-			foldersAndFileEntries = (List)new ArrayList<>(getFolders(folderId));
+			foldersAndFileEntries = new ArrayList<>();
+
+			foldersAndFileEntries.addAll(getFolders(folderId));
 
 			List<FileEntry> fileEntries = getFileEntries(
 				folderId, mimeTypes, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
