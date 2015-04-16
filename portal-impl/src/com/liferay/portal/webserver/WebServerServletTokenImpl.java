@@ -18,7 +18,11 @@ import com.liferay.portal.kernel.cache.MultiVMPool;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.security.pacl.DoPrivileged;
 import com.liferay.portal.servlet.filters.cache.CacheUtil;
+import com.liferay.portlet.journal.model.JournalArticle;
+import com.liferay.portlet.journal.service.JournalArticleLocalServiceUtil;
 import com.liferay.portlet.journal.util.JournalContentUtil;
+
+import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
@@ -53,7 +57,14 @@ public class WebServerServletTokenImpl implements WebServerServletToken {
 
 		// Journal content
 
-		JournalContentUtil.clearCache();
+		List<JournalArticle> articles =
+			JournalArticleLocalServiceUtil.getArticlesBySmallImageId(imageId);
+
+		for (JournalArticle article : articles) {
+			JournalContentUtil.clearCache(
+				article.getGroupId(), article.getArticleId(),
+				article.getDDMTemplateKey());
+		}
 
 		// Layout cache
 
