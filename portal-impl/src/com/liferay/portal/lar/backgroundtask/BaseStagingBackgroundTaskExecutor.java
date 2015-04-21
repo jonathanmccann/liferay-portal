@@ -24,8 +24,8 @@ import com.liferay.portal.kernel.lar.MissingReference;
 import com.liferay.portal.kernel.lar.MissingReferences;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.staging.StagingUtil;
 import com.liferay.portal.kernel.util.FileUtil;
+import com.liferay.portal.kernel.lar.StagingBackgroundTaskDisplayHelperUtil;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.model.BackgroundTask;
@@ -151,9 +151,11 @@ public abstract class BaseStagingBackgroundTaskExecutor
 				BackgroundTaskLocalServiceUtil.fetchBackgroundTask(
 					backgroundTaskId);
 
-			JSONArray jsonArray = StagingUtil.getWarningMessagesJSONArray(
-				getLocale(backgroundTask), weakMissingReferences,
-				backgroundTask.getTaskContextMap());
+			JSONArray jsonArray =
+				StagingBackgroundTaskDisplayHelperUtil.
+					getWarningMessagesJSONArray(
+						getLocale(backgroundTask), weakMissingReferences,
+						backgroundTask.getTaskContextMap());
 
 			backgroundTaskResult.setStatusMessage(jsonArray.toString());
 		}
