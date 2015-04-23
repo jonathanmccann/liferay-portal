@@ -1955,17 +1955,18 @@ public class StagingImpl implements Staging {
 		PortalPreferences portalPreferences, long layoutSetBranchId,
 		long plid) {
 
-		String key = getRecentLayoutBranchIdKey(layoutSetBranchId, plid);
+		String recentLayoutBranchIdKey = getRecentLayoutBranchIdKey(
+			layoutSetBranchId, plid);
 
-		long layoutBranchId = 0;
-
-		layoutBranchId = GetterUtil.getLong(_recentlyUsedIds.get(key));
+		long layoutBranchId = GetterUtil.getLong(
+			_layoutIdPortalCache.get(recentLayoutBranchIdKey));
 
 		if (layoutBranchId <= 0) {
 			layoutBranchId = GetterUtil.getLong(
-				portalPreferences.getValue(Staging.class.getName(), key));
+				portalPreferences.getValue(
+					Staging.class.getName(), recentLayoutBranchIdKey));
 
-			_recentlyUsedIds.put(key, layoutBranchId);
+			_layoutIdPortalCache.put(recentLayoutBranchIdKey, layoutBranchId);
 		}
 
 		return layoutBranchId;
@@ -1989,17 +1990,19 @@ public class StagingImpl implements Staging {
 			long plid)
 		throws PortalException {
 
-		String key = getRecentLayoutRevisionIdKey(layoutSetBranchId, plid);
+		String recentLayoutRevisionIdKey = getRecentLayoutRevisionIdKey(
+			layoutSetBranchId, plid);
 
-		long layoutRevisionId = 0;
-
-		layoutRevisionId = GetterUtil.getLong(_recentlyUsedIds.get(key));
+		long layoutRevisionId = GetterUtil.getLong(
+			_layoutIdPortalCache.get(recentLayoutRevisionIdKey));
 
 		if (layoutRevisionId <= 0) {
 			layoutRevisionId = GetterUtil.getLong(
-				portalPreferences.getValue(Staging.class.getName(), key));
+				portalPreferences.getValue(
+					Staging.class.getName(), recentLayoutRevisionIdKey));
 
-			_recentlyUsedIds.put(key, layoutRevisionId);
+			_layoutIdPortalCache.put(
+				recentLayoutRevisionIdKey, layoutRevisionId);
 		}
 
 		if (layoutRevisionId > 0) {
@@ -2280,13 +2283,14 @@ public class StagingImpl implements Staging {
 		PortalPreferences portalPreferences, long layoutSetBranchId, long plid,
 		long layoutBranchId) {
 
+		String recentLayoutBranchIdKey = getRecentLayoutBranchIdKey(
+			layoutSetBranchId, plid);
+
 		portalPreferences.setValue(
-			Staging.class.getName(),
-			getRecentLayoutBranchIdKey(layoutSetBranchId, plid),
+			Staging.class.getName(), recentLayoutBranchIdKey,
 			String.valueOf(layoutBranchId));
 
-		_recentlyUsedIds.remove(
-			getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
+		_layoutIdPortalCache.remove(recentLayoutBranchIdKey);
 	}
 
 	protected void setRecentLayoutRevisionId(
@@ -2311,13 +2315,14 @@ public class StagingImpl implements Staging {
 					portalPreferences, layoutSetBranchId, plid);
 			}
 			else {
+				String recentLayoutRevisionIdKey = getRecentLayoutRevisionIdKey(
+					layoutSetBranchId, plid);
+
 				portalPreferences.setValue(
-					Staging.class.getName(),
-					getRecentLayoutRevisionIdKey(layoutSetBranchId, plid),
+					Staging.class.getName(), recentLayoutRevisionIdKey,
 					String.valueOf(layoutRevisionId));
 
-				_recentlyUsedIds.remove(
-					getRecentLayoutRevisionIdKey(layoutSetBranchId, plid));
+				_layoutIdPortalCache.remove(recentLayoutRevisionIdKey);
 			}
 		}
 		catch (PortalException pe) {
@@ -2326,13 +2331,14 @@ public class StagingImpl implements Staging {
 			}
 		}
 
+		String recentLayoutBranchIdKey = getRecentLayoutBranchIdKey(
+			layoutSetBranchId, plid);
+
 		portalPreferences.setValue(
-			Staging.class.getName(),
-			getRecentLayoutBranchIdKey(layoutSetBranchId, plid),
+			Staging.class.getName(), recentLayoutBranchIdKey,
 			String.valueOf(layoutBranchId));
 
-		_recentlyUsedIds.remove(
-			getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
+		_layoutIdPortalCache.remove(recentLayoutBranchIdKey);
 	}
 
 	protected void validateRemoteGroup(
@@ -2423,7 +2429,7 @@ public class StagingImpl implements Staging {
 
 	private static final Log _log = LogFactoryUtil.getLog(StagingImpl.class);
 
-	private static final PortalCache<String, Long> _recentlyUsedIds =
+	private static final PortalCache<String, Long> _layoutIdPortalCache =
 		MultiVMPoolUtil.getCache(StagingImpl.class.getName());
 
 }
