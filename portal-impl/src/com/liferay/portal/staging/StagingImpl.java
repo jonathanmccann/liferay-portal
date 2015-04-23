@@ -27,6 +27,8 @@ import com.liferay.portal.NoSuchLayoutRevisionException;
 import com.liferay.portal.PortletIdException;
 import com.liferay.portal.RemoteExportException;
 import com.liferay.portal.RemoteOptionsException;
+import com.liferay.portal.kernel.cache.MultiVMPoolUtil;
+import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -1953,10 +1955,20 @@ public class StagingImpl implements Staging {
 		PortalPreferences portalPreferences, long layoutSetBranchId,
 		long plid) {
 
-		return GetterUtil.getLong(
-			portalPreferences.getValue(
-				Staging.class.getName(),
-				getRecentLayoutBranchIdKey(layoutSetBranchId, plid)));
+		String key = getRecentLayoutBranchIdKey(layoutSetBranchId, plid);
+
+		long layoutBranchId = 0;
+
+		layoutBranchId = GetterUtil.getLong(_recentlyUsedIds.get(key));
+
+		if (layoutBranchId <= 0) {
+			layoutBranchId = GetterUtil.getLong(
+				portalPreferences.getValue(Staging.class.getName(), key));
+
+			_recentlyUsedIds.put(key, layoutBranchId);
+		}
+
+		return layoutBranchId;
 	}
 
 	protected String getRecentLayoutBranchIdKey(
@@ -1977,10 +1989,18 @@ public class StagingImpl implements Staging {
 			long plid)
 		throws PortalException {
 
-		long layoutRevisionId = GetterUtil.getLong(
-			portalPreferences.getValue(
-				Staging.class.getName(),
-				getRecentLayoutRevisionIdKey(layoutSetBranchId, plid)));
+		String key = getRecentLayoutRevisionIdKey(layoutSetBranchId, plid);
+
+		long layoutRevisionId = 0;
+
+		layoutRevisionId = GetterUtil.getLong(_recentlyUsedIds.get(key));
+
+		if (layoutRevisionId <= 0) {
+			layoutRevisionId = GetterUtil.getLong(
+				portalPreferences.getValue(Staging.class.getName(), key));
+
+			_recentlyUsedIds.put(key, layoutRevisionId);
+		}
 
 		if (layoutRevisionId > 0) {
 			return layoutRevisionId;
@@ -2264,6 +2284,9 @@ public class StagingImpl implements Staging {
 			Staging.class.getName(),
 			getRecentLayoutBranchIdKey(layoutSetBranchId, plid),
 			String.valueOf(layoutBranchId));
+
+		_recentlyUsedIds.remove(
+			getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
 	}
 
 	protected void setRecentLayoutRevisionId(
@@ -2292,6 +2315,9 @@ public class StagingImpl implements Staging {
 					Staging.class.getName(),
 					getRecentLayoutRevisionIdKey(layoutSetBranchId, plid),
 					String.valueOf(layoutRevisionId));
+
+				_recentlyUsedIds.remove(
+					getRecentLayoutRevisionIdKey(layoutSetBranchId, plid));
 			}
 		}
 		catch (PortalException pe) {
@@ -2304,6 +2330,9 @@ public class StagingImpl implements Staging {
 			Staging.class.getName(),
 			getRecentLayoutBranchIdKey(layoutSetBranchId, plid),
 			String.valueOf(layoutBranchId));
+
+		_recentlyUsedIds.remove(
+			getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
 	}
 
 	protected void validateRemoteGroup(
@@ -2393,5 +2422,8 @@ public class StagingImpl implements Staging {
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(StagingImpl.class);
+
+	private static final PortalCache<String, Long> _recentlyUsedIds =
+		MultiVMPoolUtil.getCache(StagingImpl.class.getName());
 
 }

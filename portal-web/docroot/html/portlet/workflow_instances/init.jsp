@@ -28,7 +28,6 @@ page import="com.liferay.portal.kernel.workflow.WorkflowTaskManagerUtil" %><%@
 page import="com.liferay.portal.kernel.workflow.comparator.WorkflowComparatorFactoryUtil" %>
 
 <%
-Format dateFormatDate = FastDateFormatFactoryUtil.getDate(locale, timeZone);
 Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
 %>
 

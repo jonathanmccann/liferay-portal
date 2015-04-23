@@ -31,7 +31,6 @@ page import="com.liferay.portlet.workflowtasks.search.WorkflowTaskDisplayTerms" 
 page import="com.liferay.portlet.workflowtasks.search.WorkflowTaskSearch" %>
 
 <%
-Format dateFormatDate = FastDateFormatFactoryUtil.getDate(locale, timeZone);
 Format dateFormatDateTime = FastDateFormatFactoryUtil.getDateTime(locale, timeZone);
 %>
 
