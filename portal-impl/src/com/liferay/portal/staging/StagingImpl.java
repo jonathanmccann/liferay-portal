@@ -1982,24 +1982,10 @@ public class StagingImpl implements Staging {
 		PortalPreferences portalPreferences, long layoutSetBranchId,
 		long plid) {
 
-		String recentLayoutBranchIdKey = getRecentLayoutBranchIdKey(
-			layoutSetBranchId, plid);
-
-		String preferencesString = portalPreferences.getValue(
-			Staging.class.getName(), "ATTRIBUTE_MAP");
-
 		try {
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
-				preferencesString);
-
-			for (int i = 0; i < jsonArray.length(); i ++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-				if (jsonObject.has(recentLayoutBranchIdKey)) {
-					return GetterUtil.getLong(jsonObject.getString(
-						recentLayoutBranchIdKey));
-				}
-			}
+			return getRecentLayoutAttribute(
+				portalPreferences, layoutSetBranchId, plid,
+				getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
 		}
 		catch (JSONException je) {
 			_log.warn("Staging preferences are not in JSON format");
@@ -2028,25 +2014,11 @@ public class StagingImpl implements Staging {
 
 		long layoutRevisionId = 0;
 
-		String preferencesString = portalPreferences.getValue(
-			Staging.class.getName(), "ATTRIBUTE_MAP");
-
-		String recentLayoutRevisionIdKey = getRecentLayoutRevisionIdKey(
-			layoutSetBranchId, plid);
-
 		try {
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
-				preferencesString);
-
-			for (int i = 0; i < jsonArray.length(); i ++) {
-				JSONObject jsonObject = jsonArray.getJSONObject(i);
-
-				if (jsonObject.has(recentLayoutRevisionIdKey)) {
-					layoutRevisionId = GetterUtil.getLong(jsonObject.getString(
-						recentLayoutRevisionIdKey));
-				}
-			}
-		} 
+			layoutRevisionId = getRecentLayoutAttribute(
+				portalPreferences, layoutSetBranchId, plid,
+				getRecentLayoutRevisionIdKey(layoutSetBranchId, plid));
+		}
 		catch (JSONException je) {
 			_log.warn("Staging preferences are not in JSON format");
 		}
@@ -2329,52 +2301,15 @@ public class StagingImpl implements Staging {
 		PortalPreferences portalPreferences, long layoutSetBranchId, long plid,
 		long layoutBranchId) {
 
-		String oldPortalPreferences = portalPreferences.getValue(
-			Staging.class.getName(), "ATTRIBUTE_MAP");
-
 		try {
-			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-			JSONArray oldJsonArray = JSONFactoryUtil.createJSONArray(
-				oldPortalPreferences);
-
-			String recentLayoutBranchIdKey = getRecentLayoutBranchIdKey(
-				layoutSetBranchId, plid);
-
-			boolean alreadyExists = false;
-
-			for (int i = 0; i < oldJsonArray.length(); i ++) {
-				JSONObject jsonObject = oldJsonArray.getJSONObject(i);
-
-				if (Validator.isNotNull(jsonObject.getString(
-					recentLayoutBranchIdKey))) {
-
-					alreadyExists = true;
-
-					jsonObject.remove(recentLayoutBranchIdKey);
-
-					jsonObject.put(recentLayoutBranchIdKey,
-						String.valueOf(layoutBranchId));
-				}
-
-				jsonArray.put(jsonObject);
-			}
-
-			if (!alreadyExists) {
-				JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-				jsonObject.put(recentLayoutBranchIdKey, 
-					String.valueOf(layoutBranchId));
-
-				jsonArray.put(jsonObject);
-			}
-
-			portalPreferences.setValue(
-				Staging.class.getName(), "ATTRIBUTE_MAP", jsonArray.toString());
-		} 
+			setRecentLayoutAttribute(
+				portalPreferences, layoutSetBranchId, plid,
+				layoutBranchId,
+				getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
+		}
 		catch (JSONException je) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Staging preferences are not in JSON format. " + 
+				_log.warn("Staging preferences are not in JSON format. " +
 					"Unable to set recent layout branch ID", je);
 			}
 		}
@@ -2402,54 +2337,15 @@ public class StagingImpl implements Staging {
 					portalPreferences, layoutSetBranchId, plid);
 			}
 			else {
-				String oldPortalPreferences = portalPreferences.getValue(
-					Staging.class.getName(), "ATTRIBUTE_MAP");
-
 				try {
-					JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
-
-					JSONArray oldJsonArray = JSONFactoryUtil.createJSONArray(
-						oldPortalPreferences);
-
-					String recentLayoutRevisionIdKey = 
-						getRecentLayoutRevisionIdKey(layoutSetBranchId, plid);
-
-					boolean alreadyExists = false;
-
-					for (int i = 0; i < oldJsonArray.length(); i ++) {
-						JSONObject jsonObject = oldJsonArray.getJSONObject(i);
-
-						if (Validator.isNotNull(jsonObject.getString(
-							recentLayoutRevisionIdKey))) {
-
-							alreadyExists = true;
-
-							jsonObject.remove(recentLayoutRevisionIdKey);
-
-							jsonObject.put(recentLayoutRevisionIdKey,
-								String.valueOf(layoutRevisionId));
-						}
-
-						jsonArray.put(jsonObject);
-					}
-
-					if (!alreadyExists) {
-						JSONObject jsonObject = 
-							JSONFactoryUtil.createJSONObject();
-
-						jsonObject.put(recentLayoutRevisionIdKey, 
-							String.valueOf(layoutRevisionId));
-
-						jsonArray.put(jsonObject);
-					}
-
-					portalPreferences.setValue(
-						Staging.class.getName(), "ATTRIBUTE_MAP",
-						jsonArray.toString());
-				} 
+					setRecentLayoutAttribute(
+						portalPreferences, layoutSetBranchId, plid,
+						layoutRevisionId,
+						getRecentLayoutRevisionIdKey(layoutSetBranchId, plid));
+				}
 				catch (JSONException je) {
 					if (_log.isWarnEnabled()) {
-						_log.warn("Staging preferences are not in JSON format " +
+						_log.warn("Staging preferences are not in JSON format. " +
 							"Unable to set recent layout revision ID", je);
 					}
 				}
@@ -2460,6 +2356,7 @@ public class StagingImpl implements Staging {
 				_log.warn("Unable to set recent layout revision ID", pe);
 			}
 		}
+
 		setRecentLayoutBranchId(
 			portalPreferences, layoutSetBranchId, plid, layoutBranchId);
 	}
@@ -2548,6 +2445,70 @@ public class StagingImpl implements Staging {
 
 			throw ree;
 		}
+	}
+
+	private long getRecentLayoutAttribute(
+			PortalPreferences portalPreferences, long layoutSetBranchId,
+			long plid, String layoutAttributeKey)
+		throws JSONException {
+
+		String preferencesString = portalPreferences.getValue(
+			Staging.class.getName(), "ATTRIBUTE_MAP");
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
+			preferencesString);
+
+		for (int i = 0; i < jsonArray.length(); i ++) {
+			JSONObject jsonObject = jsonArray.getJSONObject(i);
+
+			if (jsonObject.has(layoutAttributeKey)) {
+				return GetterUtil.getLong(jsonObject.getString(
+					layoutAttributeKey));
+			}
+		}
+
+		return 0;
+	}
+
+	private void setRecentLayoutAttribute(
+			PortalPreferences portalPreferences, long layoutSetBranchId,
+			long plid, long value, String layoutAttributeKey) 
+		throws JSONException {
+
+		String oldPortalPreferences = portalPreferences.getValue(
+			Staging.class.getName(), "ATTRIBUTE_MAP");
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		JSONArray oldJsonArray = JSONFactoryUtil.createJSONArray(
+			oldPortalPreferences);
+
+		boolean alreadyExists = false;
+
+		for (int i = 0; i < oldJsonArray.length(); i ++) {
+			JSONObject jsonObject = oldJsonArray.getJSONObject(i);
+
+			if (Validator.isNotNull(jsonObject.getString(layoutAttributeKey))) {
+				alreadyExists = true;
+
+				jsonObject.remove(layoutAttributeKey);
+
+				jsonObject.put(layoutAttributeKey, String.valueOf(value));
+			}
+
+			jsonArray.put(jsonObject);
+		}
+
+		if (!alreadyExists) {
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+			jsonObject.put(layoutAttributeKey, String.valueOf(value));
+
+			jsonArray.put(jsonObject);
+		}
+
+		portalPreferences.setValue(
+			Staging.class.getName(), "ATTRIBUTE_MAP", jsonArray.toString()); 
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(StagingImpl.class);
