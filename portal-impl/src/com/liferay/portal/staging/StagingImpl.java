@@ -1578,12 +1578,14 @@ public class StagingImpl implements Staging {
 		PortalPreferences portalPreferences = getPortalPreferences(user);
 
 		try {
-			setRecentLayoutAttribute(portalPreferences, layoutSetBranchId,
+			setRecentLayoutAttribute(
+				portalPreferences, layoutSetBranchId,
 				getRecentLayoutSetBranchIdKey(layoutSetId));
 		}
 		catch (JSONException je) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Staging preferences are not in JSON format. " +
+				_log.warn(
+					"Staging preferences are not in JSON format. " +
 					"Unable to set recent set branch ID", je);
 			}
 		}
@@ -1912,7 +1914,8 @@ public class StagingImpl implements Staging {
 		}
 		catch (JSONException je) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Staging preferences are not in JSON format. " +
+				_log.warn(
+					"Staging preferences are not in JSON format. " +
 					"Unable to set recent layout branch ID", je);
 			}
 		}
@@ -1993,8 +1996,8 @@ public class StagingImpl implements Staging {
 
 		try {
 			return getRecentLayoutAttribute(
-				portalPreferences, getRecentLayoutBranchIdKey(
-					layoutSetBranchId, plid));
+				portalPreferences,
+				getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
 		}
 		catch (JSONException je) {
 			if (_log.isWarnEnabled()) {
@@ -2027,8 +2030,8 @@ public class StagingImpl implements Staging {
 
 		try {
 			layoutRevisionId = getRecentLayoutAttribute(
-				portalPreferences, getRecentLayoutRevisionIdKey(
-					layoutSetBranchId, plid));
+				portalPreferences,
+				getRecentLayoutRevisionIdKey(layoutSetBranchId, plid));
 		}
 		catch (JSONException je) {
 			if (_log.isWarnEnabled()) {
@@ -2316,12 +2319,13 @@ public class StagingImpl implements Staging {
 
 		try {
 			setRecentLayoutAttribute(
-				portalPreferences, layoutBranchId, getRecentLayoutBranchIdKey(
-					layoutSetBranchId, plid));
+				portalPreferences, layoutBranchId,
+				getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
 		}
 		catch (JSONException je) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Staging preferences are not in JSON format. " +
+				_log.warn(
+					"Staging preferences are not in JSON format. " +
 					"Unable to set recent layout branch ID", je);
 			}
 		}
