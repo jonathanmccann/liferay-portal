@@ -2356,7 +2356,8 @@ public class StagingImpl implements Staging {
 				}
 				catch (JSONException je) {
 					if (_log.isWarnEnabled()) {
-						_log.warn("Staging preferences are not in JSON format. " +
+						_log.warn(
+							"Staging preferences are not in JSON format. " +
 							"Unable to set recent layout revision ID", je);
 					}
 				}
