@@ -33,8 +33,10 @@ import com.liferay.portal.model.UserGroup;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.membershippolicy.SiteMembershipPolicyUtil;
 import com.liferay.portal.security.permission.ActionKeys;
+import com.liferay.portal.security.permission.PermissionCacheUtil;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.security.permission.PermissionCheckerFactoryUtil;
+import com.liferay.portal.security.permission.UserPermissionCheckerBag;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.base.GroupServiceBaseImpl;
 import com.liferay.portal.service.permission.GroupPermissionUtil;
@@ -732,41 +734,60 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 				ListUtil.subList(userSiteGroups, start, end));
 		}
 
+		UserPermissionCheckerBag userBag = PermissionCacheUtil.getUserBag(
+			userId);
+
 		if ((classNames == null) ||
 			ArrayUtil.contains(classNames, Organization.class.getName())) {
 
-			List<Organization> userOrgs =
-				organizationLocalService.getOrganizations(
-					userId, start, end, null);
+			if (!PropsValues.ORGANIZATIONS_MEMBERSHIP_STRICT &&
+				(userBag != null)) {
 
-			for (Organization organization : userOrgs) {
-				if (!PropsValues.ORGANIZATIONS_MEMBERSHIP_STRICT) {
-					List<Organization> ancestorOrganizations =
-						organization.getAncestors();
+				List<Organization> userOrgs = userBag.getUserOrgs();
 
-					Collections.reverse(ancestorOrganizations);
+				for (Organization organization : userOrgs) {
+					if (organization.hasPrivateLayouts() ||
+						organization.hasPublicLayouts()) {
 
-					for (Organization ancestorOrganization :
-							ancestorOrganizations) {
-
-						if (ancestorOrganization.hasPrivateLayouts() ||
-							ancestorOrganization.hasPublicLayouts()) {
-
-							userSiteGroups.add(ancestorOrganization.getGroup());
-						}
+						userSiteGroups.add(organization.getGroup());
 					}
 				}
+			}
+			else {
+				List<Organization> userOrgs =
+					organizationLocalService.getOrganizations(
+						userId, start, end, null);
 
-				if (organization.hasPrivateLayouts() ||
-					organization.hasPublicLayouts()) {
+				for (Organization organization : userOrgs) {
+					if (!PropsValues.ORGANIZATIONS_MEMBERSHIP_STRICT) {
+						List<Organization> ancestorOrganizations =
+							organization.getAncestors();
 
-					userSiteGroups.add(organization.getGroup());
-				}
+						Collections.reverse(ancestorOrganizations);
 
-				if ((max != QueryUtil.ALL_POS) &&
-					(max <= userSiteGroups.size())) {
+						for (Organization ancestorOrganization :
+								ancestorOrganizations) {
 
-					break;
+							if (ancestorOrganization.hasPrivateLayouts() ||
+								ancestorOrganization.hasPublicLayouts()) {
+
+								userSiteGroups.add(
+									ancestorOrganization.getGroup());
+							}
+						}
+					}
+
+					if (organization.hasPrivateLayouts() ||
+						organization.hasPublicLayouts()) {
+
+						userSiteGroups.add(organization.getGroup());
+					}
+
+					if ((max != QueryUtil.ALL_POS) &&
+						(max <= userSiteGroups.size())) {
+
+						break;
+					}
 				}
 			}
 		}
@@ -779,20 +800,43 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 		if ((classNames == null) ||
 			ArrayUtil.contains(classNames, Group.class.getName())) {
 
-			long[] classNameIds = new long[] {
-				classNameLocalService.getClassNameId(Group.class)
-			};
+			if (userBag != null) {
+				for (Group group : userBag.getUserGroups()) {
+					if (group.isActive() && !group.isOrganization()) {
+						userSiteGroups.add(group);
+					}
+				}
 
-			LinkedHashMap<String, Object> groupParams = new LinkedHashMap<>();
+				if ((max != QueryUtil.ALL_POS) &&
+					(max <= userSiteGroups.size())) {
 
-			groupParams.put("active", true);
-			groupParams.put("usersGroups", userId);
+					return Collections.unmodifiableList(
+						ListUtil.subList(userSiteGroups, start, end));
+				}
 
-			userSiteGroups.addAll(
-				groupLocalService.search(
-					user.getCompanyId(), classNameIds,
-					GroupConstants.ANY_PARENT_GROUP_ID, null, groupParams,
-					start, end, null));
+				for (Group group : userBag.getUserUserGroupGroups()) {
+					if (group.isActive() && !group.isOrganization()) {
+						userSiteGroups.add(group);
+					}
+				}
+			}
+			else {
+				long[] classNameIds = new long[] {
+					classNameLocalService.getClassNameId(Group.class)
+				};
+
+				LinkedHashMap<String, Object> groupParams =
+					new LinkedHashMap<>();
+
+				groupParams.put("active", true);
+				groupParams.put("usersGroups", userId);
+
+				userSiteGroups.addAll(
+					groupLocalService.search(
+						user.getCompanyId(), classNameIds,
+						GroupConstants.ANY_PARENT_GROUP_ID, null, groupParams,
+						start, end, null));
+			}
 		}
 
 		return Collections.unmodifiableList(
