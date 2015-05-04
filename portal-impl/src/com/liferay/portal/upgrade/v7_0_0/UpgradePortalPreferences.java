@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.staging.Staging;
+import com.liferay.portal.kernel.staging.StagingConstants;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.xml.Document;
@@ -61,10 +62,12 @@ public class UpgradePortalPreferences extends UpgradeProcess {
 			Element preferenceElement = itr.next();
 
 			Element nameElement = preferenceElement.element("name");
+
 			String preferenceName = nameElement.getText();
 
 			if (preferenceName.contains(Staging.class.getName())) {
 				Element valueElement = preferenceElement.element("value");
+
 				String value = valueElement.getText();
 
 				int index = preferenceName.indexOf(StringPool.POUND);
@@ -94,9 +97,10 @@ public class UpgradePortalPreferences extends UpgradeProcess {
 
 			Element stagingPreferencesNameElement = SAXReaderUtil.createElement(
 				"name");
+
 			String stagingPreferencesName =
 				Staging.class.getName() + StringPool.POUND +
-				_STAGING_RECENT_LAYOUT_IDS_MAP;
+				StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP;
 
 			stagingPreferencesNameElement.setText(stagingPreferencesName);
 
@@ -169,8 +173,5 @@ public class UpgradePortalPreferences extends UpgradeProcess {
 			DataAccess.cleanUp(con, ps);
 		}
 	}
-
-	private static final String _STAGING_RECENT_LAYOUT_IDS_MAP =
-		"STAGING_RECENT_LAYOUT_IDS_MAP";
 
 }

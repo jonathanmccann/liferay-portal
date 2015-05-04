@@ -978,9 +978,12 @@ public class StagingImpl implements Staging {
 			return getRecentLayoutAttribute(
 				portalPreferences, getRecentLayoutSetBranchIdKey(layoutSetId));
 		}
-		catch (JSONException je) {
+		catch (JSONException jsone) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Staging preferences are not in JSON format", je);
+				_log.warn(
+					"Unable to get recent layout set branch ID for user " +
+						user.getUserId() + " and layout set ID " + layoutSetId,
+					jsone);
 			}
 		}
 
@@ -1589,11 +1592,13 @@ public class StagingImpl implements Staging {
 				portalPreferences, layoutSetBranchId,
 				getRecentLayoutSetBranchIdKey(layoutSetId));
 		}
-		catch (JSONException je) {
+		catch (JSONException jsone) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
-					"Staging preferences are not in JSON format. " +
-					"Unable to set recent set branch ID", je);
+					"Unable to set recent set branch ID for user " +
+						user.getUserId() + " and layout set ID " + layoutSetId +
+							" with layout set branch ID " + layoutSetBranchId,
+					jsone);
 			}
 		}
 	}
@@ -1893,7 +1898,8 @@ public class StagingImpl implements Staging {
 		long plid) {
 
 		String oldPortalPreferences = portalPreferences.getValue(
-			Staging.class.getName(), _STAGING_RECENT_LAYOUT_IDS_MAP);
+			Staging.class.getName(),
+			StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP);
 
 		try {
 			JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
@@ -1917,14 +1923,17 @@ public class StagingImpl implements Staging {
 			}
 
 			portalPreferences.setValue(
-				Staging.class.getName(), _STAGING_RECENT_LAYOUT_IDS_MAP,
+				Staging.class.getName(),
+				StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP,
 				jsonArray.toString());
 		}
-		catch (JSONException je) {
+		catch (JSONException jsone) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
-					"Staging preferences are not in JSON format. " +
-					"Unable to set recent layout branch ID", je);
+					"Unable to delete recent layout branch ID with layout " +
+						"set branch ID " + layoutSetBranchId + " and plid " +
+							plid,
+					jsone);
 			}
 		}
 	}
@@ -2007,9 +2016,13 @@ public class StagingImpl implements Staging {
 				portalPreferences,
 				getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
 		}
-		catch (JSONException je) {
+		catch (JSONException jsone) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Staging preferences are not in JSON format", je);
+				_log.warn(
+					"Unable to get recent layout branch ID with layout " +
+						"set branch ID " + layoutSetBranchId + " and plid " +
+							plid,
+					jsone);
 			}
 		}
 
@@ -2041,9 +2054,13 @@ public class StagingImpl implements Staging {
 				portalPreferences,
 				getRecentLayoutRevisionIdKey(layoutSetBranchId, plid));
 		}
-		catch (JSONException je) {
+		catch (JSONException jsone) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Staging preferences are not in JSON format", je);
+				_log.warn(
+					"Unable to get recent layout branch ID with layout " +
+						"set branch ID " + layoutSetBranchId + " and plid " +
+							plid,
+					jsone);
 			}
 		}
 
@@ -2330,11 +2347,13 @@ public class StagingImpl implements Staging {
 				portalPreferences, layoutBranchId,
 				getRecentLayoutBranchIdKey(layoutSetBranchId, plid));
 		}
-		catch (JSONException je) {
+		catch (JSONException jsone) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
-					"Staging preferences are not in JSON format. " +
-					"Unable to set recent layout branch ID", je);
+					"Unable to set recent layout branch ID with layout " +
+						"set branch ID " + layoutSetBranchId + " and plid " +
+							plid + " with layout branch ID " + layoutBranchId,
+					jsone);
 			}
 		}
 	}
@@ -2361,23 +2380,18 @@ public class StagingImpl implements Staging {
 					portalPreferences, layoutSetBranchId, plid);
 			}
 			else {
-				try {
-					setRecentLayoutAttribute(
-						portalPreferences, layoutRevisionId,
-						getRecentLayoutRevisionIdKey(layoutSetBranchId, plid));
-				}
-				catch (JSONException je) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							"Staging preferences are not in JSON format. " +
-							"Unable to set recent layout revision ID", je);
-					}
-				}
+				setRecentLayoutAttribute(
+					portalPreferences, layoutRevisionId,
+					getRecentLayoutRevisionIdKey(layoutSetBranchId, plid));
 			}
 		}
 		catch (PortalException pe) {
 			if (_log.isWarnEnabled()) {
-				_log.warn("Unable to set recent layout revision ID", pe);
+				_log.warn(
+					"Unable to set recent layout revision ID with layout set " +
+						"branch ID " + layoutSetBranchId + " and plid " + plid +
+							" with layout branch ID " + layoutBranchId,
+					pe);
 			}
 		}
 
@@ -2476,7 +2490,8 @@ public class StagingImpl implements Staging {
 		throws JSONException {
 
 		String preferencesString = portalPreferences.getValue(
-			Staging.class.getName(), _STAGING_RECENT_LAYOUT_IDS_MAP);
+			Staging.class.getName(),
+			StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP);
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray(
 			preferencesString);
@@ -2499,7 +2514,8 @@ public class StagingImpl implements Staging {
 		throws JSONException {
 
 		String oldPortalPreferences = portalPreferences.getValue(
-			Staging.class.getName(), _STAGING_RECENT_LAYOUT_IDS_MAP);
+			Staging.class.getName(),
+			StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP);
 
 		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 
@@ -2531,12 +2547,10 @@ public class StagingImpl implements Staging {
 		}
 
 		portalPreferences.setValue(
-			Staging.class.getName(), _STAGING_RECENT_LAYOUT_IDS_MAP,
+			Staging.class.getName(),
+			StagingConstants.STAGING_RECENT_LAYOUT_IDS_MAP,
 			jsonArray.toString());
 	}
-
-	private static final String _STAGING_RECENT_LAYOUT_IDS_MAP =
-		"STAGING_RECENT_LAYOUT_IDS_MAP";
 
 	private static final Log _log = LogFactoryUtil.getLog(StagingImpl.class);
 
