@@ -16,8 +16,8 @@ package com.liferay.portal.upgrade.v7_0_0;
 
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.json.JSONArray;
-import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
+import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.staging.Staging;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.StringPool;
@@ -29,6 +29,7 @@ import com.liferay.portlet.dynamicdatamapping.util.DDMXMLUtil;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -38,7 +39,7 @@ import java.util.Map;
  */
 public class UpgradePortalPreferences extends UpgradeProcess {
 
-	protected String convertStagingPreferencesToJSON(String preferences) 
+	protected String convertStagingPreferencesToJSON(String preferences)
 		throws Exception {
 
 		Document newDocument = SAXReaderUtil.createDocument();
@@ -54,8 +55,7 @@ public class UpgradePortalPreferences extends UpgradeProcess {
 
 		Iterator<Element> itr = rootElement.elementIterator();
 
-		Map<String, String> stagingPreferencesMap =
-			new HashMap<String, String>();
+		Map<String, String> stagingPreferencesMap = new HashMap<>();
 
 		while (itr.hasNext()) {
 			Element preferenceElement = itr.next();
@@ -93,14 +93,15 @@ public class UpgradePortalPreferences extends UpgradeProcess {
 				"preference");
 
 			Element stagingPreferencesNameElement = SAXReaderUtil.createElement(
-				"name");   
-			String stagingPreferencesName = Staging.class.getName() + 
-				StringPool.POUND + _STAGING_RECENT_LAYOUT_IDS_MAP;
+				"name");
+			String stagingPreferencesName =
+				Staging.class.getName() + StringPool.POUND +
+				_STAGING_RECENT_LAYOUT_IDS_MAP;
 
 			stagingPreferencesNameElement.setText(stagingPreferencesName);
 
-			Element stagingPreferencesValueElement = 
-				SAXReaderUtil.createElement("value");   
+			Element stagingPreferencesValueElement =
+				SAXReaderUtil.createElement("value");
 
 			stagingPreferencesValueElement.setText(
 				stagingPreferencesJsonArray.toString());
@@ -128,7 +129,7 @@ public class UpgradePortalPreferences extends UpgradeProcess {
 			con = DataAccess.getUpgradeOptimizedConnection();
 
 			ps = con.prepareStatement(
-				"select portalPreferencesId, preferences from " + 
+				"select portalPreferencesId, preferences from " +
 					"PortalPreferences");
 
 			rs = ps.executeQuery();
@@ -157,7 +158,7 @@ public class UpgradePortalPreferences extends UpgradeProcess {
 			con = DataAccess.getUpgradeOptimizedConnection();
 
 			ps = con.prepareStatement(
-				"update PortalPreferences set preferences = ? where " + 
+				"update PortalPreferences set preferences = ? where " +
 					"portalPreferencesId = ?");
 
 			ps.setString(1, convertStagingPreferencesToJSON(preferences));
