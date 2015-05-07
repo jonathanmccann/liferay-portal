@@ -175,6 +175,13 @@ public class StagingUtil {
 	}
 
 	public static void deleteRecentLayoutRevisionId(
+		long userId, long layoutSetBranchId, long plid) {
+
+		getStaging().deleteRecentLayoutRevisionId(
+			userId, layoutSetBranchId, plid);
+	}
+
+	public static void deleteRecentLayoutRevisionId(
 		User user, long layoutSetBranchId, long plid) {
 
 		getStaging().deleteRecentLayoutRevisionId(

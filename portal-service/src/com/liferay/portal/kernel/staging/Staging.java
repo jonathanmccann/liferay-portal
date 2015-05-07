@@ -122,6 +122,9 @@ public interface Staging {
 		HttpServletRequest request, long layoutSetBranchId, long plid);
 
 	public void deleteRecentLayoutRevisionId(
+		long userId, long layoutSetBranchId, long plid);
+
+	public void deleteRecentLayoutRevisionId(
 		User user, long layoutSetBranchId, long plid);
 
 	/**
