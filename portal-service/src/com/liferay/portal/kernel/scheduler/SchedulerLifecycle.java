@@ -38,7 +38,6 @@ public class SchedulerLifecycle extends BasePortalLifecycle {
 			new ServiceDependencyManager();
 
 		serviceDependencyManager.addServiceDependencyListener(
-
 			new ServiceDependencyListener() {
 
 				@Override
@@ -66,8 +65,8 @@ public class SchedulerLifecycle extends BasePortalLifecycle {
 				@Override
 				public void destroy() {
 				}
-			}
-		);
+
+			});
 
 		serviceDependencyManager.registerDependencies(
 			ClusterMasterExecutor.class, SchedulerEngineHelper.class);

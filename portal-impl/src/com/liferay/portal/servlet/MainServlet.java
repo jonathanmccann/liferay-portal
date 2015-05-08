@@ -779,7 +779,6 @@ public class MainServlet extends ActionServlet {
 			new ServiceDependencyManager();
 
 		serviceDependencyManager.addServiceDependencyListener(
-
 			new ServiceDependencyListener() {
 
 				@Override
@@ -843,7 +842,6 @@ public class MainServlet extends ActionServlet {
 			new ServiceDependencyManager();
 
 		serviceDependencyManager.addServiceDependencyListener(
-
 			new ServiceDependencyListener() {
 
 				@Override

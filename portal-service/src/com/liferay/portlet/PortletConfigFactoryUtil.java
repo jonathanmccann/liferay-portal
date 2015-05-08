@@ -36,19 +36,19 @@ public class PortletConfigFactoryUtil {
 		getPortletConfigFactory().destroy(portlet);
 	}
 
-	public static PortletConfigFactory getPortletConfigFactory() {
-		PortalRuntimePermission.checkGetBeanProperty(
-			PortletConfigFactoryUtil.class);
-
-		return _portletConfigFactory;
-	}
-
 	public static PortletConfig get(Portlet portlet) {
 		return getPortletConfigFactory().get(portlet);
 	}
 
 	public static PortletConfig get(String portletId) {
 		return getPortletConfigFactory().get(portletId);
+	}
+
+	public static PortletConfigFactory getPortletConfigFactory() {
+		PortalRuntimePermission.checkGetBeanProperty(
+			PortletConfigFactoryUtil.class);
+
+		return _portletConfigFactory;
 	}
 
 	public static PortletConfig update(Portlet portlet) {

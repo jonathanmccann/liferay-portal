@@ -258,7 +258,6 @@ public class PortalContextLoaderListener extends ContextLoaderListener {
 			new ServiceDependencyManager();
 
 		serviceDependencyManager.addServiceDependencyListener(
-
 			new ServiceDependencyListener() {
 
 				@Override

@@ -161,7 +161,6 @@ public class StartupAction extends SimpleAction {
 			ClusterExecutor.class, ClusterMasterExecutor.class);
 
 		backgroundTaskServiceDependencyManager.addServiceDependencyListener(
-
 			new ServiceDependencyListener() {
 
 				@Override
