@@ -29,7 +29,7 @@ public class SmallImageSelectorAction extends BaseImageSelectorAction {
 		throws PortalException {
 
 		if (size > getMaxFileSize()) {
-			throw new CoverImageSizeException();
+			throw new CoverImageSizeException("{size=" + size + "}");
 		}
 
 		super.validateFile(fileName, contentType, size);

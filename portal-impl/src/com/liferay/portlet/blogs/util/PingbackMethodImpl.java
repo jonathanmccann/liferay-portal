@@ -157,7 +157,8 @@ public class PingbackMethodImpl implements Method {
 		BlogsEntry entry = getBlogsEntry(companyId);
 
 		if (!entry.isAllowPingbacks()) {
-			throw new DisabledPingbackException("Pingbacks are disabled");
+			throw new DisabledPingbackException(
+				"Pingbacks are disabled {entry=" + entry.getEntryId() + "}");
 		}
 
 		long userId = UserLocalServiceUtil.getDefaultUserId(companyId);
