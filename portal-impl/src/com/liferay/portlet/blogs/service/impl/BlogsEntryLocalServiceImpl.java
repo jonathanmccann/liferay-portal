@@ -2182,7 +2182,8 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 			if ((smallImageMaxSize > 0) &&
 				(fileEntry.getSize() > smallImageMaxSize)) {
 
-				throw new EntrySmallImageSizeException();
+				throw new EntrySmallImageSizeException(
+					"{size=" + fileEntry.getSize() + "}");
 			}
 		}
 	}
@@ -2191,10 +2192,10 @@ public class BlogsEntryLocalServiceImpl extends BlogsEntryLocalServiceBaseImpl {
 		throws PortalException {
 
 		if (Validator.isNull(title)) {
-			throw new EntryTitleException();
+			throw new EntryTitleException("Title is null");
 		}
 		else if (Validator.isNull(content)) {
-			throw new EntryContentException();
+			throw new EntryContentException("Content is null");
 		}
 	}
 

@@ -120,7 +120,7 @@ public class EditEntryAction extends PortletAction {
 
 			if (uploadException != null) {
 				if (uploadException.isExceededLiferayFileItemSizeLimit()) {
-					throw new LiferayFileItemException();
+					throw new LiferayFileItemException(uploadException);
 				}
 				else if (uploadException.isExceededSizeLimit()) {
 					throw new FileSizeException(uploadException.getCause());
@@ -478,7 +478,7 @@ public class EditEntryAction extends PortletAction {
 			description = ParamUtil.getString(actionRequest, "description");
 
 			if (Validator.isNull(description)) {
-				throw new EntryDescriptionException();
+				throw new EntryDescriptionException("Description is null");
 			}
 		}
 
