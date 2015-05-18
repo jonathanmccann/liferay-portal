@@ -346,6 +346,21 @@ public interface AssetEntryLocalService extends BaseLocalService,
 	public java.util.List<com.liferay.portlet.asset.model.AssetEntry> getEntries(
 		long[] groupIds, long[] classNameIds, java.lang.String keywords,
 		java.lang.String userName, java.lang.String title,
+		java.lang.String description, boolean adminSearch,
+		boolean advancedSearch, boolean andOperator, int start, int end,
+		java.lang.String orderByCol1, java.lang.String orderByCol2,
+		java.lang.String orderByType1, java.lang.String orderByType2);
+
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #getEntries(long[], long[],
+	String, String, String, String, boolean, boolean, boolean,
+	int, int, String, String, String, String)}
+	*/
+	@java.lang.Deprecated
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.portlet.asset.model.AssetEntry> getEntries(
+		long[] groupIds, long[] classNameIds, java.lang.String keywords,
+		java.lang.String userName, java.lang.String title,
 		java.lang.String description, boolean advancedSearch,
 		boolean andOperator, int start, int end, java.lang.String orderByCol1,
 		java.lang.String orderByCol2, java.lang.String orderByType1,
@@ -355,6 +370,18 @@ public interface AssetEntryLocalService extends BaseLocalService,
 	public int getEntriesCount(
 		com.liferay.portlet.asset.service.persistence.AssetEntryQuery entryQuery);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getEntriesCount(long[] groupIds, long[] classNameIds,
+		java.lang.String keywords, java.lang.String userName,
+		java.lang.String title, java.lang.String description,
+		boolean adminSearch, boolean advancedSearch, boolean andOperator);
+
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #getEntriesCount(long[],
+	long[], String, String, String, String, boolean, boolean,
+	boolean)}
+	*/
+	@java.lang.Deprecated
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getEntriesCount(long[] groupIds, long[] classNameIds,
 		java.lang.String keywords, java.lang.String userName,
