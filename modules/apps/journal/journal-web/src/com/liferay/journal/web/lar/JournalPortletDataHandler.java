@@ -44,6 +44,7 @@ import com.liferay.portlet.dynamicdatamapping.service.DDMTemplateLocalServiceUti
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.model.JournalFeed;
 import com.liferay.portlet.journal.model.JournalFolder;
+import com.liferay.portlet.journal.model.JournalFolderConstants;
 import com.liferay.portlet.journal.model.impl.JournalArticleImpl;
 import com.liferay.portlet.journal.model.impl.JournalFeedImpl;
 import com.liferay.portlet.journal.model.impl.JournalFolderImpl;
@@ -131,7 +132,10 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 				DDMTemplate.class.getName(), DDMStructure.class.getName()),
 			new PortletDataHandlerBoolean(
 				NAMESPACE, "feeds", true, false, null,
-				JournalFeed.class.getName()));
+				JournalFeed.class.getName()),
+			new PortletDataHandlerBoolean(
+				NAMESPACE, "folders", true, false, null,
+				JournalFolderConstants.getClassName()));
 		setPublishToLiveByDefault(
 			JournalWebConfigurationValues.PUBLISH_TO_LIVE_BY_DEFAULT);
 
@@ -216,13 +220,15 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			ddmTemplateActionableDynamicQuery.performActions();
 		}
 
-		if (portletDataContext.getBooleanParameter(NAMESPACE, "web-content")) {
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "folders")) {
 			ActionableDynamicQuery folderActionableDynamicQuery =
-				JournalFolderLocalServiceUtil.getExportActionableDynamicQuery(
-					portletDataContext);
+					JournalFolderLocalServiceUtil.getExportActionableDynamicQuery(
+						portletDataContext);
 
 			folderActionableDynamicQuery.performActions();
+		}
 
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "web-content")) {
 			ActionableDynamicQuery articleActionableDynamicQuery =
 				getArticleActionableDynamicQuery(portletDataContext);
 

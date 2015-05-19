@@ -27,4 +27,8 @@ public class JournalFolderConstants {
 
 	public static final int RESTRICTION_TYPE_WORKFLOW = 2;
 
+	public static String getClassName() {
+		return JournalFolder.class.getName();
+	}
+
 }
