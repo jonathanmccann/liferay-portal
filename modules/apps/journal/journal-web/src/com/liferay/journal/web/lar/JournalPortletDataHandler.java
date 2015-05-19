@@ -44,7 +44,6 @@ import com.liferay.portlet.dynamicdatamapping.service.DDMTemplateLocalServiceUti
 import com.liferay.portlet.journal.model.JournalArticle;
 import com.liferay.portlet.journal.model.JournalFeed;
 import com.liferay.portlet.journal.model.JournalFolder;
-import com.liferay.portlet.journal.model.JournalFolderConstants;
 import com.liferay.portlet.journal.model.impl.JournalArticleImpl;
 import com.liferay.portlet.journal.model.impl.JournalFeedImpl;
 import com.liferay.portlet.journal.model.impl.JournalFolderImpl;
@@ -135,7 +134,7 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 				JournalFeed.class.getName()),
 			new PortletDataHandlerBoolean(
 				NAMESPACE, "folders", true, false, null,
-				JournalFolderConstants.getClassName()));
+				JournalFolder.class.getName()));
 		setPublishToLiveByDefault(
 			JournalWebConfigurationValues.PUBLISH_TO_LIVE_BY_DEFAULT);
 
@@ -197,6 +196,14 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 			feedActionableDynamicQuery.performActions();
 		}
 
+		if (portletDataContext.getBooleanParameter(NAMESPACE, "folders")) {
+			ActionableDynamicQuery folderActionableDynamicQuery =
+				JournalFolderLocalServiceUtil.getExportActionableDynamicQuery(
+					portletDataContext);
+
+			folderActionableDynamicQuery.performActions();
+		}
+
 		if (portletDataContext.getBooleanParameter(NAMESPACE, "structures")) {
 			ActionableDynamicQuery ddmStructureActionableDynamicQuery =
 				getDDMStructureActionableDynamicQuery(portletDataContext);
@@ -218,14 +225,6 @@ public class JournalPortletDataHandler extends BasePortletDataHandler {
 				getDDMTemplateActionableDynamicQuery(portletDataContext);
 
 			ddmTemplateActionableDynamicQuery.performActions();
-		}
-
-		if (portletDataContext.getBooleanParameter(NAMESPACE, "folders")) {
-			ActionableDynamicQuery folderActionableDynamicQuery =
-					JournalFolderLocalServiceUtil.getExportActionableDynamicQuery(
-						portletDataContext);
-
-			folderActionableDynamicQuery.performActions();
 		}
 
 		if (portletDataContext.getBooleanParameter(NAMESPACE, "web-content")) {
