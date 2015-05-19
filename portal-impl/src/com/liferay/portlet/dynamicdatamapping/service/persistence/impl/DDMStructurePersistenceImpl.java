@@ -37,6 +37,8 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.model.CacheModel;
 import com.liferay.portal.security.permission.InlineSQLHelperUtil;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.ServiceContextThreadLocal;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.service.persistence.impl.TableMapper;
 import com.liferay.portal.service.persistence.impl.TableMapperFactory;
@@ -51,6 +53,7 @@ import com.liferay.portlet.dynamicdatamapping.service.persistence.DDMStructurePe
 import java.io.Serializable;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -8681,6 +8684,28 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 			String uuid = PortalUUIDUtil.generate();
 
 			ddmStructure.setUuid(uuid);
+		}
+
+		ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+
+		Date now = new Date();
+
+		if (isNew && (ddmStructure.getCreateDate() == null)) {
+			if (serviceContext == null) {
+				ddmStructure.setCreateDate(now);
+			}
+			else {
+				ddmStructure.setCreateDate(serviceContext.getCreateDate(now));
+			}
+		}
+
+		if (!ddmStructureModelImpl.hasSetModifiedDate()) {
+			if (serviceContext == null) {
+				ddmStructure.setModifiedDate(now);
+			}
+			else {
+				ddmStructure.setModifiedDate(serviceContext.getModifiedDate(now));
+			}
 		}
 
 		Session session = null;
