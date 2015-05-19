@@ -440,6 +440,25 @@ public class AssetEntryLocalServiceUtil {
 	public static java.util.List<com.liferay.portlet.asset.model.AssetEntry> getEntries(
 		long[] groupIds, long[] classNameIds, java.lang.String keywords,
 		java.lang.String userName, java.lang.String title,
+		java.lang.String description, boolean adminSearch,
+		boolean advancedSearch, boolean andOperator, int start, int end,
+		java.lang.String orderByCol1, java.lang.String orderByCol2,
+		java.lang.String orderByType1, java.lang.String orderByType2) {
+		return getService()
+				   .getEntries(groupIds, classNameIds, keywords, userName,
+			title, description, adminSearch, advancedSearch, andOperator,
+			start, end, orderByCol1, orderByCol2, orderByType1, orderByType2);
+	}
+
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #getEntries(long[], long[],
+	String, String, String, String, boolean, boolean, boolean,
+	int, int, String, String, String, String)}
+	*/
+	@Deprecated
+	public static java.util.List<com.liferay.portlet.asset.model.AssetEntry> getEntries(
+		long[] groupIds, long[] classNameIds, java.lang.String keywords,
+		java.lang.String userName, java.lang.String title,
 		java.lang.String description, boolean advancedSearch,
 		boolean andOperator, int start, int end, java.lang.String orderByCol1,
 		java.lang.String orderByCol2, java.lang.String orderByType1,
@@ -455,6 +474,21 @@ public class AssetEntryLocalServiceUtil {
 		return getService().getEntriesCount(entryQuery);
 	}
 
+	public static int getEntriesCount(long[] groupIds, long[] classNameIds,
+		java.lang.String keywords, java.lang.String userName,
+		java.lang.String title, java.lang.String description,
+		boolean adminSearch, boolean advancedSearch, boolean andOperator) {
+		return getService()
+				   .getEntriesCount(groupIds, classNameIds, keywords, userName,
+			title, description, adminSearch, advancedSearch, andOperator);
+	}
+
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #getEntriesCount(long[],
+	long[], String, String, String, String, boolean, boolean,
+	boolean)}
+	*/
+	@Deprecated
 	public static int getEntriesCount(long[] groupIds, long[] classNameIds,
 		java.lang.String keywords, java.lang.String userName,
 		java.lang.String title, java.lang.String description,

@@ -194,16 +194,36 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 	@Override
 	public List<AssetEntry> getEntries(
 		long[] groupIds, long[] classNameIds, String keywords, String userName,
+		String title, String description, boolean adminSearch,
+		boolean advancedSearch, boolean andOperator, int start, int end,
+		String orderByCol1, String orderByCol2, String orderByType1,
+		String orderByType2) {
+
+		AssetEntryQuery assetEntryQuery = getAssetEntryQuery(
+			groupIds, classNameIds, keywords, userName, title, description,
+			adminSearch, advancedSearch, andOperator, start, end, orderByCol1,
+			orderByCol2, orderByType1, orderByType2);
+
+		return getEntries(assetEntryQuery);
+	}
+
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #getEntries(long[], long[],
+	 * 				String, String, String, String, boolean, boolean, boolean,
+	 * 				int, int, String, String, String, String)}
+	 */
+	@Deprecated
+	@Override
+	public List<AssetEntry> getEntries(
+		long[] groupIds, long[] classNameIds, String keywords, String userName,
 		String title, String description, boolean advancedSearch,
 		boolean andOperator, int start, int end, String orderByCol1,
 		String orderByCol2, String orderByType1, String orderByType2) {
 
-		AssetEntryQuery assetEntryQuery = getAssetEntryQuery(
+		return getEntries(
 			groupIds, classNameIds, keywords, userName, title, description,
-			advancedSearch, andOperator, start, end, orderByCol1, orderByCol2,
-			orderByType1, orderByType2);
-
-		return getEntries(assetEntryQuery);
+			false, advancedSearch, andOperator, start, end, orderByCol1,
+			orderByCol2, orderByType1, orderByType2);
 	}
 
 	@Override
@@ -211,16 +231,33 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 		return assetEntryFinder.countEntries(entryQuery);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #getEntriesCount(long[],
+	 * 				long[], String, String, String, String, boolean, boolean,
+	 *				boolean)}
+	 */
+	@Deprecated
 	@Override
 	public int getEntriesCount(
 		long[] groupIds, long[] classNameIds, String keywords, String userName,
 		String title, String description, boolean advancedSearch,
 		boolean andOperator) {
 
+		return getEntriesCount(
+			groupIds, classNameIds, keywords, userName, title, description,
+			false, advancedSearch, andOperator);
+	}
+
+	@Override
+	public int getEntriesCount(
+		long[] groupIds, long[] classNameIds, String keywords, String userName,
+		String title, String description, boolean adminSearch,
+		boolean advancedSearch, boolean andOperator) {
+
 		AssetEntryQuery assetEntryQuery = getAssetEntryQuery(
 			groupIds, classNameIds, keywords, userName, title, description,
-			advancedSearch, andOperator, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			null, null, null, null);
+			adminSearch, advancedSearch, andOperator, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null, null, null, null);
 
 		return getEntriesCount(assetEntryQuery);
 	}
@@ -903,11 +940,16 @@ public class AssetEntryLocalServiceImpl extends AssetEntryLocalServiceBaseImpl {
 
 	protected AssetEntryQuery getAssetEntryQuery(
 		long[] groupIds, long[] classNameIds, String keywords, String userName,
-		String title, String description, boolean advancedSearch,
-		boolean andOperator, int start, int end, String orderByCol1,
-		String orderByCol2, String orderByType1, String orderByType2) {
+		String title, String description, boolean adminSearch,
+		boolean advancedSearch, boolean andOperator, int start, int end,
+		String orderByCol1, String orderByCol2, String orderByType1,
+		String orderByType2) {
 
 		AssetEntryQuery assetEntryQuery = new AssetEntryQuery();
+
+		if (adminSearch) {
+			assetEntryQuery.setListable(null);
+		}
 
 		if (advancedSearch) {
 			assetEntryQuery.setAndOperator(andOperator);
