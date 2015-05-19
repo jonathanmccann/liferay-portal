@@ -2628,6 +2628,28 @@ public class DDMContentPersistenceImpl extends BasePersistenceImpl<DDMContent>
 			ddmContent.setUuid(uuid);
 		}
 
+		ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+
+		Date now = new Date();
+
+		if (isNew && (ddmContent.getCreateDate() == null)) {
+			if (serviceContext == null) {
+				ddmContent.setCreateDate(now);
+			}
+			else {
+				ddmContent.setCreateDate(serviceContext.getCreateDate(now));
+			}
+		}
+
+		if (!ddmContentModelImpl.hasSetModifiedDate()) {
+			if (serviceContext == null) {
+				ddmContent.setModifiedDate(now);
+			}
+			else {
+				ddmContent.setModifiedDate(serviceContext.getModifiedDate(now));
+			}
+		}
+
 		Session session = null;
 
 		try {
