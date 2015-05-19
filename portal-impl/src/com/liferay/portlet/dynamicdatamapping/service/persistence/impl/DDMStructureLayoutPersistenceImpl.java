@@ -32,6 +32,8 @@ import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.model.CacheModel;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.ServiceContextThreadLocal;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 
 import com.liferay.portlet.dynamicdatamapping.NoSuchStructureLayoutException;
@@ -43,6 +45,7 @@ import com.liferay.portlet.dynamicdatamapping.service.persistence.DDMStructureLa
 import java.io.Serializable;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -1941,6 +1944,30 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 			String uuid = PortalUUIDUtil.generate();
 
 			ddmStructureLayout.setUuid(uuid);
+		}
+
+		ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+
+		Date now = new Date();
+
+		if (isNew && (ddmStructureLayout.getCreateDate() == null)) {
+			if (serviceContext == null) {
+				ddmStructureLayout.setCreateDate(now);
+			}
+			else {
+				ddmStructureLayout.setCreateDate(serviceContext.getCreateDate(
+						now));
+			}
+		}
+
+		if (!ddmStructureLayoutModelImpl.hasSetModifiedDate()) {
+			if (serviceContext == null) {
+				ddmStructureLayout.setModifiedDate(now);
+			}
+			else {
+				ddmStructureLayout.setModifiedDate(serviceContext.getModifiedDate(
+						now));
+			}
 		}
 
 		Session session = null;
