@@ -1943,6 +1943,30 @@ public class DDMStructureLayoutPersistenceImpl extends BasePersistenceImpl<DDMSt
 			ddmStructureLayout.setUuid(uuid);
 		}
 
+		ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+
+		Date now = new Date();
+
+		if (isNew && (ddmStructureLayout.getCreateDate() == null)) {
+			if (serviceContext == null) {
+				ddmStructureLayout.setCreateDate(now);
+			}
+			else {
+				ddmStructureLayout.setCreateDate(serviceContext.getCreateDate(
+						now));
+			}
+		}
+
+		if (!ddmStructureLayoutModelImpl.hasSetModifiedDate()) {
+			if (serviceContext == null) {
+				ddmStructureLayout.setModifiedDate(now);
+			}
+			else {
+				ddmStructureLayout.setModifiedDate(serviceContext.getModifiedDate(
+						now));
+			}
+		}
+
 		Session session = null;
 
 		try {

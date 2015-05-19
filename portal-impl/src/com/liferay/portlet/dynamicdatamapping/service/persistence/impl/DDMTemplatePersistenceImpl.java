@@ -11777,6 +11777,28 @@ public class DDMTemplatePersistenceImpl extends BasePersistenceImpl<DDMTemplate>
 			ddmTemplate.setUuid(uuid);
 		}
 
+		ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+
+		Date now = new Date();
+
+		if (isNew && (ddmTemplate.getCreateDate() == null)) {
+			if (serviceContext == null) {
+				ddmTemplate.setCreateDate(now);
+			}
+			else {
+				ddmTemplate.setCreateDate(serviceContext.getCreateDate(now));
+			}
+		}
+
+		if (!ddmTemplateModelImpl.hasSetModifiedDate()) {
+			if (serviceContext == null) {
+				ddmTemplate.setModifiedDate(now);
+			}
+			else {
+				ddmTemplate.setModifiedDate(serviceContext.getModifiedDate(now));
+			}
+		}
+
 		Session session = null;
 
 		try {

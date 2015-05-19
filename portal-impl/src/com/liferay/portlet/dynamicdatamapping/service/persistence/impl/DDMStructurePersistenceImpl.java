@@ -8683,6 +8683,28 @@ public class DDMStructurePersistenceImpl extends BasePersistenceImpl<DDMStructur
 			ddmStructure.setUuid(uuid);
 		}
 
+		ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
+
+		Date now = new Date();
+
+		if (isNew && (ddmStructure.getCreateDate() == null)) {
+			if (serviceContext == null) {
+				ddmStructure.setCreateDate(now);
+			}
+			else {
+				ddmStructure.setCreateDate(serviceContext.getCreateDate(now));
+			}
+		}
+
+		if (!ddmStructureModelImpl.hasSetModifiedDate()) {
+			if (serviceContext == null) {
+				ddmStructure.setModifiedDate(now);
+			}
+			else {
+				ddmStructure.setModifiedDate(serviceContext.getModifiedDate(now));
+			}
+		}
+
 		Session session = null;
 
 		try {
