@@ -768,6 +768,10 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 		if ((classNames == null) ||
 			ArrayUtil.contains(classNames, Group.class.getName())) {
 
+			long[] classNameIds = new long[] {
+				classNameLocalService.getClassNameId(Group.class)
+			};
+
 			LinkedHashMap<String, Object> groupParams = new LinkedHashMap<>();
 
 			groupParams.put("active", true);
@@ -775,7 +779,9 @@ public class GroupServiceImpl extends GroupServiceBaseImpl {
 
 			userSiteGroups.addAll(
 				groupLocalService.search(
-					user.getCompanyId(), null, groupParams, start, end));
+					user.getCompanyId(), classNameIds,
+					GroupConstants.ANY_PARENT_GROUP_ID, null, groupParams,
+					start, end, null));
 		}
 
 		return Collections.unmodifiableList(
