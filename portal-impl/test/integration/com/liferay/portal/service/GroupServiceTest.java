@@ -44,6 +44,7 @@ import com.liferay.portal.model.RoleConstants;
 import com.liferay.portal.model.User;
 import com.liferay.portal.security.auth.PrincipalException;
 import com.liferay.portal.security.permission.ActionKeys;
+import com.liferay.portal.security.permission.AdvancedPermissionChecker;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portal.security.permission.PermissionCheckerFactoryUtil;
 import com.liferay.portal.security.permission.PermissionThreadLocal;
@@ -363,6 +364,14 @@ public class GroupServiceTest {
 			user.getUserId(), null, true, QueryUtil.ALL_POS);
 
 		Assert.assertTrue(groups.contains(controlPanelGroup));
+
+		initUserPermissionCheckerBag(user);
+
+		List<Group> permissionCacheGroups = GroupServiceUtil.getUserSitesGroups(
+			user.getUserId(), null, true, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(groups.size(), permissionCacheGroups.size());
+		Assert.assertTrue(groups.containsAll(permissionCacheGroups));
 	}
 
 	@Test
@@ -403,6 +412,14 @@ public class GroupServiceTest {
 			Assert.assertTrue(userGroup.equals(groups.get(1)));
 			Assert.assertTrue(organizationGroup.equals(groups.get(2)));
 			Assert.assertTrue(group.equals(groups.get(3)));
+
+			initUserPermissionCheckerBag(user);
+
+			List<Group> permissionCacheGroups =
+				GroupServiceUtil.getUserSitesGroups(
+					user.getUserId(), null, true, QueryUtil.ALL_POS);
+
+			Assert.assertTrue(groups.equals(permissionCacheGroups));
 		}
 		finally {
 			UserLocalServiceUtil.unsetOrganizationUsers(
@@ -439,6 +456,15 @@ public class GroupServiceTest {
 
 			Assert.assertTrue(groups.contains(parentOrganizationGroup));
 			Assert.assertFalse(groups.contains(organization.getGroup()));
+
+			initUserPermissionCheckerBag(user);
+
+			List<Group> permissionCacheGroups =
+				GroupServiceUtil.getUserSitesGroups(
+					user.getUserId(), null, false, QueryUtil.ALL_POS);
+
+			Assert.assertEquals(groups.size(), permissionCacheGroups.size());
+			Assert.assertTrue(groups.containsAll(permissionCacheGroups));
 		}
 		finally {
 			UserLocalServiceUtil.unsetOrganizationUsers(
@@ -455,6 +481,14 @@ public class GroupServiceTest {
 			user.getUserId(), null, false, QueryUtil.ALL_POS);
 
 		Assert.assertTrue(groups.contains(user.getGroup()));
+
+		initUserPermissionCheckerBag(user);
+
+		List<Group> permissionCacheGroups = GroupServiceUtil.getUserSitesGroups(
+			user.getUserId(), null, false, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(groups.size(), permissionCacheGroups.size());
+		Assert.assertTrue(groups.containsAll(permissionCacheGroups));
 	}
 
 	@Test
@@ -476,6 +510,14 @@ public class GroupServiceTest {
 			user.getUserId(), null, false, QueryUtil.ALL_POS);
 
 		Assert.assertFalse(groups.contains(group));
+
+		initUserPermissionCheckerBag(user);
+
+		List<Group> permissionCacheGroups = GroupServiceUtil.getUserSitesGroups(
+			user.getUserId(), null, false, QueryUtil.ALL_POS);
+
+		Assert.assertEquals(groups.size(), permissionCacheGroups.size());
+		Assert.assertTrue(groups.containsAll(permissionCacheGroups));
 	}
 
 	@Test
@@ -949,6 +991,15 @@ public class GroupServiceTest {
 
 		UserGroupRoleLocalServiceUtil.addUserGroupRoles(
 			user.getUserId(), group.getGroupId(), roleIds);
+	}
+
+	protected void initUserPermissionCheckerBag(User user) throws Exception {
+		AdvancedPermissionChecker advancedPermissionChecker =
+			new AdvancedPermissionChecker();
+
+		advancedPermissionChecker.init(user);
+
+		advancedPermissionChecker.getUserBag();
 	}
 
 	protected void testGroup(
