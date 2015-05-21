@@ -262,7 +262,7 @@ public class GroupServiceTest {
 			1,
 			GroupLocalServiceUtil.searchCount(
 				TestPropsValues.getCompanyId(), null,
-				group.getDescription(getLocale()), groupParams));
+				group.getDescription(LocaleUtil.getDefault()), groupParams));
 	}
 
 	@Test
@@ -287,7 +287,7 @@ public class GroupServiceTest {
 			1,
 			GroupLocalServiceUtil.searchCount(
 				TestPropsValues.getCompanyId(), null,
-				group.getDescription(getLocale()), groupParams));
+				group.getDescription(LocaleUtil.getDefault()), groupParams));
 	}
 
 	@Test
@@ -306,7 +306,7 @@ public class GroupServiceTest {
 			1,
 			GroupLocalServiceUtil.searchCount(
 				TestPropsValues.getCompanyId(), null,
-				group.getName(getLocale()), groupParams));
+				group.getName(LocaleUtil.getDefault()), groupParams));
 	}
 
 	@Test
@@ -331,7 +331,7 @@ public class GroupServiceTest {
 			1,
 			GroupLocalServiceUtil.searchCount(
 				TestPropsValues.getCompanyId(), null,
-				group.getName(getLocale()), groupParams));
+				group.getName(LocaleUtil.getDefault()), groupParams));
 	}
 
 	@Test
@@ -1058,12 +1058,6 @@ public class GroupServiceTest {
 		_groups.push(group);
 
 		return group;
-	}
-
-	protected Locale getLocale() {
-		ThemeDisplay themeDisplay = new ThemeDisplay();
-
-		return themeDisplay.getLocale();
 	}
 
 	protected void givePermissionToManageSubsites(User user, Group group)
