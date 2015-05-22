@@ -72,11 +72,9 @@ public class SearchPermissionCheckerImpl implements SearchPermissionChecker {
 
 			String classPK = document.get(Field.ROOT_ENTRY_CLASS_PK);
 
-			if (Validator.isNull(className)) {
+			if (Validator.isNull(className) && Validator.isNull(classPK)) {
 				className = document.get(Field.ENTRY_CLASS_NAME);
-			}
 
-			if (Validator.isNull(classPK)) {
 				classPK = document.get(Field.ENTRY_CLASS_PK);
 			}
 
