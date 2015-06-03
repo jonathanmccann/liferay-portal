@@ -116,7 +116,6 @@ import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
 import com.liferay.portal.util.PrefsPropsUtil;
 import com.liferay.portal.util.PropsValues;
-import com.liferay.portal.util.SessionClicks;
 import com.liferay.portal.util.WebKeys;
 import com.liferay.portlet.PortalPreferences;
 import com.liferay.portlet.PortletPreferencesFactoryUtil;
@@ -990,10 +989,27 @@ public class StagingImpl implements Staging {
 	public long getRecentLayoutSetBranchId(
 		HttpServletRequest request, long layoutSetId) {
 
-		return GetterUtil.getLong(
-			SessionClicks.get(
-				request, Staging.class.getName(),
-				getRecentLayoutSetBranchIdKey(layoutSetId)));
+		try {
+			PortalPreferences portalPreferences =
+				PortletPreferencesFactoryUtil.getPortalPreferences(request);
+
+			return getRecentLayoutAttribute(
+				portalPreferences, getRecentLayoutSetBranchIdKey(layoutSetId));
+		}
+		catch (JSONException jsone) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to get recent layout set branch ID with " +
+						layoutSetId, jsone);
+			}
+		}
+		catch (SystemException se) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Could not get PortalPreferences", se);
+			}
+		}
+
+		return 0;
 	}
 
 	@Override
@@ -1601,10 +1617,27 @@ public class StagingImpl implements Staging {
 	public void setRecentLayoutSetBranchId(
 		HttpServletRequest request, long layoutSetId, long layoutSetBranchId) {
 
-		SessionClicks.put(
-			request, Staging.class.getName(),
-			getRecentLayoutSetBranchIdKey(layoutSetId),
-			String.valueOf(layoutSetBranchId));
+		try {
+			PortalPreferences portalPreferences =
+				PortletPreferencesFactoryUtil.getPortalPreferences(request);
+
+			setRecentLayoutAttribute(
+				portalPreferences, getRecentLayoutSetBranchIdKey(layoutSetId),
+				layoutSetBranchId);
+		}
+		catch (JSONException jsone) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to set recent layout set branch ID with " +
+						layoutSetId + " and layout set branch " +
+							layoutSetBranchId, jsone);
+			}
+		}
+		catch (SystemException se) {
+			if (_log.isWarnEnabled()) {
+				_log.warn("Could not get PortalPreferences", se);
+			}
+		}
 	}
 
 	@Override
