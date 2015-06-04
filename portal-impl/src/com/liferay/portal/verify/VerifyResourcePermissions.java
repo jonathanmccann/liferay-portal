@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.model.Contact;
 import com.liferay.portal.model.Layout;
+import com.liferay.portal.model.PortletConstants;
 import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.ResourcePermission;
 import com.liferay.portal.model.Role;
@@ -33,6 +34,8 @@ import com.liferay.portal.service.ResourceLocalServiceUtil;
 import com.liferay.portal.service.ResourcePermissionLocalServiceUtil;
 import com.liferay.portal.service.RoleLocalServiceUtil;
 import com.liferay.portal.service.UserLocalServiceUtil;
+import com.liferay.portal.service.persistence.LayoutUtil;
+import com.liferay.portal.service.persistence.ResourcePermissionUtil;
 import com.liferay.portal.util.PortalInstances;
 import com.liferay.portal.verify.model.VerifiableResourcedModel;
 
@@ -76,6 +79,8 @@ public class VerifyResourcePermissions extends VerifyProcess {
 			doVerify(verifyResourcedModelRunnables);
 
 			verifyLayout(role);
+
+			verifyPrivateLayouts(companyId);
 		}
 	}
 
@@ -105,6 +110,55 @@ public class VerifyResourcePermissions extends VerifyProcess {
 			verifyResourcedModel(
 				role.getCompanyId(), Layout.class.getName(), layout.getPlid(),
 				role, 0, i, total);
+		}
+	}
+
+	protected void verifyPrivateLayouts(long companyId) throws Exception {
+		List<Layout> layouts;
+		List<Layout> privateLayouts = new ArrayList<>();
+		List<ResourcePermission> permissionsToRemove = new ArrayList<>();
+
+		layouts = LayoutUtil.findByCompanyId(companyId);
+
+		if (layouts.isEmpty()) {
+			return;
+		}
+
+		for (Layout layout : layouts) {
+			if (layout.isPrivateLayout()) {
+				privateLayouts.add(layout);
+			}
+		}
+
+		Role guestRole = RoleLocalServiceUtil.getRole(
+			companyId, RoleConstants.GUEST);
+
+		Long guestRoleId = guestRole.getRoleId();
+
+		List<ResourcePermission> permissions =
+			ResourcePermissionUtil.findByRoleId(guestRoleId);
+
+		for (Layout layout : privateLayouts) {
+			for (ResourcePermission permission : permissions) {
+				String primKey = permission.getPrimKey();
+
+				if (primKey.contains(PortletConstants.LAYOUT_SEPARATOR)) {
+					int index = primKey.indexOf(
+						PortletConstants.LAYOUT_SEPARATOR);
+
+					primKey = primKey.substring(0, index);
+				}
+
+				long primKeyNum = Long.parseLong(primKey);
+
+				if (layout.getPrimaryKey() == primKeyNum) {
+					permissionsToRemove.add(permission);
+				}
+			}
+		}
+
+		for (ResourcePermission permission : permissionsToRemove) {
+			ResourcePermissionUtil.remove(permission.getResourcePermissionId());
 		}
 	}
 
