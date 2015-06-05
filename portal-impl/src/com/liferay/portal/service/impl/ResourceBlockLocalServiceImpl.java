@@ -198,8 +198,6 @@ public class ResourceBlockLocalServiceImpl
 		resourceBlockPermissionLocalService.addResourceBlockPermissions(
 			resourceBlockId, resourceBlockPermissionsContainer);
 
-		PermissionCacheUtil.clearResourceBlockCache(companyId, groupId, name);
-
 		return resourceBlock;
 	}
 
@@ -219,10 +217,6 @@ public class ResourceBlockLocalServiceImpl
 			resourceBlock.getPrimaryKey());
 
 		resourceBlockPersistence.remove(resourceBlock);
-
-		PermissionCacheUtil.clearResourceBlockCache(
-			resourceBlock.getCompanyId(), resourceBlock.getGroupId(),
-			resourceBlock.getName());
 
 		return resourceBlock;
 	}
@@ -767,7 +761,7 @@ public class ResourceBlockLocalServiceImpl
 			updateGroupScopeResourceTypePermissions(
 				companyId, groupId, name, roleId, actionIdsLong, operator);
 
-		PermissionCacheUtil.clearResourceBlockCache(companyId, groupId, name);
+		PermissionCacheUtil.clearResourceCache();
 	}
 
 	@Override

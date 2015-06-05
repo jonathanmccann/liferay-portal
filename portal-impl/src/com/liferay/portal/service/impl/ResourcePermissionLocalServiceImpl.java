@@ -145,8 +145,6 @@ public class ResourcePermissionLocalServiceImpl
 		updateResourcePermission(
 			companyId, name, scope, primKey, roleId, 0, new String[] {actionId},
 			ResourcePermissionConstants.OPERATOR_ADD);
-
-		PermissionCacheUtil.clearResourcePermissionCache(name, primKey);
 	}
 
 	/**
@@ -244,7 +242,7 @@ public class ResourcePermissionLocalServiceImpl
 				session.save(resourcePermission);
 
 				PermissionCacheUtil.clearResourcePermissionCache(
-					resourcePermission.getName(),
+					resourcePermission.getScope(), resourcePermission.getName(),
 					resourcePermission.getPrimKey());
 			}
 		}
@@ -324,8 +322,6 @@ public class ResourcePermissionLocalServiceImpl
 			deleteResourcePermission(
 				resourcePermission.getResourcePermissionId());
 		}
-
-		PermissionCacheUtil.clearResourcePermissionCache(name, primKey);
 	}
 
 	@Override
@@ -997,8 +993,6 @@ public class ResourcePermissionLocalServiceImpl
 		updateResourcePermission(
 			companyId, name, scope, primKey, roleId, 0, new String[] {actionId},
 			ResourcePermissionConstants.OPERATOR_REMOVE);
-
-		PermissionCacheUtil.clearResourcePermissionCache(name, primKey);
 	}
 
 	/**
@@ -1030,9 +1024,6 @@ public class ResourcePermissionLocalServiceImpl
 				companyId, name, scope, resourcePermission.getPrimKey(), roleId,
 				0, new String[] {actionId},
 				ResourcePermissionConstants.OPERATOR_REMOVE);
-
-			PermissionCacheUtil.clearResourcePermissionCache(
-				name, resourcePermission.getPrimKey());
 		}
 	}
 
@@ -1238,7 +1229,7 @@ public class ResourcePermissionLocalServiceImpl
 
 		resourcePermissionPersistence.update(resourcePermission);
 
-		PermissionCacheUtil.clearResourcePermissionCache(name, primKey);
+		PermissionCacheUtil.clearResourcePermissionCache(scope, name, primKey);
 
 		SearchEngineUtil.updatePermissionFields(name, primKey);
 	}
@@ -1290,7 +1281,8 @@ public class ResourcePermissionLocalServiceImpl
 			PermissionThreadLocal.setFlushResourcePermissionEnabled(
 				name, primKey, flushResourcePermissionEnabled);
 
-			PermissionCacheUtil.clearResourcePermissionCache(name, primKey);
+			PermissionCacheUtil.clearResourcePermissionCache(
+				scope, name, primKey);
 
 			SearchEngineUtil.updatePermissionFields(name, primKey);
 		}
