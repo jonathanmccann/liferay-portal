@@ -33,12 +33,22 @@ boolean hasDistributionScope = false;
 	%>
 
 	<c:if test="<%= !groups.isEmpty() %>">
-		<optgroup label="<liferay-ui:message key="sites" />">
 
 			<%
+			Boolean hasGroupScope = false;
+
 			for (Group group : groups) {
 				if (((group.isOrganization() && group.isSite()) || group.isRegularSite()) && GroupPermissionUtil.contains(permissionChecker, group, ActionKeys.MANAGE_ANNOUNCEMENTS)) {
 					hasDistributionScope = true;
+
+					if (!hasGroupScope) {
+						hasGroupScope = true;
+			%>
+
+						<optgroup label="<liferay-ui:message key="sites" />">
+
+			<%
+					}
 			%>
 
 					<aui:option label="<%= HtmlUtil.escape(group.getDescriptiveName(locale)) %>" localizeLabel="<%= false %>" selected="<%= classPK == group.getGroupId() %>" value="<%= PortalUtil.getClassNameId(Group.class) + StringPool.COMMA + group.getGroupId() %>" />
@@ -56,12 +66,22 @@ boolean hasDistributionScope = false;
 	%>
 
 	<c:if test="<%= !organizations.isEmpty() %>">
-		<optgroup label="<liferay-ui:message key="organizations" />">
 
 			<%
+			Boolean hasOrganizationScope = false;
+
 			for (Organization organization : organizations) {
 				if (OrganizationPermissionUtil.contains(permissionChecker, organization, ActionKeys.MANAGE_ANNOUNCEMENTS)) {
 					hasDistributionScope = true;
+
+					if (!hasOrganizationScope) {
+						hasOrganizationScope = true;
+			%>
+
+						<optgroup label="<liferay-ui:message key="organizations" />">
+
+			<%
+					}
 			%>
 
 					<aui:option label="<%= HtmlUtil.escape(organization.getName()) %>" localizeLabel="<%= false %>" selected="<%= classPK == organization.getOrganizationId() %>" value="<%= PortalUtil.getClassNameId(Organization.class) + StringPool.COMMA + organization.getOrganizationId() %>" />
@@ -79,26 +99,38 @@ boolean hasDistributionScope = false;
 	%>
 
 	<c:if test="<%= !roles.isEmpty() %>">
-		<optgroup label="<liferay-ui:message key="roles" />">
 
 			<%
+			Boolean hasRoleScope = false;
+
 			for (Role role : roles) {
 				if (role.isTeam()) {
 					Team team = TeamLocalServiceUtil.getTeam(role.getClassPK());
 
-					if (!GroupPermissionUtil.contains(permissionChecker, team.getGroupId(), ActionKeys.MANAGE_ANNOUNCEMENTS)) {
+					if (!GroupPermissionUtil.contains(permissionChecker, team.getGroupId(), ActionKeys.MANAGE_ANNOUNCEMENTS) || !RolePermissionUtil.contains(permissionChecker, themeDisplay.getScopeGroupId(), role.getRoleId(), ActionKeys.MANAGE_ANNOUNCEMENTS)) {
+
 						continue;
 					}
 				}
+				else if (!RolePermissionUtil.contains(permissionChecker, role.getRoleId(), ActionKeys.MANAGE_ANNOUNCEMENTS)) {
+					continue;
+				}
 
-				if (RolePermissionUtil.contains(permissionChecker, themeDisplay.getScopeGroupId(), role.getRoleId(), ActionKeys.MANAGE_ANNOUNCEMENTS)) {
-					hasDistributionScope = true;
+				hasDistributionScope = true;
+
+				if (!hasRoleScope) {
+					hasRoleScope = true;
 			%>
 
-					<aui:option label="<%= HtmlUtil.escape(role.getTitle(locale)) %>" selected="<%= classPK == role.getRoleId() %>" value="<%= PortalUtil.getClassNameId(Role.class) + StringPool.COMMA + role.getRoleId() %>" />
+					<optgroup label="<liferay-ui:message key="roles" />">
 
 			<%
 				}
+			%>
+
+				<aui:option label="<%= HtmlUtil.escape(role.getTitle(locale)) %>" selected="<%= classPK == role.getRoleId() %>" value="<%= PortalUtil.getClassNameId(Role.class) + StringPool.COMMA + role.getRoleId() %>" />
+
+			<%
 			}
 			%>
 
@@ -110,12 +142,22 @@ boolean hasDistributionScope = false;
 	%>
 
 	<c:if test="<%= !userGroups.isEmpty() %>">
-		<optgroup label="<liferay-ui:message key="user-groups" />">
 
 			<%
+			Boolean hasUserGroupScope = false;
+
 			for (UserGroup userGroup : userGroups) {
 				if (UserGroupPermissionUtil.contains(permissionChecker, userGroup.getUserGroupId(), ActionKeys.MANAGE_ANNOUNCEMENTS)) {
 					hasDistributionScope = true;
+
+					if (!hasUserGroupScope) {
+						hasUserGroupScope = true;
+			%>
+
+						<optgroup label="<liferay-ui:message key="user-groups" />">
+
+			<%
+					}
 			%>
 
 					<aui:option label="<%= HtmlUtil.escape(userGroup.getName()) %>" selected="<%= classPK == userGroup.getUserGroupId() %>" value="<%= PortalUtil.getClassNameId(UserGroup.class) + StringPool.COMMA + userGroup.getUserGroupId() %>" />
