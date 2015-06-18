@@ -35,6 +35,7 @@ import com.liferay.portal.kernel.util.ClassLoaderObjectInputStream;
 import com.liferay.portal.kernel.util.NamedThreadFactory;
 import com.liferay.portal.kernel.util.PortalClassLoaderUtil;
 import com.liferay.portal.kernel.util.StreamUtil;
+import com.liferay.portal.kernel.util.SystemProperties;
 
 import java.io.EOFException;
 import java.io.File;
@@ -137,7 +138,8 @@ public class LocalProcessExecutor implements ProcessExecutor {
 			commands.add(processConfig.getJavaExecutable());
 			commands.add("-cp");
 			commands.add(processConfig.getBootstrapClassPath());
-			commands.add("-Dsystem.properties.quiet=true");
+			commands.add(
+				"-D" + SystemProperties.SYSTEM_PROPERTIES_QUIET + "=true");
 			commands.addAll(arguments);
 			commands.add(LocalProcessLauncher.class.getName());
 
