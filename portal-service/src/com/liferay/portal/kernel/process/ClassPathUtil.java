@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.ServerDetector;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.URLCodec;
 
 import java.io.File;
@@ -147,6 +148,9 @@ public class ClassPathUtil {
 
 		Builder builder = new Builder();
 
+		builder.setJVMArguments(
+			Arrays.asList(
+				"-D" + SystemProperties.SYSTEM_PROPERTIES_QUIET + "=true"));
 		builder.setArguments(Arrays.asList("-Djava.awt.headless=true"));
 		builder.setBootstrapClassPath(_globalClassPath);
 		builder.setReactClassLoader(PortalClassLoaderUtil.getClassLoader());
