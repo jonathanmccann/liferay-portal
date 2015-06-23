@@ -131,6 +131,7 @@ public class LocalProcessExecutor implements ProcessExecutor {
 
 		try {
 			List<String> arguments = processConfig.getArguments();
+			List<String> JVArguments = processConfig.getJVMArguments();
 
 			List<String> commands = new ArrayList<>(arguments.size() + 4);
 
