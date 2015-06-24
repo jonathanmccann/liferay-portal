@@ -148,8 +148,10 @@ public class ClassPathUtil {
 
 		Builder builder = new Builder();
 
-		builder.setArguments(Arrays.asList("-Djava.awt.headless=true",
-			("-D" + SystemProperties.SYSTEM_PROPERTIES_QUIET + "=true")));
+		builder.setArguments(
+			Arrays.asList(
+				"-Djava.awt.headless=true",
+				"-D" + SystemProperties.SYSTEM_PROPERTIES_QUIET + "=true"));
 
 		builder.setBootstrapClassPath(_globalClassPath);
 		builder.setReactClassLoader(PortalClassLoaderUtil.getClassLoader());
