@@ -131,12 +131,15 @@ public class LocalProcessExecutor implements ProcessExecutor {
 
 		try {
 			List<String> arguments = processConfig.getArguments();
+			List<String> JVMArguments = processConfig.getJVMArguments();
 
-			List<String> commands = new ArrayList<>(arguments.size() + 4);
+			List<String> commands = new ArrayList<>(
+				JVMArguments.size() + arguments.size() + 4);
 
 			commands.add(processConfig.getJavaExecutable());
 			commands.add("-cp");
 			commands.add(processConfig.getBootstrapClassPath());
+			commands.addAll(JVMArguments);
 			commands.addAll(arguments);
 			commands.add(LocalProcessLauncher.class.getName());
 
