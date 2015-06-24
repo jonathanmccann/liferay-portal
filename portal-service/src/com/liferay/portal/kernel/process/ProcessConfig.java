@@ -46,6 +46,10 @@ public class ProcessConfig implements Serializable {
 		return _javaExecutable;
 	}
 
+	public List<String> getJVMArguments() {
+		return _JVMArguments;
+	}
+
 	public ClassLoader getReactClassLoader() {
 		return _reactClassLoader;
 	}
@@ -83,6 +87,12 @@ public class ProcessConfig implements Serializable {
 			return this;
 		}
 
+		public Builder setJVMArguments(List<String> JVMArguments) {
+			_JVMArguments = JVMArguments;
+
+			return this;
+		}
+
 		public Builder setReactClassLoader(ClassLoader reactClassLoader) {
 			_reactClassLoader = reactClassLoader;
 
@@ -99,6 +109,7 @@ public class ProcessConfig implements Serializable {
 		private String _bootstrapClassPath = System.getProperty(
 			"java.class.path");
 		private String _javaExecutable = "java";
+		private List<String> _JVMArguments = Collections.emptyList();
 		private ClassLoader _reactClassLoader =
 			ProcessConfig.class.getClassLoader();
 		private String _runtimeClassPath = _bootstrapClassPath;
@@ -111,6 +122,7 @@ public class ProcessConfig implements Serializable {
 		_bootstrapClassPathHolders = toPathHolders(builder._bootstrapClassPath);
 
 		_javaExecutable = builder._javaExecutable;
+		_JVMArguments = builder._JVMArguments;
 		_reactClassLoader = builder._reactClassLoader;
 
 		_runtimeClassPathHolders = toPathHolders(builder._runtimeClassPath);
@@ -135,6 +147,7 @@ public class ProcessConfig implements Serializable {
 	private final List<String> _arguments;
 	private final PathHolder[] _bootstrapClassPathHolders;
 	private final String _javaExecutable;
+	private final List<String> _JVMArguments;
 	private final transient ClassLoader _reactClassLoader;
 	private final PathHolder[] _runtimeClassPathHolders;
 
