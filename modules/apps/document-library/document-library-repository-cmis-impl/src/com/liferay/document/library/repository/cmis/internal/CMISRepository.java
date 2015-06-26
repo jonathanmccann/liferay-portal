@@ -1641,6 +1641,9 @@ public class CMISRepository extends BaseCmisRepository {
 					}
 				}
 				catch (NoSuchRepositoryEntryException nsree) {
+					if (_log.isWarnEnabled()) {
+						_log.warn(nsree, nsree);
+					}
 				}
 			}
 		}
