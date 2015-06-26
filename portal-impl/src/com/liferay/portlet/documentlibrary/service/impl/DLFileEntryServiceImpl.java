@@ -79,14 +79,10 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 		boolean locked = LockManagerUtil.isLocked(
 			DLFileEntry.class.getName(), fileEntryId);
 
-		try {
-			if (locked && !hasFileEntryLock(fileEntryId) &&
-				!_hasOverrideCheckoutPermission(fileEntryId)) {
+		if (locked && !hasFileEntryLock(fileEntryId) &&
+			!_hasOverrideCheckoutPermission(fileEntryId)) {
 
-				throw new PrincipalException();
-			}
-		}
-		catch (NoSuchFileEntryException nsfee) {
+			throw new PrincipalException();
 		}
 
 		return dlFileEntryLocalService.cancelCheckOut(getUserId(), fileEntryId);
@@ -101,14 +97,10 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 		boolean isLocked = LockManagerUtil.isLocked(
 			DLFileEntry.class.getName(), fileEntryId);
 
-		try {
-			if (isLocked && !hasFileEntryLock(fileEntryId) &&
-				!_hasOverrideCheckoutPermission(fileEntryId)) {
+		if (isLocked && !hasFileEntryLock(fileEntryId) &&
+			!_hasOverrideCheckoutPermission(fileEntryId)) {
 
-				throw new PrincipalException();
-			}
-		}
-		catch (NoSuchFileEntryException nsfee) {
+			throw new PrincipalException();
 		}
 
 		dlFileEntryLocalService.checkInFileEntry(
@@ -132,14 +124,10 @@ public class DLFileEntryServiceImpl extends DLFileEntryServiceBaseImpl {
 			long fileEntryId, String lockUuid, ServiceContext serviceContext)
 		throws PortalException {
 
-		try {
-			if (!hasFileEntryLock(fileEntryId) &&
-				!_hasOverrideCheckoutPermission(fileEntryId)) {
+		if (!hasFileEntryLock(fileEntryId) &&
+			!_hasOverrideCheckoutPermission(fileEntryId)) {
 
-				throw new PrincipalException();
-			}
-		}
-		catch (NoSuchFileEntryException nsfee) {
+			throw new PrincipalException();
 		}
 
 		dlFileEntryLocalService.checkInFileEntry(
