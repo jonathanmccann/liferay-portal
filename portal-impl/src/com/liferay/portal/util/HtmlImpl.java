@@ -281,7 +281,7 @@ public class HtmlImpl implements Html {
 		if (href.indexOf(StringPool.COLON) == 10) {
 			String protocol = StringUtil.toLowerCase(href.substring(0, 10));
 
-			if (protocol.equals("javascript")) {
+			if (protocol.equals("javascript") || protocol.equals("data")) {
 				href = StringUtil.replaceFirst(href, StringPool.COLON, "%3a");
 			}
 		}
