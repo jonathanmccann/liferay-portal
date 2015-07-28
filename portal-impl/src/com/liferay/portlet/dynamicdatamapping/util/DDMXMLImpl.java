@@ -129,6 +129,10 @@ public class DDMXMLImpl implements DDMXML {
 						dynamicElementElement.attributeValue(
 							"default-language-id");
 
+					if (defaultLanguageId == null) {
+						defaultLanguageId = languageId;
+					}
+
 					Locale defaultLocale = LocaleUtil.fromLanguageId(
 						defaultLanguageId);
 
