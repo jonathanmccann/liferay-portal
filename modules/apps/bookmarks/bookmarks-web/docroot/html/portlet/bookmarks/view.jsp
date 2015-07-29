@@ -21,11 +21,13 @@ String topLink = ParamUtil.getString(request, "topLink", "home");
 
 BookmarksFolder folder = (BookmarksFolder)request.getAttribute(BookmarksWebKeys.BOOKMARKS_FOLDER);
 
+long defaultFolderId = GetterUtil.getLong(portletPreferences.getValue("rootFolderId", StringPool.BLANK), BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID);
+
 long folderId = BeanParamUtil.getLong(folder, request, "folderId", rootFolderId);
 
 boolean defaultFolderView = false;
 
-if ((folder == null) && (folderId != BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID)) {
+if (folderId == defaultFolderId) {
 	defaultFolderView = true;
 }
 
