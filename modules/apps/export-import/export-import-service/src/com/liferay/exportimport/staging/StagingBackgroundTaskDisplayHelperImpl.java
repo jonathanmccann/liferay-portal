@@ -132,10 +132,9 @@ public class StagingBackgroundTaskDisplayHelperImpl
 						false);
 			}
 
-			JSONObject errorMessageJSONObject = createErrorJSONObject(
-				info, errorMessage, missingReferenceDisplayName);
-
-			errorMessagesJSONArray.put(errorMessageJSONObject);
+			BackgroundTaskDisplayJSONTransformer.addItemsListJSONObject(
+				errorMessagesJSONArray, info, errorMessage,
+				missingReferenceDisplayName);
 		}
 
 		return errorMessagesJSONArray;
@@ -260,10 +259,9 @@ public class StagingBackgroundTaskDisplayHelperImpl
 				String modelResource = ResourceActionsUtil.getModelResource(
 					locale, layoutPrototypeClassName);
 
-				JSONObject errorMessageJSONObject = createErrorJSONObject(
-					layoutPrototypeUuid, modelResource, layoutPrototypeName);
-
-				errorMessagesJSONArray.put(errorMessageJSONObject);
+				BackgroundTaskDisplayJSONTransformer.addItemsListJSONObject(
+					errorMessagesJSONArray, layoutPrototypeUuid, modelResource,
+					layoutPrototypeName);
 			}
 
 			errorType = ServletResponseConstants.SC_FILE_CUSTOM_EXCEPTION;
@@ -447,25 +445,12 @@ public class StagingBackgroundTaskDisplayHelperImpl
 			String errorMessage = ResourceActionsUtil.getModelResource(
 				locale, missingReferenceReferrerClassName);
 
-			JSONObject errorMessageJSONObject = createErrorJSONObject(
-				info, errorMessage, String.valueOf(referrers.size()));
-
-			warningMessagesJSONArray.put(errorMessageJSONObject);
+			BackgroundTaskDisplayJSONTransformer.addItemsListJSONObject(
+				warningMessagesJSONArray, info, errorMessage,
+				String.valueOf(referrers.size()));
 		}
 
 		return warningMessagesJSONArray;
-	}
-
-	protected JSONObject createErrorJSONObject(
-		String info, String errorMessage, String errorStrongMessage) {
-
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
-
-		jsonObject.put("info", info);
-		jsonObject.put("errorMessage", errorMessage);
-		jsonObject.put("errorStrongMessage", errorStrongMessage);
-
-		return jsonObject;
 	}
 
 }
