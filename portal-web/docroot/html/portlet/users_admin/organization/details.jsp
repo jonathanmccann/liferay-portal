@@ -63,7 +63,7 @@ User selUser = (User)request.getAttribute("user.selUser");
 <div class="row">
 	<aui:fieldset cssClass="col-md-6">
 		<liferay-ui:error exception="<%= DuplicateOrganizationException.class %>" message="the-organization-name-is-already-taken" />
-		<liferay-ui:error exception="<%= OrganizationNameException.class %>" message="please-enter-a-valid-name" />
+		<liferay-ui:error exception="<%= OrganizationNameException.class %>" message="the-organization-name-cannot-be-blank-or-a-reserved-word-such-as-null" />
 
 		<aui:input autoFocus="<%= windowState.equals(WindowState.MAXIMIZED) %>" name="name" />
 

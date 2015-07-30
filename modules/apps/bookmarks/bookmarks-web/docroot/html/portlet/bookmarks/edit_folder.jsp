@@ -68,7 +68,7 @@ else {
 		title='<%= (folder == null) ? ((parentFolderId > 0) ? "add-subfolder" : "add-folder") : LanguageUtil.format(request, "edit-x", folder.getName(), false) %>'
 	/>
 
-	<liferay-ui:error exception="<%= FolderNameException.class %>" message="please-enter-a-valid-name" />
+	<liferay-ui:error exception="<%= FolderNameException.class %>" message="the-folder-name-cannot-be-blank-a-reserved-word-such-as-null-or-contain-the-following-special-characters" />
 
 	<aui:model-context bean="<%= folder %>" model="<%= BookmarksFolder.class %>" />
 

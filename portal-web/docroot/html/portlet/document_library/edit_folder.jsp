@@ -79,7 +79,7 @@ if (workflowEnabled) {
 
 	<liferay-ui:error exception="<%= DuplicateFileException.class %>" message="please-enter-a-unique-folder-name" />
 	<liferay-ui:error exception="<%= DuplicateFolderNameException.class %>" message="please-enter-a-unique-folder-name" />
-	<liferay-ui:error exception="<%= FolderNameException.class %>" message="please-enter-a-valid-name" />
+	<liferay-ui:error exception="<%= FolderNameException.class %>" message="the-folder-name-cannot-be-blank-a-reserved-word-such-as-null-or-contain-the-following-special-characters" />
 	<liferay-ui:error exception="<%= RequiredFileEntryTypeException.class %>" message="please-select-a-document-type" />
 
 	<aui:model-context bean="<%= folder %>" model="<%= DLFolder.class %>" />

@@ -53,7 +53,7 @@ String subtype = BeanParamUtil.getString(role, request, "subtype");
 
 	<liferay-ui:error exception="<%= DuplicateRoleException.class %>" message="please-enter-a-unique-name" />
 	<liferay-ui:error exception="<%= RequiredRoleException.class %>" message="old-role-name-is-a-required-system-role" />
-	<liferay-ui:error exception="<%= RoleNameException.class %>" message="please-enter-a-valid-name" />
+	<liferay-ui:error exception="<%= RoleNameException.class %>" message="the-role-name-cannot-be-blank-a-reserved-word-such-as-null-or-contain-the-following-special-characters" />
 
 	<aui:model-context bean="<%= role %>" model="<%= Role.class %>" />
 

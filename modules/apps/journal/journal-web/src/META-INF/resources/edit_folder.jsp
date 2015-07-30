@@ -62,7 +62,7 @@ if (workflowEnabled) {
 	/>
 
 	<liferay-ui:error exception="<%= DuplicateFolderNameException.class %>" message="please-enter-a-unique-folder-name" />
-	<liferay-ui:error exception="<%= FolderNameException.class %>" message="please-enter-a-valid-name" />
+	<liferay-ui:error exception="<%= FolderNameException.class %>" message="the-folder-name-cannot-be-blank-a-reserved-word-such-as-null-or-contain-the-following-special-characters" />
 	<liferay-ui:error exception="<%= InvalidDDMStructureException.class %>" message="you-cannot-apply-the-selected-structure-restrictions-for-this-folder.-at-least-one-web-content-references-another-structure" />
 
 	<aui:model-context bean="<%= folder %>" model="<%= JournalFolder.class %>" />
