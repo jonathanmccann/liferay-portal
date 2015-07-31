@@ -37,7 +37,11 @@ import com.liferay.portal.UserSmsException;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.PortalCacheMapSynchronizeUtil;
 import com.liferay.portal.kernel.cache.PortalCacheMapSynchronizeUtil.Synchronizer;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.WildcardMode;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -2965,6 +2969,28 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Returns <code>true</code> if the user's password is modifiable.
+	 *
+	 * @param  user the user
+	 * @return <code>true</code> if the user's password is modifiable;
+	 *         <code>false</code> otherwise
+	 */
+	@Override
+	public boolean isPasswordModifiable(User user) {
+		if (!LDAPSettingsUtil.isImportEnabled(user.getCompanyId()) ||
+			LDAPSettingsUtil.isExportEnabled(user.getCompanyId())) {
+
+			return true;
+		}
+
+		if (user.getLdapServerId() <= 0) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
 	 * Returns the default user for the company.
 	 *
 	 * @param  companyId the primary key of the company
@@ -3973,6 +3999,54 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Removes the association between all users and the LDAP server.
+	 *
+	 * @param  ldapServerId the ID of the LDAP server
+	 * @throws PortalException if a portal exception occurred
+	 */
+	@Override
+	public void unsetLDAPUsers(final long ldapServerId) throws PortalException {
+		ActionableDynamicQuery actionableDynamicQuery =
+			getActionableDynamicQuery();
+
+		actionableDynamicQuery.setAddCriteriaMethod(
+			new ActionableDynamicQuery.AddCriteriaMethod() {
+
+				@Override
+				public void addCriteria(DynamicQuery dynamicQuery) {
+					Property ldapProperty = PropertyFactoryUtil.forName(
+						"ldapServerId");
+
+					dynamicQuery.add(ldapProperty.like(ldapServerId));
+				}
+			});
+
+		actionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod() {
+
+				@Override
+				public void performAction(Object object)
+					throws PortalException {
+
+					User user = (User)object;
+
+					user.setLdapServerId(-1);
+
+					if (_log.isWarnEnabled()) {
+						_log.warn(
+							"Removing user from LDAP Server: " +
+								user.getUserId());
+					}
+
+					userLocalService.updateUser(user);
+				}
+
+			});
+
+		actionableDynamicQuery.performActions();
+	}
+
+	/**
 	 * Removes the users from the organization.
 	 *
 	 * @param  organizationId the primary key of the organization
@@ -4826,6 +4900,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		throws PortalException {
 
 		User user = userPersistence.findByPrimaryKey(userId);
+
+		if (!isPasswordModifiable(user)) {
+			throw new UserPasswordException.MustHaveLDAPExportingEnabled(
+				userId);
+		}
 
 		if (!silentUpdate) {
 			validatePassword(user.getCompanyId(), userId, password1, password2);
