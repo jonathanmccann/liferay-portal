@@ -17,6 +17,7 @@ package com.liferay.portlet.exportimport.backgroundtask;
 import com.liferay.portal.kernel.backgroundtask.BackgroundTaskStatus;
 import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portlet.exportimport.staging.StagingBackgroundTaskConstants;
 
 /**
  * @author Daniel Kocsis
@@ -31,10 +32,13 @@ public class PortletExportImportBackgroundTaskStatusMessageTranslator
 		clearBackgroundTaskStatus(backgroundTaskStatus);
 
 		long portletModelAdditionCountersTotal = GetterUtil.getLong(
-			message.get("portletModelAdditionCountersTotal"));
+			message.get(
+				StagingBackgroundTaskConstants.
+					PORTLET_MODEL_ADDITION_COUNTERS_TOTAL));
 
 		backgroundTaskStatus.setAttribute(
-			"allModelAdditionCountersTotal", portletModelAdditionCountersTotal);
+			StagingBackgroundTaskConstants.ALL_MODEL_ADDITION_COUNTERS_TOTAL,
+			portletModelAdditionCountersTotal);
 
 		super.translatePortletMessage(backgroundTaskStatus, message);
 	}
