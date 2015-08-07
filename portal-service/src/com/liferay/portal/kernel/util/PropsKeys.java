@@ -451,6 +451,8 @@ public interface PropsKeys {
 
 	public static final String CONTROL_PANEL_LAYOUT_REGULAR_THEME_ID = "control.panel.layout.regular.theme.id";
 
+	public static final String CONTROL_PANEL_MEMBER_COUNT_ENABLED = "control.panel.member.count.enabled";
+
 	public static final String CONTROL_PANEL_NAVIGATION_MAX_ORGANIZATIONS = "control.panel.navigation.max.organizations";
 
 	public static final String CONTROL_PANEL_NAVIGATION_MAX_SITES = "control.panel.navigation.max.sites";
