@@ -356,6 +356,8 @@ public class PropsValues {
 
 	public static final String CONTROL_PANEL_LAYOUT_REGULAR_THEME_ID = PropsUtil.get(PropsKeys.CONTROL_PANEL_LAYOUT_REGULAR_THEME_ID);
 
+	public static final boolean CONTROL_PANEL_MEMBER_COUNT_ENABLED = GetterUtil.getBoolean(PropsUtil.get(PropsKeys.CONTROL_PANEL_MEMBER_COUNT_ENABLED));
+
 	public static final int CONTROL_PANEL_NAVIGATION_MAX_SITES = GetterUtil.getInteger(PropsUtil.get(PropsKeys.CONTROL_PANEL_NAVIGATION_MAX_SITES));
 
 	public static final int COUNTER_DATA_CENTER_COUNT = GetterUtil.getInteger(PropsUtil.get(PropsKeys.COUNTER_DATA_CENTER_COUNT), 1);
