@@ -157,6 +157,13 @@ if (Validator.isNotNull(portletResource)) {
 					continue;
 				}
 
+				if (role.getType() != RoleConstants.TYPE_REGULAR) {
+					scope = ResourceConstants.SCOPE_GROUP_TEMPLATE;
+				}
+				else if (groupIdsArray.length != 0) {
+					scope = ResourceConstants.SCOPE_GROUP;
+				}
+
 				ResultRow row = new ResultRow(new Object[] {role, actionId, resource, target, scope, supportsFilterByGroup, groups, groupIdsArray, groupNames}, target, relatedPortletResources.size());
 
 				relatedPortletResources.add(curPortlet.getPortletId());
