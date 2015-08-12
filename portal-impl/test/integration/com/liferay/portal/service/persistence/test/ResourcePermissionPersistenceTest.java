@@ -390,11 +390,9 @@ public class ResourcePermissionPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = ResourcePermissionLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<ResourcePermission>() {
 				@Override
-				public void performAction(Object object) {
-					ResourcePermission resourcePermission = (ResourcePermission)object;
-
+				public void performAction(ResourcePermission resourcePermission) {
 					Assert.assertNotNull(resourcePermission);
 
 					count.increment();
