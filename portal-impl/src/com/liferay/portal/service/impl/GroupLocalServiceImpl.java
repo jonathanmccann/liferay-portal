@@ -37,8 +37,11 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
 import com.liferay.portal.kernel.scheduler.SchedulerEngineHelperUtil;
 import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.search.Indexer;
+import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.spring.aop.Skip;
 import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CharPool;
@@ -127,6 +130,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
 
 /**
  * Provides the local service for accessing, adding, deleting, and updating
@@ -3302,6 +3306,10 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 		validateParentGroup(group.getGroupId(), parentGroupId);
 
+		if (group.isActive() != active) {
+			reindexActiveChange(group, active);
+		}
+
 		group.setParentGroupId(parentGroupId);
 		group.setTreePath(group.buildTreePath());
 		group.setGroupKey(groupKey);
@@ -4250,6 +4258,31 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		}
 
 		return false;
+	}
+
+	protected void reindexActiveChange(
+		final Group group, final boolean reindex) {
+
+		TransactionCommitCallbackUtil.registerCallback(
+			new Callable<Void>() {
+
+				@Override
+				public Void call() throws Exception {
+					List<Indexer<?>> indexers =
+						IndexerRegistryUtil.getIndexers();
+
+					for (Indexer<?> indexer : indexers) {
+						if (reindex) {
+							indexer.reindexByGroup(group);
+						}
+						else {
+							indexer.deleteByGroup(group);
+						}
+					}
+
+					return null;
+				}
+			});
 	}
 
 	protected boolean matches(String s, String[] keywords) {
