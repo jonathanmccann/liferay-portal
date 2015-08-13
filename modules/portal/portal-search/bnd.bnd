@@ -5,3 +5,7 @@ Export-Package: com.liferay.portal.search.*;version=${plugin.full.version}
 Include-Resource:\
 	classes,\
 	META-INF/=../../../portal-impl/src/META-INF/log4j.dtd
+Require-Capability:\
+	liferay.extender;
+Spring-Context: META-INF/spring
+-spring-dependency: com.liferay.portal.spring.extender.service.ServiceReference
