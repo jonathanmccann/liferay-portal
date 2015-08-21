@@ -466,7 +466,8 @@ public class JournalArticleIndexer
 
 		if ((latestIndexableArticle == null) ||
 			(latestIndexableArticle.getVersion() >
-				journalArticle.getVersion())) {
+				journalArticle.getVersion()) ||
+			journalArticle.equals(latestIndexableArticle)) {
 
 			return;
 		}
