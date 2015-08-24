@@ -17,6 +17,7 @@ package com.liferay.portal.kernel.search;
 import com.liferay.portal.NoSuchCountryException;
 import com.liferay.portal.NoSuchModelException;
 import com.liferay.portal.NoSuchRegionException;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -139,6 +140,11 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		catch (Exception e) {
 			throw new SearchException(e);
 		}
+	}
+
+	@Override
+	public void deleteByGroup(Group group) throws SearchException {
+		indexByGroup(group, false);
 	}
 
 	/**
@@ -569,6 +575,11 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		catch (Exception e) {
 			throw new SearchException(e);
 		}
+	}
+
+	@Override
+	public void reindexByGroup(Group group) throws SearchException {
+		indexByGroup(group, true);
 	}
 
 	@Override
@@ -1694,6 +1705,44 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 		}
 
 		return null;
+	}
+
+	protected void indexByGroup(Group group, final boolean reindex)
+		throws SearchException {
+
+		if (!GroupedModel.class.isAssignableFrom(getIndexClass())) {
+			return;
+		}
+
+		ActionableDynamicQuery actionableDynamicQuery =
+			getActionableDynamicQuery();
+
+		actionableDynamicQuery.setCompanyId(group.getCompanyId());
+		actionableDynamicQuery.setGroupId(group.getGroupId());
+
+		actionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod<T>() {
+
+				@Override
+				public void performAction(T t)
+					throws SearchException {
+
+					if (reindex) {
+						reindex(t);
+					}
+					else {
+						delete(t);
+					}
+				}
+
+			});
+
+		try {
+			actionableDynamicQuery.performActions();
+		}
+		catch (PortalException e) {
+			throw new SearchException(e);
+		}
 	}
 
 	protected boolean isStagingGroup(long groupId) {
