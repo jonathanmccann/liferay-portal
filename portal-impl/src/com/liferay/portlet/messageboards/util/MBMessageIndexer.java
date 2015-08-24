@@ -365,13 +365,11 @@ public class MBMessageIndexer
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<MBCategory>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(MBCategory category)
 					throws PortalException {
-
-					MBCategory category = (MBCategory)object;
 
 					reindexMessages(
 						companyId, category.getGroupId(),
@@ -391,14 +389,10 @@ public class MBMessageIndexer
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<Group>() {
 
 				@Override
-				public void performAction(Object object)
-					throws PortalException {
-
-					Group group = (Group)object;
-
+				public void performAction(Group group) throws PortalException {
 					reindexMessages(
 						companyId, group.getGroupId(),
 						MBCategoryConstants.DISCUSSION_CATEGORY_ID);
@@ -441,12 +435,10 @@ public class MBMessageIndexer
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setGroupId(groupId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<MBMessage>() {
 
 				@Override
-				public void performAction(Object object) {
-					MBMessage message = (MBMessage)object;
-
+				public void performAction(MBMessage message) {
 					if (message.isDiscussion() && message.isRoot()) {
 						return;
 					}
@@ -478,14 +470,10 @@ public class MBMessageIndexer
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<Group>() {
 
 				@Override
-				public void performAction(Object object)
-					throws PortalException {
-
-					Group group = (Group)object;
-
+				public void performAction(Group group) throws PortalException {
 					reindexMessages(
 						companyId, group.getGroupId(),
 						MBCategoryConstants.DEFAULT_PARENT_CATEGORY_ID);

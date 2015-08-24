@@ -620,12 +620,10 @@ public class DLFileEntryIndexer
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setGroupId(groupId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<DLFileEntry>() {
 
 				@Override
-				public void performAction(Object object) {
-					DLFileEntry dlFileEntry = (DLFileEntry)object;
-
+				public void performAction(DLFileEntry dlFileEntry) {
 					try {
 						Document document = getDocument(dlFileEntry);
 
@@ -655,13 +653,11 @@ public class DLFileEntryIndexer
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<DLFolder>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(DLFolder dlFolder)
 					throws PortalException {
-
-					DLFolder dlFolder = (DLFolder)object;
 
 					long groupId = dlFolder.getGroupId();
 					long folderId = dlFolder.getFolderId();
@@ -685,14 +681,10 @@ public class DLFileEntryIndexer
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<Group>() {
 
 				@Override
-				public void performAction(Object object)
-					throws PortalException {
-
-					Group group = (Group)object;
-
+				public void performAction(Group group) throws PortalException {
 					long groupId = group.getGroupId();
 					long folderId = groupId;
 

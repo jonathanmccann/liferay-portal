@@ -311,13 +311,12 @@ public class JournalArticleIndexer
 
 				});
 			actionableDynamicQuery.setPerformActionMethod(
-				new ActionableDynamicQuery.PerformActionMethod() {
+				new ActionableDynamicQuery.
+					PerformActionMethod<JournalArticle>() {
 
 					@Override
-					public void performAction(Object object)
+					public void performAction(JournalArticle article)
 						throws PortalException {
-
-						JournalArticle article = (JournalArticle)object;
 
 						try {
 							indexer.reindex(
@@ -788,12 +787,10 @@ public class JournalArticleIndexer
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<JournalArticle>() {
 
 				@Override
-				public void performAction(Object object) {
-					JournalArticle article = (JournalArticle)object;
-
+				public void performAction(JournalArticle article) {
 					if (!JournalServiceConfigurationValues.
 							JOURNAL_ARTICLE_INDEX_ALL_VERSIONS) {
 

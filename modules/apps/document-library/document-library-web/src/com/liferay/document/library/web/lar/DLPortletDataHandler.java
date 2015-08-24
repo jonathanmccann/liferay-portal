@@ -430,13 +430,11 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 
 			});
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<DLFileEntryType>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(DLFileEntryType dlFileEntryType)
 					throws PortalException {
-
-					DLFileEntryType dlFileEntryType = (DLFileEntryType)object;
 
 					if (dlFileEntryType.isExportable()) {
 						StagedModelDataHandlerUtil.exportStagedModel(
@@ -474,12 +472,10 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 
 			});
 		exportActionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<DLFileShortcut>() {
 				@Override
-				public void performAction(Object object)
+				public void performAction(DLFileShortcut dlFileShortcut)
 					throws PortalException {
-
-					DLFileShortcut dlFileShortcut = (DLFileShortcut)object;
 
 					FileShortcut fileShortcut =
 						DLAppLocalServiceUtil.getFileShortcut(
@@ -568,13 +564,11 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 
 			});
 		exportActionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<DLFileEntry>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(DLFileEntry dlFileEntry)
 					throws PortalException {
-
-					DLFileEntry dlFileEntry = (DLFileEntry)object;
 
 					FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(
 						dlFileEntry.getFileEntryId());
@@ -616,13 +610,11 @@ public class DLPortletDataHandler extends BasePortletDataHandler {
 
 			});
 		exportActionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<DLFolder>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(DLFolder dlFolder)
 					throws PortalException {
-
-					DLFolder dlFolder = (DLFolder)object;
 
 					if (dlFolder.isInTrash()) {
 						return;
