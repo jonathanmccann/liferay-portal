@@ -71,8 +71,18 @@ public class BookmarksEntryIndexer extends BaseIndexer<BookmarksEntry> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return BookmarksEntryLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<BookmarksEntry> getIndexClass() {
+		return BookmarksEntry.class;
 	}
 
 	@Override
@@ -155,7 +165,7 @@ public class BookmarksEntryIndexer extends BaseIndexer<BookmarksEntry> {
 		throws PortalException {
 
 		final ActionableDynamicQuery actionableDynamicQuery =
-			BookmarksEntryLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			new ActionableDynamicQuery.AddCriteriaMethod() {

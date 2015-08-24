@@ -116,8 +116,18 @@ public class JournalArticleIndexer
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return _journalArticleLocalService.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<JournalArticle> getIndexClass() {
+		return JournalArticle.class;
 	}
 
 	@Override
@@ -282,7 +292,7 @@ public class JournalArticleIndexer
 				IndexerRegistryUtil.nullSafeGetIndexer(JournalArticle.class);
 
 			final ActionableDynamicQuery actionableDynamicQuery =
-				_journalArticleLocalService.getActionableDynamicQuery();
+				getActionableDynamicQuery();
 
 			actionableDynamicQuery.setAddCriteriaMethod(
 				new ActionableDynamicQuery.AddCriteriaMethod() {
@@ -783,7 +793,7 @@ public class JournalArticleIndexer
 
 	protected void reindexArticles(long companyId) throws PortalException {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			_journalArticleLocalService.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(

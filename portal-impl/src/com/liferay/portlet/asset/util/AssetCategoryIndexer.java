@@ -65,8 +65,18 @@ public class AssetCategoryIndexer extends BaseIndexer<AssetCategory> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return AssetCategoryLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<AssetCategory> getIndexClass() {
+		return AssetCategory.class;
 	}
 
 	@Override
@@ -225,7 +235,7 @@ public class AssetCategoryIndexer extends BaseIndexer<AssetCategory> {
 		throws PortalException {
 
 		final ActionableDynamicQuery actionableDynamicQuery =
-			AssetCategoryLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(

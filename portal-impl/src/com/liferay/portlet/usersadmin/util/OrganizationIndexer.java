@@ -68,8 +68,18 @@ public class OrganizationIndexer extends BaseIndexer<Organization> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return OrganizationLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<Organization> getIndexClass() {
+		return Organization.class;
 	}
 
 	@Override
@@ -234,7 +244,7 @@ public class OrganizationIndexer extends BaseIndexer<Organization> {
 
 	protected void reindexOrganizations(long companyId) throws Exception {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			OrganizationLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(

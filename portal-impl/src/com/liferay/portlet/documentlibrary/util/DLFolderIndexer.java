@@ -63,6 +63,11 @@ public class DLFolderIndexer
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return DLFolderLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
 	}
@@ -70,6 +75,11 @@ public class DLFolderIndexer
 	@Override
 	public String[] getFolderClassNames() {
 		return new String[] {CLASS_NAME};
+	}
+
+	@Override
+	public Class<DLFolder> getIndexClass() {
+		return DLFolder.class;
 	}
 
 	@Override
@@ -174,7 +184,7 @@ public class DLFolderIndexer
 
 	protected void reindexFolders(final long companyId) throws PortalException {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			DLFolderLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			new ActionableDynamicQuery.AddCriteriaMethod() {

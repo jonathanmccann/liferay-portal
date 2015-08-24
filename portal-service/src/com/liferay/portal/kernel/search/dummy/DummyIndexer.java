@@ -14,15 +14,18 @@
 
 package com.liferay.portal.kernel.search.dummy;
 
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.search.BooleanQuery;
 import com.liferay.portal.kernel.search.Document;
 import com.liferay.portal.kernel.search.Hits;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerPostProcessor;
 import com.liferay.portal.kernel.search.SearchContext;
+import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Summary;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.model.Group;
 import com.liferay.portal.security.permission.PermissionChecker;
 
 import java.util.Collection;
@@ -42,6 +45,15 @@ public class DummyIndexer implements Indexer<Object> {
 
 	@Override
 	public void delete(Object object) {
+	}
+
+	@Override
+	public void deleteByGroup(Group group) throws SearchException {
+	}
+
+	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return null;
 	}
 
 	@Override
@@ -73,6 +85,11 @@ public class DummyIndexer implements Indexer<Object> {
 	@Override
 	public BooleanQuery getFullQuery(SearchContext searchContext) {
 		return null;
+	}
+
+	@Override
+	public Class<Object> getIndexClass() {
+		return Object.class;
 	}
 
 	@Override
@@ -224,6 +241,10 @@ public class DummyIndexer implements Indexer<Object> {
 
 	@Override
 	public void reindex(String[] ids) {
+	}
+
+	@Override
+	public void reindexByGroup(Group group) throws SearchException {
 	}
 
 	@Override

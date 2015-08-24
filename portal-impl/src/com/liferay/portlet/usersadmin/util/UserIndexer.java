@@ -81,8 +81,18 @@ public class UserIndexer extends BaseIndexer<User> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return UserLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<User> getIndexClass() {
+		return User.class;
 	}
 
 	@Override
@@ -390,7 +400,7 @@ public class UserIndexer extends BaseIndexer<User> {
 
 	protected void reindexUsers(long companyId) throws PortalException {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			UserLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(

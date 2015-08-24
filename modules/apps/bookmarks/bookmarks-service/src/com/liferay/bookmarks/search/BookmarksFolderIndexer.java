@@ -60,8 +60,18 @@ public class BookmarksFolderIndexer extends BaseIndexer<BookmarksFolder> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return BookmarksFolderLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<BookmarksFolder> getIndexClass() {
+		return BookmarksFolder.class;
 	}
 
 	@Override
@@ -170,7 +180,7 @@ public class BookmarksFolderIndexer extends BaseIndexer<BookmarksFolder> {
 
 	protected void reindexFolders(long companyId) throws PortalException {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			BookmarksFolderLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(

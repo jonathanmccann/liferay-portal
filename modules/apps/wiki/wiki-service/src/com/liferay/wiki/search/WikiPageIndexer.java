@@ -120,8 +120,18 @@ public class WikiPageIndexer
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return WikiPageLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<WikiPage> getIndexClass() {
+		return WikiPage.class;
 	}
 
 	@Override

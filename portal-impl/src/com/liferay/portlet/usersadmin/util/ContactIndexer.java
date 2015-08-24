@@ -56,8 +56,18 @@ public class ContactIndexer extends BaseIndexer<Contact> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return ContactLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<Contact> getIndexClass() {
+		return Contact.class;
 	}
 
 	@Override

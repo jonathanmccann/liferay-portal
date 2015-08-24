@@ -62,8 +62,18 @@ public class CalendarBookingIndexer extends BaseIndexer<CalendarBooking> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return CalendarBookingLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<CalendarBooking> getIndexClass() {
+		return CalendarBooking.class;
 	}
 
 	@Override
@@ -207,7 +217,7 @@ public class CalendarBookingIndexer extends BaseIndexer<CalendarBooking> {
 		final Collection<Document> documents = new ArrayList<>();
 
 		ActionableDynamicQuery actionableDynamicQuery =
-			CalendarBookingLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			new ActionableDynamicQuery.AddCriteriaMethod() {

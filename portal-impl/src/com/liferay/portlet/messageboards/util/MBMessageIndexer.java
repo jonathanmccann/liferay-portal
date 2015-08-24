@@ -112,8 +112,18 @@ public class MBMessageIndexer
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return MBMessageLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<MBMessage> getIndexClass() {
+		return MBMessage.class;
 	}
 
 	@Override
@@ -408,7 +418,7 @@ public class MBMessageIndexer
 		throws PortalException {
 
 		final ActionableDynamicQuery actionableDynamicQuery =
-			MBMessageLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			new ActionableDynamicQuery.AddCriteriaMethod() {

@@ -65,8 +65,18 @@ public class MBThreadIndexer extends BaseIndexer<MBThread> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return MBThreadLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<MBThread> getIndexClass() {
+		return MBThread.class;
 	}
 
 	@Override
@@ -251,7 +261,7 @@ public class MBThreadIndexer extends BaseIndexer<MBThread> {
 		throws PortalException {
 
 		final ActionableDynamicQuery actionableDynamicQuery =
-			MBThreadLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			new ActionableDynamicQuery.AddCriteriaMethod() {

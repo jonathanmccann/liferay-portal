@@ -60,8 +60,19 @@ public class ExportImportConfigurationIndexer
 		ExportImportConfiguration.class.getName();
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return ExportImportConfigurationLocalServiceUtil.
+			getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<ExportImportConfiguration> getIndexClass() {
+		return ExportImportConfiguration.class;
 	}
 
 	@Override
@@ -292,8 +303,7 @@ public class ExportImportConfigurationIndexer
 		throws PortalException {
 
 		final ActionableDynamicQuery actionableDynamicQuery =
-			ExportImportConfigurationLocalServiceUtil.
-				getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(

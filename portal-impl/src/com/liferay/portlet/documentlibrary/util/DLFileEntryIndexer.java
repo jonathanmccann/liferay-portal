@@ -149,8 +149,18 @@ public class DLFileEntryIndexer
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return DLFileEntryLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<DLFileEntry> getIndexClass() {
+		return DLFileEntry.class;
 	}
 
 	@Override
@@ -601,7 +611,7 @@ public class DLFileEntryIndexer
 		throws PortalException {
 
 		final ActionableDynamicQuery actionableDynamicQuery =
-			DLFileEntryLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			new ActionableDynamicQuery.AddCriteriaMethod() {

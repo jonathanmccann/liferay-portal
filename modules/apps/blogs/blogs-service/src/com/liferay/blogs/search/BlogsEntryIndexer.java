@@ -67,8 +67,18 @@ public class BlogsEntryIndexer extends BaseIndexer<BlogsEntry> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return BlogsEntryLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<BlogsEntry> getIndexClass() {
+		return BlogsEntry.class;
 	}
 
 	@Override
@@ -153,7 +163,7 @@ public class BlogsEntryIndexer extends BaseIndexer<BlogsEntry> {
 
 	protected void reindexEntries(long companyId) throws PortalException {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			BlogsEntryLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			new ActionableDynamicQuery.AddCriteriaMethod() {

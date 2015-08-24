@@ -14,6 +14,7 @@
 
 package com.liferay.portlet.trash.util;
 
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.search.BaseIndexer;
 import com.liferay.portal.kernel.search.BooleanClauseOccur;
 import com.liferay.portal.kernel.search.BooleanQuery;
@@ -34,6 +35,7 @@ import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.security.permission.PermissionChecker;
 import com.liferay.portlet.trash.model.TrashEntry;
+import com.liferay.portlet.trash.service.TrashEntryLocalServiceUtil;
 
 import java.util.List;
 import java.util.Locale;
@@ -57,6 +59,11 @@ public class TrashIndexer extends BaseIndexer<TrashEntry> {
 			Field.ROOT_ENTRY_CLASS_NAME, Field.ROOT_ENTRY_CLASS_PK, Field.UID);
 		setFilterSearch(true);
 		setPermissionAware(true);
+	}
+
+	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return TrashEntryLocalServiceUtil.getActionableDynamicQuery();
 	}
 
 	@Override
@@ -114,6 +121,11 @@ public class TrashIndexer extends BaseIndexer<TrashEntry> {
 		catch (Exception e) {
 			throw new SearchException(e);
 		}
+	}
+
+	@Override
+	public Class<TrashEntry> getIndexClass() {
+		return TrashEntry.class;
 	}
 
 	@Override

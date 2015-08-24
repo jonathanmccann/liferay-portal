@@ -61,8 +61,18 @@ public class AssetVocabularyIndexer extends BaseIndexer<AssetVocabulary> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return AssetVocabularyLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<AssetVocabulary> getIndexClass() {
+		return AssetVocabulary.class;
 	}
 
 	@Override
@@ -169,7 +179,7 @@ public class AssetVocabularyIndexer extends BaseIndexer<AssetVocabulary> {
 		throws PortalException {
 
 		final ActionableDynamicQuery actionableDynamicQuery =
-			AssetVocabularyLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
