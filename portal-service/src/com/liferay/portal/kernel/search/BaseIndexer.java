@@ -1724,9 +1724,7 @@ public abstract class BaseIndexer<T> implements Indexer<T> {
 			new ActionableDynamicQuery.PerformActionMethod<T>() {
 
 				@Override
-				public void performAction(T t)
-					throws SearchException {
-
+				public void performAction(T t) throws SearchException {
 					if (reindex) {
 						reindex(t);
 					}

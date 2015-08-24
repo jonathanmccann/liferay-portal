@@ -4260,6 +4260,25 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		return false;
 	}
 
+	protected boolean matches(String s, String[] keywords) {
+		if ((keywords == null) ||
+			((keywords.length == 1) && (keywords[0] == null))) {
+
+			return true;
+		}
+
+		for (String keyword : keywords) {
+			if (StringUtil.wildcardMatches(
+					s, keyword, CharPool.UNDERLINE, CharPool.PERCENT,
+					CharPool.BACK_SLASH, false)) {
+
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	protected void reindexActiveChange(
 		final Group group, final boolean reindex) {
 
@@ -4283,25 +4302,6 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 					return null;
 				}
 			});
-	}
-
-	protected boolean matches(String s, String[] keywords) {
-		if ((keywords == null) ||
-			((keywords.length == 1) && (keywords[0] == null))) {
-
-			return true;
-		}
-
-		for (String keyword : keywords) {
-			if (StringUtil.wildcardMatches(
-					s, keyword, CharPool.UNDERLINE, CharPool.PERCENT,
-					CharPool.BACK_SLASH, false)) {
-
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	protected void setCompanyPermissions(

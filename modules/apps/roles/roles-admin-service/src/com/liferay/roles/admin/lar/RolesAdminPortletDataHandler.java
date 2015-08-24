@@ -181,8 +181,9 @@ public class RolesAdminPortletDataHandler extends BasePortletDataHandler {
 
 			});
 
-		final ActionableDynamicQuery.PerformActionMethod<Role> performActionMethod =
-			actionableDynamicQuery.getPerformActionMethod();
+		final ActionableDynamicQuery.PerformActionMethod<Role>
+			performActionMethod =
+				actionableDynamicQuery.getPerformActionMethod();
 
 		actionableDynamicQuery.setPerformActionMethod(
 			new ActionableDynamicQuery.PerformActionMethod<Role>() {

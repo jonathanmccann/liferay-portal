@@ -1,4 +1,4 @@
-/*
+/**
  * Copyright (c) 2000-present Liferay, Inc. All rights reserved.
  *
  * This library is free software; you can redistribute it and/or modify it under
@@ -21,8 +21,8 @@ import com.liferay.portal.model.Group;
  */
 public interface GroupIndexer {
 
-	public void reindex(Group group) throws SearchException;
-
 	public void delete(Group group) throws SearchException;
+
+	public void reindex(Group group) throws SearchException;
 
 }

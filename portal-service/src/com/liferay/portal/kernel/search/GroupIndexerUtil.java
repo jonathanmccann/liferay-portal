@@ -14,7 +14,6 @@
 
 package com.liferay.portal.kernel.search;
 
-
 import com.liferay.portal.model.Group;
 
 /**
@@ -22,21 +21,22 @@ import com.liferay.portal.model.Group;
  */
 public class GroupIndexerUtil {
 
-	public void reindex(Group group) throws SearchException {
-		_groupIndexer.reindex(group);
-	}
-
 	public void delete(Group group) throws SearchException {
 		_groupIndexer.delete(group);
-	}
-
-	public void setGroupIndexer(GroupIndexer GroupIndexer) {
-		_groupIndexer = GroupIndexer;
 	}
 
 	public GroupIndexer getGroupIndexer() {
 		return _groupIndexer;
 	}
 
+	public void reindex(Group group) throws SearchException {
+		_groupIndexer.reindex(group);
+	}
+
+	public void setGroupIndexer(GroupIndexer GroupIndexer) {
+		_groupIndexer = GroupIndexer;
+	}
+
 	private GroupIndexer _groupIndexer;
+
 }
