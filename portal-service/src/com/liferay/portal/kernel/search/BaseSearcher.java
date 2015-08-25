@@ -14,9 +14,11 @@
 
 package com.liferay.portal.kernel.search;
 
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.model.Group;
 
 import java.util.Locale;
 
@@ -30,8 +32,23 @@ import javax.portlet.PortletResponse;
 public abstract class BaseSearcher extends BaseIndexer<Object> {
 
 	@Override
+	public void deleteByGroup(Group group) throws SearchException {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
 	public String getClassName() {
 		return StringPool.BLANK;
+	}
+
+	@Override
+	public Class<Object> getIndexClass() {
+		return Object.class;
 	}
 
 	@Override
@@ -67,6 +84,11 @@ public abstract class BaseSearcher extends BaseIndexer<Object> {
 	public void registerIndexerPostProcessor(
 		IndexerPostProcessor indexerPostProcessor) {
 
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public void reindexByGroup(Group group) throws SearchException {
 		throw new UnsupportedOperationException();
 	}
 

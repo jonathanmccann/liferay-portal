@@ -71,8 +71,18 @@ public class BookmarksEntryIndexer extends BaseIndexer<BookmarksEntry> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return BookmarksEntryLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<BookmarksEntry> getIndexClass() {
+		return BookmarksEntry.class;
 	}
 
 	@Override
@@ -155,7 +165,7 @@ public class BookmarksEntryIndexer extends BaseIndexer<BookmarksEntry> {
 		throws PortalException {
 
 		final ActionableDynamicQuery actionableDynamicQuery =
-			BookmarksEntryLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			new ActionableDynamicQuery.AddCriteriaMethod() {
@@ -182,12 +192,10 @@ public class BookmarksEntryIndexer extends BaseIndexer<BookmarksEntry> {
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setGroupId(groupId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<BookmarksEntry>() {
 
 				@Override
-				public void performAction(Object object) {
-					BookmarksEntry entry = (BookmarksEntry)object;
-
+				public void performAction(BookmarksEntry entry) {
 					try {
 						Document document = getDocument(entry);
 
@@ -215,13 +223,11 @@ public class BookmarksEntryIndexer extends BaseIndexer<BookmarksEntry> {
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<BookmarksFolder>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(BookmarksFolder folder)
 					throws PortalException {
-
-					BookmarksFolder folder = (BookmarksFolder)object;
 
 					long groupId = folder.getGroupId();
 					long folderId = folder.getFolderId();
@@ -240,14 +246,10 @@ public class BookmarksEntryIndexer extends BaseIndexer<BookmarksEntry> {
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<Group>() {
 
 				@Override
-				public void performAction(Object object)
-					throws PortalException {
-
-					Group group = (Group)object;
-
+				public void performAction(Group group) throws PortalException {
 					long groupId = group.getGroupId();
 					long folderId =
 						BookmarksFolderConstants.DEFAULT_PARENT_FOLDER_ID;

@@ -284,11 +284,9 @@ public class ListTypePersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = ListTypeLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<ListType>() {
 				@Override
-				public void performAction(Object object) {
-					ListType listType = (ListType)object;
-
+				public void performAction(ListType listType) {
 					Assert.assertNotNull(listType);
 
 					count.increment();

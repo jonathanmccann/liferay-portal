@@ -56,8 +56,18 @@ public class ContactIndexer extends BaseIndexer<Contact> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return ContactLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<Contact> getIndexClass() {
+		return Contact.class;
 	}
 
 	@Override
@@ -183,12 +193,10 @@ public class ContactIndexer extends BaseIndexer<Contact> {
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<Contact>() {
 
 				@Override
-				public void performAction(Object object) {
-					Contact contact = (Contact)object;
-
+				public void performAction(Contact contact) {
 					try {
 						Document document = getDocument(contact);
 

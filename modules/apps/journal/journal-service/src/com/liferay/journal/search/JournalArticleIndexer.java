@@ -116,8 +116,18 @@ public class JournalArticleIndexer
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return _journalArticleLocalService.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<JournalArticle> getIndexClass() {
+		return JournalArticle.class;
 	}
 
 	@Override
@@ -282,7 +292,7 @@ public class JournalArticleIndexer
 				IndexerRegistryUtil.nullSafeGetIndexer(JournalArticle.class);
 
 			final ActionableDynamicQuery actionableDynamicQuery =
-				_journalArticleLocalService.getActionableDynamicQuery();
+				getActionableDynamicQuery();
 
 			actionableDynamicQuery.setAddCriteriaMethod(
 				new ActionableDynamicQuery.AddCriteriaMethod() {
@@ -311,13 +321,12 @@ public class JournalArticleIndexer
 
 				});
 			actionableDynamicQuery.setPerformActionMethod(
-				new ActionableDynamicQuery.PerformActionMethod() {
+				new ActionableDynamicQuery.
+					PerformActionMethod<JournalArticle>() {
 
 					@Override
-					public void performAction(Object object)
+					public void performAction(JournalArticle article)
 						throws PortalException {
-
-						JournalArticle article = (JournalArticle)object;
 
 						try {
 							indexer.reindex(
@@ -457,7 +466,8 @@ public class JournalArticleIndexer
 
 		if ((latestIndexableArticle == null) ||
 			(latestIndexableArticle.getVersion() >
-				journalArticle.getVersion())) {
+				journalArticle.getVersion()) ||
+			journalArticle.equals(latestIndexableArticle)) {
 
 			return;
 		}
@@ -784,16 +794,14 @@ public class JournalArticleIndexer
 
 	protected void reindexArticles(long companyId) throws PortalException {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			_journalArticleLocalService.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<JournalArticle>() {
 
 				@Override
-				public void performAction(Object object) {
-					JournalArticle article = (JournalArticle)object;
-
+				public void performAction(JournalArticle article) {
 					if (!JournalServiceConfigurationValues.
 							JOURNAL_ARTICLE_INDEX_ALL_VERSIONS) {
 
