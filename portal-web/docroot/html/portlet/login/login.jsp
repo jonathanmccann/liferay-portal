@@ -152,6 +152,15 @@
 		<liferay-util:include page="/html/portlet/login/navigation.jsp" />
 
 		<aui:script>
+			AUI.$('#<portlet:namespace/>fm').on(
+				'submit',
+				function(event) {
+					var redirect = AUI.$('#<portlet:namespace/>redirect');
+
+					redirect.val(redirect.val() + window.location.hash);
+				}
+			);
+
 			AUI.$('#<portlet:namespace />password').on(
 				'keypress',
 				function(event) {
