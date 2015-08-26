@@ -14,6 +14,7 @@
 
 package com.liferay.portal.servlet;
 
+import com.liferay.portal.NoSuchGroupException;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.SingleVMPoolUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
@@ -145,9 +146,9 @@ public class ComboServlet extends HttpServlet {
 		}
 
 		if (modulePathsSet.isEmpty()) {
-			response.sendError(
-				HttpServletResponse.SC_BAD_REQUEST,
-				"Modules paths set is empty");
+			Exception e = new NoSuchGroupException();
+			PortalUtil.sendError(
+				HttpServletResponse.SC_NOT_FOUND, e, request, response);
 
 			return;
 		}
