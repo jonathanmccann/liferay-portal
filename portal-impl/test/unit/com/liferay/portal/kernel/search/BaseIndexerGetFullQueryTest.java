@@ -14,6 +14,7 @@
 
 package com.liferay.portal.kernel.search;
 
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -203,8 +204,18 @@ public class BaseIndexerGetFullQueryTest extends PowerMockito {
 	private class TestIndexer extends BaseIndexer<Object> {
 
 		@Override
+		public ActionableDynamicQuery getActionableDynamicQuery() {
+			return null;
+		}
+
+		@Override
 		public String getClassName() {
 			return _CLASS_NAME;
+		}
+
+		@Override
+		public Class<Object> getIndexClass() {
+			return Object.class;
 		}
 
 		@Override

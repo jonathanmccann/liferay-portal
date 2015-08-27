@@ -62,8 +62,18 @@ public class CalendarIndexer extends BaseIndexer<Calendar> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return CalendarLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<Calendar> getIndexClass() {
+		return Calendar.class;
 	}
 
 	@Override
@@ -155,16 +165,14 @@ public class CalendarIndexer extends BaseIndexer<Calendar> {
 
 	protected void reindexCalendars(long companyId) throws PortalException {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			CalendarLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<Calendar>() {
 
 			@Override
-			public void performAction(Object object) {
-				Calendar calendar = (Calendar)object;
-
+			public void performAction(Calendar calendar) {
 				try {
 					Document document = getDocument(calendar);
 

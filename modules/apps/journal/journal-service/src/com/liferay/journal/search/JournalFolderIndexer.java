@@ -63,6 +63,11 @@ public class JournalFolderIndexer
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return _journalFolderLocalService.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
 	}
@@ -70,6 +75,11 @@ public class JournalFolderIndexer
 	@Override
 	public String[] getFolderClassNames() {
 		return new String[] {CLASS_NAME};
+	}
+
+	@Override
+	public Class<JournalFolder> getIndexClass() {
+		return JournalFolder.class;
 	}
 
 	@Override
@@ -166,16 +176,14 @@ public class JournalFolderIndexer
 
 	protected void reindexFolders(long companyId) throws PortalException {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			_journalFolderLocalService.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<JournalFolder>() {
 
 				@Override
-				public void performAction(Object object) {
-					JournalFolder folder = (JournalFolder)object;
-
+				public void performAction(JournalFolder folder) {
 					try {
 						Document document = getDocument(folder);
 

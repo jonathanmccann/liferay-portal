@@ -14,7 +14,9 @@
 
 package com.liferay.portal.kernel.search;
 
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.search.filter.BooleanFilter;
+import com.liferay.portal.model.Group;
 import com.liferay.portal.security.permission.PermissionChecker;
 
 import java.util.Collection;
@@ -37,6 +39,10 @@ public interface Indexer<T> {
 	@Bufferable
 	public void delete(T object) throws SearchException;
 
+	public void deleteByGroup(Group group) throws SearchException;
+
+	public ActionableDynamicQuery getActionableDynamicQuery();
+
 	public String getClassName();
 
 	/**
@@ -53,6 +59,8 @@ public interface Indexer<T> {
 
 	public BooleanQuery getFullQuery(SearchContext searchContext)
 		throws SearchException;
+
+	public Class<T> getIndexClass();
 
 	public IndexerPostProcessor[] getIndexerPostProcessors();
 
@@ -143,6 +151,8 @@ public interface Indexer<T> {
 
 	@Bufferable
 	public void reindex(T object) throws SearchException;
+
+	public void reindexByGroup(Group group) throws SearchException;
 
 	public Hits search(SearchContext searchContext) throws SearchException;
 

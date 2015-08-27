@@ -218,12 +218,12 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 		}
 
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.
+				PerformActionMethod<JournalArticleResource>() {
 
 				@Override
-				public void performAction(Object object) {
-					JournalArticleResource articleResource =
-						(JournalArticleResource)object;
+				public void performAction(
+					JournalArticleResource articleResource) {
 
 					updateCreateDate(articleResource);
 					updateModifiedDate(articleResource);
@@ -432,13 +432,11 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 		}
 
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<JournalArticle>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(JournalArticle article)
 					throws PortalException {
-
-					JournalArticle article = (JournalArticle)object;
 
 					long groupId = article.getGroupId();
 					String articleId = article.getArticleId();
@@ -544,13 +542,11 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 		}
 
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<JournalArticle>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(JournalArticle article)
 					throws PortalException {
-
-					JournalArticle article = (JournalArticle)object;
 
 					AssetEntry assetEntry = _assetEntryLocalService.fetchEntry(
 						JournalArticle.class.getName(),
@@ -638,12 +634,10 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 		}
 
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<JournalArticle>() {
 
 				@Override
-				public void performAction(Object object) {
-					JournalArticle article = (JournalArticle)object;
-
+				public void performAction(JournalArticle article) {
 					try {
 						_journalArticleLocalService.checkStructure(
 							article.getGroupId(), article.getArticleId(),

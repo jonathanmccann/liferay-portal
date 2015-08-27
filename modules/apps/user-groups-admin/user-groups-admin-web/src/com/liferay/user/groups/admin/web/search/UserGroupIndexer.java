@@ -66,8 +66,18 @@ public class UserGroupIndexer extends BaseIndexer<UserGroup> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return UserGroupLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<UserGroup> getIndexClass() {
+		return UserGroup.class;
 	}
 
 	@Override
@@ -158,16 +168,14 @@ public class UserGroupIndexer extends BaseIndexer<UserGroup> {
 
 	protected void reindexUserGroups(long companyId) throws PortalException {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			UserGroupLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<UserGroup>() {
 
 				@Override
-				public void performAction(Object object) {
-					UserGroup userGroup = (UserGroup)object;
-
+				public void performAction(UserGroup userGroup) {
 					try {
 						Document document = getDocument(userGroup);
 

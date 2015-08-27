@@ -62,8 +62,18 @@ public class SCIndexer extends BaseIndexer<SCProductEntry> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return SCProductEntryLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<SCProductEntry> getIndexClass() {
+		return SCProductEntry.class;
 	}
 
 	@Override
@@ -197,16 +207,14 @@ public class SCIndexer extends BaseIndexer<SCProductEntry> {
 		throws PortalException {
 
 		final ActionableDynamicQuery actionableDynamicQuery =
-			SCProductEntryLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<SCProductEntry>() {
 
 				@Override
-				public void performAction(Object object) {
-					SCProductEntry productEntry = (SCProductEntry)object;
-
+				public void performAction(SCProductEntry productEntry) {
 					try {
 						Document document = getDocument(productEntry);
 

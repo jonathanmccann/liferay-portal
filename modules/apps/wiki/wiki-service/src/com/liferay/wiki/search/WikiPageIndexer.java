@@ -120,8 +120,18 @@ public class WikiPageIndexer
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return WikiPageLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<WikiPage> getIndexClass() {
+		return WikiPage.class;
 	}
 
 	@Override
@@ -258,13 +268,11 @@ public class WikiPageIndexer
 
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<WikiNode>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(WikiNode node)
 					throws PortalException {
-
-					WikiNode node = (WikiNode)object;
 
 					reindexPages(
 						companyId, node.getGroupId(), node.getNodeId());
@@ -300,12 +308,10 @@ public class WikiPageIndexer
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setGroupId(groupId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<WikiPage>() {
 
 				@Override
-				public void performAction(Object object) {
-					WikiPage page = (WikiPage)object;
-
+				public void performAction(WikiPage page) {
 					try {
 						Document document = getDocument(page);
 

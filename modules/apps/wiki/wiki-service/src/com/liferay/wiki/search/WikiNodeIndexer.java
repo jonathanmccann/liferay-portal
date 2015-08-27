@@ -60,8 +60,18 @@ public class WikiNodeIndexer extends BaseIndexer<WikiNode> {
 	}
 
 	@Override
+	public ActionableDynamicQuery getActionableDynamicQuery() {
+		return WikiNodeLocalServiceUtil.getActionableDynamicQuery();
+	}
+
+	@Override
 	public String getClassName() {
 		return CLASS_NAME;
+	}
+
+	@Override
+	public Class<WikiNode> getIndexClass() {
+		return WikiNode.class;
 	}
 
 	@Override
@@ -141,7 +151,7 @@ public class WikiNodeIndexer extends BaseIndexer<WikiNode> {
 
 	protected void reindexEntries(long companyId) throws PortalException {
 		final ActionableDynamicQuery actionableDynamicQuery =
-			WikiNodeLocalServiceUtil.getActionableDynamicQuery();
+			getActionableDynamicQuery();
 
 		actionableDynamicQuery.setAddCriteriaMethod(
 			new ActionableDynamicQuery.AddCriteriaMethod() {
@@ -157,12 +167,10 @@ public class WikiNodeIndexer extends BaseIndexer<WikiNode> {
 			});
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<WikiNode>() {
 
 				@Override
-				public void performAction(Object object) {
-					WikiNode node = (WikiNode)object;
-
+				public void performAction(WikiNode node) {
 					try {
 						Document document = getDocument(node);
 

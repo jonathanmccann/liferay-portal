@@ -15,6 +15,7 @@
 package com.liferay.portal.kernel.search;
 
 import com.liferay.portal.NoSuchGroupException;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.util.Props;
@@ -225,8 +226,18 @@ public class BaseIndexerGetSiteGroupIdTest extends PowerMockito {
 	private static class TestIndexer extends BaseIndexer<Object> {
 
 		@Override
+		public ActionableDynamicQuery getActionableDynamicQuery() {
+			return null;
+		}
+
+		@Override
 		public String getClassName() {
 			return null;
+		}
+
+		@Override
+		public Class<Object> getIndexClass() {
+			return Object.class;
 		}
 
 		@Override

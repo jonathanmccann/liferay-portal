@@ -299,11 +299,9 @@ public class TrashVersionPersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = TrashVersionLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<TrashVersion>() {
 				@Override
-				public void performAction(Object object) {
-					TrashVersion trashVersion = (TrashVersion)object;
-
+				public void performAction(TrashVersion trashVersion) {
 					Assert.assertNotNull(trashVersion);
 
 					count.increment();

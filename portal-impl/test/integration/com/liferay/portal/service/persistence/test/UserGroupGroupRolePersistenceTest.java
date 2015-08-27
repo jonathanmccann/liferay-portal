@@ -292,11 +292,9 @@ public class UserGroupGroupRolePersistenceTest {
 
 		ActionableDynamicQuery actionableDynamicQuery = UserGroupGroupRoleLocalServiceUtil.getActionableDynamicQuery();
 
-		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod() {
+		actionableDynamicQuery.setPerformActionMethod(new ActionableDynamicQuery.PerformActionMethod<UserGroupGroupRole>() {
 				@Override
-				public void performAction(Object object) {
-					UserGroupGroupRole userGroupGroupRole = (UserGroupGroupRole)object;
-
+				public void performAction(UserGroupGroupRole userGroupGroupRole) {
 					Assert.assertNotNull(userGroupGroupRole);
 
 					count.increment();
