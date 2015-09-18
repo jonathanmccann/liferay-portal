@@ -40,6 +40,7 @@ import com.liferay.portal.service.VirtualHostLocalService;
 import com.liferay.portal.service.persistence.CompanyPersistence;
 import com.liferay.portal.service.persistence.GroupFinder;
 import com.liferay.portal.service.persistence.GroupPersistence;
+import com.liferay.portal.service.persistence.LayoutSetFinder;
 import com.liferay.portal.service.persistence.LayoutSetPersistence;
 import com.liferay.portal.service.persistence.VirtualHostPersistence;
 import com.liferay.portal.util.PortalUtil;
@@ -543,6 +544,24 @@ public abstract class VirtualHostLocalServiceBaseImpl
 		this.layoutSetPersistence = layoutSetPersistence;
 	}
 
+	/**
+	 * Returns the layout set finder.
+	 *
+	 * @return the layout set finder
+	 */
+	public LayoutSetFinder getLayoutSetFinder() {
+		return layoutSetFinder;
+	}
+
+	/**
+	 * Sets the layout set finder.
+	 *
+	 * @param layoutSetFinder the layout set finder
+	 */
+	public void setLayoutSetFinder(LayoutSetFinder layoutSetFinder) {
+		this.layoutSetFinder = layoutSetFinder;
+	}
+
 	public void afterPropertiesSet() {
 		persistedModelLocalServiceRegistry.register("com.liferay.portal.model.VirtualHost",
 			virtualHostLocalService);
@@ -631,6 +650,8 @@ public abstract class VirtualHostLocalServiceBaseImpl
 	protected com.liferay.portal.service.LayoutSetService layoutSetService;
 	@BeanReference(type = LayoutSetPersistence.class)
 	protected LayoutSetPersistence layoutSetPersistence;
+	@BeanReference(type = LayoutSetFinder.class)
+	protected LayoutSetFinder layoutSetFinder;
 	@BeanReference(type = PersistedModelLocalServiceRegistry.class)
 	protected PersistedModelLocalServiceRegistry persistedModelLocalServiceRegistry;
 	private String _beanIdentifier;

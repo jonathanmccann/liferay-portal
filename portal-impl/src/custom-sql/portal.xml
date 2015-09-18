@@ -547,6 +547,16 @@
 				(CAST_CLOB_TEXT(PortletPreferences.preferences) LIKE ?)
 		]]>
 	</sql>
+	<sql id="com.liferay.portal.service.persistence.LayoutSetFinder.findByLayoutSetPrototypeUuids">
+		<![CDATA[
+			SELECT
+				{LayoutSet.*}
+			FROM
+				LayoutSet
+			WHERE
+				layoutSetPrototypeUuid != ''
+		]]>
+	</sql>
 	<sql id="com.liferay.portal.service.persistence.OrganizationFinder.countByGroupId">
 		<![CDATA[
 			SELECT

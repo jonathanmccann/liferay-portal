@@ -181,6 +181,11 @@ public class LayoutSetLocalServiceImpl extends LayoutSetLocalServiceBaseImpl {
 	}
 
 	@Override
+	public List<LayoutSet> getLayoutSetPrototypeUuids() {
+		return layoutSetFinder.findByLayoutSetPrototypeUuids();
+	}
+
+	@Override
 	public List<LayoutSet> getLayoutSetsByLayoutSetPrototypeUuid(
 		String layoutSetPrototypeUuid) {
 
