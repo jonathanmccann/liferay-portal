@@ -20,10 +20,12 @@ import com.liferay.portal.kernel.systemevent.SystemEvent;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.model.Group;
 import com.liferay.portal.model.GroupConstants;
 import com.liferay.portal.model.LayoutConstants;
+import com.liferay.portal.model.LayoutSet;
 import com.liferay.portal.model.LayoutSetPrototype;
 import com.liferay.portal.model.ResourceConstants;
 import com.liferay.portal.model.SystemEventConstants;
@@ -149,9 +151,34 @@ public class LayoutSetPrototypeLocalServiceImpl
 
 		// Group
 
-		if (layoutSetPersistence.countByLayoutSetPrototypeUuid(
-				layoutSetPrototype.getUuid()) > 0) {
+		List<LayoutSet> layoutSetList =
+			layoutSetPersistence.findByLayoutSetPrototypeUuid(
+				layoutSetPrototype.getUuid());
 
+		boolean isLayoutSetExist = false;
+
+		if (layoutSetList.size() > 0) {
+			for (LayoutSet layoutSet : layoutSetList) {
+				Group layoutSetGroup = layoutSet.getGroup();
+
+				if (!layoutSetGroup.isSite() &&
+					layoutSetGroup.isOrganization()) {
+
+					layoutSet.setLayoutSetPrototypeLinkEnabled(Boolean.FALSE);
+					layoutSet.setLayoutSetPrototypeUuid(StringPool.BLANK);
+
+					layoutSetPersistence.update(layoutSet);
+
+					layoutSetLocalService.updatePageCount(
+						layoutSet.getGroupId(), layoutSet.getPrivateLayout());
+				}
+				else {
+					isLayoutSetExist = true;
+				}
+			}
+		}
+
+		if (isLayoutSetExist) {
 			throw new RequiredLayoutSetPrototypeException();
 		}
 
