@@ -44,6 +44,7 @@ import com.liferay.portal.service.persistence.GroupFinder;
 import com.liferay.portal.service.persistence.GroupPersistence;
 import com.liferay.portal.service.persistence.ImagePersistence;
 import com.liferay.portal.service.persistence.LayoutPrototypePersistence;
+import com.liferay.portal.service.persistence.LayoutSetFinder;
 import com.liferay.portal.service.persistence.LayoutSetPersistence;
 import com.liferay.portal.service.persistence.LayoutSetPrototypePersistence;
 import com.liferay.portal.service.persistence.OrganizationFinder;
@@ -743,6 +744,24 @@ public abstract class CompanyLocalServiceBaseImpl extends BaseLocalServiceImpl
 	}
 
 	/**
+	 * Returns the layout set finder.
+	 *
+	 * @return the layout set finder
+	 */
+	public LayoutSetFinder getLayoutSetFinder() {
+		return layoutSetFinder;
+	}
+
+	/**
+	 * Sets the layout set finder.
+	 *
+	 * @param layoutSetFinder the layout set finder
+	 */
+	public void setLayoutSetFinder(LayoutSetFinder layoutSetFinder) {
+		this.layoutSetFinder = layoutSetFinder;
+	}
+
+	/**
 	 * Returns the layout set prototype local service.
 	 *
 	 * @return the layout set prototype local service
@@ -1433,6 +1452,8 @@ public abstract class CompanyLocalServiceBaseImpl extends BaseLocalServiceImpl
 	protected com.liferay.portal.service.LayoutSetService layoutSetService;
 	@BeanReference(type = LayoutSetPersistence.class)
 	protected LayoutSetPersistence layoutSetPersistence;
+	@BeanReference(type = LayoutSetFinder.class)
+	protected LayoutSetFinder layoutSetFinder;
 	@BeanReference(type = com.liferay.portal.service.LayoutSetPrototypeLocalService.class)
 	protected com.liferay.portal.service.LayoutSetPrototypeLocalService layoutSetPrototypeLocalService;
 	@BeanReference(type = com.liferay.portal.service.LayoutSetPrototypeService.class)

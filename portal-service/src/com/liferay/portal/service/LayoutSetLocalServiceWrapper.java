@@ -241,6 +241,11 @@ public class LayoutSetLocalServiceWrapper implements LayoutSetLocalService,
 		return _layoutSetLocalService.getLayoutSet(virtualHostname);
 	}
 
+	@Override
+	public java.util.List<com.liferay.portal.model.LayoutSet> getLayoutSetPrototypeUuids() {
+		return _layoutSetLocalService.getLayoutSetPrototypeUuids();
+	}
+
 	/**
 	* Returns a range of all the layout sets.
 	*

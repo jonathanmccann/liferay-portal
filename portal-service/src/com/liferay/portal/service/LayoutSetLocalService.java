@@ -200,6 +200,9 @@ public interface LayoutSetLocalService extends BaseLocalService,
 	public com.liferay.portal.model.LayoutSet getLayoutSet(
 		java.lang.String virtualHostname) throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.portal.model.LayoutSet> getLayoutSetPrototypeUuids();
+
 	/**
 	* Returns a range of all the layout sets.
 	*

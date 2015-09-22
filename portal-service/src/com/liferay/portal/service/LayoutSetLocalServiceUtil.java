@@ -233,6 +233,10 @@ public class LayoutSetLocalServiceUtil {
 		return getService().getLayoutSet(virtualHostname);
 	}
 
+	public static java.util.List<com.liferay.portal.model.LayoutSet> getLayoutSetPrototypeUuids() {
+		return getService().getLayoutSetPrototypeUuids();
+	}
+
 	/**
 	* Returns a range of all the layout sets.
 	*
