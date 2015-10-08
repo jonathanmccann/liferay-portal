@@ -44,10 +44,11 @@ public class VerifyProcessSuite extends VerifyProcess {
 		verify(new VerifyOrganization());
 		verify(new VerifyPortletPreferences());
 		verify(new VerifyRatings());
-		verify(new VerifyResourcePermissions());
 		verify(new VerifySocial());
 		verify(new VerifyUser());
 		verify(new VerifyWorkflow());
+
+		verify(new VerifyResourcePermissions());
 
 		// VerifyBlogsTrackbacks looks at every blog comment to see if it is a
 		// trackback and verifies that the source URL is a valid URL.
