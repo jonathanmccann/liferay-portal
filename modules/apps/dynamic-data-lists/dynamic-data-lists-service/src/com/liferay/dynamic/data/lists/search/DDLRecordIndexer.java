@@ -323,13 +323,11 @@ public class DDLRecordIndexer extends BaseIndexer<DDLRecord> {
 		actionableDynamicQuery.setCommitImmediately(isCommitImmediately());
 		actionableDynamicQuery.setCompanyId(companyId);
 		actionableDynamicQuery.setPerformActionMethod(
-			new ActionableDynamicQuery.PerformActionMethod() {
+			new ActionableDynamicQuery.PerformActionMethod<DDLRecord>() {
 
 				@Override
-				public void performAction(Object object)
+				public void performAction(DDLRecord record)
 					throws PortalException {
-
-					DDLRecord record = (DDLRecord)object;
 
 					try {
 						Document document = getDocument(record);
