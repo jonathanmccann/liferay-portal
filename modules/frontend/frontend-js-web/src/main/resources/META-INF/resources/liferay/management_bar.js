@@ -42,6 +42,16 @@ AUI.add(
 						value: '.selected-items-count'
 					},
 
+					rowClassNameActive: {
+						validator: Lang.isString,
+						value: 'active'
+					},
+
+					rowSelector: {
+						validator: Lang.isString,
+						value: 'li.selectable,tr.selectable'
+					},
+
 					secondaryBar: {
 						setter: 'one'
 					},
@@ -113,18 +123,18 @@ AUI.add(
 						return instance._getAllEnabledCheckBoxes().filter(STR_CHECKED_SELECTOR + STR_VISIBLE_SELECTOR);
 					},
 
-					_getSelectAllCheckBoxes: function() {
+					_getSelectAllCheckBox: function() {
 						var instance = this;
 
-						var selectAllCheckBoxes = instance._selectAllCheckBoxes;
+						var selectAllCheckBox = instance._selectAllCheckBox;
 
-						if (!selectAllCheckBoxes) {
-							selectAllCheckBoxes = instance.all(instance.get(STR_SELECT_ALL_CHECKBOXES_SELECTOR));
+						if (!selectAllCheckBox) {
+							selectAllCheckBox = instance.get('secondaryBar').one(instance.get(STR_SELECT_ALL_CHECKBOXES_SELECTOR));
 
-							instance._selectAllCheckBoxes = selectAllCheckBoxes;
+							instance._selectAllCheckBox = selectAllCheckBox;
 						}
 
-						return selectAllCheckBoxes;
+						return selectAllCheckBox;
 					},
 
 					_onSurfaceStartNavigate: function(event) {
@@ -162,7 +172,7 @@ AUI.add(
 
 						instance._toggleSecondaryBar(totalSelectedItems > 0);
 
-						instance._toggleSelectAllCheckBoxesCheckBox(totalPageOn > 0, totalPageCheckboxes !== totalPageOn);
+						instance._toggleSelectAllCheckBox(totalPageOn > 0, totalPageCheckboxes !== totalPageOn);
 
 						instance._updateItemsCount(totalSelectedItems);
 					},
@@ -170,25 +180,33 @@ AUI.add(
 					_toggleSelectAll: function(event) {
 						var instance = this;
 
-						instance._getPageCheckBoxes().attr(ATTR_CHECKED, event.currentTarget.attr(ATTR_CHECKED));
+						if (!instance.get('secondaryBar').contains(event.currentTarget)) {
+							event.preventDefault();
+						}
+
+						var checked = event.currentTarget.attr(ATTR_CHECKED);
+
+						instance._getPageCheckBoxes().attr(ATTR_CHECKED, checked);
+
+						instance.get(STR_CHECKBOX_CONTAINER).all(instance.get('rowSelector')).toggleClass(instance.get('rowClassNameActive'), checked);
 
 						instance._toggleSelect();
 					},
 
-					_toggleSelectAllCheckBoxesCheckBox: function(checked, partial) {
+					_toggleSelectAllCheckBox: function(checked, partial) {
 						var instance = this;
 
-						var selectAllCheckBoxes = instance._getSelectAllCheckBoxes();
+						var selectAllCheckBox = instance._getSelectAllCheckBox();
 
 						partial = partial && checked;
 
-						selectAllCheckBoxes.attr(ATTR_CHECKED, checked);
+						selectAllCheckBox.attr(ATTR_CHECKED, checked);
 
 						if (A.UA.gecko > 0 || A.UA.ie > 0) {
-							selectAllCheckBoxes.attr('indeterminate', partial);
+							selectAllCheckBox.attr('indeterminate', partial);
 						}
 						else {
-							selectAllCheckBoxes.toggleClass(STR_SELECTED_PARTIAL, partial);
+							selectAllCheckBox.toggleClass(STR_SELECTED_PARTIAL, partial);
 						}
 					},
 

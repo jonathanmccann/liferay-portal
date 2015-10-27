@@ -21,11 +21,17 @@ import com.liferay.dynamic.data.lists.model.DDLRecordSetConstants;
 import com.liferay.dynamic.data.lists.model.DDLRecordVersion;
 import com.liferay.dynamic.data.lists.service.DDLRecordLocalService;
 import com.liferay.dynamic.data.lists.service.DDLRecordSetLocalService;
+import com.liferay.dynamic.data.lists.service.DDLRecordVersionLocalService;
 import com.liferay.dynamic.data.lists.service.permission.DDLRecordPermission;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.storage.StorageEngine;
 import com.liferay.dynamic.data.mapping.util.DDMIndexer;
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -50,9 +56,6 @@ import com.liferay.portal.security.permission.PermissionChecker;
 
 import java.io.Serializable;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 import java.util.Locale;
 
 import javax.portlet.PortletRequest;
@@ -230,9 +233,7 @@ public class DDLRecordIndexer extends BaseIndexer<DDLRecord> {
 	protected void doReindex(String[] ids) throws Exception {
 		long companyId = GetterUtil.getLong(ids[0]);
 
-		reindexRecords(
-			companyId, DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS);
-		reindexRecords(companyId, DDLRecordSetConstants.SCOPE_FORMS);
+		reindexRecords(companyId);
 	}
 
 	protected String extractDDMContent(
@@ -274,60 +275,82 @@ public class DDLRecordIndexer extends BaseIndexer<DDLRecord> {
 		return StringPool.BLANK;
 	}
 
-	protected void reindexRecords(long companyId, int scope) throws Exception {
-		Long[] minAndMaxRecordIds =
-			_ddlRecordLocalService.getMinAndMaxCompanyRecordIds(
-				companyId, WorkflowConstants.STATUS_APPROVED, scope);
+	protected void reindexRecords(long companyId) throws Exception {
+		final ActionableDynamicQuery actionableDynamicQuery =
+			_ddlRecordLocalService.getActionableDynamicQuery();
 
-		if ((minAndMaxRecordIds[0] == null) ||
-			(minAndMaxRecordIds[1] == null)) {
+		actionableDynamicQuery.setAddCriteriaMethod(
+			new ActionableDynamicQuery.AddCriteriaMethod() {
 
-			return;
-		}
+				@Override
+				public void addCriteria(DynamicQuery dynamicQuery) {
+					Property recordIdProperty = PropertyFactoryUtil.forName(
+						"recordId");
 
-		long minRecordId = minAndMaxRecordIds[0];
-		long maxRecordId = minAndMaxRecordIds[1];
+					DynamicQuery recordVersionDynamicQuery =
+						_ddlRecordVersionLocalService.dynamicQuery();
 
-		long startRecordId = minRecordId;
-		long endRecordId = startRecordId + DEFAULT_INTERVAL;
+					recordVersionDynamicQuery.setProjection(
+						ProjectionFactoryUtil.property("recordId"));
 
-		while (startRecordId <= maxRecordId) {
-			reindexRecords(companyId, startRecordId, endRecordId, scope);
+					Property statusProperty = PropertyFactoryUtil.forName(
+						"status");
 
-			startRecordId = endRecordId;
-			endRecordId += DEFAULT_INTERVAL;
-		}
-	}
+					recordVersionDynamicQuery.add(
+						statusProperty.eq(WorkflowConstants.STATUS_APPROVED));
 
-	protected void reindexRecords(
-			long companyId, long startRecordId, long endRecordId, int scope)
-		throws Exception {
+					dynamicQuery.add(
+						recordIdProperty.in(recordVersionDynamicQuery));
 
-		List<DDLRecord> records =
-			_ddlRecordLocalService.getMinAndMaxCompanyRecords(
-				companyId, WorkflowConstants.STATUS_APPROVED, scope,
-				startRecordId, endRecordId);
+					Property recordSetProperty = PropertyFactoryUtil.forName(
+						"recordSetId");
 
-		Collection<Document> documents = new ArrayList<>(records.size());
+					DynamicQuery recordSetDynamicQuery =
+						_ddlRecordSetLocalService.dynamicQuery();
 
-		for (DDLRecord record : records) {
-			try {
-				Document document = getDocument(record);
+					recordSetDynamicQuery.setProjection(
+						ProjectionFactoryUtil.property("recordSetId"));
 
-				documents.add(document);
-			}
-			catch (PortalException pe) {
-				if (_log.isWarnEnabled()) {
-					_log.warn(
-						"Unable to index dynamic data lists record " +
-							record.getRecordId(),
-						pe);
+					Property scopeProperty = PropertyFactoryUtil.forName(
+						"scope");
+
+					recordSetDynamicQuery.add(
+						scopeProperty.in(_REINDEX_SCOPES));
+
+					dynamicQuery.add(
+						recordSetProperty.in(recordSetDynamicQuery));
 				}
-			}
-		}
+		});
+		actionableDynamicQuery.setCommitImmediately(isCommitImmediately());
+		actionableDynamicQuery.setCompanyId(companyId);
+		actionableDynamicQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod<DDLRecord>() {
 
-		SearchEngineUtil.updateDocuments(
-			getSearchEngineId(), companyId, documents, isCommitImmediately());
+				@Override
+				public void performAction(DDLRecord record)
+					throws PortalException {
+
+					try {
+						Document document = getDocument(record);
+
+						if (document != null) {
+							actionableDynamicQuery.addDocument(document);
+						}
+					}
+					catch (PortalException pe) {
+						if (_log.isWarnEnabled()) {
+							_log.warn(
+								"Unable to index dynamic data lists record " +
+									record.getRecordId(),
+								pe);
+						}
+					}
+				}
+
+		});
+		actionableDynamicQuery.setSearchEngineId(getSearchEngineId());
+
+		actionableDynamicQuery.performActions();
 	}
 
 	@Reference(unbind = "-")
@@ -345,6 +368,13 @@ public class DDLRecordIndexer extends BaseIndexer<DDLRecord> {
 	}
 
 	@Reference(unbind = "-")
+	protected void setDDLRecordVersionLocalService(
+		DDLRecordVersionLocalService ddlRecordVersionLocalService) {
+
+		_ddlRecordVersionLocalService = ddlRecordVersionLocalService;
+	}
+
+	@Reference(unbind = "-")
 	protected void setDDMIndexer(DDMIndexer ddmIndexer) {
 		_ddmIndexer = ddmIndexer;
 	}
@@ -354,11 +384,17 @@ public class DDLRecordIndexer extends BaseIndexer<DDLRecord> {
 		_storageEngine = storageEngine;
 	}
 
+	private static final int[] _REINDEX_SCOPES = new int[] {
+		DDLRecordSetConstants.SCOPE_DYNAMIC_DATA_LISTS,
+		DDLRecordSetConstants.SCOPE_FORMS
+	};
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		DDLRecordIndexer.class);
 
 	private DDLRecordLocalService _ddlRecordLocalService;
 	private DDLRecordSetLocalService _ddlRecordSetLocalService;
+	private DDLRecordVersionLocalService _ddlRecordVersionLocalService;
 	private DDMIndexer _ddmIndexer;
 	private StorageEngine _storageEngine;
 
