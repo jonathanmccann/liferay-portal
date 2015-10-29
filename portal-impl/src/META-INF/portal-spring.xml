@@ -99,6 +99,10 @@
 	<bean id="com.liferay.portal.service.PortletPreferencesService" class="com.liferay.portal.service.impl.PortletPreferencesServiceImpl" />
 	<bean id="com.liferay.portal.service.persistence.PortletPreferencesPersistence" class="com.liferay.portal.service.persistence.impl.PortletPreferencesPersistenceImpl" parent="basePersistence" />
 	<bean id="com.liferay.portal.service.persistence.PortletPreferencesFinder" class="com.liferay.portal.service.persistence.impl.PortletPreferencesFinderImpl" parent="basePersistence" />
+	<bean id="com.liferay.portal.service.RecentLayoutLocalService" class="com.liferay.portal.service.impl.RecentLayoutLocalServiceImpl" />
+	<bean id="com.liferay.portal.service.persistence.RecentLayoutPersistence" class="com.liferay.portal.service.persistence.impl.RecentLayoutPersistenceImpl" parent="basePersistence" />
+	<bean id="com.liferay.portal.service.RecentLayoutSetLocalService" class="com.liferay.portal.service.impl.RecentLayoutSetLocalServiceImpl" />
+	<bean id="com.liferay.portal.service.persistence.RecentLayoutSetPersistence" class="com.liferay.portal.service.persistence.impl.RecentLayoutSetPersistenceImpl" parent="basePersistence" />
 	<bean id="com.liferay.portal.service.RegionService" class="com.liferay.portal.service.impl.RegionServiceImpl" />
 	<bean id="com.liferay.portal.service.persistence.RegionPersistence" class="com.liferay.portal.service.persistence.impl.RegionPersistenceImpl" parent="basePersistence" />
 	<bean id="com.liferay.portal.service.ReleaseLocalService" class="com.liferay.portal.service.impl.ReleaseLocalServiceImpl" />

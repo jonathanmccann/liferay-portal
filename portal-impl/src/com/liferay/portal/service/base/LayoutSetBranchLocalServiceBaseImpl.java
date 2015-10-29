@@ -44,6 +44,7 @@ import com.liferay.portal.service.persistence.LayoutPersistence;
 import com.liferay.portal.service.persistence.LayoutRevisionPersistence;
 import com.liferay.portal.service.persistence.LayoutSetBranchPersistence;
 import com.liferay.portal.service.persistence.LayoutSetPersistence;
+import com.liferay.portal.service.persistence.RecentLayoutSetPersistence;
 import com.liferay.portal.service.persistence.UserFinder;
 import com.liferay.portal.service.persistence.UserPersistence;
 import com.liferay.portal.util.PortalUtil;
@@ -684,6 +685,44 @@ public abstract class LayoutSetBranchLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the recent layout set local service.
+	 *
+	 * @return the recent layout set local service
+	 */
+	public com.liferay.portal.service.RecentLayoutSetLocalService getRecentLayoutSetLocalService() {
+		return recentLayoutSetLocalService;
+	}
+
+	/**
+	 * Sets the recent layout set local service.
+	 *
+	 * @param recentLayoutSetLocalService the recent layout set local service
+	 */
+	public void setRecentLayoutSetLocalService(
+		com.liferay.portal.service.RecentLayoutSetLocalService recentLayoutSetLocalService) {
+		this.recentLayoutSetLocalService = recentLayoutSetLocalService;
+	}
+
+	/**
+	 * Returns the recent layout set persistence.
+	 *
+	 * @return the recent layout set persistence
+	 */
+	public RecentLayoutSetPersistence getRecentLayoutSetPersistence() {
+		return recentLayoutSetPersistence;
+	}
+
+	/**
+	 * Sets the recent layout set persistence.
+	 *
+	 * @param recentLayoutSetPersistence the recent layout set persistence
+	 */
+	public void setRecentLayoutSetPersistence(
+		RecentLayoutSetPersistence recentLayoutSetPersistence) {
+		this.recentLayoutSetPersistence = recentLayoutSetPersistence;
+	}
+
+	/**
 	 * Returns the resource local service.
 	 *
 	 * @return the resource local service
@@ -868,6 +907,10 @@ public abstract class LayoutSetBranchLocalServiceBaseImpl
 	protected com.liferay.portal.service.LayoutSetService layoutSetService;
 	@BeanReference(type = LayoutSetPersistence.class)
 	protected LayoutSetPersistence layoutSetPersistence;
+	@BeanReference(type = com.liferay.portal.service.RecentLayoutSetLocalService.class)
+	protected com.liferay.portal.service.RecentLayoutSetLocalService recentLayoutSetLocalService;
+	@BeanReference(type = RecentLayoutSetPersistence.class)
+	protected RecentLayoutSetPersistence recentLayoutSetPersistence;
 	@BeanReference(type = com.liferay.portal.service.ResourceLocalService.class)
 	protected com.liferay.portal.service.ResourceLocalService resourceLocalService;
 	@BeanReference(type = com.liferay.portal.service.UserLocalService.class)
