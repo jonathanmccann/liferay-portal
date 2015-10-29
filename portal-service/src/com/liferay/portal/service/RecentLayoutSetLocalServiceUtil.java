@@ -40,6 +40,13 @@ public class RecentLayoutSetLocalServiceUtil {
 	 *
 	 * Never modify this class directly. Add custom service methods to {@link com.liferay.portal.service.impl.RecentLayoutSetLocalServiceImpl} and rerun ServiceBuilder to regenerate this class.
 	 */
+	public static com.liferay.portal.model.RecentLayoutSet addRecentLayoutSet(
+		long companyId, long groupId, long userId, long layoutSetId,
+		long layoutSetBranchId) {
+		return getService()
+				   .addRecentLayoutSet(companyId, groupId, userId, layoutSetId,
+			layoutSetBranchId);
+	}
 
 	/**
 	* Adds the recent layout set to the database. Also notifies the appropriate model listeners.
@@ -94,6 +101,16 @@ public class RecentLayoutSetLocalServiceUtil {
 		long recentLayoutSetId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().deleteRecentLayoutSet(recentLayoutSetId);
+	}
+
+	public static void deleteRecentLayoutSets(
+		com.liferay.portal.model.LayoutSetBranch layoutSetBranch) {
+		getService().deleteRecentLayoutSets(layoutSetBranch);
+	}
+
+	public static void deleteRecentLayoutSets(
+		com.liferay.portal.model.User user) {
+		getService().deleteRecentLayoutSets(user);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.DynamicQuery dynamicQuery() {
@@ -177,6 +194,11 @@ public class RecentLayoutSetLocalServiceUtil {
 	public static com.liferay.portal.model.RecentLayoutSet fetchRecentLayoutSet(
 		long recentLayoutSetId) {
 		return getService().fetchRecentLayoutSet(recentLayoutSetId);
+	}
+
+	public static com.liferay.portal.model.RecentLayoutSet fetchRecentLayoutSet(
+		long userId, long layoutSetId) {
+		return getService().fetchRecentLayoutSet(userId, layoutSetId);
 	}
 
 	public static com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery getActionableDynamicQuery() {
