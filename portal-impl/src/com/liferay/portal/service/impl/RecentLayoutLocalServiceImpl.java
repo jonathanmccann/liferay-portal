@@ -16,28 +16,55 @@ package com.liferay.portal.service.impl;
 
 import aQute.bnd.annotation.ProviderType;
 
+import com.liferay.portal.model.LayoutBranch;
+import com.liferay.portal.model.RecentLayout;
+import com.liferay.portal.model.User;
 import com.liferay.portal.service.base.RecentLayoutLocalServiceBaseImpl;
 
 /**
- * The implementation of the recent layout local service.
- *
- * <p>
- * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the {@link com.liferay.portal.service.RecentLayoutLocalService} interface.
- *
- * <p>
- * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
- * </p>
- *
  * @author Brian Wing Shun Chan
- * @see RecentLayoutLocalServiceBaseImpl
- * @see com.liferay.portal.service.RecentLayoutLocalServiceUtil
+ * @author Preston Crary
  */
 @ProviderType
 public class RecentLayoutLocalServiceImpl
 	extends RecentLayoutLocalServiceBaseImpl {
-	/*
-	 * NOTE FOR DEVELOPERS:
-	 *
-	 * Never reference this class directly. Always use {@link com.liferay.portal.service.RecentLayoutLocalServiceUtil} to access the recent layout local service.
-	 */
+
+	@Override
+	public RecentLayout addRecentLayout(
+		long companyId, long groupId, long userId, long layoutSetBranchId,
+		long plid) {
+
+		long recentLayoutId = counterLocalService.increment();
+
+		RecentLayout recentLayout = recentLayoutPersistence.create(
+			recentLayoutId);
+
+		recentLayout.setCompanyId(companyId);
+		recentLayout.setGroupId(groupId);
+		recentLayout.setUserId(userId);
+		recentLayout.setLayoutSetBranchId(layoutSetBranchId);
+		recentLayout.setPlid(plid);
+
+		return recentLayoutPersistence.update(recentLayout);
+	}
+
+	@Override
+	public void deleteRecentLayouts(LayoutBranch layoutBranch) {
+		recentLayoutPersistence.removeByLayoutBranchId(
+			layoutBranch.getLayoutBranchId());
+	}
+
+	@Override
+	public void deleteRecentLayouts(User user) {
+		recentLayoutPersistence.removeByUserId(user.getUserId());
+	}
+
+	@Override
+	public RecentLayout fetchRecentLayout(
+		long userId, long layoutSetBranchId, long plid) {
+
+		return recentLayoutPersistence.fetchByU_L_P(
+			userId, layoutSetBranchId, plid);
+	}
+
 }
