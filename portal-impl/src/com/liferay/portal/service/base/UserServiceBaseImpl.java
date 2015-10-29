@@ -39,6 +39,8 @@ import com.liferay.portal.service.persistence.PasswordPolicyFinder;
 import com.liferay.portal.service.persistence.PasswordPolicyPersistence;
 import com.liferay.portal.service.persistence.PasswordPolicyRelPersistence;
 import com.liferay.portal.service.persistence.PasswordTrackerPersistence;
+import com.liferay.portal.service.persistence.RecentLayoutPersistence;
+import com.liferay.portal.service.persistence.RecentLayoutSetPersistence;
 import com.liferay.portal.service.persistence.RoleFinder;
 import com.liferay.portal.service.persistence.RolePersistence;
 import com.liferay.portal.service.persistence.SubscriptionPersistence;
@@ -845,6 +847,82 @@ public abstract class UserServiceBaseImpl extends BaseServiceImpl
 	public void setPasswordTrackerPersistence(
 		PasswordTrackerPersistence passwordTrackerPersistence) {
 		this.passwordTrackerPersistence = passwordTrackerPersistence;
+	}
+
+	/**
+	 * Returns the recent layout local service.
+	 *
+	 * @return the recent layout local service
+	 */
+	public com.liferay.portal.service.RecentLayoutLocalService getRecentLayoutLocalService() {
+		return recentLayoutLocalService;
+	}
+
+	/**
+	 * Sets the recent layout local service.
+	 *
+	 * @param recentLayoutLocalService the recent layout local service
+	 */
+	public void setRecentLayoutLocalService(
+		com.liferay.portal.service.RecentLayoutLocalService recentLayoutLocalService) {
+		this.recentLayoutLocalService = recentLayoutLocalService;
+	}
+
+	/**
+	 * Returns the recent layout persistence.
+	 *
+	 * @return the recent layout persistence
+	 */
+	public RecentLayoutPersistence getRecentLayoutPersistence() {
+		return recentLayoutPersistence;
+	}
+
+	/**
+	 * Sets the recent layout persistence.
+	 *
+	 * @param recentLayoutPersistence the recent layout persistence
+	 */
+	public void setRecentLayoutPersistence(
+		RecentLayoutPersistence recentLayoutPersistence) {
+		this.recentLayoutPersistence = recentLayoutPersistence;
+	}
+
+	/**
+	 * Returns the recent layout set local service.
+	 *
+	 * @return the recent layout set local service
+	 */
+	public com.liferay.portal.service.RecentLayoutSetLocalService getRecentLayoutSetLocalService() {
+		return recentLayoutSetLocalService;
+	}
+
+	/**
+	 * Sets the recent layout set local service.
+	 *
+	 * @param recentLayoutSetLocalService the recent layout set local service
+	 */
+	public void setRecentLayoutSetLocalService(
+		com.liferay.portal.service.RecentLayoutSetLocalService recentLayoutSetLocalService) {
+		this.recentLayoutSetLocalService = recentLayoutSetLocalService;
+	}
+
+	/**
+	 * Returns the recent layout set persistence.
+	 *
+	 * @return the recent layout set persistence
+	 */
+	public RecentLayoutSetPersistence getRecentLayoutSetPersistence() {
+		return recentLayoutSetPersistence;
+	}
+
+	/**
+	 * Sets the recent layout set persistence.
+	 *
+	 * @param recentLayoutSetPersistence the recent layout set persistence
+	 */
+	public void setRecentLayoutSetPersistence(
+		RecentLayoutSetPersistence recentLayoutSetPersistence) {
+		this.recentLayoutSetPersistence = recentLayoutSetPersistence;
 	}
 
 	/**
@@ -2235,6 +2313,14 @@ public abstract class UserServiceBaseImpl extends BaseServiceImpl
 	protected com.liferay.portal.service.PasswordTrackerLocalService passwordTrackerLocalService;
 	@BeanReference(type = PasswordTrackerPersistence.class)
 	protected PasswordTrackerPersistence passwordTrackerPersistence;
+	@BeanReference(type = com.liferay.portal.service.RecentLayoutLocalService.class)
+	protected com.liferay.portal.service.RecentLayoutLocalService recentLayoutLocalService;
+	@BeanReference(type = RecentLayoutPersistence.class)
+	protected RecentLayoutPersistence recentLayoutPersistence;
+	@BeanReference(type = com.liferay.portal.service.RecentLayoutSetLocalService.class)
+	protected com.liferay.portal.service.RecentLayoutSetLocalService recentLayoutSetLocalService;
+	@BeanReference(type = RecentLayoutSetPersistence.class)
+	protected RecentLayoutSetPersistence recentLayoutSetPersistence;
 	@BeanReference(type = com.liferay.portal.service.ResourceLocalService.class)
 	protected com.liferay.portal.service.ResourceLocalService resourceLocalService;
 	@BeanReference(type = com.liferay.portal.service.RoleLocalService.class)
