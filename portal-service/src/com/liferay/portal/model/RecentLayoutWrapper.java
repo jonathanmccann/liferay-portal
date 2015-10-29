@@ -267,6 +267,16 @@ public class RecentLayoutWrapper implements RecentLayout,
 	}
 
 	@Override
+	public boolean isHeadRevision() {
+		return _recentLayout.isHeadRevision();
+	}
+
+	@Override
+	public boolean isMasterBranch() {
+		return _recentLayout.isMasterBranch();
+	}
+
+	@Override
 	public boolean isNew() {
 		return _recentLayout.isNew();
 	}

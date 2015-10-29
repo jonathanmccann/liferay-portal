@@ -50,4 +50,8 @@ public interface RecentLayout extends RecentLayoutModel, PersistedModel {
 				return RecentLayout.class;
 			}
 		};
+
+	public boolean isHeadRevision();
+
+	public boolean isMasterBranch();
 }
