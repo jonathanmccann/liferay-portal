@@ -388,6 +388,10 @@ public class PortletURLImpl
 		return _secure;
 	}
 
+	public void removeParameter(String name) {
+		_params.remove(name);
+	}
+
 	@Override
 	public void removePublicRenderParameter(String name) {
 		if (name == null) {
@@ -521,8 +525,14 @@ public class PortletURLImpl
 
 	@Override
 	public void setParameter(String name, String value, boolean append) {
-		if ((name == null) || (value == null)) {
+		if (name == null) {
 			throw new IllegalArgumentException();
+		}
+
+		if (value == null) {
+			removeParameter(name);
+
+			return;
 		}
 
 		setParameter(name, new String[] {value}, append);
@@ -535,8 +545,14 @@ public class PortletURLImpl
 
 	@Override
 	public void setParameter(String name, String[] values, boolean append) {
-		if ((name == null) || (values == null)) {
+		if (name == null) {
 			throw new IllegalArgumentException();
+		}
+
+		if (ArrayUtil.isEmpty(values)) {
+			removeParameter(name);
+
+			return;
 		}
 
 		for (String value : values) {
