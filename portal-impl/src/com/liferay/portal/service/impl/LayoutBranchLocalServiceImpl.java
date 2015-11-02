@@ -115,6 +115,8 @@ public class LayoutBranchLocalServiceImpl
 			layoutBranch.getLayoutSetBranchId(), layoutBranchId,
 			layoutBranch.getPlid());
 
+		recentLayoutLocalService.deleteRecentLayouts(layoutBranch);
+
 		return deleteLayoutBranch(layoutBranch);
 	}
 

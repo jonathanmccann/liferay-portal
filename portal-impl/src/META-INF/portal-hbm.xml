@@ -39,6 +39,8 @@
 	<import class="com.liferay.portal.model.Portlet" />
 	<import class="com.liferay.portal.model.PortletItem" />
 	<import class="com.liferay.portal.model.PortletPreferences" />
+	<import class="com.liferay.portal.model.RecentLayout" />
+	<import class="com.liferay.portal.model.RecentLayoutSet" />
 	<import class="com.liferay.portal.model.Region" />
 	<import class="com.liferay.portal.model.Release" />
 	<import class="com.liferay.portal.model.Repository" />
@@ -713,6 +715,30 @@
 		<property name="plid" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 		<property name="portletId" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="preferences" type="com.liferay.portal.dao.orm.hibernate.StringClobType" />
+	</class>
+	<class name="com.liferay.portal.model.impl.RecentLayoutImpl" table="RecentLayout" dynamic-update="true">
+		<id name="recentLayoutId" type="long">
+			<generator class="assigned" />
+		</id>
+		<version name="mvccVersion" type="long" access="com.liferay.portal.dao.orm.hibernate.PrivatePropertyAccessor" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="layoutSetBranchId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="plid" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="layoutBranchId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="layoutRevisionId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+	</class>
+	<class name="com.liferay.portal.model.impl.RecentLayoutSetImpl" table="RecentLayoutSet" dynamic-update="true">
+		<id name="recentLayoutSetId" type="long">
+			<generator class="assigned" />
+		</id>
+		<version name="mvccVersion" type="long" access="com.liferay.portal.dao.orm.hibernate.PrivatePropertyAccessor" />
+		<property name="groupId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="layoutSetId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="layoutSetBranchId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
 	</class>
 	<class name="com.liferay.portal.model.impl.RegionImpl" table="Region" dynamic-update="true">
 		<id name="regionId" type="long">

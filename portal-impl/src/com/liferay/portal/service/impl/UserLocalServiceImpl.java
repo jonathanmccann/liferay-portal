@@ -1892,6 +1892,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 		userGroupRoleLocalService.deleteUserGroupRolesByUserId(
 			user.getUserId());
 
+		// Recent layouts
+
+		recentLayoutLocalService.deleteRecentLayouts(user);
+		recentLayoutSetLocalService.deleteRecentLayoutSets(user);
+
 		// Resources
 
 		resourceLocalService.deleteResource(

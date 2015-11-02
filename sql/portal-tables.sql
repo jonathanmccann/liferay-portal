@@ -1212,6 +1212,28 @@ create table RatingsStats (
 	averageScore DOUBLE
 );
 
+create table RecentLayout (
+	mvccVersion LONG default 0,
+	recentLayoutId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	layoutSetBranchId LONG,
+	plid LONG,
+	layoutBranchId LONG,
+	layoutRevisionId LONG
+);
+
+create table RecentLayoutSet (
+	mvccVersion LONG default 0,
+	recentLayoutSetId LONG not null primary key,
+	groupId LONG,
+	companyId LONG,
+	userId LONG,
+	layoutSetId LONG,
+	layoutSetBranchId LONG
+);
+
 create table Region (
 	mvccVersion LONG default 0,
 	regionId LONG not null primary key,
