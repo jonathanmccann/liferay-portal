@@ -1195,6 +1195,21 @@ public class LayoutImportController implements ImportController {
 		}
 	}
 
+	protected boolean siblingLayoutIsSkipped(
+		Element layoutElement, Map<Long, List<String>> siblingActionsMap) {
+
+		long parentLayoutId = GetterUtil.getLong(
+			layoutElement.attributeValue("layout-parent-layout-id"));
+
+		List<String> actions = siblingActionsMap.get(parentLayoutId);
+
+		if (actions.contains(Constants.SKIP)) {
+			return true;
+		}
+
+		return false;
+	}
+
 	protected void updateLayoutPriorities(
 		PortletDataContext portletDataContext, List<Element> layoutElements,
 		boolean privateLayout) {
@@ -1207,15 +1222,36 @@ public class LayoutImportController implements ImportController {
 
 		int maxPriority = Integer.MIN_VALUE;
 
+		Map<Long, List<String>> siblingActionsMap = new HashMap<>();
+
+		for (Element layoutElement : layoutElements) {
+			long elementParentLayoutId = GetterUtil.getLong(
+				layoutElement.attributeValue("layout-parent-layout-id"));
+
+			List<String> actions = siblingActionsMap.get(elementParentLayoutId);
+
+			if (actions == null) {
+				actions = new ArrayList<>();
+			}
+			else if (actions.contains(Constants.SKIP)) {
+				continue;
+			}
+
+			actions.add(layoutElement.attributeValue(Constants.ACTION));
+
+			siblingActionsMap.put(elementParentLayoutId, actions);
+		}
+
 		for (Element layoutElement : layoutElements) {
 			String action = layoutElement.attributeValue(Constants.ACTION);
 
-			if (action.equals(Constants.SKIP)) {
+			if (action.equals(Constants.SKIP) ||
+				siblingLayoutIsSkipped(layoutElement, siblingActionsMap)) {
 
-				// We only want to update priorites if there are no elements
-				// with the SKIP action
+				// We dont want to update priorites if there are elements at
+				// the same level of the page hierarchy with the SKIP action
 
-				return;
+				continue;
 			}
 
 			if (action.equals(Constants.ADD)) {
