@@ -521,8 +521,12 @@ public class PortletURLImpl
 
 	@Override
 	public void setParameter(String name, String value, boolean append) {
-		if ((name == null) || (value == null)) {
+		if (name == null) {
 			throw new IllegalArgumentException();
+		}
+
+		if (value == null) {
+			return;
 		}
 
 		setParameter(name, new String[] {value}, append);
