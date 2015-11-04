@@ -608,6 +608,9 @@ public class LayoutExportController implements ExportController {
 				layout);
 
 			layoutElement.addAttribute(Constants.ACTION, Constants.SKIP);
+			layoutElement.addAttribute(
+				"layout-parent-layout-id",
+					String.valueOf(layout.getParentLayoutId()));
 
 			return;
 		}
