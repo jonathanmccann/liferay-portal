@@ -14,6 +14,12 @@
 
 package com.liferay.portlet.documentlibrary.service.impl;
 
+import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Conjunction;
+import com.liferay.portal.kernel.dao.orm.DynamicQuery;
+import com.liferay.portal.kernel.dao.orm.Property;
+import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
+import com.liferay.portal.kernel.dao.orm.RestrictionsFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -44,6 +50,8 @@ import com.liferay.portlet.documentlibrary.model.DLFileEntryTypeConstants;
 import com.liferay.portlet.documentlibrary.model.DLFileVersion;
 import com.liferay.portlet.documentlibrary.model.DLFolder;
 import com.liferay.portlet.documentlibrary.model.DLFolderConstants;
+import com.liferay.portlet.documentlibrary.service.DLFileEntryLocalServiceUtil;
+import com.liferay.portlet.documentlibrary.service.DLFolderLocalServiceUtil;
 import com.liferay.portlet.documentlibrary.service.base.DLFileEntryTypeLocalServiceBaseImpl;
 import com.liferay.portlet.documentlibrary.util.DLUtil;
 import com.liferay.portlet.dynamicdatamapping.DDMForm;
@@ -566,60 +574,112 @@ public class DLFileEntryTypeLocalServiceImpl
 	}
 
 	protected void cascadeFileEntryTypes(
-			long userId, long groupId, long folderId,
-			long defaultFileEntryTypeId, List<Long> fileEntryTypeIds,
-			ServiceContext serviceContext)
+			final long userId, final long groupId, final long folderId,
+			final long defaultFileEntryTypeId,
+			final List<Long> fileEntryTypeIds,
+			final ServiceContext serviceContext)
 		throws PortalException {
 
-		List<DLFileEntry> dlFileEntries = dlFileEntryPersistence.findByG_F(
-			groupId, folderId);
+		ActionableDynamicQuery cascadeToFileEntriesQuery =
+			DLFileEntryLocalServiceUtil.getActionableDynamicQuery();
 
-		for (DLFileEntry dlFileEntry : dlFileEntries) {
-			Long fileEntryTypeId = dlFileEntry.getFileEntryTypeId();
+		cascadeToFileEntriesQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod<DLFileEntry>() {
 
-			if (fileEntryTypeIds.contains(fileEntryTypeId)) {
-				continue;
+			@Override
+			public void performAction(DLFileEntry entry)
+					throws PortalException {
+
+				DLFileEntry dlFileEntry = entry;
+
+				DLFileVersion dlFileVersion =
+						dlFileVersionLocalService.getLatestFileVersion(
+							dlFileEntry.getFileEntryId(), true);
+
+				if (dlFileVersion.isPending()) {
+					workflowInstanceLinkLocalService.
+						deleteWorkflowInstanceLink(
+							dlFileVersion.getCompanyId(), groupId,
+							DLFileEntry.class.getName(),
+							dlFileVersion.getFileVersionId());
+				}
+
+				dlFileEntryLocalService.updateFileEntry(
+				userId, dlFileEntry.getFileEntryId(), null, null,
+				null, null, null, false, defaultFileEntryTypeId,
+				null, null, null, 0, serviceContext);
 			}
 
-			DLFileVersion dlFileVersion =
-				dlFileVersionLocalService.getLatestFileVersion(
-					dlFileEntry.getFileEntryId(), true);
+		});
 
-			if (dlFileVersion.isPending()) {
-				workflowInstanceLinkLocalService.deleteWorkflowInstanceLink(
-					dlFileVersion.getCompanyId(), groupId,
-					DLFileEntry.class.getName(),
-					dlFileVersion.getFileVersionId());
+		cascadeToFileEntriesQuery.setAddCriteriaMethod(
+			new ActionableDynamicQuery.AddCriteriaMethod() {
+				@Override
+				public void addCriteria(DynamicQuery dynamicQuery) {
+					Property folderIdProperty = PropertyFactoryUtil.forName(
+						"folderId");
+
+					dynamicQuery.add(folderIdProperty.eq(folderId));
+
+					Property fileEntryTypeIdProperty =
+						PropertyFactoryUtil.forName("fileEntryTypeId");
+
+					Conjunction conjunction =
+						RestrictionsFactoryUtil.conjunction();
+
+					for (long fileEntryTypeId : fileEntryTypeIds) {
+						conjunction.add(fileEntryTypeIdProperty.ne(
+							fileEntryTypeId));
+					}
+
+					dynamicQuery.add(conjunction);
+				}
+
+			});
+
+		cascadeToFileEntriesQuery.setGroupId(groupId);
+		cascadeToFileEntriesQuery.performActions();
+
+		ActionableDynamicQuery cascadeToFoldersQuery =
+			DLFolderLocalServiceUtil.getActionableDynamicQuery();
+
+		cascadeToFoldersQuery.setPerformActionMethod(
+			new ActionableDynamicQuery.PerformActionMethod<DLFolder>() {
+			@Override
+			public void performAction(DLFolder folder)
+				throws PortalException {
+
+				DLFolder subFolder = folder;
+
+				long subFolderId = subFolder.getFolderId();
+
+				cascadeFileEntryTypes(
+					userId, groupId, subFolderId, defaultFileEntryTypeId,
+					fileEntryTypeIds, serviceContext);
 			}
+		});
 
-			dlFileEntryLocalService.updateFileEntryType(
-				userId, dlFileEntry.getFileEntryId(), defaultFileEntryTypeId,
-				serviceContext);
+		cascadeToFoldersQuery.setAddCriteriaMethod(
+			new ActionableDynamicQuery.AddCriteriaMethod() {
 
-			dlAppHelperLocalService.updateAsset(
-				userId, new LiferayFileEntry(dlFileEntry),
-				new LiferayFileVersion(dlFileVersion),
-				serviceContext.getAssetCategoryIds(),
-				serviceContext.getAssetTagNames(),
-				serviceContext.getAssetLinkEntryIds());
-		}
+				@Override
+				public void addCriteria(DynamicQuery dynamicQuery) {
+					Property groupIdProperty = PropertyFactoryUtil.forName(
+						"groupId");
 
-		List<DLFolder> subFolders = dlFolderPersistence.findByG_M_P_H(
-			groupId, false, folderId, false);
+					dynamicQuery.add(groupIdProperty.eq(groupId));
 
-		for (DLFolder subFolder : subFolders) {
-			long subFolderId = subFolder.getFolderId();
+					Property parentFolderIdProperty =
+						PropertyFactoryUtil.forName("parentFolderId");
 
-			if (subFolder.getRestrictionType() ==
-					DLFolderConstants.RESTRICTION_TYPE_INHERIT) {
+					dynamicQuery.add(parentFolderIdProperty.eq(folderId));
 
-				continue;
-			}
+				}
 
-			cascadeFileEntryTypes(
-				userId, groupId, subFolderId, defaultFileEntryTypeId,
-				fileEntryTypeIds, serviceContext);
-		}
+		});
+
+		cascadeToFoldersQuery.setGroupId(groupId);
+		cascadeToFoldersQuery.performActions();
 	}
 
 	protected void deleteDDMStructureLinks(
