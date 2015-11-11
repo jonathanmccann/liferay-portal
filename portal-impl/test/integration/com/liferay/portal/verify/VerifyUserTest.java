@@ -15,15 +15,25 @@
 package com.liferay.portal.verify;
 
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
+import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.portal.model.Group;
+import com.liferay.portal.model.User;
+import com.liferay.portal.service.GroupLocalServiceUtil;
+import com.liferay.portal.service.ServiceContext;
+import com.liferay.portal.service.UserLocalServiceUtil;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.MainServletTestRule;
 import com.liferay.portal.verify.test.BaseVerifyProcessTestCase;
 
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.Test;
 
 /**
  * @author Manuel de la Peña
+ * @author Preston Crary
  */
 public class VerifyUserTest extends BaseVerifyProcessTestCase {
 
@@ -32,6 +42,29 @@ public class VerifyUserTest extends BaseVerifyProcessTestCase {
 	public static final AggregateTestRule aggregateTestRule =
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(), MainServletTestRule.INSTANCE);
+
+	@Test
+	public void testVerifyInactive() throws Exception {
+		User user = UserTestUtil.addUser();
+
+		UserLocalServiceUtil.updateStatus(
+			user.getUserId(), WorkflowConstants.STATUS_INACTIVE,
+			new ServiceContext());
+
+		Group group = user.getGroup();
+
+		Assert.assertFalse(group.isActive());
+
+		group.setActive(true);
+
+		GroupLocalServiceUtil.updateGroup(group);
+
+		doVerify();
+
+		group = user.getGroup();
+
+		Assert.assertFalse(group.isActive());
+	}
 
 	@Override
 	protected VerifyProcess getVerifyProcess() {
