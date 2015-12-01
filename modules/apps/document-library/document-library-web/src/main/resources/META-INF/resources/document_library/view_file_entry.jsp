@@ -65,11 +65,18 @@ if (PropsValues.DL_FILE_ENTRY_CONVERSIONS_ENABLED && PrefsPropsUtil.getBoolean(P
 
 long assetClassPK = 0;
 
-if (!fileVersion.isApproved() && !fileVersion.getVersion().equals(DLFileEntryConstants.VERSION_DEFAULT) && !fileEntry.isInTrash()) {
-	assetClassPK = fileVersion.getFileVersionId();
-}
-else {
+if (fileVersion != null) {
 	assetClassPK = fileEntry.getFileEntryId();
+
+	if (!fileVersion.isApproved() && (fileVersion.getVersion() != DLFileEntryConstants.VERSION_DEFAULT)) {
+		try {
+			AssetEntryLocalServiceUtil.getEntry(DLFileEntryConstants.getClassName(), fileVersion.getFileVersionId());
+
+			assetClassPK = fileVersion.getFileVersionId();
+		}
+		catch (NoSuchEntryException nsee) {
+		}
+	}
 }
 
 String webDavURL = StringPool.BLANK;

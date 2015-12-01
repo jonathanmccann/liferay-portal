@@ -79,11 +79,18 @@ if (fileEntryTypeId >= 0) {
 
 long assetClassPK = 0;
 
-if ((fileVersion != null) && !fileVersion.isApproved() && Validator.isNotNull(fileVersion.getVersion()) && !fileVersion.getVersion().equals(DLFileEntryConstants.VERSION_DEFAULT)) {
-	assetClassPK = fileVersion.getFileVersionId();
-}
-else if (fileEntry != null) {
+if (fileVersion != null) {
 	assetClassPK = fileEntry.getFileEntryId();
+
+	if (!fileVersion.isApproved() && (fileVersion.getVersion() != DLFileEntryConstants.VERSION_DEFAULT)) {
+		try {
+			AssetEntryLocalServiceUtil.getEntry(DLFileEntryConstants.getClassName(), fileVersion.getFileVersionId());
+
+			assetClassPK = fileVersion.getFileVersionId();
+		}
+		catch (NoSuchEntryException nsee) {
+		}
+	}
 }
 
 boolean approved = false;

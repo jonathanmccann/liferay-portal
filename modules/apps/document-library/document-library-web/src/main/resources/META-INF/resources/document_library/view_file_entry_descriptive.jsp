@@ -45,11 +45,18 @@ if ((user.getUserId() == fileEntry.getUserId()) || permissionChecker.isContentRe
 
 long assetClassPK = 0;
 
-if (!latestFileVersion.getVersion().equals(DLFileEntryConstants.VERSION_DEFAULT) && (latestFileVersion.getStatus() != WorkflowConstants.STATUS_APPROVED)) {
-	assetClassPK = latestFileVersion.getFileVersionId();
-}
-else {
+if (fileVersion != null) {
 	assetClassPK = fileEntry.getFileEntryId();
+
+	if (!fileVersion.isApproved() && (fileVersion.getVersion() != DLFileEntryConstants.VERSION_DEFAULT)) {
+		try {
+			AssetEntryLocalServiceUtil.getEntry(DLFileEntryConstants.getClassName(), fileVersion.getFileVersionId());
+
+			assetClassPK = fileVersion.getFileVersionId();
+		}
+		catch (NoSuchEntryException nsee) {
+		}
+	}
 }
 
 PortletURL rowURL = liferayPortletResponse.createRenderURL();
