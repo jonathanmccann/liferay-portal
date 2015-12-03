@@ -895,6 +895,18 @@ public class StringUtilTest {
 				s, wildcard, CharPool.UNDERLINE, CharPool.PERCENT,
 				CharPool.BACK_SLASH, true));
 
+		// Body match with a short wildcard
+		// containing a multiple wildcard character
+
+		s = "abc";
+		wildcard = "%c";
+
+		Assert.assertTrue(
+			s,
+			StringUtil.wildcardMatches(
+				s, wildcard, CharPool.UNDERLINE, CharPool.PERCENT,
+				CharPool.BACK_SLASH, true));
+
 		// Tail match
 
 		s = "abc";
