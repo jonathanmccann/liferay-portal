@@ -120,7 +120,7 @@ public class LoadBalancerUtilTest extends BaseJenkinsResultsParserTestCase {
 					project.getProperty(
 						"jenkins.local.url[" + sampleDir.getName() + "-" + i +
 						"]")),
-				"/queue/api/json?pretty");
+				"/queue/api/json");
 		}
 	}
 
