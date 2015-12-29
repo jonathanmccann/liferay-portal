@@ -288,12 +288,75 @@ public class CalendarServiceHttp {
 		}
 	}
 
+	public static java.util.List<com.liferay.calendar.model.Calendar> getCalendarResourceCalendars(
+		HttpPrincipal httpPrincipal, java.lang.String uuid)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		try {
+			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
+					"getCalendarResourceCalendars",
+					_getCalendarResourceCalendarsParameterTypes7);
+
+			MethodHandler methodHandler = new MethodHandler(methodKey, uuid);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception e) {
+				if (e instanceof com.liferay.portal.kernel.exception.PortalException) {
+					throw (com.liferay.portal.kernel.exception.PortalException)e;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(e);
+			}
+
+			return (java.util.List<com.liferay.calendar.model.Calendar>)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException se) {
+			_log.error(se, se);
+
+			throw se;
+		}
+	}
+
+	public static boolean hasStagedVersion(HttpPrincipal httpPrincipal,
+		com.liferay.calendar.model.Calendar calendar)
+		throws java.lang.Exception {
+		try {
+			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
+					"hasStagedVersion", _hasStagedVersionParameterTypes8);
+
+			MethodHandler methodHandler = new MethodHandler(methodKey, calendar);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception e) {
+				if (e instanceof java.lang.Exception) {
+					throw (java.lang.Exception)e;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(e);
+			}
+
+			return ((Boolean)returnObj).booleanValue();
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException se) {
+			_log.error(se, se);
+
+			throw se;
+		}
+	}
+
 	public static void importCalendar(HttpPrincipal httpPrincipal,
 		long calendarId, java.lang.String data, java.lang.String type)
 		throws java.lang.Exception {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"importCalendar", _importCalendarParameterTypes7);
+					"importCalendar", _importCalendarParameterTypes9);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					calendarId, data, type);
@@ -324,7 +387,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"search", _searchParameterTypes8);
+					"search", _searchParameterTypes10);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					companyId, groupIds, calendarResourceIds, keywords,
@@ -361,7 +424,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"search", _searchParameterTypes9);
+					"search", _searchParameterTypes11);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					companyId, groupIds, calendarResourceIds, keywords,
@@ -397,7 +460,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"search", _searchParameterTypes10);
+					"search", _searchParameterTypes12);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					companyId, groupIds, calendarResourceIds, name,
@@ -434,7 +497,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"search", _searchParameterTypes11);
+					"search", _searchParameterTypes13);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					companyId, groupIds, calendarResourceIds, name,
@@ -469,7 +532,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"searchCount", _searchCountParameterTypes12);
+					"searchCount", _searchCountParameterTypes14);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					companyId, groupIds, calendarResourceIds, keywords,
@@ -503,7 +566,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"searchCount", _searchCountParameterTypes13);
+					"searchCount", _searchCountParameterTypes15);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					companyId, groupIds, calendarResourceIds, keywords,
@@ -537,7 +600,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"searchCount", _searchCountParameterTypes14);
+					"searchCount", _searchCountParameterTypes16);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					companyId, groupIds, calendarResourceIds, name,
@@ -572,7 +635,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"searchCount", _searchCountParameterTypes15);
+					"searchCount", _searchCountParameterTypes17);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					companyId, groupIds, calendarResourceIds, name,
@@ -608,7 +671,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"updateCalendar", _updateCalendarParameterTypes16);
+					"updateCalendar", _updateCalendarParameterTypes18);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					calendarId, nameMap, descriptionMap, color, serviceContext);
@@ -645,7 +708,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"updateCalendar", _updateCalendarParameterTypes17);
+					"updateCalendar", _updateCalendarParameterTypes19);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					calendarId, nameMap, descriptionMap, timeZoneId, color,
@@ -680,7 +743,7 @@ public class CalendarServiceHttp {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
 			MethodKey methodKey = new MethodKey(CalendarServiceUtil.class,
-					"updateColor", _updateColorParameterTypes18);
+					"updateColor", _updateColorParameterTypes20);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
 					calendarId, color, serviceContext);
@@ -729,57 +792,62 @@ public class CalendarServiceHttp {
 		new Class[] { long.class, long.class };
 	private static final Class<?>[] _getCalendarResourceCalendarsParameterTypes6 =
 		new Class[] { long.class, long.class, boolean.class };
-	private static final Class<?>[] _importCalendarParameterTypes7 = new Class[] {
+	private static final Class<?>[] _getCalendarResourceCalendarsParameterTypes7 =
+		new Class[] { java.lang.String.class };
+	private static final Class<?>[] _hasStagedVersionParameterTypes8 = new Class[] {
+			com.liferay.calendar.model.Calendar.class
+		};
+	private static final Class<?>[] _importCalendarParameterTypes9 = new Class[] {
 			long.class, java.lang.String.class, java.lang.String.class
-		};
-	private static final Class<?>[] _searchParameterTypes8 = new Class[] {
-			long.class, long[].class, long[].class, java.lang.String.class,
-			boolean.class, int.class, int.class,
-			com.liferay.portal.kernel.util.OrderByComparator.class
-		};
-	private static final Class<?>[] _searchParameterTypes9 = new Class[] {
-			long.class, long[].class, long[].class, java.lang.String.class,
-			boolean.class, int.class, int.class,
-			com.liferay.portal.kernel.util.OrderByComparator.class,
-			java.lang.String.class
 		};
 	private static final Class<?>[] _searchParameterTypes10 = new Class[] {
 			long.class, long[].class, long[].class, java.lang.String.class,
-			java.lang.String.class, boolean.class, int.class, int.class,
+			boolean.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class
 		};
 	private static final Class<?>[] _searchParameterTypes11 = new Class[] {
 			long.class, long[].class, long[].class, java.lang.String.class,
+			boolean.class, int.class, int.class,
+			com.liferay.portal.kernel.util.OrderByComparator.class,
+			java.lang.String.class
+		};
+	private static final Class<?>[] _searchParameterTypes12 = new Class[] {
+			long.class, long[].class, long[].class, java.lang.String.class,
+			java.lang.String.class, boolean.class, int.class, int.class,
+			com.liferay.portal.kernel.util.OrderByComparator.class
+		};
+	private static final Class<?>[] _searchParameterTypes13 = new Class[] {
+			long.class, long[].class, long[].class, java.lang.String.class,
 			java.lang.String.class, boolean.class, int.class, int.class,
 			com.liferay.portal.kernel.util.OrderByComparator.class,
 			java.lang.String.class
 		};
-	private static final Class<?>[] _searchCountParameterTypes12 = new Class[] {
+	private static final Class<?>[] _searchCountParameterTypes14 = new Class[] {
 			long.class, long[].class, long[].class, java.lang.String.class,
 			boolean.class
 		};
-	private static final Class<?>[] _searchCountParameterTypes13 = new Class[] {
+	private static final Class<?>[] _searchCountParameterTypes15 = new Class[] {
 			long.class, long[].class, long[].class, java.lang.String.class,
 			boolean.class, java.lang.String.class
 		};
-	private static final Class<?>[] _searchCountParameterTypes14 = new Class[] {
+	private static final Class<?>[] _searchCountParameterTypes16 = new Class[] {
 			long.class, long[].class, long[].class, java.lang.String.class,
 			java.lang.String.class, boolean.class
 		};
-	private static final Class<?>[] _searchCountParameterTypes15 = new Class[] {
+	private static final Class<?>[] _searchCountParameterTypes17 = new Class[] {
 			long.class, long[].class, long[].class, java.lang.String.class,
 			java.lang.String.class, boolean.class, java.lang.String.class
 		};
-	private static final Class<?>[] _updateCalendarParameterTypes16 = new Class[] {
+	private static final Class<?>[] _updateCalendarParameterTypes18 = new Class[] {
 			long.class, java.util.Map.class, java.util.Map.class, int.class,
 			com.liferay.portal.service.ServiceContext.class
 		};
-	private static final Class<?>[] _updateCalendarParameterTypes17 = new Class[] {
+	private static final Class<?>[] _updateCalendarParameterTypes19 = new Class[] {
 			long.class, java.util.Map.class, java.util.Map.class,
 			java.lang.String.class, int.class, boolean.class, boolean.class,
 			boolean.class, com.liferay.portal.service.ServiceContext.class
 		};
-	private static final Class<?>[] _updateColorParameterTypes18 = new Class[] {
+	private static final Class<?>[] _updateColorParameterTypes20 = new Class[] {
 			long.class, int.class,
 			com.liferay.portal.service.ServiceContext.class
 		};

@@ -93,6 +93,12 @@ public class CalendarServiceUtil {
 			defaultCalendar);
 	}
 
+	public static java.util.List<com.liferay.calendar.model.Calendar> getCalendarResourceCalendars(
+		java.lang.String uuid)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService().getCalendarResourceCalendars(uuid);
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*
@@ -100,6 +106,12 @@ public class CalendarServiceUtil {
 	*/
 	public static java.lang.String getOSGiServiceIdentifier() {
 		return getService().getOSGiServiceIdentifier();
+	}
+
+	public static boolean hasStagedVersion(
+		com.liferay.calendar.model.Calendar calendar)
+		throws java.lang.Exception {
+		return getService().hasStagedVersion(calendar);
 	}
 
 	public static void importCalendar(long calendarId, java.lang.String data,

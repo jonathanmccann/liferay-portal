@@ -82,12 +82,21 @@ public interface CalendarService extends BaseService {
 		long groupId, long calendarResourceId, boolean defaultCalendar)
 		throws PortalException;
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.calendar.model.Calendar> getCalendarResourceCalendars(
+		java.lang.String uuid) throws PortalException;
+
 	/**
 	* Returns the OSGi service identifier.
 	*
 	* @return the OSGi service identifier
 	*/
 	public java.lang.String getOSGiServiceIdentifier();
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public boolean hasStagedVersion(
+		com.liferay.calendar.model.Calendar calendar)
+		throws java.lang.Exception;
 
 	public void importCalendar(long calendarId, java.lang.String data,
 		java.lang.String type) throws java.lang.Exception;

@@ -86,6 +86,13 @@ public class CalendarServiceWrapper implements CalendarService,
 			calendarResourceId, defaultCalendar);
 	}
 
+	@Override
+	public java.util.List<com.liferay.calendar.model.Calendar> getCalendarResourceCalendars(
+		java.lang.String uuid)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _calendarService.getCalendarResourceCalendars(uuid);
+	}
+
 	/**
 	* Returns the OSGi service identifier.
 	*
@@ -94,6 +101,13 @@ public class CalendarServiceWrapper implements CalendarService,
 	@Override
 	public java.lang.String getOSGiServiceIdentifier() {
 		return _calendarService.getOSGiServiceIdentifier();
+	}
+
+	@Override
+	public boolean hasStagedVersion(
+		com.liferay.calendar.model.Calendar calendar)
+		throws java.lang.Exception {
+		return _calendarService.hasStagedVersion(calendar);
 	}
 
 	@Override

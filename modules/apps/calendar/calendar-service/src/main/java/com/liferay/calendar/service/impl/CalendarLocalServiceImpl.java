@@ -179,6 +179,11 @@ public class CalendarLocalServiceImpl extends CalendarLocalServiceBaseImpl {
 	}
 
 	@Override
+	public List<Calendar> getCalendarResourceCalendars(String uuid) {
+		return calendarPersistence.findByUuid(uuid);
+	}
+
+	@Override
 	public void importCalendar(long calendarId, String data, String type)
 		throws Exception {
 

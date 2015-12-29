@@ -123,6 +123,22 @@ public class CalendarServiceImpl extends CalendarServiceBaseImpl {
 	}
 
 	@Override
+	public List<Calendar> getCalendarResourceCalendars(String uuid)
+		throws PortalException {
+
+		return calendarLocalService.getCalendarResourceCalendars(uuid);
+	}
+
+	@Override
+	public boolean hasStagedVersion(Calendar calendar) throws Exception {
+		String uuid = calendar.getUuid();
+
+		List<Calendar> calendars = getCalendarResourceCalendars(uuid);
+
+		return calendars.size() > 1;
+	}
+
+	@Override
 	public void importCalendar(long calendarId, String data, String type)
 		throws Exception {
 

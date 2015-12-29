@@ -262,6 +262,12 @@ public class CalendarLocalServiceWrapper implements CalendarLocalService,
 			calendarResourceId, defaultCalendar);
 	}
 
+	@Override
+	public java.util.List<com.liferay.calendar.model.Calendar> getCalendarResourceCalendars(
+		java.lang.String uuid) {
+		return _calendarLocalService.getCalendarResourceCalendars(uuid);
+	}
+
 	/**
 	* Returns a range of all the calendars.
 	*

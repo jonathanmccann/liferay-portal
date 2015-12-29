@@ -224,6 +224,10 @@ public interface CalendarLocalService extends BaseLocalService,
 	public java.util.List<com.liferay.calendar.model.Calendar> getCalendarResourceCalendars(
 		long groupId, long calendarResourceId, boolean defaultCalendar);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public java.util.List<com.liferay.calendar.model.Calendar> getCalendarResourceCalendars(
+		java.lang.String uuid);
+
 	/**
 	* Returns a range of all the calendars.
 	*

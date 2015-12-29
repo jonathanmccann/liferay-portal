@@ -257,6 +257,11 @@ public class CalendarLocalServiceUtil {
 			defaultCalendar);
 	}
 
+	public static java.util.List<com.liferay.calendar.model.Calendar> getCalendarResourceCalendars(
+		java.lang.String uuid) {
+		return getService().getCalendarResourceCalendars(uuid);
+	}
+
 	/**
 	* Returns a range of all the calendars.
 	*
