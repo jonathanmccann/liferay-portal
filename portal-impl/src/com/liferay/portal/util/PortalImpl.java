@@ -5290,6 +5290,34 @@ public class PortalImpl implements Portal {
 	}
 
 	@Override
+	public HttpServletRequest getUnwrappedDynamicServletRequest(
+		HttpServletRequest request) {
+
+		List<PersistentHttpServletRequestWrapper>
+			persistentHttpServletRequestWrappers = new ArrayList<>();
+
+		HttpServletRequest unwrappedDynamicServletRequest = request;
+
+		HttpServletRequestWrapper httpServletRequestWrapper;
+
+		while (true) {
+			httpServletRequestWrapper =
+				(HttpServletRequestWrapper)unwrappedDynamicServletRequest;
+
+			if (unwrappedDynamicServletRequest instanceof
+					DynamicServletRequest) {
+
+				break;
+			}
+
+			unwrappedDynamicServletRequest =
+				(HttpServletRequest)httpServletRequestWrapper.getRequest();
+		}
+
+		return (HttpServletRequest)httpServletRequestWrapper.getRequest();
+	}
+
+	@Override
 	public UploadPortletRequest getUploadPortletRequest(
 		PortletRequest portletRequest) {
 
