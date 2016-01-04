@@ -5340,6 +5340,8 @@ public class PortalImpl implements Portal {
 			currentRequest = httpServletRequestWrapper;
 		}
 
+		httpServletRequestWrapper = (HttpServletRequestWrapper)currentRequest;
+
 		return (HttpServletRequest)httpServletRequestWrapper.getRequest();
 	}
 
