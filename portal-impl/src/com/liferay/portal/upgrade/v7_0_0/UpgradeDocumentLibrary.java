@@ -14,6 +14,9 @@
 
 package com.liferay.portal.upgrade.v7_0_0;
 
+import com.liferay.portal.kernel.dao.db.DB;
+import com.liferay.portal.kernel.dao.db.DBManagerUtil;
+import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -111,6 +114,15 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 		}
 
 		updateRepositoryClassNameIds();
+
+		DB db = DBManagerUtil.getDB();
+
+		if (db.getDBType() == DBType.POSTGRESQL) {
+			updatePostgreSQLDeleteRule();
+			updatePostgreSQLUpdateRule();
+
+			updatePostgreSQLLargeObjects();
+		}
 	}
 
 	protected boolean hasFileEntry(long groupId, long folderId, String fileName)
@@ -517,6 +529,101 @@ public class UpgradeDocumentLibrary extends UpgradeProcess {
 		}
 		finally {
 			DataAccess.cleanUp(ps, rs);
+		}
+	}
+
+	protected void updatePostgreSQLDeleteRule() throws Exception {
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = connection.prepareStatement(
+				"select * from pg_catalog.pg_rules where rulename = " +
+					"'update_dlcontent_data_'");
+
+			rs = ps.executeQuery();
+
+			if (!rs.next()) {
+				StringBundler sb = new StringBundler(6);
+
+				sb.append("create or replace rule delete_dlcontent_data_ as ");
+				sb.append("on delete to dlcontent do also select case when ");
+				sb.append("exists (select 1 from pg_catalog.");
+				sb.append("pg_largeobject_metadata where (oid = old.data_)) ");
+				sb.append("then lo_unlink (old.data_) end from dlcontent ");
+				sb.append("where dlcontent.data_ = old.data_;");
+
+				updatePostgreSQLRule(sb.toString());
+			}
+		}
+		finally {
+			DataAccess.cleanUp(ps);
+		}
+	}
+
+	protected void updatePostgreSQLLargeObjects() throws Exception {
+
+		PreparedStatement ps = null;
+
+		StringBundler sb = new StringBundler();
+
+		sb.append("select lo_unlink (l.oid) from pg_largeobject_metadata l ");
+		sb.append("where (not exists (select 1 from dlcontent t where ");
+		sb.append("t.data_ = l.oid))");
+
+		try {
+			ps = connection.prepareStatement(sb.toString());
+
+			ps.execute();
+		}
+		finally {
+			DataAccess.cleanUp(ps);
+		}
+	}
+
+	protected void updatePostgreSQLRule(String sql) throws Exception {
+
+		PreparedStatement ps = null;
+
+		try {
+			ps = connection.prepareStatement(sql);
+
+			ps.executeUpdate();
+		}
+		finally {
+			DataAccess.cleanUp(ps);
+		}
+	}
+
+	protected void updatePostgreSQLUpdateRule() throws Exception {
+
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			ps = connection.prepareStatement(
+				"select * from pg_catalog.pg_rules where rulename = " +
+					"'update_dlcontent_data_'");
+
+			rs = ps.executeQuery();
+
+			if (!rs.next()) {
+				StringBundler sb = new StringBundler(7);
+
+				sb.append("create or replace rule update_dlcontent_data_ as ");
+				sb.append("on update to dlcontent where old.data_ is ");
+				sb.append("distinct from new.data_ and old.data_ is not null ");
+				sb.append("do also select case when exists (select 1 from ");
+				sb.append("pg_catalog.pg_largeobject_metadata where (oid = ");
+				sb.append("old.data_)) then lo_unlink (old.data_) end from ");
+				sb.append("dlcontent where dlcontent.data_ = old.data_;");
+
+				updatePostgreSQLRule(sb.toString());
+			}
+		}
+		finally {
+			DataAccess.cleanUp(ps);
 		}
 	}
 
