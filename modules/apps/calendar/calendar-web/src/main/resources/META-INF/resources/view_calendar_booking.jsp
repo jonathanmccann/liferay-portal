@@ -169,6 +169,7 @@ AssetEntry layoutAssetEntry = AssetEntryLocalServiceUtil.getEntry(CalendarBookin
 	<aui:input name="redirect" type="hidden" value="<%= currentURL %>" />
 	<aui:input name="calendarBookingId" type="hidden" value="<%= calendarBooking.getCalendarBookingId() %>" />
 	<aui:input name="status" type="hidden" />
+	<aui:input name="startTime" type="hidden" value = "<%= calendarBooking.getStartTime() %>" />
 
 	<aui:fieldset>
 		<aui:button-row>
