@@ -667,7 +667,7 @@ public class CalendarBookingServiceHttp {
 	}
 
 	public static void invokeTransition(HttpPrincipal httpPrincipal,
-		long calendarBookingId, int status,
+		long calendarBookingId, long startTime, int status,
 		com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		try {
@@ -675,7 +675,7 @@ public class CalendarBookingServiceHttp {
 					"invokeTransition", _invokeTransitionParameterTypes18);
 
 			MethodHandler methodHandler = new MethodHandler(methodKey,
-					calendarBookingId, status, serviceContext);
+					calendarBookingId, startTime, status, serviceContext);
 
 			try {
 				TunnelUtil.invoke(httpPrincipal, methodHandler);
@@ -1293,7 +1293,7 @@ public class CalendarBookingServiceHttp {
 			long.class
 		};
 	private static final Class<?>[] _invokeTransitionParameterTypes18 = new Class[] {
-			long.class, int.class,
+			long.class, long.class, int.class,
 			com.liferay.portal.service.ServiceContext.class
 		};
 	private static final Class<?>[] _moveCalendarBookingToTrashParameterTypes19 = new Class[] {

@@ -199,10 +199,12 @@ public class CalendarBookingServiceUtil {
 		return getService().hasChildCalendarBookings(parentCalendarBookingId);
 	}
 
-	public static void invokeTransition(long calendarBookingId, int status,
-		com.liferay.portal.service.ServiceContext serviceContext)
+	public static void invokeTransition(long calendarBookingId, long startTime,
+		int status, com.liferay.portal.service.ServiceContext serviceContext)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		getService().invokeTransition(calendarBookingId, status, serviceContext);
+		getService()
+			.invokeTransition(calendarBookingId, startTime, status,
+			serviceContext);
 	}
 
 	public static com.liferay.calendar.model.CalendarBooking moveCalendarBookingToTrash(

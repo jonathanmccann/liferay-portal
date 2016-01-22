@@ -367,12 +367,12 @@ public class CalendarBookingServiceSoap {
 		}
 	}
 
-	public static void invokeTransition(long calendarBookingId, int status,
-		com.liferay.portal.service.ServiceContext serviceContext)
+	public static void invokeTransition(long calendarBookingId, long startTime,
+		int status, com.liferay.portal.service.ServiceContext serviceContext)
 		throws RemoteException {
 		try {
 			CalendarBookingServiceUtil.invokeTransition(calendarBookingId,
-				status, serviceContext);
+				startTime, status, serviceContext);
 		}
 		catch (Exception e) {
 			_log.error(e, e);
