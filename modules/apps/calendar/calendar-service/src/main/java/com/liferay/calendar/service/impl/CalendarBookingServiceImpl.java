@@ -359,11 +359,35 @@ public class CalendarBookingServiceImpl extends CalendarBookingServiceBaseImpl {
 
 	@Override
 	public void invokeTransition(
-			long calendarBookingId, int status, ServiceContext serviceContext)
+			long calendarBookingId, long startTime, int status,
+			ServiceContext serviceContext)
 		throws PortalException {
 
 		CalendarBooking calendarBooking =
 			calendarBookingPersistence.findByPrimaryKey(calendarBookingId);
+
+		if (calendarBooking.isRecurring()) {
+			deleteCalendarBookingInstance(calendarBookingId, startTime, false);
+
+			long calendarId = calendarBooking.getCalendarId();
+			long[] childCalendarIds =
+				calendarBookingLocalService.getChildCalendarIds(
+					calendarBookingId, calendarId);
+
+			long duration =
+				calendarBooking.getEndTime() - calendarBooking.getStartTime();
+
+			long endTime = startTime + duration;
+
+			calendarBooking = addCalendarBooking(calendarId, childCalendarIds,
+			0, calendarBooking.getTitleMap(),
+			calendarBooking.getDescriptionMap(), calendarBooking.getLocation(),
+			startTime, endTime, calendarBooking.isAllDay(), null,
+			calendarBooking.getFirstReminder(),
+			calendarBooking.getFirstReminderType(),
+			calendarBooking.getSecondReminder(),
+			calendarBooking.getSecondReminderType(), serviceContext);
+		}
 
 		CalendarPermission.check(
 			getPermissionChecker(), calendarBooking.getCalendarId(),

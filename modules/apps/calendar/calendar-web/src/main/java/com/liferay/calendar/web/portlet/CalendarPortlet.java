@@ -201,13 +201,15 @@ public class CalendarPortlet extends MVCPortlet {
 		long calendarBookingId = ParamUtil.getLong(
 			actionRequest, "calendarBookingId");
 
+		long startTime = ParamUtil.getLong(actionRequest, "startTime");
+
 		int status = ParamUtil.getInteger(actionRequest, "status");
 
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			CalendarBooking.class.getName(), actionRequest);
 
 		_calendarBookingService.invokeTransition(
-			calendarBookingId, status, serviceContext);
+			calendarBookingId, startTime, status, serviceContext);
 	}
 
 	public void moveCalendarBookingToTrash(
