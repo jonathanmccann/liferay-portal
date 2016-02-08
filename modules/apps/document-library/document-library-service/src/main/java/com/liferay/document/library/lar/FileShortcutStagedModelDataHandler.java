@@ -34,9 +34,14 @@ import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.model.Group;
 import com.liferay.portal.repository.liferayrepository.model.LiferayFileShortcut;
+import com.liferay.portal.service.GroupLocalService;
 import com.liferay.portal.service.ServiceContext;
 import com.liferay.portlet.documentlibrary.lar.FileEntryUtil;
 
@@ -151,8 +156,35 @@ public class FileShortcutStagedModelDataHandler
 		Element fileShortcutElement = portletDataContext.getExportDataElement(
 			fileShortcut);
 
+		long fileShortcutGroupId = fileShortcut.getGroupId();
+
+		Group fileShortcutGroup = _groupLocalService.getGroup(
+			fileShortcutGroupId);
+
+		long fileEntryGroupId = fileEntry.getGroupId();
+
+		Group fileEntryGroup = _groupLocalService.getGroup(fileEntryGroupId);
+
+		String fileEntryLiveGroupId = null;
+
+		if (fileShortcutGroup.isStagedRemotely()) {
+			UnicodeProperties typeSettingsProperties =
+				fileEntryGroup.getTypeSettingsProperties();
+
+			fileEntryLiveGroupId = typeSettingsProperties.getProperty(
+				"remoteGroupId");
+		}
+		else {
+			fileEntryLiveGroupId = String.valueOf(fileEntryGroupId);
+		}
+
 		fileShortcutElement.addAttribute(
 			"file-entry-uuid", fileEntry.getUuid());
+
+		if (Validator.isNotNull(fileEntryLiveGroupId)) {
+			fileShortcutElement.addAttribute(
+				"file-entry-live-group-id", fileEntryLiveGroupId);
+		}
 
 		portletDataContext.addClassedModel(
 			fileShortcutElement,
@@ -187,14 +219,21 @@ public class FileShortcutStagedModelDataHandler
 		String fileEntryUuid = fileShortcutElement.attributeValue(
 			"file-entry-uuid");
 
+		long fileEntryLiveGroupId = GetterUtil.getLong(
+			fileShortcutElement.attributeValue("file-entry-live-group-id"));
+
+		if (fileEntryLiveGroupId == GetterUtil.DEFAULT_LONG) {
+			fileEntryLiveGroupId = groupId;
+		}
+
 		FileEntry importedFileEntry = FileEntryUtil.fetchByUUID_R(
-			fileEntryUuid, groupId);
+			fileEntryUuid, fileEntryLiveGroupId);
 
 		if (importedFileEntry == null) {
 			if (_log.isWarnEnabled()) {
 				_log.warn(
 					"Unable to fetch file entry {uuid=" + fileEntryUuid +
-						", groupId=" + groupId + "}");
+						", groupId=" + fileEntryLiveGroupId + "}");
 			}
 
 			return;
@@ -280,10 +319,16 @@ public class FileShortcutStagedModelDataHandler
 		_dlFileShortcutLocalService = dlFileShortcutLocalService;
 	}
 
+	@Reference(unbind = "-")
+	protected void setGroupLocalService(GroupLocalService groupLocalService) {
+		_groupLocalService = groupLocalService;
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		FileShortcutStagedModelDataHandler.class);
 
 	private DLAppLocalService _dlAppLocalService;
 	private DLFileShortcutLocalService _dlFileShortcutLocalService;
+	private GroupLocalService _groupLocalService;
 
 }
