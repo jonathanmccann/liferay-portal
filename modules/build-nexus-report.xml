@@ -45,7 +45,7 @@
 	<target name="build-nexus-report" depends="build-module-availability-report,build-module-stale-report" />
 
 	<target name="clean">
-		<delete dir="${basedir}/nexus.reports" />
+		<delete dir="${basedir}/nexus-reports" />
 	</target>
 
 	<target name="get-repository-index" depends="prepare-report-dir">
@@ -91,7 +91,7 @@
 	</target>
 
 	<target name="prepare-report-dir">
-		<property name="nexus.reports.dir" value="${basedir}/nexus.reports/${repository.name}" />
+		<property name="nexus.reports.dir" value="${basedir}/nexus-reports/${repository.name}" />
 
 		<delete dir="${nexus.reports.dir}" />
 		<mkdir dir="${nexus.reports.dir}" />
