@@ -51,10 +51,35 @@ public interface S3StoreConfiguration {
 	public String bucketName();
 
 	@Meta.AD(
+		deflt = "STANDARD", description = "%s3-storage-class-help",
+		name = "%s3-storage-class",
+		optionValues = {"REDUCED_REDUNDANCY", "STANDARD"}, required = false
+	)
+	public String s3StorageClass();
+
+	@Meta.AD(
+		deflt = "7", description = "%cache-dir-clean-up-expunge-help",
+		name = "%cache-dir-clean-up-expunge", required = false
+	)
+	public int cacheDirCleanUpExpunge();
+
+	@Meta.AD(
+		deflt = "100", description = "%cache-dir-clean-up-frequency-help",
+		name = "%cache-dir-clean-up-frequency", required = false
+	)
+	public int cacheDirCleanUpFrequency();
+
+	@Meta.AD(
 		deflt = "7", description = "%core-pool-size-help",
 		name = "%core-pool-size", required = false
 	)
 	public int corePoolSize();
+
+	@Meta.AD(
+		deflt = "20", description = "%max-pool-size-help",
+		name = "%max-pool-size", required = false
+	)
+	public int maxPoolSize();
 
 	@Meta.AD(
 		deflt = "50", description = "%http-client-max-connections-help",
@@ -69,12 +94,6 @@ public interface S3StoreConfiguration {
 	public int httpClientMaxErrorRetry();
 
 	@Meta.AD(
-		deflt = "20", description = "%max-pool-size-help",
-		name = "%max-pool-size", required = false
-	)
-	public int maxPoolSize();
-
-	@Meta.AD(
 		deflt = "5242880", description = "%minimum-uploads-part-size-help",
 		name = "%minimum-uploads-part-size", required = false)
 	public int minimumUploadPartSize();
@@ -85,27 +104,8 @@ public interface S3StoreConfiguration {
 	)
 	public int multipartUploadThreshold();
 
-	@Meta.AD(
-		deflt = "STANDARD", description = "%s3-storage-class-help",
-		name = "%s3-storage-class",
-		optionValues = {"REDUCED_REDUNDANCY", "STANDARD"}, required = false
-	)
-	public String s3StorageClass();
-
 	@Meta.AD(deflt = "10000", required = false)
 	public int connectionTimeout();
-
-	@Meta.AD(
-		deflt = "7", description = "%cache-dir-clean-up-expunge-help",
-		name = "%cache-dir-clean-up-expunge", required = false
-	)
-	public int cacheDirCleanUpExpunge();
-
-	@Meta.AD(
-		deflt = "100", description = "%cache-dir-clean-up-frequency-help",
-		name = "%cache-dir-clean-up-frequency", required = false
-	)
-	public int cacheDirCleanUpFrequency();
 
 	@Meta.AD(required = false)
 	public String proxyHost();
