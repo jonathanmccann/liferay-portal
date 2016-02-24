@@ -34,8 +34,7 @@ public interface S3StoreConfiguration {
 	public String accessKey();
 
 	@Meta.AD(
-		description = "%secret-key-help", name = "%secret-key",
-		required = false
+		description = "%secret-key-help", name = "%secret-key", required = false
 	)
 	public String secretKey();
 
@@ -47,7 +46,8 @@ public interface S3StoreConfiguration {
 
 	@Meta.AD(
 		description = "%bucket-name-help", name = "%bucket-name",
-		required = true)
+		required = true
+	)
 	public String bucketName();
 
 	@Meta.AD(
@@ -95,7 +95,8 @@ public interface S3StoreConfiguration {
 
 	@Meta.AD(
 		deflt = "5242880", description = "%minimum-uploads-part-size-help",
-		name = "%minimum-uploads-part-size", required = false)
+		name = "%minimum-uploads-part-size", required = false
+	)
 	public int minimumUploadPartSize();
 
 	@Meta.AD(

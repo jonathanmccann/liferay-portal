@@ -38,6 +38,7 @@ import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectSummary;
 import com.amazonaws.services.s3.model.StorageClass;
+
 import com.amazonaws.services.s3.transfer.TransferManager;
 import com.amazonaws.services.s3.transfer.TransferManagerConfiguration;
 import com.amazonaws.services.s3.transfer.Upload;
@@ -359,14 +360,14 @@ public class S3Store extends BaseStore {
 			File file = FileUtil.createTempFile(is);
 
 			putObject(companyId, repositoryId, fileName, versionLabel, file);
-	 	} catch (java.io.IOException ioe) {
+		}
+		catch (java.io.IOException ioe) {
 			throw new SystemException(ioe);
-	 	}
-	 	finally{
+		}
+		finally {
 			StreamUtil.cleanUp(is);
 		}
 	}
-
 
 	@Activate
 	protected void activate(Map<String, Object> properties) {
@@ -488,27 +489,6 @@ public class S3Store extends BaseStore {
 		amazonS3.setRegion(region);
 
 		return amazonS3;
-	}
-
-	protected TransferManager getTransferManager(AmazonS3 amazonS3) {
-		ExecutorService executorService = new ThreadPoolExecutor(
-			_s3StoreConfiguration.corePoolSize(),
-			_s3StoreConfiguration.maxPoolSize());
-
-		TransferManager transferManager = new TransferManager(
-			amazonS3, executorService, false);
-
-		TransferManagerConfiguration transferManagerConfiguration =
-			new TransferManagerConfiguration();
-
-		transferManagerConfiguration.setMultipartUploadThreshold(
-			_s3StoreConfiguration.multipartUploadThreshold());
-
-		transferManagerConfiguration.setMinimumUploadPartSize(
-			_s3StoreConfiguration.minimumUploadPartSize());
-
-		transferManager.setConfiguration(transferManagerConfiguration);
-		return transferManager;
 	}
 
 	protected AWSCredentialsProvider getAWSCredentialsProvider() {
@@ -641,6 +621,27 @@ public class S3Store extends BaseStore {
 		catch (AmazonClientException ace) {
 			throw transform(ace);
 		}
+	}
+
+	protected TransferManager getTransferManager(AmazonS3 amazonS3) {
+		ExecutorService executorService = new ThreadPoolExecutor(
+			_s3StoreConfiguration.corePoolSize(),
+			_s3StoreConfiguration.maxPoolSize());
+
+		TransferManager transferManager = new TransferManager(
+			amazonS3, executorService, false);
+
+		TransferManagerConfiguration transferManagerConfiguration =
+			new TransferManagerConfiguration();
+
+		transferManagerConfiguration.setMultipartUploadThreshold(
+			_s3StoreConfiguration.multipartUploadThreshold());
+
+		transferManagerConfiguration.setMinimumUploadPartSize(
+			_s3StoreConfiguration.minimumUploadPartSize());
+
+		transferManager.setConfiguration(transferManagerConfiguration);
+		return transferManager;
 	}
 
 	protected boolean isFileNotFound(
