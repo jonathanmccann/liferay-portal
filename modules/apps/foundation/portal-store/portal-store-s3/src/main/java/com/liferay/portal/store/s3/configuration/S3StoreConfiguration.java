@@ -40,6 +40,21 @@ public interface S3StoreConfiguration {
 	@Meta.AD(required = true)
 	public String bucketName();
 
+	@Meta.AD(deflt = "7", required = false)
+		public int corePoolSize();
+
+	@Meta.AD(deflt = "5", required = false)
+	public int httpClientMaxErrorRetry();
+
+	@Meta.AD(deflt = "20", required = false)
+	public int maxPoolSize();
+
+	@Meta.AD(deflt = "5242880", required = false)
+	public int minimumUploadPartSize();
+
+	@Meta.AD(deflt = "10485760", required = false)
+	public int multipartUploadThreshold();
+
 	@Meta.AD(
 		deflt = "STANDARD", optionValues = {"REDUCED_REDUNDANCY", "STANDARD"},
 		required = false
