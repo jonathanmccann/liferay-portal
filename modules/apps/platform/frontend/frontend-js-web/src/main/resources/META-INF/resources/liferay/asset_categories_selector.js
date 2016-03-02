@@ -650,7 +650,7 @@ AUI.add(
 										item.expandAll();
 									}
 								);
-								
+
 								popup.searchField._node.disabled = false;
 							}
 						);
