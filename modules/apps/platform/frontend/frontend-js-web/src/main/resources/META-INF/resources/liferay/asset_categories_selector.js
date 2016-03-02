@@ -629,6 +629,8 @@ AUI.add(
 
 						var popup = instance._popup;
 
+						popup.searchField._node.disabled = true;
+
 						popup.titleNode.html(Liferay.Language.get('categories'));
 
 						popup.entriesNode.addClass(CSS_TAGS_LIST);
@@ -648,6 +650,8 @@ AUI.add(
 										item.expandAll();
 									}
 								);
+								
+								popup.searchField._node.disabled = false;
 							}
 						);
 
