@@ -390,39 +390,37 @@ AUI.add(
 
 						var searchResults = instance._searchResultsNode;
 
-						if (!searchResults) {
-							searchResults = A.Node.create(TPL_SEARCH_RESULTS);
+						searchResults = A.Node.create(TPL_SEARCH_RESULTS);
 
-							instance._searchResultsNode = searchResults;
+						instance._searchResultsNode = searchResults;
 
-							var processSearchResults = A.bind(
-								'_processSearchResults',
-								instance,
-								searchResults
-							);
+						var processSearchResults = A.bind(
+							'_processSearchResults',
+							instance,
+							searchResults
+						);
 
-							var searchCategoriesTask = A.debounce(
-								instance._searchCategories,
-								350,
-								instance,
-								searchResults,
-								vocabularyIds,
-								vocabularyGroupIds,
-								processSearchResults
-							);
+						var searchCategoriesTask = A.debounce(
+							instance._searchCategories,
+							350,
+							instance,
+							searchResults,
+							vocabularyIds,
+							vocabularyGroupIds,
+							processSearchResults
+						);
 
-							var input = popup.searchField;
+						var input = popup.searchField;
 
-							input.on('keyup', searchCategoriesTask);
+						input.on('keyup', searchCategoriesTask);
 
-							if (instance.get('singleSelect')) {
-								var onSelectChange = A.bind('_onSelectChange', instance);
+						if (instance.get('singleSelect')) {
+							var onSelectChange = A.bind('_onSelectChange', instance);
 
-								popup.entriesNode.delegate('change', onSelectChange, 'input[type=radio]');
-							}
+							popup.entriesNode.delegate('change', onSelectChange, 'input[type=radio]');
 						}
 
-						popup.entriesNode.append(searchResults);
+						popup.entriesNode.placeAfter(searchResults);
 
 						instance._searchBuffer = [];
 					},
@@ -654,8 +652,6 @@ AUI.add(
 						if (instance._bindSearchHandle) {
 							instance._bindSearchHandle.detach();
 						}
-
-						instance._bindSearchHandle = popup.searchField.once('focus', instance._initSearch, instance);
 					},
 
 					_vocabulariesIterator: function(item, index) {
