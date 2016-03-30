@@ -320,7 +320,23 @@ AUI.add(
 
 						instance._intervalId = A.setInterval(
 							function() {
-								var elapsed = instance._elapsed += 1000;
+								var elapsed;
+								var timeOffset;
+
+								var timestamp = instance.get('timestamp');
+
+								var value = parseInt(timestamp, 10);
+
+								if (isNaN(value)) {
+									elapsed = sessionLength;
+								}
+								else {
+									timeOffset = Math.floor((Date.now() - timestamp) / 1000) * 1000;
+
+									elapsed = timeOffset;
+								}
+
+								instance._elapsed = elapsed;
 
 								var extend = false;
 
@@ -334,30 +350,20 @@ AUI.add(
 
 								if (hasWarned) {
 									if (warningMoment || expirationMoment) {
-										var timestamp = instance.get('timestamp');
-
 										if (timestamp == 'expired') {
 											expirationMoment = true;
 											hasExpired = true;
 										}
 										else if (instance.get('autoExtend')) {
+											expirationMoment = false;
+											extend = true;
 											hasExpired = false;
 											hasWarned = false;
-
-											expirationMoment = false;
 											warningMoment = false;
-
-											extend = true;
 										}
-										else {
-											var timeOffset = Math.floor((Date.now() - timestamp) / 1000) * 1000;
-
-											if (timeOffset < warningTime) {
-												instance._elapsed = timeOffset;
-
-												updateSessionState = false;
-												hasWarned = false;
-											}
+										else if (timeOffset < warningTime) {
+											hasWarned = false;
+											updateSessionState = false;
 										}
 									}
 
