@@ -207,6 +207,10 @@ public class JournalConverterImpl implements JournalConverter {
 		return _fieldsToDDMFormValuesConverter.convert(ddmStructure, fields);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	@Override
 	public String getDDMXSD(String journalXSD) throws Exception {
 		Locale defaultLocale = LocaleUtil.getSiteDefault();
@@ -214,6 +218,10 @@ public class JournalConverterImpl implements JournalConverter {
 		return getDDMXSD(journalXSD, defaultLocale);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	@Override
 	public String getDDMXSD(String journalXSD, Locale defaultLocale)
 		throws Exception {
@@ -236,6 +244,10 @@ public class JournalConverterImpl implements JournalConverter {
 		return XMLUtil.formatXML(document);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	@Override
 	public String getJournalXSD(String ddmXSD) throws Exception {
 		Document document = SAXReaderUtil.read(ddmXSD);
