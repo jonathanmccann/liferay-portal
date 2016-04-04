@@ -27,12 +27,14 @@ import com.liferay.document.library.kernel.service.DLFolderLocalServiceUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.StagedModel;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.test.rule.AggregateTestRule;
 import com.liferay.portal.kernel.test.rule.Sync;
 import com.liferay.portal.kernel.test.rule.SynchronousDestinationTestRule;
 import com.liferay.portal.kernel.test.rule.TransactionalTestRule;
+import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
@@ -48,6 +50,7 @@ import java.util.Map;
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 /**
@@ -65,6 +68,49 @@ public class FileShortcutStagedModelDataHandlerTest
 			new LiferayIntegrationTestRule(),
 			SynchronousDestinationTestRule.INSTANCE,
 			TransactionalTestRule.INSTANCE);
+
+	@Test
+	public void testAddShortcutToDocumentOnDifferentSite() throws Exception {
+		Group documentStagingGroup = GroupTestUtil.addGroup();
+		Group documentLiveGroup = GroupTestUtil.addGroup();
+
+		Group shortcutStagingGroup = GroupTestUtil.addGroup();
+		Group shortcutLiveGroup = GroupTestUtil.addGroup();
+
+		String fileName = RandomTestUtil.randomString() + ".txt";
+
+		ServiceContext documentServiceContext =
+			ServiceContextTestUtil.getServiceContext(
+				documentStagingGroup.getGroupId(), TestPropsValues.getUserId());
+
+		ServiceContext shortcutServiceContext =
+			ServiceContextTestUtil.getServiceContext(
+				shortcutStagingGroup.getGroupId(), TestPropsValues.getUserId());
+
+		FileEntry fileEntry = DLAppLocalServiceUtil.addFileEntry(
+			TestPropsValues.getUserId(), documentStagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName,
+			ContentTypes.TEXT_PLAIN,
+			RandomTestUtil.randomBytes(TikaSafeRandomizerBumper.INSTANCE),
+			documentServiceContext);
+
+		exportImportStagedModel(
+			fileEntry, documentStagingGroup, documentLiveGroup);
+
+		FileShortcut fileShortcut = DLAppLocalServiceUtil.addFileShortcut(
+			TestPropsValues.getUserId(), shortcutStagingGroup.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			fileEntry.getFileEntryId(), shortcutServiceContext);
+
+		exportImportStagedModel(
+			fileShortcut, shortcutStagingGroup, shortcutLiveGroup);
+
+		DLFileShortcut importedFileShortcut =
+			DLFileShortcutLocalServiceUtil.fetchDLFileShortcutByUuidAndGroupId(
+				fileShortcut.getUuid(), shortcutLiveGroup.getGroupId());
+
+		Assert.assertNotNull(importedFileShortcut);
+	}
 
 	@Override
 	protected Map<String, List<StagedModel>> addDependentStagedModelsMap(
