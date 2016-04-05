@@ -169,7 +169,21 @@ if (Validator.isNotNull(keywords)) {
 	}
 	%>
 
-	<c:if test="<%= showDragAndDropZone && !showSearchInfo %>">
+	<%
+	String className = null;
+	long primKey = 0;
+
+	if (folderId == 0) {
+		className = DLConstants.SERVICE_NAME;
+		primKey = scopeGroupId;
+	}
+	else {
+		className = DLFolder.class.getName();
+		primKey = folderId;
+	}
+	%>
+
+	<c:if test="<%= showDragAndDropZone && !showSearchInfo && permissionChecker.hasPermission(scopeGroupId, className, primKey, ActionKeys.ADD_DOCUMENT) %>">
 		<liferay-util:buffer var="selectFileHTML">
 			<label class="btn btn-default" for="<%= randomNamespace %>InputFile"><liferay-ui:message key="select-file" /></label>
 
