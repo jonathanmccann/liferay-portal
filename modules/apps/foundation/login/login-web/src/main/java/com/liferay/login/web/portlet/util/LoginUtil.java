@@ -241,7 +241,11 @@ public class LoginUtil {
 			company.getCompanyId(), toAddress, fromName, fromAddress, subject,
 			body, serviceContext);
 
-		SessionMessages.add(actionRequest, "requestProcessed", toAddress);
+		String successMessage = LanguageUtil.format(
+			request, "your-password-has-been-sent-to-x",
+			new String[] {toAddress}, false);
+
+		SessionMessages.add(actionRequest, "requestProcessed", successMessage);
 	}
 
 	/**
