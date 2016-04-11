@@ -242,8 +242,7 @@ public class LoginUtil {
 			body, serviceContext);
 
 		String successMessage = LanguageUtil.format(
-			request, "your-password-has-been-sent-to-x",
-			new String[] {toAddress}, false);
+			request, "your-password-has-been-sent-to-x", toAddress, false);
 
 		SessionMessages.add(actionRequest, "requestProcessed", successMessage);
 	}
