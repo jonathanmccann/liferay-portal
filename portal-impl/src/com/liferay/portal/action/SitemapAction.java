@@ -27,6 +27,7 @@ import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
 import com.liferay.portal.kernel.servlet.ServletResponseUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -82,13 +83,20 @@ public class SitemapAction extends Action {
 				host = host.trim();
 
 				VirtualHost virtualHost =
-					VirtualHostLocalServiceUtil.getVirtualHost(host);
+					VirtualHostLocalServiceUtil.fetchVirtualHost(host);
 
-				if (virtualHost.getLayoutSetId() != 0) {
+				if ((virtualHost != null) &&
+					(virtualHost.getLayoutSetId() != 0)) {
+
 					layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
 						virtualHost.getLayoutSetId());
 				}
-				else {
+				else if (ArrayUtil.contains(
+							PropsValues.VIRTUAL_HOSTS_VALID_HOSTS, host) ||
+						 ArrayUtil.contains(
+							PropsValues.VIRTUAL_HOSTS_VALID_HOSTS,
+							StringPool.STAR)) {
+
 					String groupName =
 						PropsValues.VIRTUAL_HOSTS_DEFAULT_SITE_NAME;
 
