@@ -198,10 +198,20 @@ public class BaseTextExportImportContentProcessor
 			map = HttpUtil.parameterMapFromString(dlReference);
 
 			if (map.containsKey("img_id")) {
-				map.put("image_id", map.get("img_id"));
+				if (map.get("img_id")[0].isEmpty()) {
+					map.remove("img_id");
+				}
+				else {
+					map.put("image_id", map.get("img_id"));
+				}
 			}
 			else if (map.containsKey("i_id")) {
-				map.put("image_id", map.get("i_id"));
+				if (map.get("i_id")[0].isEmpty()) {
+					map.remove("i_id");
+				}
+				else {
+					map.put("image_id", map.get("i_id"));
+				}
 			}
 		}
 
