@@ -25,10 +25,10 @@ import com.liferay.portal.kernel.spring.aop.Skip;
 import com.liferay.portal.kernel.transaction.Propagation;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.comparator.ResourceActionBitwiseValueComparator;
 import com.liferay.portal.service.base.ResourceActionLocalServiceBaseImpl;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -87,14 +87,25 @@ public class ResourceActionLocalServiceImpl
 		String name, List<String> actionIds, boolean addDefaultActions) {
 
 		List<ResourceAction> resourceActions = getResourceActions(name);
+		LinkedList<Long> availableBitwiseValues = new LinkedList<>();
+
+		long bitwiseValue = 2;
+
+		for (int i = 0; i < Long.SIZE - 1; i++) {
+			availableBitwiseValues.add(bitwiseValue);
+
+			bitwiseValue = bitwiseValue << 1;
+		}
 
 		for (ResourceAction resourceAction : resourceActions) {
 			if (!actionIds.contains(resourceAction.getActionId())) {
 				deleteResourceAction(resourceAction);
 			}
+			else {
+				availableBitwiseValues.remove(resourceAction.getBitwiseValue());
+			}
 		}
 
-		long lastBitwiseValue = -1;
 		List<ResourceAction> newResourceActions = null;
 
 		for (String actionId : actionIds) {
@@ -110,27 +121,11 @@ public class ResourceActionLocalServiceImpl
 				name, actionId);
 
 			if (resourceAction == null) {
-				long bitwiseValue = 1;
-
 				if (!actionId.equals(ActionKeys.VIEW)) {
-					if (lastBitwiseValue < 0) {
-						ResourceAction lastResourceAction =
-							resourceActionPersistence.fetchByName_First(
-								name,
-								new ResourceActionBitwiseValueComparator());
-
-						if (lastResourceAction != null) {
-							lastBitwiseValue =
-								lastResourceAction.getBitwiseValue();
-						}
-						else {
-							lastBitwiseValue = 1;
-						}
-					}
-
-					lastBitwiseValue = lastBitwiseValue << 1;
-
-					bitwiseValue = lastBitwiseValue;
+					bitwiseValue = availableBitwiseValues.pop();
+				}
+				else {
+					bitwiseValue = 1;
 				}
 
 				try {
