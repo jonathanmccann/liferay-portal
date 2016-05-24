@@ -17,7 +17,10 @@ package com.liferay.portal.service.impl;
 import com.liferay.portal.kernel.exception.NoSuchResourceActionException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.ResourceAction;
+import com.liferay.portal.kernel.model.ResourceBlockPermission;
 import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.ResourcePermission;
+import com.liferay.portal.kernel.model.ResourceTypePermission;
 import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
@@ -208,6 +211,60 @@ public class ResourceActionLocalServiceImpl
 	public ResourceAction deleteResourceAction(ResourceAction resourceAction) {
 		_resourceActions.remove(
 			encodeKey(resourceAction.getName(), resourceAction.getActionId()));
+
+		List<ResourcePermission> resourcePermissions =
+			resourcePermissionLocalService.getResourceResourcePermissions(
+				resourceAction.getName());
+
+		for (ResourcePermission resourcePermission : resourcePermissions) {
+			long actionIds = resourcePermission.getActionIds();
+
+			if ((actionIds & resourceAction.getBitwiseValue()) != 0) {
+				actionIds = actionIds ^ resourceAction.getBitwiseValue();
+
+				resourcePermission.setActionIds(actionIds);
+
+				resourcePermissionPersistence.update(resourcePermission);
+			}
+		}
+
+		List<ResourceTypePermission> resourceTypePermissions =
+			resourceTypePermissionLocalService.
+				getResourceResourceTypePermissions(resourceAction.getName());
+
+		for (ResourceTypePermission resourceTypePermission :
+				resourceTypePermissions) {
+
+			long actionIds = resourceTypePermission.getActionIds();
+
+			if ((actionIds & resourceAction.getBitwiseValue()) != 0) {
+				actionIds = actionIds ^ resourceAction.getBitwiseValue();
+
+				resourceTypePermission.setActionIds(actionIds);
+
+				resourceTypePermissionPersistence.update(
+					resourceTypePermission);
+			}
+		}
+
+		List<ResourceBlockPermission> resourceBlockPermissions =
+			resourceBlockPermissionLocalService.
+				getResourceResourceBlockPermissions(resourceAction.getName());
+
+		for (ResourceBlockPermission resourceBlockPermission :
+				resourceBlockPermissions) {
+
+			long actionIds = resourceBlockPermission.getActionIds();
+
+			if ((actionIds & resourceAction.getBitwiseValue()) != 0) {
+				actionIds = actionIds ^ resourceAction.getBitwiseValue();
+
+				resourceBlockPermission.setActionIds(actionIds);
+
+				resourceBlockPermissionPersistence.update(
+					resourceBlockPermission);
+			}
+		}
 
 		return resourceActionPersistence.remove(resourceAction);
 	}
