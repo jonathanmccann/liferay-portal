@@ -333,9 +333,12 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 			if (defaultUser != null) {
 				if (!defaultUser.isAgreedToTermsOfUse()) {
 					defaultUser.setAgreedToTermsOfUse(true);
-
-					userPersistence.update(defaultUser);
 				}
+
+				defaultUser.setLanguageId(
+					LocaleUtil.toLanguageId(companyDefaultLocale));
+
+				userPersistence.update(defaultUser);
 			}
 			else {
 				long userId = counterLocalService.increment();
