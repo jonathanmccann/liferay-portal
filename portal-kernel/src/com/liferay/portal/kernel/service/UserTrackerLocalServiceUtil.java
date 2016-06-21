@@ -128,6 +128,11 @@ public class UserTrackerLocalServiceUtil {
 		return getService().fetchUserTracker(userTrackerId);
 	}
 
+	public static com.liferay.portal.kernel.model.UserTracker getActiveUserTracker(
+		com.liferay.portal.kernel.model.UserTracker userTracker) {
+		return getService().getActiveUserTracker(userTracker);
+	}
+
 	/**
 	* Returns the user tracker with the primary key.
 	*

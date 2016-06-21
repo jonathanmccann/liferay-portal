@@ -130,6 +130,12 @@ public class UserTrackerLocalServiceWrapper implements UserTrackerLocalService,
 		return _userTrackerLocalService.fetchUserTracker(userTrackerId);
 	}
 
+	@Override
+	public com.liferay.portal.kernel.model.UserTracker getActiveUserTracker(
+		com.liferay.portal.kernel.model.UserTracker userTracker) {
+		return _userTrackerLocalService.getActiveUserTracker(userTracker);
+	}
+
 	/**
 	* Returns the user tracker with the primary key.
 	*
