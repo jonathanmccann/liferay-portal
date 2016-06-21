@@ -16,6 +16,10 @@ package com.liferay.portal.liveusers;
 
 import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
 import com.liferay.portal.kernel.cluster.ClusterNode;
+import com.liferay.portal.kernel.cluster.ClusterNodeResponse;
+import com.liferay.portal.kernel.cluster.ClusterNodeResponses;
+import com.liferay.portal.kernel.cluster.ClusterRequest;
+import com.liferay.portal.kernel.cluster.FutureClusterResponses;
 import com.liferay.portal.kernel.concurrent.ConcurrentHashSet;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -26,17 +30,23 @@ import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserTrackerLocalServiceUtil;
 import com.liferay.portal.kernel.service.persistence.UserTrackerUtil;
 import com.liferay.portal.kernel.servlet.PortalSessionContext;
+import com.liferay.portal.kernel.util.MethodHandler;
+import com.liferay.portal.kernel.util.MethodKey;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.util.PropsValues;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Enumeration;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpSession;
 
@@ -56,6 +66,10 @@ public class LiveUsers {
 		_instance._deleteGroup(companyId, groupId);
 	}
 
+	public static TreeSet<String> getActiveSessionAttributes(String sessionId) {
+		return _instance._getActiveSessionAttributes(sessionId);
+	}
+
 	public static Set<Long> getGroupUsers(long companyId, long groupId) {
 		return _instance._getGroupUsers(
 			_instance._getLiveUsers(companyId), groupId);
@@ -67,6 +81,10 @@ public class LiveUsers {
 
 	public static Map<Long, Map<Long, Set<String>>> getLocalClusterUsers() {
 		return _instance._getLocalClusterUsers();
+	}
+
+	public static TreeSet<String> getSessionAttributes(String sessionId) {
+		return _instance._getSessionAttributes(sessionId);
 	}
 
 	public static Map<String, UserTracker> getSessionUsers(long companyId) {
@@ -210,6 +228,48 @@ public class LiveUsers {
 		liveUsers.remove(groupId);
 	}
 
+	@SuppressWarnings("unchecked")
+	private TreeSet<String> _getActiveSessionAttributes(String sessionId) {
+		TreeSet<String> attributes = getSessionAttributes(sessionId);
+
+		if (attributes != null) {
+			return attributes;
+		}
+
+		try {
+			ClusterRequest clusterRequest =
+				ClusterRequest.createMulticastRequest(
+					new MethodHandler(_getKey, sessionId), true);
+
+			FutureClusterResponses futureClusterResponses =
+				ClusterExecutorUtil.execute(clusterRequest);
+
+			if (futureClusterResponses != null) {
+				ClusterNodeResponses clusterNodeResponses =
+					futureClusterResponses.get(20, TimeUnit.SECONDS);
+
+				BlockingQueue<ClusterNodeResponse> clusterNodeResponseQueue =
+					clusterNodeResponses.getClusterResponses();
+
+				for (ClusterNodeResponse clusterNodeResponse :
+						clusterNodeResponseQueue) {
+
+					attributes =
+						(TreeSet<String>)clusterNodeResponse.getResult();
+
+					if (attributes != null) {
+						return attributes;
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			_log.error(e);
+		}
+
+		return null;
+	}
+
 	private Set<Long> _getGroupUsers(
 		Map<Long, Set<Long>> liveUsers, long groupId) {
 
@@ -244,6 +304,28 @@ public class LiveUsers {
 		}
 
 		return _clusterUsers.get(clusterNode.getClusterNodeId());
+	}
+
+	private TreeSet<String> _getSessionAttributes(String sessionId) {
+		HttpSession session = PortalSessionContext.get(sessionId);
+
+		if (session != null) {
+			Enumeration<String> enu = session.getAttributeNames();
+
+			if (enu != null) {
+				TreeSet<String> sortedAttrNames = new TreeSet<>();
+
+				while (enu.hasMoreElements()) {
+					String attrName = enu.nextElement();
+
+					sortedAttrNames.add(attrName);
+				}
+
+				return sortedAttrNames;
+			}
+		}
+
+		return null;
 	}
 
 	private Map<String, UserTracker> _getSessionUsers(long companyId) {
@@ -519,6 +601,9 @@ public class LiveUsers {
 	private static final Log _log = LogFactoryUtil.getLog(LiveUsers.class);
 
 	private static final LiveUsers _instance = new LiveUsers();
+
+	private static final MethodKey _getKey = new MethodKey(
+		LiveUsers.class, "getSessionAttributes", String.class);
 
 	private final Map<String, Map<Long, Map<Long, Set<String>>>> _clusterUsers =
 		new ConcurrentHashMap<>();
