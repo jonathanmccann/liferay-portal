@@ -113,7 +113,7 @@ public class UserTrackerLocalServiceImpl
 			ClusterRequest clusterRequest =
 				ClusterRequest.createMulticastRequest(
 					new MethodHandler(
-						_getUserTrackerKey, userTracker.getCompanyId(),
+						_getUserTrackerMethodKey, userTracker.getCompanyId(),
 						userTracker.getSessionId()),
 					true);
 
@@ -158,7 +158,7 @@ public class UserTrackerLocalServiceImpl
 	private static final Log _log = LogFactoryUtil.getLog(
 		UserTrackerLocalServiceImpl.class);
 
-	private static final MethodKey _getUserTrackerKey = new MethodKey(
+	private static final MethodKey _getUserTrackerMethodKey = new MethodKey(
 		LiveUsers.class, "getUserTracker", long.class, String.class);
 
 }

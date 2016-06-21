@@ -239,7 +239,9 @@ public class LiveUsers {
 		try {
 			ClusterRequest clusterRequest =
 				ClusterRequest.createMulticastRequest(
-					new MethodHandler(_getKey, sessionId), true);
+					new MethodHandler(
+						_getSessionAttributesMethodKey, sessionId),
+					true);
 
 			FutureClusterResponses futureClusterResponses =
 				ClusterExecutorUtil.execute(clusterRequest);
@@ -602,8 +604,8 @@ public class LiveUsers {
 
 	private static final LiveUsers _instance = new LiveUsers();
 
-	private static final MethodKey _getKey = new MethodKey(
-		LiveUsers.class, "getSessionAttributes", String.class);
+	private static final MethodKey _getSessionAttributesMethodKey =
+		new MethodKey(LiveUsers.class, "getSessionAttributes", String.class);
 
 	private final Map<String, Map<Long, Map<Long, Set<String>>>> _clusterUsers =
 		new ConcurrentHashMap<>();
