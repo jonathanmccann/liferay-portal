@@ -14,14 +14,26 @@
 
 package com.liferay.portal.service.impl;
 
+import com.liferay.portal.kernel.cluster.ClusterExecutorUtil;
+import com.liferay.portal.kernel.cluster.ClusterNodeResponse;
+import com.liferay.portal.kernel.cluster.ClusterNodeResponses;
+import com.liferay.portal.kernel.cluster.ClusterRequest;
+import com.liferay.portal.kernel.cluster.FutureClusterResponses;
 import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.UserTracker;
 import com.liferay.portal.kernel.model.UserTrackerPath;
+import com.liferay.portal.kernel.util.MethodHandler;
+import com.liferay.portal.kernel.util.MethodKey;
+import com.liferay.portal.liveusers.LiveUsers;
 import com.liferay.portal.service.base.UserTrackerLocalServiceBaseImpl;
 import com.liferay.portal.util.PropsValues;
 
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author Brian Wing Shun Chan
@@ -92,11 +104,61 @@ public class UserTrackerLocalServiceImpl
 		return userTrackerPersistence.remove(userTracker);
 	}
 
+	public UserTracker getActiveUserTracker(UserTracker userTracker) {
+		if ((userTracker != null) && (userTracker.getHits() != 0)) {
+			return userTracker;
+		}
+
+		try {
+			ClusterRequest clusterRequest =
+				ClusterRequest.createMulticastRequest(
+					new MethodHandler(
+						_getUserTrackerKey, userTracker.getCompanyId(),
+						userTracker.getSessionId()),
+					true);
+
+			FutureClusterResponses futureClusterResponses =
+				ClusterExecutorUtil.execute(clusterRequest);
+
+			if (futureClusterResponses != null) {
+				ClusterNodeResponses clusterNodeResponses =
+					futureClusterResponses.get(20, TimeUnit.SECONDS);
+
+				BlockingQueue<ClusterNodeResponse> clusterNodeResponseQueue =
+					clusterNodeResponses.getClusterResponses();
+
+				for (ClusterNodeResponse clusterNodeResponse :
+						clusterNodeResponseQueue) {
+
+					UserTracker nodeUserTracker =
+						(UserTracker)clusterNodeResponse.getResult();
+
+					if ((nodeUserTracker != null) &&
+						(nodeUserTracker.getHits() != 0)) {
+
+						return nodeUserTracker;
+					}
+				}
+			}
+		}
+		catch (Exception e) {
+			_log.error(e);
+		}
+
+		return userTracker;
+	}
+
 	@Override
 	public List<UserTracker> getUserTrackers(
 		long companyId, int start, int end) {
 
 		return userTrackerPersistence.findByCompanyId(companyId, start, end);
 	}
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		UserTrackerLocalServiceImpl.class);
+
+	private static final MethodKey _getUserTrackerKey = new MethodKey(
+		LiveUsers.class, "getUserTracker", long.class, String.class);
 
 }

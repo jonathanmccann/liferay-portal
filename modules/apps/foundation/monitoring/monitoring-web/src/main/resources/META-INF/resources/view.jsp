@@ -64,6 +64,14 @@ portletURL.setParameter("mvcRenderCommandName", "/monitoring/view");
 
 			List<UserTracker> userTrackers = new ArrayList<UserTracker>(sessionUsers.values());
 
+			for (int i = 0; i < userTrackers.size(); i++) {
+				UserTracker userTracker = userTrackers.get(i);
+
+				userTracker = UserTrackerLocalServiceUtil.getActiveUserTracker(userTracker);
+
+				userTrackers.set(i, userTracker);
+			}
+
 			userTrackers = ListUtil.sort(userTrackers, new UserTrackerModifiedDateComparator(orderByType.equals("asc")));
 			%>
 

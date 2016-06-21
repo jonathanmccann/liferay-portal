@@ -124,6 +124,9 @@ public interface UserTrackerLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public UserTracker fetchUserTracker(long userTrackerId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public UserTracker getActiveUserTracker(UserTracker userTracker);
+
 	/**
 	* Returns the user tracker with the primary key.
 	*

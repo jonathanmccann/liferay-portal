@@ -31,7 +31,6 @@ page import="com.liferay.portal.kernel.language.LanguageUtil" %><%@
 page import="com.liferay.portal.kernel.model.*" %><%@
 page import="com.liferay.portal.kernel.model.impl.*" %><%@
 page import="com.liferay.portal.kernel.service.*" %><%@
-page import="com.liferay.portal.kernel.servlet.PortalSessionContext" %><%@
 page import="com.liferay.portal.kernel.util.FastDateFormatFactoryUtil" %><%@
 page import="com.liferay.portal.kernel.util.HtmlUtil" %><%@
 page import="com.liferay.portal.kernel.util.ListUtil" %><%@
@@ -47,10 +46,8 @@ page import="com.liferay.portal.util.PropsValues" %>
 <%@ page import="java.text.Format" %>
 
 <%@ page import="java.util.ArrayList" %><%@
-page import="java.util.Enumeration" %><%@
 page import="java.util.List" %><%@
 page import="java.util.Map" %><%@
-page import="java.util.Set" %><%@
 page import="java.util.TreeSet" %>
 
 <%@ page import="javax.portlet.PortletURL" %>
