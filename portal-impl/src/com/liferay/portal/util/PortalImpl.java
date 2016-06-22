@@ -141,6 +141,7 @@ import com.liferay.portal.kernel.servlet.PortalMessages;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
 import com.liferay.portal.kernel.servlet.PortalWebResourcesUtil;
 import com.liferay.portal.kernel.servlet.PortletServlet;
+import com.liferay.portal.kernel.servlet.ProtectedServletRequest;
 import com.liferay.portal.kernel.servlet.ServletContextUtil;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
@@ -5411,8 +5412,8 @@ public class PortalImpl implements Portal {
 	public UploadServletRequest getUploadServletRequest(
 		HttpServletRequest request) {
 
-		List<PersistentHttpServletRequestWrapper>
-			persistentHttpServletRequestWrappers = new ArrayList<>();
+		List<HttpServletRequestWrapper>
+			httpServletRequestWrappers = new ArrayList<>();
 
 		HttpServletRequest currentRequest = request;
 
@@ -5436,8 +5437,14 @@ public class PortalImpl implements Portal {
 					persistentHttpServletRequestWrapper =
 						(PersistentHttpServletRequestWrapper)currentRequest;
 
-				persistentHttpServletRequestWrappers.add(
+				httpServletRequestWrappers.add(
 					persistentHttpServletRequestWrapper.clone());
+			}
+			else if (currentRequest instanceof ProtectedServletRequest) {
+				ProtectedServletRequest protectedServletRequest = 
+					(ProtectedServletRequest)currentRequest;
+
+				httpServletRequestWrappers.add(protectedServletRequest.clone());
 			}
 
 			HttpServletRequestWrapper httpServletRequestWrapper =
@@ -5452,11 +5459,11 @@ public class PortalImpl implements Portal {
 				currentRequest);
 		}
 
-		for (int i = persistentHttpServletRequestWrappers.size() - 1; i >= 0;
+		for (int i = httpServletRequestWrappers.size() - 1; i >= 0;
 			i--) {
 
 			HttpServletRequestWrapper httpServletRequestWrapper =
-				persistentHttpServletRequestWrappers.get(i);
+				httpServletRequestWrappers.get(i);
 
 			httpServletRequestWrapper.setRequest(currentRequest);
 
