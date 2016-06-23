@@ -22,7 +22,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 /**
  * @author Brian Wing Shun Chan
  */
-public class ProtectedServletRequest extends HttpServletRequestWrapper {
+public class ProtectedServletRequest extends HttpServletRequestWrapper
+	implements Cloneable {
 
 	public ProtectedServletRequest(
 		HttpServletRequest request, String remoteUser) {
@@ -52,6 +53,16 @@ public class ProtectedServletRequest extends HttpServletRequestWrapper {
 		}
 
 		_authType = authType;
+	}
+
+	@Override
+	public ProtectedServletRequest clone() {
+		try {
+			return (ProtectedServletRequest)super.clone();
+		}
+		catch (CloneNotSupportedException cnse) {
+			throw new RuntimeException(cnse);
+		}
 	}
 
 	@Override
