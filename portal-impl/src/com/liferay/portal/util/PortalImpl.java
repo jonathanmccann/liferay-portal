@@ -5412,8 +5412,8 @@ public class PortalImpl implements Portal {
 	public UploadServletRequest getUploadServletRequest(
 		HttpServletRequest request) {
 
-		List<HttpServletRequestWrapper>
-			httpServletRequestWrappers = new ArrayList<>();
+		List<HttpServletRequestWrapper> httpServletRequestWrappers =
+			new ArrayList<>();
 
 		HttpServletRequest currentRequest = request;
 
@@ -5441,7 +5441,7 @@ public class PortalImpl implements Portal {
 					persistentHttpServletRequestWrapper.clone());
 			}
 			else if (currentRequest instanceof ProtectedServletRequest) {
-				ProtectedServletRequest protectedServletRequest = 
+				ProtectedServletRequest protectedServletRequest =
 					(ProtectedServletRequest)currentRequest;
 
 				httpServletRequestWrappers.add(protectedServletRequest.clone());

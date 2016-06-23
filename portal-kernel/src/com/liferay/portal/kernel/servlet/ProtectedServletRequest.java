@@ -22,8 +22,8 @@ import javax.servlet.http.HttpServletRequestWrapper;
 /**
  * @author Brian Wing Shun Chan
  */
-public class ProtectedServletRequest extends HttpServletRequestWrapper
-	implements Cloneable {
+public class ProtectedServletRequest
+	extends HttpServletRequestWrapper implements Cloneable {
 
 	public ProtectedServletRequest(
 		HttpServletRequest request, String remoteUser) {
