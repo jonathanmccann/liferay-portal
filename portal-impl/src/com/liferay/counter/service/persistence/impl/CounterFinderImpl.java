@@ -428,8 +428,15 @@ public class CounterFinderImpl
 
 			return counterHolder;
 		}
-		catch (Exception e) {
-			throw processException(e);
+		catch (SQLException sqle) {
+			if (sqle.getSQLState().equals("40001") ||
+				(sqle.getErrorCode() == 8177)) {
+
+				return _obtainIncrement(counterName, range, size);
+			}
+			else {
+				throw processException(sqle);
+			}
 		}
 		finally {
 			DataAccess.cleanUp(connection, preparedStatement, resultSet);
