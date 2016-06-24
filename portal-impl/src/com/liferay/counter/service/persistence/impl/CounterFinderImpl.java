@@ -22,7 +22,6 @@ import com.liferay.counter.model.impl.CounterImpl;
 import com.liferay.portal.kernel.cache.CacheRegistryItem;
 import com.liferay.portal.kernel.concurrent.CompeteLatch;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
-import com.liferay.portal.kernel.dao.orm.LockMode;
 import com.liferay.portal.kernel.dao.orm.ObjectNotFoundException;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.SystemException;
@@ -368,15 +367,45 @@ public class CounterFinderImpl
 	private CounterHolder _obtainIncrement(
 		String counterName, long range, long size) {
 
-		Session session = null;
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
 
 		try {
-			session = openSession();
+			connection = getConnection();
 
-			Counter counter = (Counter)session.get(
-				CounterImpl.class, counterName, LockMode.UPGRADE);
+			connection.setTransactionIsolation(
+				Connection.TRANSACTION_SERIALIZABLE);
+			connection.setAutoCommit(false);
 
-			long newValue = counter.getCurrentId();
+			// Get an exclusive lock with a no-op query
+
+			preparedStatement = connection.prepareStatement(
+				_SQL_UPDATE_NO_OP_BY_NAME);
+
+			preparedStatement.setString(1, counterName);
+
+			preparedStatement.executeUpdate();
+
+			preparedStatement.close();
+
+			// Retrieve the Counter value
+
+			preparedStatement = connection.prepareStatement(
+				_SQL_SELECT_ID_BY_NAME);
+
+			preparedStatement.setString(1, counterName);
+
+			resultSet = preparedStatement.executeQuery();
+
+			resultSet.next();
+
+			long newValue = resultSet.getLong("currentId");
+
+			resultSet.close();
+			preparedStatement.close();
+
+			// Computer and update the value
 
 			if (size > newValue) {
 				newValue = size;
@@ -384,13 +413,18 @@ public class CounterFinderImpl
 
 			long rangeMax = newValue + range;
 
-			counter.setCurrentId(rangeMax);
+			preparedStatement = connection.prepareStatement(
+				_SQL_UPDATE_CURRENT_ID_BY_NAME);
+
+			preparedStatement.setLong(1, rangeMax);
+			preparedStatement.setString(2, counterName);
+
+			preparedStatement.executeUpdate();
+			preparedStatement.close();
+
+			connection.commit();
 
 			CounterHolder counterHolder = new CounterHolder(newValue, rangeMax);
-
-			session.saveOrUpdate(counter);
-
-			session.flush();
 
 			return counterHolder;
 		}
@@ -398,7 +432,7 @@ public class CounterFinderImpl
 			throw processException(e);
 		}
 		finally {
-			closeSession(session);
+			DataAccess.cleanUp(connection, preparedStatement, resultSet);
 		}
 	}
 
@@ -417,8 +451,14 @@ public class CounterFinderImpl
 	private static final String _SQL_SELECT_NAMES =
 		"select name from Counter order by name asc";
 
+	private static final String _SQL_UPDATE_CURRENT_ID_BY_NAME =
+		"update Counter set currentId = ? where name = ?";
+
 	private static final String _SQL_UPDATE_NAME_BY_NAME =
 		"update Counter set name = ? where name = ?";
+
+	private static final String _SQL_UPDATE_NO_OP_BY_NAME =
+		"update Counter set currentId = currentId where name = ?";
 
 	private final Map<String, CounterRegister> _counterRegisterMap =
 		new ConcurrentHashMap<>();
