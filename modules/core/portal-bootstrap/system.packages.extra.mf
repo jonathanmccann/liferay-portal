@@ -3403,7 +3403,7 @@ Export-Package: com.liferay.ibm.icu;version="4.0.1",com.liferay.ibm.ic
  nel.templateparser,com.liferay.portal.kernel.theme";version="1.0.0",c
  om.liferay.portal.theme;uses:="com.liferay.portal.kernel.model,com.li
  feray.portal.kernel.theme,javax.servlet";version="1.0.0",com.liferay.
- portal.tools;version="1.1.0";uses:="com.liferay.portal.kernel.dao.db,
+ portal.tools;version="1.2.0";uses:="com.liferay.portal.kernel.dao.db,
  com.liferay.portal.kernel.exception,com.liferay.portal.kernel.util,co
  m.liferay.portal.kernel.xml",com.liferay.portal.tools.deploy;uses:="c
  om.liferay.portal.kernel.deploy,com.liferay.portal.kernel.deploy.auto
