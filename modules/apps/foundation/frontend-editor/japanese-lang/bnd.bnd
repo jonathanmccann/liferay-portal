@@ -1,0 +1,4 @@
+Bundle-Name: Japanese Language
+Bundle-SymbolicName: com.liferay.japanese.lang
+Bundle-Version: 1.0.0
+Export-Package: com.liferay.japanese.lang
