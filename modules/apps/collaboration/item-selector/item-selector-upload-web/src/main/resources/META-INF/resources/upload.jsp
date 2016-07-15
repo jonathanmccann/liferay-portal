@@ -23,9 +23,13 @@ ItemSelectorUploadViewDisplayContext itemSelectorUploadViewDisplayContext = (Ite
 <div class="container-fluid-1280 lfr-item-viewer" id="itemSelectorUploadContainer">
 	<div class="drop-enabled drop-zone upload-view">
 		<div id="uploadDescription">
-			<p>
-				<strong><liferay-ui:message arguments="<%= itemSelectorUploadViewDisplayContext.getRepositoryName() %>" key="drag-and-drop-to-upload-to-x-or" /></strong>
-			</p>
+			<c:choose>
+				<c:when test="<%= !BrowserSnifferUtil.isMobile(request) %>">
+					<p>
+						<strong><liferay-ui:message arguments="<%= itemSelectorUploadViewDisplayContext.getRepositoryName() %>" key="drag-and-drop-to-upload-to-x-or" /></strong>
+					</p>
+				</c:when>
+			</c:choose>
 
 			<p>
 				<label class="btn btn-default" for="<portlet:namespace />inputFile"><liferay-ui:message key="select-file" /></label>

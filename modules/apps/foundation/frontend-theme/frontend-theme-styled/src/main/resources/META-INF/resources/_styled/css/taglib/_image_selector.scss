@@ -57,3 +57,13 @@
 		}
 	}
 }
+
+.mobile .taglib-image-selector {
+	.glyphicon-ok {
+		display: none;
+	}
+
+	&.check-active .glyphicon-ok {
+		display: block;
+	}
+}
