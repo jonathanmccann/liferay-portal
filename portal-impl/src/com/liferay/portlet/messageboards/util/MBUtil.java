@@ -710,7 +710,8 @@ public class MBUtil {
 			return subject;
 		}
 		else {
-			return "RE: " + message.getSubject();
+			return MBMessageConstants.DEFAULT_MESSAGE_SUBJECT_REPLY_PREFIX +
+				message.getSubject();
 		}
 	}
 

@@ -40,11 +40,11 @@ if (threadId > 0) {
 		curParentMessage = MBMessageLocalServiceUtil.getMessage(parentMessageId);
 
 		if (Validator.isNull(subject)) {
-			if (curParentMessage.getSubject().startsWith("RE: ")) {
+			if (curParentMessage.getSubject().startsWith(MBMessageConstants.DEFAULT_MESSAGE_SUBJECT_REPLY_PREFIX)) {
 				subject = curParentMessage.getSubject();
 			}
 			else {
-				subject = "RE: " + curParentMessage.getSubject();
+				subject = MBMessageConstants.DEFAULT_MESSAGE_SUBJECT_REPLY_PREFIX + curParentMessage.getSubject();
 			}
 		}
 	}

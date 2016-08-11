@@ -2039,9 +2039,10 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 	protected MBSubscriptionSender getSubscriptionSender(
 		long userId, MBMessage message, String messageURL, String entryTitle,
-		boolean htmlFormat, String messageBody, String categoryName,
-		String inReplyTo, String fromName, String fromAddress,
-		String replyToAddress, String emailAddress, String fullName,
+		boolean htmlFormat, String messageBody, String messageSubject,
+		String messageSubjectPrefix, String categoryName, String inReplyTo,
+		String fromName, String fromAddress, String replyToAddress,
+		String emailAddress, String fullName,
 		LocalizedValuesMap subjectLocalizedValuesMap,
 		LocalizedValuesMap bodyLocalizedValuesMap,
 		ServiceContext serviceContext) {
@@ -2059,7 +2060,8 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 		subscriptionSender.setContextAttributes(
 			"[$CATEGORY_NAME$]", categoryName, "[$MAILING_LIST_ADDRESS$]",
 			replyToAddress, "[$MESSAGE_ID$]", message.getMessageId(),
-			"[$MESSAGE_SUBJECT$]", entryTitle, "[$MESSAGE_URL$]", messageURL,
+			"[$MESSAGE_SUBJECT$]", messageSubject, "[$MESSAGE_SUBJECT_PREFIX]",
+			messageSubjectPrefix, "[$MESSAGE_URL$]", messageURL,
 			"[$MESSAGE_USER_ADDRESS$]", emailAddress, "[$MESSAGE_USER_NAME$]",
 			fullName);
 		subscriptionSender.setCurrentUserId(userId);
@@ -2323,6 +2325,9 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 
 		String inReplyTo = null;
 
+		String messageSubject = message.getSubject();
+		String messageSubjectPrefix = "";
+
 		if (message.getParentMessageId() !=
 				MBMessageConstants.DEFAULT_PARENT_MESSAGE_ID) {
 
@@ -2335,13 +2340,23 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 				company.getMx(), MBUtil.MESSAGE_POP_PORTLET_PREFIX,
 				message.getCategoryId(), parentMessage.getMessageId(),
 				modifiedDate.getTime());
+
+			if (messageSubject.startsWith(
+					MBMessageConstants.DEFAULT_MESSAGE_SUBJECT_REPLY_PREFIX)) {
+
+				messageSubjectPrefix =
+					MBMessageConstants.DEFAULT_MESSAGE_SUBJECT_REPLY_PREFIX;
+
+				messageSubject = messageSubject.substring(
+					messageSubjectPrefix.length());
+			}
 		}
 
 		SubscriptionSender subscriptionSender = getSubscriptionSender(
 			userId, message, messageURL, entryTitle, htmlFormat, messageBody,
-			categoryName, inReplyTo, fromName, fromAddress, replyToAddress,
-			emailAddress, fullName, subjectLocalizedValuesMap,
-			bodyLocalizedValuesMap, serviceContext);
+			messageSubject, messageSubjectPrefix, categoryName, inReplyTo,
+			fromName, fromAddress, replyToAddress, emailAddress, fullName,
+			subjectLocalizedValuesMap, bodyLocalizedValuesMap, serviceContext);
 
 		subscriptionSender.addPersistedSubscribers(
 			MBCategory.class.getName(), message.getGroupId());
@@ -2363,8 +2378,9 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 				MBSubscriptionSender sourceMailingListSubscriptionSender =
 					getSubscriptionSender(
 						userId, message, messageURL, entryTitle, htmlFormat,
-						messageBody, categoryName, inReplyTo, fromName,
-						fromAddress, replyToAddress, emailAddress, fullName,
+						messageBody, messageSubject, messageSubjectPrefix,
+						categoryName, inReplyTo, fromName, fromAddress,
+						replyToAddress, emailAddress, fullName,
 						subjectLocalizedValuesMap, bodyLocalizedValuesMap,
 						serviceContext);
 

@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -279,6 +280,19 @@ public class MBMessageImpl extends MBMessageBaseImpl {
 	@Override
 	public void setAttachmentsFolderId(long attachmentsFolderId) {
 		_attachmentsFolderId = attachmentsFolderId;
+	}
+
+	@Override
+	public void setModifiedDate(Date modifiedDate) {
+		if (modifiedDate != null) {
+			long modifiedDateTime = modifiedDate.getTime();
+			modifiedDateTime -= (modifiedDateTime % 1000);
+
+			super.setModifiedDate(new Date(modifiedDateTime));
+		}
+		else {
+			super.setModifiedDate(modifiedDate);
+		}
 	}
 
 	private long _attachmentsFolderId;
