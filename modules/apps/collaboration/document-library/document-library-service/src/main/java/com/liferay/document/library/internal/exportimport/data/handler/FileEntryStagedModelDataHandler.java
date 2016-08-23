@@ -59,6 +59,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.trash.TrashHandler;
 import com.liferay.portal.kernel.trash.TrashHandlerRegistryUtil;
 import com.liferay.portal.kernel.util.ArrayUtil;
+import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -411,6 +412,22 @@ public class FileEntryStagedModelDataHandler
 				serviceContext.setAttribute(
 					"fileVersionUuid", fileVersion.getUuid());
 				serviceContext.setUuid(fileEntry.getUuid());
+
+				//A command is needed for notifying subscribers
+				serviceContext.setCommand(Constants.ADD);
+
+				//A layout url is needed for notifying subscribers
+				String layoutFullURL = PortalUtil.getLayoutFullURL(
+					portletDataContext.getGroupId(),
+					portletDataContext.getPortletId());
+
+				serviceContext.setLayoutFullURL(layoutFullURL);
+
+				//An entryURL is needed for notifying subscribers
+				//Not exactly sure how to set entryURL properly
+				//Using layoutFullURL for now
+				//Example on DLImpl.java getEntryURL(...)
+				serviceContext.setAttribute("entryURL", layoutFullURL);
 
 				String fileEntryTitle = _dlFileEntryLocalService.getUniqueTitle(
 					portletDataContext.getScopeGroupId(), folderId, 0,

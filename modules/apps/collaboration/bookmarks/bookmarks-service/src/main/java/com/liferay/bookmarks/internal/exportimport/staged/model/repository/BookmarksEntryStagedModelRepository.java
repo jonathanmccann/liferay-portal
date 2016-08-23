@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.trash.TrashHandler;
 
 import java.util.List;
 
+import com.liferay.portal.kernel.util.PortalUtil;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 
@@ -173,6 +174,12 @@ public class BookmarksEntryStagedModelRepository
 
 		ServiceContext serviceContext = portletDataContext.createServiceContext(
 			bookmarksEntry);
+
+		String layoutFullURL = PortalUtil.getLayoutFullURL(
+			portletDataContext.getGroupId(),
+			portletDataContext.getPortletId());
+
+		serviceContext.setLayoutFullURL(layoutFullURL);
 
 		return _bookmarksEntryLocalService.updateEntry(
 			userId, bookmarksEntry.getEntryId(), bookmarksEntry.getGroupId(),
