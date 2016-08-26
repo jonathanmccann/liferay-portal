@@ -38,7 +38,7 @@
 			<if>
 				<isfalse value="${valid.checksum}" />
 				<then>
-					<fail message="${file} failed checksum." />
+					<fail message="@{file} failed checksum." />
 				</then>
 			</if>
 		</sequential>
@@ -129,7 +129,7 @@
 						</else>
 					</if>
 
-					<md5check file="${mirrors.cache.artifact.dir}/${mirrors.cache.artifact.file.name}" md5.url="${src}.md5" />
+					<!--<md5check file="${mirrors.cache.artifact.dir}/${mirrors.cache.artifact.file.name}" md5.url="${src}.md5" />-->
 				</then>
 			</if>
 
