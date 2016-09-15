@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.osgi.web.servlet.context.helper.ServletContextHelperRegistration;
 import com.liferay.portal.osgi.web.servlet.context.helper.definition.WebXMLDefinition;
 import com.liferay.portal.osgi.web.servlet.context.helper.internal.definition.WebXMLDefinitionLoader;
+import com.liferay.portal.osgi.web.servlet.jsp.compiler.JspServlet;
 
 import java.net.URL;
 
@@ -210,7 +211,7 @@ public class ServletContextHelperRegistrationImpl
 			new String[] {"*.jsp", "*.jspx"});
 
 		return _bundleContext.registerService(
-			Servlet.class, new JspServletWrapper(), properties);
+			Servlet.class, new JspServlet() {}, properties);
 	}
 
 	protected ServiceRegistration<Servlet> createPortletServlet() {
