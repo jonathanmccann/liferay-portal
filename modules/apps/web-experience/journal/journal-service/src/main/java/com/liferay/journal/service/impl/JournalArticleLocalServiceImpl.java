@@ -8056,8 +8056,14 @@ public class JournalArticleLocalServiceImpl
 			}
 		}
 
-		exportImportContentProcessorController.validateContentReferences(
-			JournalArticle.class, groupId, content);
+		boolean validated =
+			exportImportContentProcessorController.validateContentReferences(
+				JournalArticle.class, groupId, content);
+
+		if (!validated) {
+			throw new PortalException(
+				"Validation failed for journal article references");
+		}
 	}
 
 	/**
