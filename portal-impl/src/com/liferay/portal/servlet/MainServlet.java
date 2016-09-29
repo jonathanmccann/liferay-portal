@@ -242,8 +242,8 @@ public class MainServlet extends ActionServlet {
 
 		if (!"UTC".equals(userTimeZone) && !"GMT".equals(userTimeZone)) {
 			_log.error(
-				"Default JVM timezone configuration [" + userTimeZone + "] is" +
-				" not UTC or GMT, please review JVM user.timezone " +
+				"Default JVM timezone configuration [" + userTimeZone + "] " +
+				"is not UTC or GMT, please review JVM user.timezone " +
 				"configuration");
 		}
 
