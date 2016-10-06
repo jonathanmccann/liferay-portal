@@ -81,6 +81,7 @@ import com.liferay.portal.kernel.diff.DiffHtmlUtil;
 import com.liferay.portal.kernel.exception.LocaleException;
 import com.liferay.portal.kernel.exception.NoSuchImageException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
+import com.liferay.portal.kernel.exception.NoSuchModelException;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -8058,8 +8059,14 @@ public class JournalArticleLocalServiceImpl
 			}
 		}
 
-		exportImportContentProcessorController.validateContentReferences(
-			JournalArticle.class, groupId, content);
+		boolean validated =
+			exportImportContentProcessorController.validateContentReferences(
+				JournalArticle.class, groupId, content);
+
+		if (!validated) {
+			throw new NoSuchModelException(
+				"Validation failed for journal article references");
+		}
 	}
 
 	/**
