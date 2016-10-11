@@ -229,8 +229,8 @@ public abstract class BaseUpgradePortletId extends UpgradeProcess {
 		throws Exception {
 
 		String sql =
-			"update PortletPreferences set portletId = '" +
-				newRootPortletId + "' where portletId = '" +
+			"update PortletPreferences set portletId = '" + newRootPortletId +
+				"' where portletId = '" +
 				oldRootPortletId + "'";
 
 		try (PreparedStatement ps = connection.prepareStatement(sql)) {
