@@ -171,7 +171,7 @@ public class StartupAction extends SimpleAction {
 
 		DB db = DBManagerUtil.getDB();
 
-		if ((db.getDBType() == DBType.MYSQL) &&
+		/*if ((db.getDBType() == DBType.MYSQL) &&
 			GetterUtil.getFloat(db.getVersionString()) < 5.6F) {
 
 			_log.error(
@@ -179,7 +179,7 @@ public class StartupAction extends SimpleAction {
 					"longer supports older versions of MySQL.");
 
 			System.exit(1);
-		}
+		}*/
 
 		// Check required build number
 

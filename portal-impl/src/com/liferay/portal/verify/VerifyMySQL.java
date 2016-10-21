@@ -46,7 +46,7 @@ public class VerifyMySQL extends VerifyProcess {
 		}
 
 		verifyTableEngine();
-		verifyDatetimePrecision();
+		//verifyDatetimePrecision();
 	}
 
 	protected String getActualColumnType(
