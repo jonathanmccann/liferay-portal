@@ -41,6 +41,7 @@ boolean multiple = GetterUtil.getBoolean(String.valueOf(request.getAttribute("au
 java.lang.String name = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:name"));
 java.lang.String onChange = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:onChange"));
 java.lang.String onClick = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:onClick"));
+java.lang.String onMouseDown = "$(this).focus()";
 java.lang.String prefix = GetterUtil.getString((java.lang.String)request.getAttribute("aui:select:prefix"));
 boolean required = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:select:required")));
 boolean showEmptyOption = GetterUtil.getBoolean(String.valueOf(request.getAttribute("aui:select:showEmptyOption")));
