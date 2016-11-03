@@ -603,6 +603,17 @@ public class DLImpl implements DL {
 	}
 
 	@Override
+	public String getPreviewURL(long fileEntryId, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		FileEntry fileEntry = DLAppLocalServiceUtil.getFileEntry(fileEntryId);
+
+		return getPreviewURL(
+			fileEntry, fileEntry.getFileVersion(), themeDisplay,
+			StringPool.BLANK, true, true);
+	}
+
+	@Override
 	public <T> OrderByComparator<T> getRepositoryModelOrderByComparator(
 		String orderByCol, String orderByType) {
 
