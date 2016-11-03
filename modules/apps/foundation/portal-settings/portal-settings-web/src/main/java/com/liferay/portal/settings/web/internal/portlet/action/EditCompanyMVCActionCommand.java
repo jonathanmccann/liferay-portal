@@ -155,7 +155,6 @@ public class EditCompanyMVCActionCommand extends BaseFormMVCActionCommand {
 			actionRequest, "virtualHostname");
 		String mx = ParamUtil.getString(actionRequest, "mx");
 		String homeURL = ParamUtil.getString(actionRequest, "homeURL");
-		boolean deleteLogo = ParamUtil.getBoolean(actionRequest, "deleteLogo");
 
 		byte[] logoBytes = null;
 
@@ -188,7 +187,7 @@ public class EditCompanyMVCActionCommand extends BaseFormMVCActionCommand {
 			actionRequest, "settings--");
 
 		_companyService.updateCompany(
-			companyId, virtualHostname, mx, homeURL, !deleteLogo, logoBytes,
+			companyId, virtualHostname, mx, homeURL, fileEntryId, logoBytes,
 			name, legalName, legalId, legalType, sicCode, tickerSymbol,
 			industry, type, size, languageId, timeZoneId, addresses,
 			emailAddresses, phones, websites, properties);

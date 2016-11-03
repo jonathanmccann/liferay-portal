@@ -1847,7 +1847,7 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	public void deletePortrait(long userId) throws PortalException {
 		User user = userPersistence.findByPrimaryKey(userId);
 
-		PortalUtil.updateImageId(user, false, null, "portraitId", 0, 0, 0);
+		PortalUtil.updateImageId(user, 0, null, "portraitId", 0);
 	}
 
 	/**

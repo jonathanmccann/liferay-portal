@@ -601,7 +601,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 
 			if (ArrayUtil.isNotEmpty(portraitBytes)) {
 				user = _userLocalService.updatePortrait(
-					user.getUserId(), portraitBytes);
+					user.getUserId(), ldapUser.getPortraitId(), portraitBytes);
 			}
 		}
 
@@ -1530,7 +1530,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			passwordReset, ldapUser.getReminderQueryQuestion(),
 			ldapUser.getReminderQueryAnswer(), ldapUser.getScreenName(),
 			ldapUser.getEmailAddress(), ldapUser.getFacebookId(),
-			ldapUser.getOpenId(), ldapUser.getPortraitId() > 0,
+			ldapUser.getOpenId(), ldapUser.getPortraitId(),
 			ldapUser.getPortraitBytes(), ldapUser.getLanguageId(),
 			ldapUser.getTimeZoneId(), ldapUser.getGreeting(),
 			ldapUser.getComments(), ldapUser.getFirstName(),

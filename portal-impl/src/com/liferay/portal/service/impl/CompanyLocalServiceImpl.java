@@ -523,7 +523,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	public Company deleteLogo(long companyId) throws PortalException {
 		Company company = companyPersistence.findByPrimaryKey(companyId);
 
-		PortalUtil.updateImageId(company, false, null, "logoId", 0, 0, 0);
+		PortalUtil.updateImageId(company, 0, null, "logoId", 0);
 
 		return company;
 	}

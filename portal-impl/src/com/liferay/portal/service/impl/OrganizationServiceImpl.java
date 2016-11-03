@@ -628,7 +628,7 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 
 		return updateOrganization(
 			organizationId, parentOrganizationId, name, type, regionId,
-			countryId, statusId, comments, true, null, site, addresses,
+			countryId, statusId, comments, 0, null, site, addresses,
 			emailAddresses, orgLabors, phones, websites, serviceContext);
 	}
 
@@ -661,7 +661,7 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 
 		return updateOrganization(
 			organizationId, parentOrganizationId, name, type, regionId,
-			countryId, statusId, comments, true, null, site, null, null, null,
+			countryId, statusId, comments, 0, null, site, null, null, null,
 			null, null, serviceContext);
 	}
 

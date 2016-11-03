@@ -298,7 +298,7 @@ public class OrganizationLocalServiceImpl
 	public void deleteLogo(long organizationId) throws PortalException {
 		Organization organization = getOrganization(organizationId);
 
-		PortalUtil.updateImageId(organization, false, null, "logoId", 0, 0, 0);
+		PortalUtil.updateImageId(organization, 0, null, "logoId", 0);
 	}
 
 	/**
