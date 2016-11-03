@@ -373,7 +373,11 @@ public class OrganizationLocalServiceWrapper implements OrganizationLocalService
 	names for the organization, and merge expando bridge attributes
 	for the organization.
 	* @return the organization
+	* @deprecated As of 7.0.0, replaced by {@link #updateOrganization(long,
+	long, long, String, String, long, long, long, String, long,
+	byte[], boolean, ServiceContext)}
 	*/
+	@Deprecated
 	@Override
 	public com.liferay.portal.kernel.model.Organization updateOrganization(
 		long companyId, long organizationId, long parentOrganizationId,
@@ -407,8 +411,8 @@ public class OrganizationLocalServiceWrapper implements OrganizationLocalService
 	attributes for the organization.
 	* @return the organization
 	* @deprecated As of 7.0.0, replaced by {@link #updateOrganization(long,
-	long, long, String, String, long, long, long, String,
-	boolean, byte[], boolean, ServiceContext)}
+	long, long, String, String, long, long, long, String, long,
+	byte[], boolean, ServiceContext)}
 	*/
 	@Deprecated
 	@Override
@@ -421,6 +425,42 @@ public class OrganizationLocalServiceWrapper implements OrganizationLocalService
 		return _organizationLocalService.updateOrganization(companyId,
 			organizationId, parentOrganizationId, name, type, regionId,
 			countryId, statusId, comments, site, serviceContext);
+	}
+
+	/**
+	* Updates the organization.
+	*
+	* @param companyId the primary key of the organization's company
+	* @param organizationId the primary key of the organization
+	* @param parentOrganizationId the primary key of organization's parent
+	organization
+	* @param name the organization's name
+	* @param type the organization's type
+	* @param regionId the primary key of the organization's region
+	* @param countryId the primary key of the organization's country
+	* @param statusId the organization's workflow status
+	* @param comments the comments about the organization
+	* @param logoId the fileEntryId of the logo
+	* @param logoBytes the new logo image data
+	* @param site whether the organization is to be associated with a main
+	site
+	* @param serviceContext the service context to be applied (optionally
+	<code>null</code>). Can set asset category IDs and asset tag
+	names for the organization, and merge expando bridge attributes
+	for the organization.
+	* @return the organization
+	*/
+	@Override
+	public com.liferay.portal.kernel.model.Organization updateOrganization(
+		long companyId, long organizationId, long parentOrganizationId,
+		java.lang.String name, java.lang.String type, long regionId,
+		long countryId, long statusId, java.lang.String comments, long logoId,
+		byte[] logoBytes, boolean site, ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _organizationLocalService.updateOrganization(companyId,
+			organizationId, parentOrganizationId, name, type, regionId,
+			countryId, statusId, comments, logoId, logoBytes, site,
+			serviceContext);
 	}
 
 	/**

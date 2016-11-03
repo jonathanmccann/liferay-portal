@@ -328,7 +328,11 @@ public class CompanyLocalServiceWrapper implements CompanyLocalService,
 	* @param type the company's account type (optionally <code>null</code>)
 	* @param size the company's account size (optionally <code>null</code>)
 	* @return the company with the primary key
+	* @deprecated As of 7.0.0, replaced by {@link #updateCompany(long, String,
+	String, String, long, byte[], String, String, String,
+	String, String, String, String, String, String)}
 	*/
+	@Deprecated
 	@Override
 	public com.liferay.portal.kernel.model.Company updateCompany(
 		long companyId, java.lang.String virtualHostname, java.lang.String mx,
@@ -369,7 +373,7 @@ public class CompanyLocalServiceWrapper implements CompanyLocalService,
 	<code>null</code>)
 	* @return the company with the primary key
 	* @deprecated As of 7.0.0, replaced by {@link #updateCompany(long, String,
-	String, String, boolean, byte[], String, String, String,
+	String, String, long, byte[], String, String, String,
 	String, String, String, String, String, String)}
 	*/
 	@Deprecated
@@ -385,6 +389,46 @@ public class CompanyLocalServiceWrapper implements CompanyLocalService,
 		return _companyLocalService.updateCompany(companyId, virtualHostname,
 			mx, homeURL, name, legalName, legalId, legalType, sicCode,
 			tickerSymbol, industry, type, size);
+	}
+
+	/**
+	* Update the company with additional account information.
+	*
+	* @param companyId the primary key of the company
+	* @param virtualHostname the company's virtual host name
+	* @param mx the company's mail domain
+	* @param homeURL the company's home URL (optionally <code>null</code>)
+	* @param logoId the fileEntryId for the logo
+	* @param logoBytes the new logo image data
+	* @param name the company's account name(optionally <code>null</code>)
+	* @param legalName the company's account legal name (optionally
+	<code>null</code>)
+	* @param legalId the company's account legal ID (optionally
+	<code>null</code>)
+	* @param legalType the company's account legal type (optionally
+	<code>null</code>)
+	* @param sicCode the company's account SIC code (optionally
+	<code>null</code>)
+	* @param tickerSymbol the company's account ticker symbol (optionally
+	<code>null</code>)
+	* @param industry the company's account industry (optionally
+	<code>null</code>)
+	* @param type the company's account type (optionally <code>null</code>)
+	* @param size the company's account size (optionally <code>null</code>)
+	* @return the company with the primary key
+	*/
+	@Override
+	public com.liferay.portal.kernel.model.Company updateCompany(
+		long companyId, java.lang.String virtualHostname, java.lang.String mx,
+		java.lang.String homeURL, long logoId, byte[] logoBytes,
+		java.lang.String name, java.lang.String legalName,
+		java.lang.String legalId, java.lang.String legalType,
+		java.lang.String sicCode, java.lang.String tickerSymbol,
+		java.lang.String industry, java.lang.String type, java.lang.String size)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _companyLocalService.updateCompany(companyId, virtualHostname,
+			mx, homeURL, logoId, logoBytes, name, legalName, legalId,
+			legalType, sicCode, tickerSymbol, industry, type, size);
 	}
 
 	/**

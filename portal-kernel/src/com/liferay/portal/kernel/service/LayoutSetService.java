@@ -88,6 +88,11 @@ public interface LayoutSetService extends BaseService {
 		boolean privateLayout, boolean layoutSetPrototypeLinkEnabled,
 		java.lang.String layoutSetPrototypeUuid) throws PortalException;
 
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #updateLogo(long, boolean,
+	long, byte[])}
+	*/
+	@java.lang.Deprecated
 	public void updateLogo(long groupId, boolean privateLayout, boolean logo,
 		byte[] bytes) throws PortalException;
 
@@ -100,4 +105,7 @@ public interface LayoutSetService extends BaseService {
 	public void updateLogo(long groupId, boolean privateLayout, boolean logo,
 		InputStream inputStream, boolean cleanUpStream)
 		throws PortalException;
+
+	public void updateLogo(long groupId, boolean privateLayout,
+		long fileEntryId, byte[] bytes) throws PortalException;
 }

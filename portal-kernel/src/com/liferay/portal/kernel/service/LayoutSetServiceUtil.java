@@ -98,6 +98,11 @@ public class LayoutSetServiceUtil {
 			layoutSetPrototypeLinkEnabled, layoutSetPrototypeUuid);
 	}
 
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #updateLogo(long, boolean,
+	long, byte[])}
+	*/
+	@Deprecated
 	public static void updateLogo(long groupId, boolean privateLayout,
 		boolean logo, byte[] bytes)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -121,6 +126,12 @@ public class LayoutSetServiceUtil {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		getService()
 			.updateLogo(groupId, privateLayout, logo, inputStream, cleanUpStream);
+	}
+
+	public static void updateLogo(long groupId, boolean privateLayout,
+		long fileEntryId, byte[] bytes)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		getService().updateLogo(groupId, privateLayout, fileEntryId, bytes);
 	}
 
 	public static LayoutSetService getService() {

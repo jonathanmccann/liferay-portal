@@ -2280,6 +2280,15 @@ public class PortalUtil {
 			maxWidth);
 	}
 
+	public static void updateImageId(
+			BaseModel<?> baseModel, long newFileEntryId, byte[] bytes,
+			String fieldName, long maxSize)
+		throws PortalException {
+
+		getPortal().updateImageId(
+			baseModel, newFileEntryId, bytes, fieldName, maxSize);
+	}
+
 	public static PortletMode updatePortletMode(
 			String portletId, User user, Layout layout, PortletMode portletMode,
 			HttpServletRequest request)

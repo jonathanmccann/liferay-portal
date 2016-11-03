@@ -140,6 +140,11 @@ public interface LayoutSetLocalService extends BaseLocalService,
 	@Indexable(type = IndexableType.REINDEX)
 	public LayoutSet updateLayoutSet(LayoutSet layoutSet);
 
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #updateLogo(long, boolean,
+	long, byte[])}
+	*/
+	@java.lang.Deprecated
 	public LayoutSet updateLogo(long groupId, boolean privateLayout,
 		boolean logo, byte[] bytes) throws PortalException;
 
@@ -152,6 +157,9 @@ public interface LayoutSetLocalService extends BaseLocalService,
 	public LayoutSet updateLogo(long groupId, boolean privateLayout,
 		boolean logo, InputStream is, boolean cleanUpStream)
 		throws PortalException;
+
+	public LayoutSet updateLogo(long groupId, boolean privateLayout,
+		long fileEntryId, byte[] bytes) throws PortalException;
 
 	public LayoutSet updateLookAndFeel(long groupId, boolean privateLayout,
 		java.lang.String themeId, java.lang.String colorSchemeId,

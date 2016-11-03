@@ -150,6 +150,11 @@ public class LayoutSetLocalServiceUtil {
 		return getService().updateLayoutSet(layoutSet);
 	}
 
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #updateLogo(long, boolean,
+	long, byte[])}
+	*/
+	@Deprecated
 	public static com.liferay.portal.kernel.model.LayoutSet updateLogo(
 		long groupId, boolean privateLayout, boolean logo, byte[] bytes)
 		throws com.liferay.portal.kernel.exception.PortalException {
@@ -175,6 +180,13 @@ public class LayoutSetLocalServiceUtil {
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService()
 				   .updateLogo(groupId, privateLayout, logo, is, cleanUpStream);
+	}
+
+	public static com.liferay.portal.kernel.model.LayoutSet updateLogo(
+		long groupId, boolean privateLayout, long fileEntryId, byte[] bytes)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .updateLogo(groupId, privateLayout, fileEntryId, bytes);
 	}
 
 	public static com.liferay.portal.kernel.model.LayoutSet updateLookAndFeel(

@@ -155,6 +155,11 @@ public class LayoutSetLocalServiceWrapper implements LayoutSetLocalService,
 		return _layoutSetLocalService.updateLayoutSet(layoutSet);
 	}
 
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #updateLogo(long, boolean,
+	long, byte[])}
+	*/
+	@Deprecated
 	@Override
 	public com.liferay.portal.kernel.model.LayoutSet updateLogo(long groupId,
 		boolean privateLayout, boolean logo, byte[] bytes)
@@ -186,6 +191,14 @@ public class LayoutSetLocalServiceWrapper implements LayoutSetLocalService,
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return _layoutSetLocalService.updateLogo(groupId, privateLayout, logo,
 			is, cleanUpStream);
+	}
+
+	@Override
+	public com.liferay.portal.kernel.model.LayoutSet updateLogo(long groupId,
+		boolean privateLayout, long fileEntryId, byte[] bytes)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _layoutSetLocalService.updateLogo(groupId, privateLayout,
+			fileEntryId, bytes);
 	}
 
 	@Override
