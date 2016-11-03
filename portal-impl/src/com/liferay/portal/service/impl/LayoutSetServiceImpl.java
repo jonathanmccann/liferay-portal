@@ -73,6 +73,11 @@ public class LayoutSetServiceImpl extends LayoutSetServiceBaseImpl {
 			layoutSetPrototypeUuid);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #updateLogo(long, boolean,
+	 *             long, byte[])}
+	 */
+	@Deprecated
 	@Override
 	public void updateLogo(
 			long groupId, boolean privateLayout, boolean logo, byte[] bytes)

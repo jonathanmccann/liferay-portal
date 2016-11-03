@@ -1733,7 +1733,11 @@ public class OrganizationLocalServiceImpl
 	 *         names for the organization, and merge expando bridge attributes
 	 *         for the organization.
 	 * @return the organization
+	 * @deprecated As of 7.0.0, replaced by {@link #updateOrganization(long,
+	 *             long, long, String, String, long, long, long, String, long,
+	 *             byte[], boolean, ServiceContext)}
 	 */
+	@Deprecated
 	@Override
 	public Organization updateOrganization(
 			long companyId, long organizationId, long parentOrganizationId,
@@ -1906,8 +1910,8 @@ public class OrganizationLocalServiceImpl
 	 *             attributes for the organization.
 	 * @return     the organization
 	 * @deprecated As of 7.0.0, replaced by {@link #updateOrganization(long,
-	 *             long, long, String, String, long, long, long, String,
-	 *             boolean, byte[], boolean, ServiceContext)}
+	 *             long, long, String, String, long, long, long, String, long,
+	 *             byte[], boolean, ServiceContext)}
 	 */
 	@Deprecated
 	@Override

@@ -230,6 +230,13 @@ public class LayoutLocalServiceStagingAdvice implements MethodInterceptor {
 		return returnValue;
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #updateLayout(
+	 *             LayoutLocalService, long, boolean, long, long, Map, Map,	Map,
+	 *             Map, Map, String, boolean, Map, long, byte[],
+	 *             ServiceContext)}
+	 */
+	@Deprecated
 	public Layout updateLayout(
 			LayoutLocalService layoutLocalService, long groupId,
 			boolean privateLayout, long layoutId, long parentLayoutId,

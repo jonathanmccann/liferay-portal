@@ -499,7 +499,12 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 	 *         names for the organization, and merge expando bridge attributes
 	 *         for the organization.
 	 * @return the organization
+	 * @deprecated As of 7.0.0, replaced by {@link #updateOrganization(long,
+	 *             long, String, String, long, long, long, String, long,
+	 *             byte[], boolean, List, List, List, List, List,
+	 *             ServiceContext)}
 	 */
+	@Deprecated
 	@Override
 	public Organization updateOrganization(
 			long organizationId, long parentOrganizationId, String name,
@@ -607,9 +612,8 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 	 *             attributes for the organization.
 	 * @return     the organization
 	 * @deprecated As of 7.0.0, replaced by {@link #updateOrganization(long,
-	 *             long, String, String, long, long, long, String, boolean,
-	 *             byte[], boolean, List, List, List, List, List,
-	 *             ServiceContext)}
+	 *             long, String, String, long, long, long, String, long, byte[],
+	 *             boolean, List, List, List, List, List, ServiceContext)}
 	 */
 	@Deprecated
 	@Override

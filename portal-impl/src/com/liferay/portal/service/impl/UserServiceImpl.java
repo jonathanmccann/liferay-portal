@@ -1523,7 +1523,10 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	 * @param  userId the primary key of the user
 	 * @param  bytes the new portrait image data
 	 * @return the user
+	 * @deprecated As of 7.0.0, replaced by {@link #updatePortrait(long, long,
+	 *             byte[])}
 	 */
+	@Deprecated
 	@Override
 	public User updatePortrait(long userId, byte[] bytes)
 		throws PortalException {
@@ -1682,7 +1685,15 @@ public class UserServiceImpl extends UserServiceBaseImpl {
 	 *         attribute), asset category IDs, asset tag names, and expando
 	 *         bridge attributes for the user.
 	 * @return the user
+	 * @deprecated As of 7.0.0, replaced by {@link #updateUser(long, String,
+	 *             String, String, boolean, String, String, String, String,
+	 *             long, String, long, byte[], String, String, String, String,
+	 *             String, String, String, long, long, boolean, int, int, int,
+	 *             String, String, String, String, String, String, long[],
+	 *             long[], long[], List, long[], List, List, List, List, List,
+	 *             ServiceContext)}
 	 */
+	@Deprecated
 	@Override
 	public User updateUser(
 			long userId, String oldPassword, String newPassword1,

@@ -254,6 +254,11 @@ public class LayoutSetLocalServiceImpl extends LayoutSetLocalServiceBaseImpl {
 		layoutSetBranchPersistence.update(layoutSetBranch);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #updateLogo(long, boolean,
+	 *             long, byte[])}
+	 */
+	@Deprecated
 	@Override
 	public LayoutSet updateLogo(
 			long groupId, boolean privateLayout, boolean logo, byte[] bytes)

@@ -239,7 +239,11 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 	 * @param  type the company's account type (optionally <code>null</code>)
 	 * @param  size the company's account size (optionally <code>null</code>)
 	 * @return the the company with the primary key
+	 * @deprecated As of 7.0.0, replaced by {@link #updateCompany(long, String,
+	 *             String, String, long, byte[], String, String, String,
+	 *             String, String, String, String, String, String)}
 	 */
+	@Deprecated
 	@Override
 	public Company updateCompany(
 			long companyId, String virtualHost, String mx, String homeURL,
@@ -292,7 +296,11 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 	 * @param  websites the company's websites
 	 * @param  properties the company's properties
 	 * @return the company with the primary key
+	 * @deprecated As of 7.0.0, replaced by {@link #updateCompany(long, String,
+	 *             String, String, long, byte[], String, String, String,
+	 *             String, String, String, String, String, String)}
 	 */
+	@Deprecated
 	@JSONWebService(mode = JSONWebServiceMode.IGNORE)
 	@Override
 	public Company updateCompany(
@@ -483,7 +491,7 @@ public class CompanyServiceImpl extends CompanyServiceBaseImpl {
 	 *             <code>null</code>)
 	 * @return     the the company with the primary key
 	 * @deprecated As of 7.0.0, replaced by {@link #updateCompany(long, String,
-	 *             String, String, boolean, byte[], String, String, String,
+	 *             String, String, long, byte[], String, String, String,
 	 *             String, String, String, String, String, String)}
 	 */
 	@Deprecated

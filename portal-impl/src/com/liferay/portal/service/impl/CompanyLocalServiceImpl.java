@@ -875,7 +875,11 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	 * @param  type the company's account type (optionally <code>null</code>)
 	 * @param  size the company's account size (optionally <code>null</code>)
 	 * @return the company with the primary key
+	 * @deprecated As of 7.0.0, replaced by {@link #updateCompany(long, String,
+	 *             String, String, long, byte[], String, String, String,
+	 *             String, String, String, String, String, String)}
 	 */
+	@Deprecated
 	@Override
 	public Company updateCompany(
 			long companyId, String virtualHostname, String mx, String homeURL,
@@ -1018,7 +1022,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	 *             <code>null</code>)
 	 * @return     the company with the primary key
 	 * @deprecated As of 7.0.0, replaced by {@link #updateCompany(long, String,
-	 *             String, String, boolean, byte[], String, String, String,
+	 *             String, String, long, byte[], String, String, String,
 	 *             String, String, String, String, String, String)}
 	 */
 	@Deprecated
