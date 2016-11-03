@@ -56,6 +56,7 @@ AUI.add(
 						dialog: {
 							bodyContent: form,
 							height: height,
+							destroyOnHide: true,
 							toolbars: {
 								footer: [
 									{
@@ -63,6 +64,13 @@ AUI.add(
 										label: Liferay.Language.get('done'),
 										on: {
 											click: function() {
+												var updatedContent = form.get('children')._nodes[0];
+												var updatedComments = form.get('children')._nodes[1];
+												var entryActionColumn = document.getElementById(updatedContent.id).parentNode;
+
+												entryActionColumn.appendChild(updatedContent);
+												entryActionColumn.appendChild(updatedComments);
+
 												submitForm(form);
 											}
 										}
