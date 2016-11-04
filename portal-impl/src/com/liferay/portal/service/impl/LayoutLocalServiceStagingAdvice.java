@@ -343,6 +343,117 @@ public class LayoutLocalServiceStagingAdvice implements MethodInterceptor {
 
 	public Layout updateLayout(
 			LayoutLocalService layoutLocalService, long groupId,
+			boolean privateLayout, long layoutId, long parentLayoutId,
+			Map<Locale, String> nameMap, Map<Locale, String> titleMap,
+			Map<Locale, String> descriptionMap, Map<Locale, String> keywordsMap,
+			Map<Locale, String> robotsMap, String type, boolean hidden,
+			Map<Locale, String> friendlyURLMap, long iconId, byte[] iconBytes,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		// Layout
+
+		parentLayoutId = layoutLocalServiceHelper.getParentLayoutId(
+			groupId, privateLayout, parentLayoutId);
+		String name = nameMap.get(LocaleUtil.getSiteDefault());
+
+		Map<Locale, String> layoutFriendlyURLMap =
+			layoutLocalServiceHelper.getFriendlyURLMap(
+				groupId, privateLayout, layoutId, name, friendlyURLMap);
+
+		String friendlyURL = layoutFriendlyURLMap.get(
+			LocaleUtil.getSiteDefault());
+
+		layoutLocalServiceHelper.validate(
+			groupId, privateLayout, layoutId, parentLayoutId, name, type,
+			hidden, layoutFriendlyURLMap, serviceContext);
+
+		layoutLocalServiceHelper.validateParentLayoutId(
+			groupId, privateLayout, layoutId, parentLayoutId);
+
+		Layout originalLayout = LayoutUtil.findByG_P_L(
+			groupId, privateLayout, layoutId);
+
+		Layout layout = wrapLayout(originalLayout);
+
+		LayoutRevision layoutRevision = LayoutStagingUtil.getLayoutRevision(
+			layout);
+
+		if (layoutRevision == null) {
+			return layoutLocalService.updateLayout(
+				groupId, privateLayout, layoutId, parentLayoutId, nameMap,
+				titleMap, descriptionMap, keywordsMap, robotsMap, type, hidden,
+				friendlyURLMap, iconId, iconBytes, serviceContext);
+		}
+
+		if (parentLayoutId != originalLayout.getParentLayoutId()) {
+			int priority = layoutLocalServiceHelper.getNextPriority(
+				groupId, privateLayout, parentLayoutId,
+				originalLayout.getSourcePrototypeLayoutUuid(), -1);
+
+			originalLayout.setPriority(priority);
+		}
+
+		originalLayout.setParentLayoutId(parentLayoutId);
+		layoutRevision.setNameMap(nameMap);
+		layoutRevision.setTitleMap(titleMap);
+		layoutRevision.setDescriptionMap(descriptionMap);
+		layoutRevision.setKeywordsMap(keywordsMap);
+		layoutRevision.setRobotsMap(robotsMap);
+		originalLayout.setType(type);
+		originalLayout.setHidden(hidden);
+		originalLayout.setFriendlyURL(friendlyURL);
+
+		PortalUtil.updateImageId(
+			layoutRevision, iconId, iconBytes, "iconImageId", 0);
+
+		boolean layoutPrototypeLinkEnabled = ParamUtil.getBoolean(
+			serviceContext, "layoutPrototypeLinkEnabled");
+
+		originalLayout.setLayoutPrototypeLinkEnabled(
+			layoutPrototypeLinkEnabled);
+
+		originalLayout.setExpandoBridgeAttributes(serviceContext);
+
+		LayoutUtil.update(originalLayout);
+
+		LayoutFriendlyURLLocalServiceUtil.updateLayoutFriendlyURLs(
+			originalLayout.getUserId(), originalLayout.getCompanyId(),
+			originalLayout.getGroupId(), originalLayout.getPlid(),
+			originalLayout.isPrivateLayout(), layoutFriendlyURLMap,
+			serviceContext);
+
+		boolean hasWorkflowTask = StagingUtil.hasWorkflowTask(
+			serviceContext.getUserId(), layoutRevision);
+
+		serviceContext.setAttribute("revisionInProgress", hasWorkflowTask);
+
+		int workflowAction = serviceContext.getWorkflowAction();
+
+		try {
+			serviceContext.setWorkflowAction(
+				WorkflowConstants.ACTION_SAVE_DRAFT);
+
+			LayoutRevisionLocalServiceUtil.updateLayoutRevision(
+				serviceContext.getUserId(),
+				layoutRevision.getLayoutRevisionId(),
+				layoutRevision.getLayoutBranchId(), layoutRevision.getName(),
+				layoutRevision.getTitle(), layoutRevision.getDescription(),
+				layoutRevision.getKeywords(), layoutRevision.getRobots(),
+				layoutRevision.getTypeSettings(), layoutRevision.getIconImage(),
+				layoutRevision.getIconImageId(), layoutRevision.getThemeId(),
+				layoutRevision.getColorSchemeId(), layoutRevision.getCss(),
+				serviceContext);
+		}
+		finally {
+			serviceContext.setWorkflowAction(workflowAction);
+		}
+
+		return layout;
+	}
+
+	public Layout updateLayout(
+			LayoutLocalService layoutLocalService, long groupId,
 			boolean privateLayout, long layoutId, String typeSettings)
 		throws PortalException {
 

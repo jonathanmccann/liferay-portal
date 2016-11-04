@@ -5035,6 +5035,27 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Updates the user's portrait image.
+	 *
+	 * @param  userId the primary key of the user
+	 * @param  portraitId the fileEntryId of the portrait
+	 * @param  bytes the new portrait image data
+	 * @return the user
+	 */
+	@Override
+	public User updatePortrait(long userId, long portraitId, byte[] bytes)
+		throws PortalException {
+
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		PortalUtil.updateImageId(
+			user, portraitId, bytes, "portraitId",
+			PrefsPropsUtil.getLong(PropsKeys.USERS_IMAGE_MAX_SIZE));
+
+		return userPersistence.update(user);
+	}
+
+	/**
 	 * Updates the user's password reset question and answer.
 	 *
 	 * @param  userId the primary key of the user
@@ -5338,6 +5359,315 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			PrefsPropsUtil.getLong(PropsKeys.USERS_IMAGE_MAX_SIZE),
 			PropsValues.USERS_IMAGE_MAX_HEIGHT,
 			PropsValues.USERS_IMAGE_MAX_WIDTH);
+
+		user.setLanguageId(languageId);
+		user.setTimeZoneId(timeZoneId);
+		user.setGreeting(greeting);
+		user.setComments(comments);
+		user.setFirstName(firstName);
+		user.setMiddleName(middleName);
+		user.setLastName(lastName);
+		user.setJobTitle(jobTitle);
+		user.setExpandoBridgeAttributes(serviceContext);
+
+		userPersistence.update(user, serviceContext);
+
+		// Contact
+
+		Date birthday = getBirthday(birthdayMonth, birthdayDay, birthdayYear);
+
+		long contactId = user.getContactId();
+
+		Contact contact = contactPersistence.fetchByPrimaryKey(contactId);
+
+		if (contact == null) {
+			contact = contactPersistence.create(contactId);
+
+			contact.setCompanyId(user.getCompanyId());
+			contact.setUserName(StringPool.BLANK);
+			contact.setClassName(User.class.getName());
+			contact.setClassPK(user.getUserId());
+			contact.setAccountId(company.getAccountId());
+			contact.setParentContactId(
+				ContactConstants.DEFAULT_PARENT_CONTACT_ID);
+		}
+
+		contact.setEmailAddress(user.getEmailAddress());
+		contact.setFirstName(firstName);
+		contact.setMiddleName(middleName);
+		contact.setLastName(lastName);
+		contact.setPrefixId(prefixId);
+		contact.setSuffixId(suffixId);
+		contact.setMale(male);
+		contact.setBirthday(birthday);
+		contact.setSmsSn(smsSn);
+		contact.setFacebookSn(facebookSn);
+		contact.setJabberSn(jabberSn);
+		contact.setSkypeSn(skypeSn);
+		contact.setTwitterSn(twitterSn);
+		contact.setJobTitle(jobTitle);
+
+		contactPersistence.update(contact, serviceContext);
+
+		// Group
+
+		Group group = groupLocalService.getUserGroup(
+			user.getCompanyId(), userId);
+
+		group.setFriendlyURL(StringPool.SLASH + screenName);
+
+		groupPersistence.update(group);
+
+		// Groups and organizations
+
+		// See LPS-33205. Cache the user's list of user group roles because
+		// adding or removing groups may add or remove user group roles
+		// depending on the site default user associations.
+
+		List<UserGroupRole> previousUserGroupRoles =
+			userGroupRolePersistence.findByUserId(userId);
+
+		updateGroups(userId, groupIds, serviceContext, false);
+		updateOrganizations(userId, organizationIds, false);
+
+		// Roles
+
+		if (roleIds != null) {
+			roleIds = UsersAdminUtil.addRequiredRoles(user, roleIds);
+
+			userPersistence.setRoles(userId, roleIds);
+		}
+
+		// User group roles
+
+		updateUserGroupRoles(
+			user, groupIds, organizationIds, userGroupRoles,
+			previousUserGroupRoles);
+
+		// User groups
+
+		if (userGroupIds != null) {
+			if (PropsValues.USER_GROUPS_COPY_LAYOUTS_TO_USER_PERSONAL_SITE) {
+				userGroupLocalService.copyUserGroupLayouts(
+					userGroupIds, userId);
+			}
+
+			userPersistence.setUserGroups(userId, userGroupIds);
+		}
+
+		// Announcements
+
+		announcementsDeliveryLocalService.getUserDeliveries(user.getUserId());
+
+		// Asset
+
+		if (serviceContext != null) {
+			updateAsset(
+				userId, user, serviceContext.getAssetCategoryIds(),
+				serviceContext.getAssetTagNames());
+		}
+
+		// Message boards
+
+		if (GetterUtil.getBoolean(
+				PropsKeys.USERS_UPDATE_USER_NAME + MBMessage.class.getName()) &&
+			!oldFullName.equals(user.getFullName())) {
+
+			mbMessageLocalService.updateUserName(userId, user.getFullName());
+		}
+
+		// Indexer
+
+		if ((serviceContext == null) || serviceContext.isIndexingEnabled()) {
+			Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+				User.class);
+
+			indexer.reindex(user);
+		}
+
+		// Email address verification
+
+		if ((serviceContext != null) && sendEmailAddressVerification) {
+			sendEmailAddressVerification(user, emailAddress, serviceContext);
+		}
+
+		return user;
+	}
+
+	/**
+	 * Updates the user.
+	 *
+	 * @param  userId the primary key of the user
+	 * @param  oldPassword the user's old password
+	 * @param  newPassword1 the user's new password (optionally
+	 *         <code>null</code>)
+	 * @param  newPassword2 the user's new password confirmation (optionally
+	 *         <code>null</code>)
+	 * @param  passwordReset whether the user should be asked to reset their
+	 *         password the next time they login
+	 * @param  reminderQueryQuestion the user's new password reset question
+	 * @param  reminderQueryAnswer the user's new password reset answer
+	 * @param  screenName the user's new screen name
+	 * @param  emailAddress the user's new email address
+	 * @param  facebookId the user's new Facebook ID
+	 * @param  openId the user's new OpenID
+	 * @param  portraitId the fileEntryId of the portrait
+	 * @param  portraitBytes the new portrait image data
+	 * @param  languageId the user's new language ID
+	 * @param  timeZoneId the user's new time zone ID
+	 * @param  greeting the user's new greeting
+	 * @param  comments the user's new comments
+	 * @param  firstName the user's new first name
+	 * @param  middleName the user's new middle name
+	 * @param  lastName the user's new last name
+	 * @param  prefixId the user's new name prefix ID
+	 * @param  suffixId the user's new name suffix ID
+	 * @param  male whether user is male
+	 * @param  birthdayMonth the user's new birthday month (0-based, meaning 0
+	 *         for January)
+	 * @param  birthdayDay the user's new birthday day
+	 * @param  birthdayYear the user's birthday year
+	 * @param  smsSn the user's new SMS screen name
+	 * @param  facebookSn the user's new Facebook screen name
+	 * @param  jabberSn the user's new Jabber screen name
+	 * @param  skypeSn the user's new Skype screen name
+	 * @param  twitterSn the user's new Twitter screen name
+	 * @param  jobTitle the user's new job title
+	 * @param  groupIds the primary keys of the user's groups
+	 * @param  organizationIds the primary keys of the user's organizations
+	 * @param  roleIds the primary keys of the user's roles
+	 * @param  userGroupRoles the user user's group roles
+	 * @param  userGroupIds the primary keys of the user's user groups
+	 * @param  serviceContext the service context to be applied (optionally
+	 *         <code>null</code>). Can set the UUID (with the <code>uuid</code>
+	 *         attribute), asset category IDs, asset tag names, and expando
+	 *         bridge attributes for the user.
+	 * @return the user
+	 */
+	@Override
+	@SuppressWarnings("deprecation")
+	public User updateUser(
+			long userId, String oldPassword, String newPassword1,
+			String newPassword2, boolean passwordReset,
+			String reminderQueryQuestion, String reminderQueryAnswer,
+			String screenName, String emailAddress, long facebookId,
+			String openId, long portraitId, byte[] portraitBytes,
+			String languageId, String timeZoneId, String greeting,
+			String comments, String firstName, String middleName,
+			String lastName, long prefixId, long suffixId, boolean male,
+			int birthdayMonth, int birthdayDay, int birthdayYear, String smsSn,
+			String facebookSn, String jabberSn, String skypeSn,
+			String twitterSn, String jobTitle, long[] groupIds,
+			long[] organizationIds, long[] roleIds,
+			List<UserGroupRole> userGroupRoles, long[] userGroupIds,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		// User
+
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		Company company = companyPersistence.findByPrimaryKey(
+			user.getCompanyId());
+
+		String password = oldPassword;
+		screenName = getLogin(screenName);
+		emailAddress = StringUtil.toLowerCase(emailAddress.trim());
+		openId = openId.trim();
+		String oldFullName = user.getFullName();
+		facebookSn = StringUtil.toLowerCase(facebookSn.trim());
+		jabberSn = StringUtil.toLowerCase(jabberSn.trim());
+		skypeSn = StringUtil.toLowerCase(skypeSn.trim());
+		twitterSn = StringUtil.toLowerCase(twitterSn.trim());
+
+		EmailAddressGenerator emailAddressGenerator =
+			EmailAddressGeneratorFactory.getInstance();
+
+		if (emailAddressGenerator.isGenerated(emailAddress)) {
+			emailAddress = StringPool.BLANK;
+		}
+
+		if (!PropsValues.USERS_EMAIL_ADDRESS_REQUIRED &&
+			Validator.isNull(emailAddress)) {
+
+			emailAddress = emailAddressGenerator.generate(
+				user.getCompanyId(), userId);
+		}
+
+		Locale locale = LocaleUtil.fromLanguageId(languageId);
+
+		validate(
+			userId, screenName, emailAddress, openId, firstName, middleName,
+			lastName, smsSn, locale);
+
+		if (Validator.isNotNull(newPassword1) ||
+			Validator.isNotNull(newPassword2)) {
+
+			user = updatePassword(
+				userId, newPassword1, newPassword2, passwordReset);
+
+			password = newPassword1;
+
+			user.setDigest(StringPool.BLANK);
+		}
+
+		if (user.getContactId() <= 0) {
+			user.setContactId(counterLocalService.increment());
+		}
+
+		user.setPasswordReset(passwordReset);
+
+		if (Validator.isNotNull(reminderQueryQuestion) &&
+			Validator.isNotNull(reminderQueryAnswer)) {
+
+			user.setReminderQueryQuestion(reminderQueryQuestion);
+			user.setReminderQueryAnswer(reminderQueryAnswer);
+		}
+
+		if (!StringUtil.equalsIgnoreCase(user.getScreenName(), screenName)) {
+			user.setScreenName(screenName);
+
+			user.setDigest(StringPool.BLANK);
+		}
+
+		boolean sendEmailAddressVerification = false;
+
+		if (company.isStrangersVerify() &&
+			!StringUtil.equalsIgnoreCase(
+				emailAddress, user.getEmailAddress())) {
+
+			sendEmailAddressVerification = true;
+		}
+		else {
+			setEmailAddress(
+				user, password, firstName, middleName, lastName, emailAddress);
+		}
+
+		if (serviceContext != null) {
+			String uuid = serviceContext.getUuid();
+
+			if (Validator.isNotNull(uuid)) {
+				user.setUuid(uuid);
+			}
+		}
+
+		user.setFacebookId(facebookId);
+
+		Long ldapServerId = null;
+
+		if (serviceContext != null) {
+			ldapServerId = (Long)serviceContext.getAttribute("ldapServerId");
+		}
+
+		if (ldapServerId != null) {
+			user.setLdapServerId(ldapServerId);
+		}
+
+		user.setOpenId(openId);
+
+		PortalUtil.updateImageId(
+			user, portraitId, portraitBytes, "portraitId",
+			PrefsPropsUtil.getLong(PropsKeys.USERS_IMAGE_MAX_SIZE));
 
 		user.setLanguageId(languageId);
 		user.setTimeZoneId(timeZoneId);

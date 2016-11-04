@@ -1923,6 +1923,178 @@ public class OrganizationLocalServiceImpl
 			regionId, countryId, statusId, comments, site, serviceContext);
 	}
 
+	/**
+	 * Updates the organization.
+	 *
+	 * @param  companyId the primary key of the organization's company
+	 * @param  organizationId the primary key of the organization
+	 * @param  parentOrganizationId the primary key of organization's parent
+	 *         organization
+	 * @param  name the organization's name
+	 * @param  type the organization's type
+	 * @param  regionId the primary key of the organization's region
+	 * @param  countryId the primary key of the organization's country
+	 * @param  statusId the organization's workflow status
+	 * @param  comments the comments about the organization
+	 * @param  logoId the fileEntryId of the logo
+	 * @param  logoBytes the new logo image data
+	 * @param  site whether the organization is to be associated with a main
+	 *         site
+	 * @param  serviceContext the service context to be applied (optionally
+	 *         <code>null</code>). Can set asset category IDs and asset tag
+	 *         names for the organization, and merge expando bridge attributes
+	 *         for the organization.
+	 * @return the organization
+	 */
+	@Override
+	public Organization updateOrganization(
+			long companyId, long organizationId, long parentOrganizationId,
+			String name, String type, long regionId, long countryId,
+			long statusId, String comments, long logoId, byte[] logoBytes,
+			boolean site, ServiceContext serviceContext)
+		throws PortalException {
+
+		// Organization
+
+		parentOrganizationId = getParentOrganizationId(
+			companyId, parentOrganizationId);
+
+		validate(
+			companyId, organizationId, parentOrganizationId, name, type,
+			countryId, statusId);
+
+		Organization organization = organizationPersistence.findByPrimaryKey(
+			organizationId);
+
+		long oldParentOrganizationId = organization.getParentOrganizationId();
+		String oldName = organization.getName();
+
+		organization.setParentOrganizationId(parentOrganizationId);
+		organization.setTreePath(organization.buildTreePath());
+		organization.setName(name);
+		organization.setType(type);
+		organization.setRecursable(true);
+		organization.setRegionId(regionId);
+		organization.setCountryId(countryId);
+		organization.setStatusId(statusId);
+		organization.setComments(comments);
+
+		PortalUtil.updateImageId(
+			organization, logoId, logoBytes, "logoId",
+			PrefsPropsUtil.getLong(PropsKeys.USERS_IMAGE_MAX_SIZE));
+
+		organization.setExpandoBridgeAttributes(serviceContext);
+
+		organizationPersistence.update(organization);
+
+		// Group
+
+		Group group = organization.getGroup();
+
+		long parentGroupId = group.getParentGroupId();
+
+		boolean createSite = false;
+
+		if (!group.isSite() && site) {
+			createSite = true;
+		}
+
+		boolean organizationGroup = isOrganizationGroup(
+			oldParentOrganizationId, group.getParentGroupId());
+
+		if (createSite || organizationGroup) {
+			if (parentOrganizationId !=
+					OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID) {
+
+				Organization parentOrganization =
+					organizationPersistence.fetchByPrimaryKey(
+						parentOrganizationId);
+
+				Group parentGroup = parentOrganization.getGroup();
+
+				if (site && parentGroup.isSite()) {
+					parentGroupId = parentOrganization.getGroupId();
+				}
+				else {
+					parentGroupId = GroupConstants.DEFAULT_PARENT_GROUP_ID;
+				}
+			}
+			else {
+				parentGroupId = GroupConstants.DEFAULT_PARENT_GROUP_ID;
+			}
+		}
+
+		if (createSite || !oldName.equals(name) || organizationGroup) {
+			groupLocalService.updateGroup(
+				group.getGroupId(), parentGroupId, getLocalizationMap(name),
+				group.getDescriptionMap(), group.getType(),
+				group.isManualMembership(), group.getMembershipRestriction(),
+				group.getFriendlyURL(), group.isInheritContent(),
+				group.isActive(), null);
+		}
+
+		if (group.isSite() != site) {
+			groupLocalService.updateSite(group.getGroupId(), site);
+		}
+
+		// Organizations
+
+		if (createSite) {
+			List<Organization> childOrganizations =
+				organizationLocalService.getOrganizations(
+					companyId, organizationId);
+
+			for (Organization childOrganization : childOrganizations) {
+				Group childGroup = childOrganization.getGroup();
+
+				if (childGroup.isSite() &&
+					(childGroup.getParentGroupId() ==
+						GroupConstants.DEFAULT_PARENT_GROUP_ID)) {
+
+					childGroup.setParentGroupId(group.getGroupId());
+
+					groupLocalService.updateGroup(childGroup);
+				}
+			}
+		}
+
+		// Asset
+
+		if (serviceContext != null) {
+			updateAsset(
+				serviceContext.getUserId(), organization,
+				serviceContext.getAssetCategoryIds(),
+				serviceContext.getAssetTagNames());
+		}
+
+		// Indexer
+
+		Indexer<Organization> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
+			Organization.class);
+
+		if (oldParentOrganizationId != parentOrganizationId) {
+			long[] reindexOrganizationIds = getReindexOrganizationIds(
+				organization);
+
+			List<Organization> reindexOrganizations = new ArrayList<>(
+				reindexOrganizationIds.length);
+
+			for (long reindexOrganizationId : reindexOrganizationIds) {
+				Organization reindexOrganization = fetchOrganization(
+					reindexOrganizationId);
+
+				reindexOrganizations.add(reindexOrganization);
+			}
+
+			indexer.reindex(reindexOrganizations);
+		}
+		else {
+			indexer.reindex(organization);
+		}
+
+		return organization;
+	}
+
 	protected void addSuborganizations(
 		List<Organization> allSuborganizations,
 		List<Organization> organizations) {

@@ -118,6 +118,18 @@ public class LayoutSetServiceImpl extends LayoutSetServiceBaseImpl {
 	}
 
 	@Override
+	public void updateLogo(
+			long groupId, boolean privateLayout, long fileEntryId, byte[] bytes)
+		throws PortalException {
+
+		GroupPermissionUtil.check(
+			getPermissionChecker(), groupId, ActionKeys.MANAGE_LAYOUTS);
+
+		layoutSetLocalService.updateLogo(
+			groupId, privateLayout, fileEntryId, bytes);
+	}
+
+	@Override
 	public LayoutSet updateLookAndFeel(
 			long groupId, boolean privateLayout, String themeId,
 			String colorSchemeId, String css)

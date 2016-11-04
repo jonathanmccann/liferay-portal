@@ -17,6 +17,7 @@ package com.liferay.portal.util;
 import com.liferay.document.library.kernel.exception.ImageSizeException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.expando.kernel.exception.ValueDataException;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
@@ -7023,6 +7024,30 @@ public class PortalImpl implements Portal {
 
 		BeanPropertiesUtil.setProperty(
 			baseModel, fieldName, image.getImageId());
+	}
+
+	@Override
+	public void updateImageId(
+			BaseModel<?> baseModel, long newFileEntryId, byte[] bytes,
+			String fieldName, long maxSize)
+		throws PortalException {
+
+		long oldFileEntryId = BeanPropertiesUtil.getLong(baseModel, fieldName);
+
+		if (oldFileEntryId == newFileEntryId) {
+			return;
+		}
+
+		if (oldFileEntryId != 0) {
+			DLFileEntryLocalServiceUtil.deleteDLFileEntry(oldFileEntryId);
+		}
+
+		if (ArrayUtil.isNotEmpty(bytes) && (maxSize > 0) &&
+			(bytes.length > maxSize)) {
+				throw new ImageSizeException();
+		}
+
+		BeanPropertiesUtil.setProperty(baseModel, fieldName, newFileEntryId);
 	}
 
 	@Override

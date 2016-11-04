@@ -2485,6 +2485,145 @@ public class LayoutLocalServiceImpl extends LayoutLocalServiceBaseImpl {
 	}
 
 	/**
+	 * Updates the layout.
+	 *
+	 * @param  groupId the primary key of the group
+	 * @param  privateLayout whether the layout is private to the group
+	 * @param  layoutId the primary key of the layout
+	 * @param  parentLayoutId the primary key of the layout's new parent layout
+	 * @param  nameMap the locales and localized names to merge (optionally
+	 *         <code>null</code>)
+	 * @param  titleMap the locales and localized titles to merge (optionally
+	 *         <code>null</code>)
+	 * @param  descriptionMap the locales and localized descriptions to merge
+	 *         (optionally <code>null</code>)
+	 * @param  keywordsMap the locales and localized keywords to merge
+	 *         (optionally <code>null</code>)
+	 * @param  robotsMap the locales and localized robots to merge (optionally
+	 *         <code>null</code>)
+	 * @param  type the layout's new type (optionally {@link
+	 *         LayoutConstants#TYPE_PORTLET})
+	 * @param  hidden whether the layout is hidden
+	 * @param  friendlyURLMap the layout's locales and localized friendly URLs.
+	 *         To see how the URL is normalized when accessed, see {@link
+	 *         com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil#normalize(
+	 *         String)}.
+	 * @param  iconId the fileEntryId of the icon
+	 * @param  iconBytes the byte array of the layout's new icon image
+	 * @param  serviceContext the service context to be applied. Can set the
+	 *         modification date and expando bridge attributes for the layout.
+	 *         For layouts that are linked to a layout prototype, attributes
+	 *         named <code>layoutPrototypeUuid</code> and
+	 *         <code>layoutPrototypeLinkedEnabled</code> can be specified to
+	 *         provide the unique identifier of the source prototype and a
+	 *         boolean to determine whether a link to it should be enabled to
+	 *         activate propagation of changes made to the linked page in the
+	 *         prototype.
+	 * @return the updated layout
+	 */
+	@Override
+	public Layout updateLayout(
+			long groupId, boolean privateLayout, long layoutId,
+			long parentLayoutId, Map<Locale, String> nameMap,
+			Map<Locale, String> titleMap, Map<Locale, String> descriptionMap,
+			Map<Locale, String> keywordsMap, Map<Locale, String> robotsMap,
+			String type, boolean hidden, Map<Locale, String> friendlyURLMap,
+			long iconId, byte[] iconBytes, ServiceContext serviceContext)
+		throws PortalException {
+
+		// Layout
+
+		parentLayoutId = layoutLocalServiceHelper.getParentLayoutId(
+			groupId, privateLayout, parentLayoutId);
+
+		String name = nameMap.get(LocaleUtil.getSiteDefault());
+
+		friendlyURLMap = layoutLocalServiceHelper.getFriendlyURLMap(
+			groupId, privateLayout, layoutId, name, friendlyURLMap);
+
+		String friendlyURL = friendlyURLMap.get(LocaleUtil.getSiteDefault());
+
+		layoutLocalServiceHelper.validate(
+			groupId, privateLayout, layoutId, parentLayoutId, name, type,
+			hidden, friendlyURLMap, serviceContext);
+
+		layoutLocalServiceHelper.validateParentLayoutId(
+			groupId, privateLayout, layoutId, parentLayoutId);
+
+		Date now = new Date();
+
+		Layout layout = layoutPersistence.findByG_P_L(
+			groupId, privateLayout, layoutId);
+
+		if (parentLayoutId != layout.getParentLayoutId()) {
+			int priority = layoutLocalServiceHelper.getNextPriority(
+				groupId, privateLayout, parentLayoutId,
+				layout.getSourcePrototypeLayoutUuid(), -1);
+
+			layout.setPriority(priority);
+		}
+
+		layout.setModifiedDate(serviceContext.getModifiedDate(now));
+		layout.setParentLayoutId(parentLayoutId);
+		layout.setNameMap(nameMap);
+		layout.setTitleMap(titleMap);
+		layout.setDescriptionMap(descriptionMap);
+		layout.setKeywordsMap(keywordsMap);
+		layout.setRobotsMap(robotsMap);
+		layout.setType(type);
+		layout.setHidden(hidden);
+		layout.setFriendlyURL(friendlyURL);
+
+		PortalUtil.updateImageId(layout, iconId, iconBytes, "iconImageId", 0);
+
+		boolean layoutUpdateable = ParamUtil.getBoolean(
+			serviceContext, Sites.LAYOUT_UPDATEABLE, true);
+
+		UnicodeProperties typeSettingsProperties =
+			layout.getTypeSettingsProperties();
+
+		typeSettingsProperties.put(
+			Sites.LAYOUT_UPDATEABLE, String.valueOf(layoutUpdateable));
+
+		if (privateLayout) {
+			typeSettingsProperties.put(
+				"privateLayout", String.valueOf(privateLayout));
+		}
+
+		layout.setTypeSettingsProperties(typeSettingsProperties);
+
+		String layoutPrototypeUuid = ParamUtil.getString(
+			serviceContext, "layoutPrototypeUuid");
+		boolean layoutPrototypeLinkEnabled = ParamUtil.getBoolean(
+			serviceContext, "layoutPrototypeLinkEnabled");
+
+		if (Validator.isNotNull(layoutPrototypeUuid)) {
+			layout.setLayoutPrototypeUuid(layoutPrototypeUuid);
+			layout.setLayoutPrototypeLinkEnabled(layoutPrototypeLinkEnabled);
+		}
+
+		layout.setExpandoBridgeAttributes(serviceContext);
+
+		layoutPersistence.update(layout);
+
+		// Layout friendly URLs
+
+		layoutFriendlyURLLocalService.updateLayoutFriendlyURLs(
+			serviceContext.getUserId(), layout.getCompanyId(),
+			layout.getGroupId(), layout.getPlid(), layout.isPrivateLayout(),
+			friendlyURLMap, serviceContext);
+
+		// Asset
+
+		updateAsset(
+			serviceContext.getUserId(), layout,
+			serviceContext.getAssetCategoryIds(),
+			serviceContext.getAssetTagNames());
+
+		return layout;
+	}
+
+	/**
 	 * Updates the layout replacing its type settings.
 	 *
 	 * @param  groupId the primary key of the group
