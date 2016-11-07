@@ -449,16 +449,27 @@ public class GroupImpl extends GroupBaseImpl {
 			if (privateLayoutSet.getLogoId() > 0) {
 				logoId = privateLayoutSet.getLogoId();
 			}
-			else if (useDefault) {
-				StringBundler sb = new StringBundler(2);
-
-				sb.append(themeDisplay.getPathImage());
-				sb.append("/layout_set_logo?img_id=0");
-
-				return sb.toString();
-			}
 			else {
-				return null;
+				Organization organization =
+					OrganizationLocalServiceUtil.fetchOrganization(
+						getOrganizationId());
+
+				if (Validator.isNotNull(organization) &&
+					(organization.getLogoId() > 0)) {
+
+					logoId = organization.getLogoId();
+				}
+				else if (useDefault) {
+					StringBundler sb = new StringBundler(2);
+
+					sb.append(themeDisplay.getPathImage());
+					sb.append("/layout_set_logo?img_id=0");
+
+					return sb.toString();
+				}
+				else {
+					return null;
+				}
 			}
 		}
 

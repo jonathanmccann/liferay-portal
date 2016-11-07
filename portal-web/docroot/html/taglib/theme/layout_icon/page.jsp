@@ -24,6 +24,13 @@ String layoutIconImageURL = themeDisplay.getPathImage() + "/organization_logo?im
 if (iconImageId > 0) {
 	layoutIconImageURL = DLUtil.getPreviewURL(iconImageId, themeDisplay);
 }
+else {
+	Group group = GroupLocalServiceUtil.getGroup(selLayout.getGroupId());
+
+	if (group.isOrganization()) {
+		layoutIconImageURL = group.getLogoURL(themeDisplay, true);
+	}
+}
 %>
 
 <c:if test="<%= (selLayout != null) && selLayout.isIconImage() %>">
