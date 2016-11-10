@@ -14,6 +14,7 @@
 
 package com.liferay.portal.model.impl;
 
+import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
 import com.liferay.exportimport.kernel.staging.StagingConstants;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
@@ -432,8 +433,10 @@ public class GroupImpl extends GroupBaseImpl {
 	}
 
 	@Override
-	public String getLogoURL(ThemeDisplay themeDisplay, boolean useDefault) {
-		long logoId = 0;
+	public String getLogoURL(ThemeDisplay themeDisplay, boolean useDefault)
+		throws PortalException {
+
+		long logoId;
 
 		LayoutSet publicLayoutSet = getPublicLayoutSet();
 
@@ -446,21 +449,20 @@ public class GroupImpl extends GroupBaseImpl {
 			if (privateLayoutSet.getLogoId() > 0) {
 				logoId = privateLayoutSet.getLogoId();
 			}
+			else if (useDefault) {
+				StringBundler sb = new StringBundler(2);
+
+				sb.append(themeDisplay.getPathImage());
+				sb.append("/layout_set_logo?img_id=0");
+
+				return sb.toString();
+			}
+			else {
+				return null;
+			}
 		}
 
-		if ((logoId == 0) && !useDefault) {
-			return null;
-		}
-
-		StringBundler sb = new StringBundler(5);
-
-		sb.append(themeDisplay.getPathImage());
-		sb.append("/layout_set_logo?img_id=");
-		sb.append(logoId);
-		sb.append("&t=");
-		sb.append(WebServerServletTokenUtil.getToken(logoId));
-
-		return sb.toString();
+		return DLUtil.getPreviewURL(logoId, themeDisplay);
 	}
 
 	@Override

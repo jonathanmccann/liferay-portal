@@ -75,11 +75,16 @@ renderResponse.setTitle(headerTitle);
 
 			<%
 			long logoId = organization.getLogoId();
+			String organizationLogoURL = themeDisplay.getPathImage() + "/organization_logo?img_id=0";
+
+			if (logoId > 0) {
+				organizationLogoURL = DLUtil.getPreviewURL(logoId, themeDisplay);
+			}
 			%>
 
 			<div class="organization-info">
 				<div class="float-container">
-					<img alt="<%= HtmlUtil.escapeAttribute(organization.getName()) %>" class="organization-logo" src="<%= themeDisplay.getPathImage() %>/organization_logo?img_id=<%= logoId %>&t=<%= WebServerServletTokenUtil.getToken(logoId) %>" />
+					<img alt="<%= HtmlUtil.escapeAttribute(organization.getName()) %>" class="organization-logo" src="<%= organizationLogoURL %>" />
 
 					<span class="organization-name"><%= HtmlUtil.escape(organization.getName()) %></span>
 				</div>
