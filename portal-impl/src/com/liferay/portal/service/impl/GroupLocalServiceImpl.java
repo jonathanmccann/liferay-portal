@@ -253,6 +253,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 					}
 
 					groupKey = value;
+
+					break;
 				}
 			}
 			friendlyName = nameMap.get(LocaleUtil.getDefault());
