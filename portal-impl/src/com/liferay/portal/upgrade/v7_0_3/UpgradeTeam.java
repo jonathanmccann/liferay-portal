@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.portal.upgrade.v7_0_0;
+package com.liferay.portal.upgrade.v7_0_3;
 
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.upgrade.util.UpgradeUUIDUtil;
