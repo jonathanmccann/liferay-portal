@@ -469,6 +469,8 @@ public class LayoutSetLocalServiceImpl extends LayoutSetLocalServiceBaseImpl {
 		}
 		else {
 			try {
+				virtualHostLocalService.updateVirtualHost(
+					layoutSet.getCompanyId(), layoutSet.getLayoutSetId(), null);
 				virtualHostPersistence.removeByC_L(
 					layoutSet.getCompanyId(), layoutSet.getLayoutSetId());
 			}
