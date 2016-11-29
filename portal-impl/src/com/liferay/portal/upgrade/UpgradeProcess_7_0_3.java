@@ -21,6 +21,7 @@ import com.liferay.portal.upgrade.v7_0_3.UpgradeModules;
 import com.liferay.portal.upgrade.v7_0_3.UpgradeOracle;
 import com.liferay.portal.upgrade.v7_0_3.UpgradeSQLServer;
 import com.liferay.portal.upgrade.v7_0_3.UpgradeSybase;
+import com.liferay.portal.upgrade.v7_0_3.UpgradeTeam;
 
 /**
  * @author Adolfo Pérez
@@ -39,6 +40,7 @@ public class UpgradeProcess_7_0_3 extends UpgradeProcess {
 		upgrade(UpgradeOracle.class);
 		upgrade(UpgradeSQLServer.class);
 		upgrade(UpgradeSybase.class);
+		upgrade(UpgradeTeam.class);
 
 		clearIndexesCache();
 	}
