@@ -51,3 +51,23 @@
 		);
 	</aui:script>
 </c:if>
+
+<c:if test="<%= BrowserSnifferUtil.isIe(request) && ((BrowserSnifferUtil.getMajorVersion(request) == 11.0) || (BrowserSnifferUtil.getMajorVersion(request) == 10.0)) %>">
+	<aui:script sandbox="<%= true %>">
+		var select = $('#<%= namespace + id %>');
+
+		select.on(
+			'focus',
+			function(event) {
+				select.on(
+					'keydown',
+					function(event) {
+						if (event.keyCode == 27) {
+							event.stopPropagation();
+						}
+					}
+				);
+			}
+		);
+	</aui:script>
+</c:if>
