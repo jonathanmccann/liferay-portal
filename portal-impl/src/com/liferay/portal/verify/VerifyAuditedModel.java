@@ -16,7 +16,6 @@ package com.liferay.portal.verify;
 
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
 import com.liferay.portal.kernel.concurrent.ThrowableAwareRunnable;
-import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -30,7 +29,6 @@ import com.liferay.portal.kernel.verify.model.VerifiableAuditedModel;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 
 import java.util.ArrayList;
@@ -210,8 +208,8 @@ public class VerifyAuditedModel extends VerifyProcess {
 	}
 
 	protected void verifyAuditedModel(
-			Connection con, PreparedStatement ps, String tableName,
-			long primKey, Object[] auditedModelArray, boolean updateDates)
+			Connection con, ResultSet rs, String tableName,
+			Object[] auditedModelArray, boolean updateDates)
 		throws Exception {
 
 		try {
@@ -230,20 +228,16 @@ public class VerifyAuditedModel extends VerifyProcess {
 			Timestamp createDate = (Timestamp)auditedModelArray[3];
 			Timestamp modifiedDate = (Timestamp)auditedModelArray[4];
 
-			ps.setLong(1, companyId);
-			ps.setLong(2, userId);
-			ps.setString(3, userName);
+			rs.updateLong("companyId", companyId);
+			rs.updateLong("userId", userId);
+			rs.updateString("userName", userName);
 
 			if (updateDates) {
-				ps.setTimestamp(4, createDate);
-				ps.setTimestamp(5, modifiedDate);
-				ps.setLong(6, primKey);
-			}
-			else {
-				ps.setLong(4, primKey);
+				rs.updateTimestamp("createDate", createDate);
+				rs.updateTimestamp("modifiedDate", modifiedDate);
 			}
 
-			ps.addBatch();
+			rs.updateRow();
 		}
 		catch (Exception e) {
 			if (_log.isWarnEnabled()) {
@@ -259,11 +253,9 @@ public class VerifyAuditedModel extends VerifyProcess {
 		try (LoggingTimer loggingTimer = new LoggingTimer(
 				verifiableAuditedModel.getTableName())) {
 
-			StringBundler sb = new StringBundler(8);
+			StringBundler sb = new StringBundler(6);
 
-			sb.append("select ");
-			sb.append(verifiableAuditedModel.getPrimaryKeyColumnName());
-			sb.append(", companyId, userId");
+			sb.append("select companyId, userId");
 
 			if (verifiableAuditedModel.getJoinByTableName() != null) {
 				sb.append(StringPool.COMMA_AND_SPACE);
@@ -279,19 +271,13 @@ public class VerifyAuditedModel extends VerifyProcess {
 			long previousCompanyId = 0;
 
 			try (Connection con = DataAccess.getUpgradeOptimizedConnection();
-				PreparedStatement ps1 = con.prepareStatement(sb.toString());
-				ResultSet rs = ps1.executeQuery();
-				PreparedStatement ps2 =
-					AutoBatchPreparedStatementUtil.autoBatch(
-						_createPreparedStatement(
-							con, verifiableAuditedModel.getTableName(),
-							verifiableAuditedModel.getPrimaryKeyColumnName(),
-							verifiableAuditedModel.isUpdateDates()))) {
+				PreparedStatement ps = con.prepareStatement(
+					sb.toString(), ResultSet.TYPE_FORWARD_ONLY,
+					ResultSet.CONCUR_UPDATABLE);
+				ResultSet rs = ps.executeQuery()) {
 
 				while (rs.next()) {
 					long companyId = rs.getLong("companyId");
-					long primKey = rs.getLong(
-						verifiableAuditedModel.getPrimaryKeyColumnName());
 					long previousUserId = rs.getLong("userId");
 
 					if (verifiableAuditedModel.getJoinByTableName() != null) {
@@ -316,36 +302,12 @@ public class VerifyAuditedModel extends VerifyProcess {
 					}
 
 					verifyAuditedModel(
-						con, ps2, verifiableAuditedModel.getTableName(),
-						primKey, auditedModelArray,
+						con, rs, verifiableAuditedModel.getTableName(),
+						auditedModelArray,
 						verifiableAuditedModel.isUpdateDates());
 				}
-
-				ps2.executeBatch();
 			}
 		}
-	}
-
-	private PreparedStatement _createPreparedStatement(
-			Connection con, String tableName, String primaryKeyColumnName,
-			boolean updateDates)
-		throws SQLException {
-
-		StringBundler sb = new StringBundler(7);
-
-		sb.append("update ");
-		sb.append(tableName);
-		sb.append(" set companyId = ?, userId = ?, userName = ?");
-
-		if (updateDates) {
-			sb.append(", createDate = ?, modifiedDate = ?");
-		}
-
-		sb.append(" where ");
-		sb.append(primaryKeyColumnName);
-		sb.append(" = ?");
-
-		return con.prepareStatement(sb.toString());
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
