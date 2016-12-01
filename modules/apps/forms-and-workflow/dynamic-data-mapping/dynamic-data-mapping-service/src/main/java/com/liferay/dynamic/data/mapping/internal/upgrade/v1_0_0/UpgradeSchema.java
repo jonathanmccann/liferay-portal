@@ -30,11 +30,13 @@ public class UpgradeSchema extends UpgradeProcess {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			alter(
 				DDMContentTable.class,
-				new AlterColumnName("xml", "data_ TEXT null"));
+				new AlterColumnName("xml", "data_ TEXT null"),
+				new AlterColumnType("name", "TEXT null"));
 			alter(
 				DDMStructureTable.class,
 				new AlterColumnName("xsd", "definition TEXT null"),
-				new AlterColumnType("description", "TEXT null"));
+				new AlterColumnType("description", "TEXT null"),
+				new AlterColumnType("name", "TEXT null"));
 			alter(
 				DDMTemplateTable.class,
 				new AlterColumnType("description", "TEXT null"));
