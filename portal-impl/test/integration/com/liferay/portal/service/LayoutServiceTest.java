@@ -75,7 +75,7 @@ public class LayoutServiceTest {
 			layout.getParentLayoutId(), layout.getNameMap(),
 			layout.getTitleMap(), layout.getDescriptionMap(),
 			layout.getKeywordsMap(), layout.getRobotsMap(), layout.getType(),
-			layout.isHidden(), friendlyURLMap, layout.getIconImage(), null,
+			layout.isHidden(), friendlyURLMap, layout.getIconImageId(), null,
 			serviceContext);
 	}
 

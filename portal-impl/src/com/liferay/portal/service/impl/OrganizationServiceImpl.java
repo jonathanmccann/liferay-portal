@@ -499,7 +499,12 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 	 *         names for the organization, and merge expando bridge attributes
 	 *         for the organization.
 	 * @return the organization
+	 * @deprecated As of 7.0.0, replaced by {@link #updateOrganization(long,
+	 *             long, String, String, long, long, long, String, long,
+	 *             byte[], boolean, List, List, List, List, List,
+	 *             ServiceContext)}
 	 */
+	@Deprecated
 	@Override
 	public Organization updateOrganization(
 			long organizationId, long parentOrganizationId, String name,
@@ -607,9 +612,8 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 	 *             attributes for the organization.
 	 * @return     the organization
 	 * @deprecated As of 7.0.0, replaced by {@link #updateOrganization(long,
-	 *             long, String, String, long, long, long, String, boolean,
-	 *             byte[], boolean, List, List, List, List, List,
-	 *             ServiceContext)}
+	 *             long, String, String, long, long, long, String, long, byte[],
+	 *             boolean, List, List, List, List, List, ServiceContext)}
 	 */
 	@Deprecated
 	@Override
@@ -624,7 +628,7 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 
 		return updateOrganization(
 			organizationId, parentOrganizationId, name, type, regionId,
-			countryId, statusId, comments, true, null, site, addresses,
+			countryId, statusId, comments, 0, null, site, addresses,
 			emailAddresses, orgLabors, phones, websites, serviceContext);
 	}
 
@@ -657,8 +661,117 @@ public class OrganizationServiceImpl extends OrganizationServiceBaseImpl {
 
 		return updateOrganization(
 			organizationId, parentOrganizationId, name, type, regionId,
-			countryId, statusId, comments, true, null, site, null, null, null,
+			countryId, statusId, comments, 0, null, site, null, null, null,
 			null, null, serviceContext);
+	}
+
+	/**
+	 * Updates the organization with additional parameters.
+	 *
+	 * @param  organizationId the primary key of the organization
+	 * @param  parentOrganizationId the primary key of the organization's parent
+	 *         organization
+	 * @param  name the organization's name
+	 * @param  type the organization's type
+	 * @param  regionId the primary key of the organization's region
+	 * @param  countryId the primary key of the organization's country
+	 * @param  statusId the organization's workflow status
+	 * @param  comments the comments about the organization
+	 * @param  logoId the fileEntryId of the logo
+	 * @param  logoBytes the new logo image data
+	 * @param  site whether the organization is to be associated with a main
+	 *         site
+	 * @param  addresses the organization's addresses
+	 * @param  emailAddresses the organization's email addresses
+	 * @param  orgLabors the organization's hours of operation
+	 * @param  phones the organization's phone numbers
+	 * @param  websites the organization's websites
+	 * @param  serviceContext the service context to be applied (optionally
+	 *         <code>null</code>). Can set asset category IDs and asset tag
+	 *         names for the organization, and merge expando bridge attributes
+	 *         for the organization.
+	 * @return the organization
+	 */
+	@Override
+	public Organization updateOrganization(
+			long organizationId, long parentOrganizationId, String name,
+			String type, long regionId, long countryId, long statusId,
+			String comments, long logoId, byte[] logoBytes, boolean site,
+			List<Address> addresses, List<EmailAddress> emailAddresses,
+			List<OrgLabor> orgLabors, List<Phone> phones,
+			List<Website> websites, ServiceContext serviceContext)
+		throws PortalException {
+
+		Organization organization = organizationPersistence.findByPrimaryKey(
+			organizationId);
+
+		OrganizationPermissionUtil.check(
+			getPermissionChecker(), organization, ActionKeys.UPDATE);
+
+		if (organization.getParentOrganizationId() != parentOrganizationId) {
+			if (parentOrganizationId ==
+					OrganizationConstants.DEFAULT_PARENT_ORGANIZATION_ID) {
+
+				PortalPermissionUtil.check(
+					getPermissionChecker(), ActionKeys.ADD_ORGANIZATION);
+			}
+			else {
+				OrganizationPermissionUtil.check(
+					getPermissionChecker(), parentOrganizationId,
+					ActionKeys.ADD_ORGANIZATION);
+			}
+		}
+
+		if (addresses != null) {
+			UsersAdminUtil.updateAddresses(
+				Organization.class.getName(), organizationId, addresses);
+		}
+
+		if (emailAddresses != null) {
+			UsersAdminUtil.updateEmailAddresses(
+				Organization.class.getName(), organizationId, emailAddresses);
+		}
+
+		if (orgLabors != null) {
+			UsersAdminUtil.updateOrgLabors(organizationId, orgLabors);
+		}
+
+		if (phones != null) {
+			UsersAdminUtil.updatePhones(
+				Organization.class.getName(), organizationId, phones);
+		}
+
+		if (websites != null) {
+			UsersAdminUtil.updateWebsites(
+				Organization.class.getName(), organizationId, websites);
+		}
+
+		User user = getUser();
+
+		Organization oldOrganization = organization;
+
+		List<AssetCategory> oldAssetCategories =
+			assetCategoryLocalService.getCategories(
+				Organization.class.getName(), organizationId);
+
+		List<AssetTag> oldAssetTags = assetTagLocalService.getTags(
+			Organization.class.getName(), organizationId);
+
+		ExpandoBridge oldExpandoBridge = oldOrganization.getExpandoBridge();
+
+		Map<String, Serializable> oldExpandoAttributes =
+			oldExpandoBridge.getAttributes();
+
+		organization = organizationLocalService.updateOrganization(
+			user.getCompanyId(), organizationId, parentOrganizationId, name,
+			type, regionId, countryId, statusId, comments, logoId, logoBytes,
+			site, serviceContext);
+
+		OrganizationMembershipPolicyUtil.verifyPolicy(
+			organization, oldOrganization, oldAssetCategories, oldAssetTags,
+			oldExpandoAttributes);
+
+		return organization;
 	}
 
 }

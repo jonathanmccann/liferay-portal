@@ -125,6 +125,9 @@ public interface DL {
 		FileEntry fileEntry, FileVersion fileVersion, ThemeDisplay themeDisplay,
 		String queryString, boolean appendVersion, boolean absoluteURL);
 
+	public String getPreviewURL(long fileEntryId, ThemeDisplay themeDisplay)
+		throws PortalException;
+
 	public <T> OrderByComparator<T> getRepositoryModelOrderByComparator(
 		String orderByCol, String orderByType);
 

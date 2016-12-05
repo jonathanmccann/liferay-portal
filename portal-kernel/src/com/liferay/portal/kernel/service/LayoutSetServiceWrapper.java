@@ -91,6 +91,11 @@ public class LayoutSetServiceWrapper implements LayoutSetService,
 			privateLayout, layoutSetPrototypeLinkEnabled, layoutSetPrototypeUuid);
 	}
 
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #updateLogo(long, boolean,
+	long, byte[])}
+	*/
+	@Deprecated
 	@Override
 	public void updateLogo(long groupId, boolean privateLayout, boolean logo,
 		byte[] bytes)
@@ -118,6 +123,13 @@ public class LayoutSetServiceWrapper implements LayoutSetService,
 		throws com.liferay.portal.kernel.exception.PortalException {
 		_layoutSetService.updateLogo(groupId, privateLayout, logo, inputStream,
 			cleanUpStream);
+	}
+
+	@Override
+	public void updateLogo(long groupId, boolean privateLayout,
+		long fileEntryId, byte[] bytes)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		_layoutSetService.updateLogo(groupId, privateLayout, fileEntryId, bytes);
 	}
 
 	@Override

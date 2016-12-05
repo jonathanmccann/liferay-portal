@@ -523,7 +523,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	public Company deleteLogo(long companyId) throws PortalException {
 		Company company = companyPersistence.findByPrimaryKey(companyId);
 
-		PortalUtil.updateImageId(company, false, null, "logoId", 0, 0, 0);
+		PortalUtil.updateImageId(company, 0, null, "logoId", 0);
 
 		return company;
 	}
@@ -875,7 +875,11 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	 * @param  type the company's account type (optionally <code>null</code>)
 	 * @param  size the company's account size (optionally <code>null</code>)
 	 * @return the company with the primary key
+	 * @deprecated As of 7.0.0, replaced by {@link #updateCompany(long, String,
+	 *             String, String, long, byte[], String, String, String,
+	 *             String, String, String, String, String, String)}
 	 */
+	@Deprecated
 	@Override
 	public Company updateCompany(
 			long companyId, String virtualHostname, String mx, String homeURL,
@@ -924,6 +928,77 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	/**
 	 * Update the company with additional account information.
 	 *
+	 * @param  companyId the primary key of the company
+	 * @param  virtualHostname the company's virtual host name
+	 * @param  mx the company's mail domain
+	 * @param  homeURL the company's home URL (optionally <code>null</code>)
+	 * @param  logoId the fileEntryId for the logo
+	 * @param  logoBytes the new logo image data
+	 * @param  name the company's account name(optionally <code>null</code>)
+	 * @param  legalName the company's account legal name (optionally
+	 *         <code>null</code>)
+	 * @param  legalId the company's account legal ID (optionally
+	 *         <code>null</code>)
+	 * @param  legalType the company's account legal type (optionally
+	 *         <code>null</code>)
+	 * @param  sicCode the company's account SIC code (optionally
+	 *         <code>null</code>)
+	 * @param  tickerSymbol the company's account ticker symbol (optionally
+	 *         <code>null</code>)
+	 * @param  industry the company's account industry (optionally
+	 *         <code>null</code>)
+	 * @param  type the company's account type (optionally <code>null</code>)
+	 * @param  size the company's account size (optionally <code>null</code>)
+	 * @return the company with the primary key
+	 */
+	@Override
+	public Company updateCompany(
+			long companyId, String virtualHostname, String mx, String homeURL,
+			long logoId, byte[] logoBytes, String name, String legalName,
+			String legalId, String legalType, String sicCode,
+			String tickerSymbol, String industry, String type, String size)
+		throws PortalException {
+
+		// Company
+
+		virtualHostname = StringUtil.toLowerCase(virtualHostname.trim());
+
+		Company company = companyPersistence.findByPrimaryKey(companyId);
+
+		validateVirtualHost(company.getWebId(), virtualHostname);
+
+		if (PropsValues.MAIL_MX_UPDATE) {
+			validateMx(mx);
+		}
+
+		validateName(companyId, name);
+
+		if (PropsValues.MAIL_MX_UPDATE) {
+			company.setMx(mx);
+		}
+
+		company.setHomeURL(homeURL);
+
+		PortalUtil.updateImageId(company, logoId, logoBytes, "logoId", 0);
+
+		companyPersistence.update(company);
+
+		// Account
+
+		updateAccount(
+			company, name, legalName, legalId, legalType, sicCode, tickerSymbol,
+			industry, type, size);
+
+		// Virtual host
+
+		company = updateVirtualHostname(companyId, virtualHostname);
+
+		return company;
+	}
+
+	/**
+	 * Update the company with additional account information.
+	 *
 	 * @param      companyId the primary key of the company
 	 * @param      virtualHostname the company's virtual host name
 	 * @param      mx the company's mail domain
@@ -947,7 +1022,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 	 *             <code>null</code>)
 	 * @return     the company with the primary key
 	 * @deprecated As of 7.0.0, replaced by {@link #updateCompany(long, String,
-	 *             String, String, boolean, byte[], String, String, String,
+	 *             String, String, long, byte[], String, String, String,
 	 *             String, String, String, String, String, String)}
 	 */
 	@Deprecated

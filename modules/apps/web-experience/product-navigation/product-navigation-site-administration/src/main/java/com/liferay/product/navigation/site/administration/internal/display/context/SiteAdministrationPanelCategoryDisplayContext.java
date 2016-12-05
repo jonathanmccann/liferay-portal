@@ -196,7 +196,7 @@ public class SiteAdministrationPanelCategoryDisplayContext {
 		return _liveGroupURL;
 	}
 
-	public String getLogoURL() {
+	public String getLogoURL() throws PortalException {
 		if (Validator.isNotNull(_logoURL)) {
 			return _logoURL;
 		}

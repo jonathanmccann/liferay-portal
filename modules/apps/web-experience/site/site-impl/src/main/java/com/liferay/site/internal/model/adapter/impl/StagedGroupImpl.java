@@ -290,7 +290,9 @@ public class StagedGroupImpl implements StagedGroup {
 	}
 
 	@Override
-	public String getLogoURL(ThemeDisplay themeDisplay, boolean useDefault) {
+	public String getLogoURL(ThemeDisplay themeDisplay, boolean useDefault)
+		throws PortalException {
+
 		return _group.getLogoURL(themeDisplay, useDefault);
 	}
 

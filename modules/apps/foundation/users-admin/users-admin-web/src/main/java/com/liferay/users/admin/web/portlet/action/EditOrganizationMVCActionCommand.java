@@ -221,7 +221,6 @@ public class EditOrganizationMVCActionCommand extends BaseMVCActionCommand {
 		long regionId = ParamUtil.getLong(actionRequest, "regionId");
 		long countryId = ParamUtil.getLong(actionRequest, "countryId");
 		String comments = ParamUtil.getString(actionRequest, "comments");
-		boolean deleteLogo = ParamUtil.getBoolean(actionRequest, "deleteLogo");
 
 		byte[] logoBytes = null;
 
@@ -261,7 +260,7 @@ public class EditOrganizationMVCActionCommand extends BaseMVCActionCommand {
 
 			organization = _organizationService.updateOrganization(
 				organizationId, parentOrganizationId, name, type, regionId,
-				countryId, statusId, comments, !deleteLogo, logoBytes, site,
+				countryId, statusId, comments, fileEntryId, logoBytes, site,
 				addresses, emailAddresses, orgLabors, phones, websites,
 				serviceContext);
 		}

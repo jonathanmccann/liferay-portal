@@ -271,7 +271,7 @@ public class SitesImpl implements Sites {
 				targetLayout.getDescriptionMap(), targetLayout.getKeywordsMap(),
 				targetLayout.getRobotsMap(), layoutPrototypeLayout.getType(),
 				targetLayout.getHidden(), targetLayout.getFriendlyURLMap(),
-				targetLayout.getIconImage(), null, serviceContext);
+				targetLayout.getIconImageId(), null, serviceContext);
 		}
 		finally {
 			LocaleThreadLocal.setSiteDefaultLocale(siteDefaultLocale);

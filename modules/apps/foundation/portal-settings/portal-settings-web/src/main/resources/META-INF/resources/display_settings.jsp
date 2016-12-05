@@ -107,13 +107,24 @@
 	<aui:input label="time-zone" name="timeZoneId" type="timeZone" value="<%= timeZoneId %>" />
 </aui:fieldset>
 
+<%
+String companyLogoURL;
+
+if (company.getLogoId() > 0) {
+	companyLogoURL = DLUtil.getPreviewURL(company.getLogoId(), themeDisplay);
+}
+else {
+	companyLogoURL = themeDisplay.getPathImage() + "/company_logo?img_id=0&t=" + WebServerServletTokenUtil.getToken(0);
+}
+%>
+
 <h4><liferay-ui:message key="logo" /></h4>
 
 <aui:fieldset>
 	<aui:input label="allow-site-administrators-to-use-their-own-logo" name='<%= "settings--" + PropsKeys.COMPANY_SECURITY_SITE_LOGO + "--" %>' type="checkbox" value="<%= company.isSiteLogo() %>" />
 
 	<liferay-ui:logo-selector
-		currentLogoURL='<%= themeDisplay.getPathImage() + "/company_logo?img_id=" + company.getLogoId() + "&t=" + WebServerServletTokenUtil.getToken(company.getLogoId()) %>'
+		currentLogoURL="<%= companyLogoURL %>"
 		defaultLogo="<%= company.getLogoId() == 0 %>"
 		defaultLogoURL='<%= themeDisplay.getPathImage() + "/company_logo?img_id=0" %>'
 		logoDisplaySelector=".company-logo"

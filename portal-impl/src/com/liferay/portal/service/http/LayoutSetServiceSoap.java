@@ -97,10 +97,28 @@ public class LayoutSetServiceSoap {
 		}
 	}
 
+	/**
+	* @deprecated As of 7.0.0, replaced by {@link #updateLogo(long, boolean,
+	long, byte[])}
+	*/
+	@Deprecated
 	public static void updateLogo(long groupId, boolean privateLayout,
 		boolean logo, byte[] bytes) throws RemoteException {
 		try {
 			LayoutSetServiceUtil.updateLogo(groupId, privateLayout, logo, bytes);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	public static void updateLogo(long groupId, boolean privateLayout,
+		long fileEntryId, byte[] bytes) throws RemoteException {
+		try {
+			LayoutSetServiceUtil.updateLogo(groupId, privateLayout,
+				fileEntryId, bytes);
 		}
 		catch (Exception e) {
 			_log.error(e, e);

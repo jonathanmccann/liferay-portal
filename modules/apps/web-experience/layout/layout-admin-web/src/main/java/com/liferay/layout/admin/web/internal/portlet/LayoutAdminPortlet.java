@@ -440,7 +440,6 @@ public class LayoutAdminPortlet extends MVCPortlet {
 		boolean hidden = ParamUtil.getBoolean(uploadPortletRequest, "hidden");
 		Map<Locale, String> friendlyURLMap =
 			LocalizationUtil.getLocalizationMap(actionRequest, "friendlyURL");
-		boolean deleteLogo = ParamUtil.getBoolean(actionRequest, "deleteLogo");
 
 		byte[] iconBytes = null;
 
@@ -464,7 +463,7 @@ public class LayoutAdminPortlet extends MVCPortlet {
 		layout = layoutService.updateLayout(
 			groupId, privateLayout, layoutId, layout.getParentLayoutId(),
 			nameMap, titleMap, descriptionMap, keywordsMap, robotsMap, type,
-			hidden, friendlyURLMap, !deleteLogo, iconBytes, serviceContext);
+			hidden, friendlyURLMap, fileEntryId, iconBytes, serviceContext);
 
 		UnicodeProperties layoutTypeSettingsProperties =
 			layout.getTypeSettingsProperties();
@@ -1177,8 +1176,6 @@ public class LayoutAdminPortlet extends MVCPortlet {
 			boolean privateLayout)
 		throws Exception {
 
-		boolean deleteLogo = ParamUtil.getBoolean(actionRequest, "deleteLogo");
-
 		byte[] logoBytes = null;
 
 		long fileEntryId = ParamUtil.getLong(actionRequest, "fileEntryId");
@@ -1196,7 +1193,7 @@ public class LayoutAdminPortlet extends MVCPortlet {
 		}
 
 		layoutSetService.updateLogo(
-			groupId, privateLayout, !deleteLogo, logoBytes);
+			groupId, privateLayout, fileEntryId, logoBytes);
 	}
 
 	protected void updateLookAndFeel(

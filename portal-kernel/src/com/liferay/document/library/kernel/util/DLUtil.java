@@ -187,6 +187,13 @@ public class DLUtil {
 			absoluteURL);
 	}
 
+	public static String getPreviewURL(
+			long fileEntryId, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		return getDL().getPreviewURL(fileEntryId, themeDisplay);
+	}
+
 	public static <T> OrderByComparator<T> getRepositoryModelOrderByComparator(
 		String orderByCol, String orderByType) {
 

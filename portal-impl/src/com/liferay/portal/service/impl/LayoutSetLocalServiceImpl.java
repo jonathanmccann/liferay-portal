@@ -259,6 +259,11 @@ public class LayoutSetLocalServiceImpl extends LayoutSetLocalServiceBaseImpl {
 		layoutSetBranchPersistence.update(layoutSetBranch);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #updateLogo(long, boolean,
+	 *             long, byte[])}
+	 */
+	@Deprecated
 	@Override
 	public LayoutSet updateLogo(
 			long groupId, boolean privateLayout, boolean logo, byte[] bytes)
@@ -328,6 +333,35 @@ public class LayoutSetLocalServiceImpl extends LayoutSetLocalServiceBaseImpl {
 		}
 
 		return updateLogo(groupId, privateLayout, logo, bytes);
+	}
+
+	@Override
+	public LayoutSet updateLogo(
+			long groupId, boolean privateLayout, long fileEntryId, byte[] bytes)
+		throws PortalException {
+
+		LayoutSet layoutSet = layoutSetPersistence.findByG_P(
+			groupId, privateLayout);
+
+		LayoutSetBranch layoutSetBranch = _getLayoutSetBranch(layoutSet);
+
+		if (layoutSetBranch == null) {
+			layoutSet.setModifiedDate(new Date());
+
+			PortalUtil.updateImageId(
+				layoutSet, fileEntryId, bytes, "logoId", 0);
+
+			return layoutSetPersistence.update(layoutSet);
+		}
+
+		layoutSetBranch.setModifiedDate(new Date());
+
+		PortalUtil.updateImageId(
+			layoutSetBranch, fileEntryId, bytes, "logoId", 0);
+
+		layoutSetBranchPersistence.update(layoutSetBranch);
+
+		return layoutSet;
 	}
 
 	@Override

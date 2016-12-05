@@ -46,15 +46,22 @@ Group group = layoutsAdminDisplayContext.getGroup();
 
 <%
 String curTarget = GetterUtil.getString(layoutTypeSettings.getProperty("target"));
+long logoId = selLayout.getIconImageId();
+String logoURL = themeDisplay.getPathThemeImages() + "/spacer.png";
+
+if (logoId > 0) {
+	logoURL = DLUtil.getPreviewURL(logoId, themeDisplay);
+}
+else if (group.isOrganization()) {
+	logoURL = group.getLogoURL(themeDisplay, true);
+}
 %>
 
 <aui:input cssClass="propagatable-field" disabled="<%= selLayout.isLayoutPrototypeLinkActive() %>" label="target" name="TypeSettingsProperties--target--" size="15" type="text" value="<%= HtmlUtil.escapeAttribute(curTarget) %>" />
 
 <aui:field-wrapper helpMessage="this-icon-will-be-shown-in-the-navigation-menu" label="icon" name="iconFileName">
 	<liferay-ui:logo-selector
-		currentLogoURL='<%= (selLayout.getIconImageId() == 0) ? themeDisplay.getPathThemeImages() + "/spacer.png" : themeDisplay.getPathImage() + "/logo?img_id=" + selLayout.getIconImageId() + "&t=" + WebServerServletTokenUtil.getToken(selLayout.getIconImageId()) %>'
-		defaultLogo="<%= selLayout.getIconImageId() == 0 %>"
-		defaultLogoURL='<%= themeDisplay.getPathThemeImages() + "/spacer.png" %>'
+		currentLogoURL="<%= logoURL %>"
 		editLogoFn='<%= liferayPortletResponse.getNamespace() + "editLayoutLogo" %>'
 		logoDisplaySelector='<%= ".layout-logo-" + selLayout.getPlid() %>'
 		tempImageFileName="<%= String.valueOf(selLayout.getPlid()) %>"

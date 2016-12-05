@@ -671,6 +671,50 @@ public class OrganizationServiceHttp {
 		}
 	}
 
+	public static com.liferay.portal.kernel.model.Organization updateOrganization(
+		HttpPrincipal httpPrincipal, long organizationId,
+		long parentOrganizationId, java.lang.String name,
+		java.lang.String type, long regionId, long countryId, long statusId,
+		java.lang.String comments, long logoId, byte[] logoBytes, boolean site,
+		java.util.List<com.liferay.portal.kernel.model.Address> addresses,
+		java.util.List<com.liferay.portal.kernel.model.EmailAddress> emailAddresses,
+		java.util.List<com.liferay.portal.kernel.model.OrgLabor> orgLabors,
+		java.util.List<com.liferay.portal.kernel.model.Phone> phones,
+		java.util.List<com.liferay.portal.kernel.model.Website> websites,
+		com.liferay.portal.kernel.service.ServiceContext serviceContext)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		try {
+			MethodKey methodKey = new MethodKey(OrganizationServiceUtil.class,
+					"updateOrganization", _updateOrganizationParameterTypes19);
+
+			MethodHandler methodHandler = new MethodHandler(methodKey,
+					organizationId, parentOrganizationId, name, type, regionId,
+					countryId, statusId, comments, logoId, logoBytes, site,
+					addresses, emailAddresses, orgLabors, phones, websites,
+					serviceContext);
+
+			Object returnObj = null;
+
+			try {
+				returnObj = TunnelUtil.invoke(httpPrincipal, methodHandler);
+			}
+			catch (Exception e) {
+				if (e instanceof com.liferay.portal.kernel.exception.PortalException) {
+					throw (com.liferay.portal.kernel.exception.PortalException)e;
+				}
+
+				throw new com.liferay.portal.kernel.exception.SystemException(e);
+			}
+
+			return (com.liferay.portal.kernel.model.Organization)returnObj;
+		}
+		catch (com.liferay.portal.kernel.exception.SystemException se) {
+			_log.error(se, se);
+
+			throw se;
+		}
+	}
+
 	private static Log _log = LogFactoryUtil.getLog(OrganizationServiceHttp.class);
 	private static final Class<?>[] _addGroupOrganizationsParameterTypes0 = new Class[] {
 			long.class, long[].class
@@ -745,6 +789,14 @@ public class OrganizationServiceHttp {
 			long.class, long.class, java.lang.String.class,
 			java.lang.String.class, long.class, long.class, long.class,
 			java.lang.String.class, boolean.class,
+			com.liferay.portal.kernel.service.ServiceContext.class
+		};
+	private static final Class<?>[] _updateOrganizationParameterTypes19 = new Class[] {
+			long.class, long.class, java.lang.String.class,
+			java.lang.String.class, long.class, long.class, long.class,
+			java.lang.String.class, long.class, byte[].class, boolean.class,
+			java.util.List.class, java.util.List.class, java.util.List.class,
+			java.util.List.class, java.util.List.class,
 			com.liferay.portal.kernel.service.ServiceContext.class
 		};
 }

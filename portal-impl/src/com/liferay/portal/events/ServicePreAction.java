@@ -14,6 +14,7 @@
 
 package com.liferay.portal.events;
 
+import com.liferay.document.library.kernel.util.DLUtil;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationConstants;
 import com.liferay.exportimport.kernel.configuration.ExportImportConfigurationSettingsMapFactory;
 import com.liferay.exportimport.kernel.lar.PortletDataHandlerKeys;
@@ -202,15 +203,26 @@ public class ServicePreAction extends Action {
 
 		// Company logo
 
-		StringBundler sb = new StringBundler(5);
+		String companyLogo;
 
-		sb.append(imagePath);
-		sb.append("/company_logo?img_id=");
-		sb.append(company.getLogoId());
-		sb.append("&t=");
-		sb.append(WebServerServletTokenUtil.getToken(company.getLogoId()));
+		long companyLogoId = company.getLogoId();
 
-		String companyLogo = sb.toString();
+		StringBundler sb;
+
+		if (companyLogoId <= 0) {
+			sb = new StringBundler(5);
+
+			sb.append(imagePath);
+			sb.append("/company_logo?img_id=");
+			sb.append(companyLogoId);
+			sb.append("&t=");
+			sb.append(WebServerServletTokenUtil.getToken(companyLogoId));
+
+			companyLogo = sb.toString();
+		}
+		else {
+			companyLogo = DLUtil.getPreviewURL(companyLogoId, null);
+		}
 
 		int companyLogoHeight = 0;
 		int companyLogoWidth = 0;
@@ -533,15 +545,7 @@ public class ServicePreAction extends Action {
 				}
 
 				if (logoId > 0) {
-					sb = new StringBundler(5);
-
-					sb.append(imagePath);
-					sb.append("/layout_set_logo?img_id=");
-					sb.append(logoId);
-					sb.append("&t=");
-					sb.append(WebServerServletTokenUtil.getToken(logoId));
-
-					layoutSetLogo = sb.toString();
+					layoutSetLogo = DLUtil.getPreviewURL(logoId, null);
 
 					Image layoutSetLogoImage =
 						ImageLocalServiceUtil.getCompanyLogo(logoId);

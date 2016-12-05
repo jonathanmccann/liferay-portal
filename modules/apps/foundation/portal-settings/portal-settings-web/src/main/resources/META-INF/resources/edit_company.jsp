@@ -30,6 +30,15 @@ request.setAttribute("addresses.classPK", company.getAccountId());
 request.setAttribute("emailAddresses.classPK", company.getAccountId());
 request.setAttribute("phones.classPK", company.getAccountId());
 request.setAttribute("websites.classPK", company.getAccountId());
+
+String companyLogoURL;
+
+if (company.getLogoId() > 0) {
+	companyLogoURL = DLUtil.getPreviewURL(company.getLogoId(), themeDisplay);
+}
+else {
+	companyLogoURL = themeDisplay.getPathImage() + "/company_logo?img_id=0&t=" + WebServerServletTokenUtil.getToken(0);
+}
 %>
 
 <portlet:actionURL name="/portal_settings/edit_company" var="editCompanyURL" />
@@ -41,7 +50,7 @@ request.setAttribute("websites.classPK", company.getAccountId());
 	<liferay-util:buffer var="htmlTop">
 		<div class="company-info">
 			<p class="float-container">
-				<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="logo" />" class="company-logo" src="<%= themeDisplay.getPathImage() %>/company_logo?img_id=<%= company.getLogoId() %>&t=<%= WebServerServletTokenUtil.getToken(company.getLogoId()) %>" /><br />
+				<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="logo" />" class="company-logo" src="<%= companyLogoURL %>" /><br />
 
 				<span class="company-name"><%= HtmlUtil.escape(company.getName()) %></span>
 			</p>

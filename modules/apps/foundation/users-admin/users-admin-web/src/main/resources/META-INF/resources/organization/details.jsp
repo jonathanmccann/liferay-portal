@@ -120,12 +120,15 @@ User selUser = (User)request.getAttribute("user.selUser");
 
 				<%
 				long logoId = organization.getLogoId();
+				String organizationLogoURL = themeDisplay.getPathImage() + "/organization_logo?img_id=0";
+
+				if (logoId > 0) {
+					organizationLogoURL = DLUtil.getPreviewURL(logoId, themeDisplay);
+				}
 				%>
 
 				<liferay-ui:logo-selector
-					currentLogoURL='<%= themeDisplay.getPathImage() + "/organization_logo?img_id=" + logoId + "&t=" + WebServerServletTokenUtil.getToken(logoId) %>'
-					defaultLogo="<%= logoId == 0 %>"
-					defaultLogoURL='<%= themeDisplay.getPathImage() + "/organization_logo?img_id=0" %>'
+					currentLogoURL="<%= organizationLogoURL %>"
 					logoDisplaySelector=".organization-logo"
 					maxFileSize="<%= PrefsPropsUtil.getLong(PropsKeys.USERS_IMAGE_MAX_SIZE) %>"
 					tempImageFileName="<%= String.valueOf(groupId) %>"

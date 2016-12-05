@@ -17,6 +17,8 @@ package com.liferay.portal.util;
 import com.liferay.document.library.kernel.exception.ImageSizeException;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.document.library.kernel.model.DLFolder;
+import com.liferay.document.library.kernel.model.DLFolderConstants;
+import com.liferay.document.library.kernel.service.DLFileEntryLocalServiceUtil;
 import com.liferay.expando.kernel.exception.ValueDataException;
 import com.liferay.expando.kernel.model.ExpandoBridge;
 import com.liferay.expando.kernel.model.ExpandoColumnConstants;
@@ -124,6 +126,7 @@ import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.PortletLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourceLocalServiceUtil;
 import com.liferay.portal.kernel.service.ResourcePermissionLocalServiceUtil;
+import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.TicketLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserServiceUtil;
@@ -221,7 +224,9 @@ import com.liferay.util.JS;
 
 import java.awt.image.RenderedImage;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
 
 import java.lang.reflect.Method;
@@ -7023,6 +7028,57 @@ public class PortalImpl implements Portal {
 
 		BeanPropertiesUtil.setProperty(
 			baseModel, fieldName, image.getImageId());
+	}
+
+	@Override
+	public void updateImageId(
+			BaseModel<?> baseModel, long tempFileEntryId, byte[] bytes,
+			String fieldName, long maxSize)
+		throws PortalException {
+
+		long oldFileEntryId = BeanPropertiesUtil.getLong(baseModel, fieldName);
+
+		if (oldFileEntryId == tempFileEntryId) {
+			return;
+		}
+
+		if (oldFileEntryId != 0) {
+			DLFileEntryLocalServiceUtil.deleteDLFileEntry(oldFileEntryId);
+		}
+
+		if (ArrayUtil.isNotEmpty(bytes) && (maxSize > 0) &&
+			(bytes.length > maxSize)) {
+				throw new ImageSizeException();
+		}
+
+		DLFileEntry tempFileEntry = DLFileEntryLocalServiceUtil.getDLFileEntry(
+			tempFileEntryId);
+
+		DLFileEntryLocalServiceUtil.deleteFileEntry(tempFileEntryId);
+
+		ServiceContext serviceContext = new ServiceContext();
+
+		serviceContext.setAddGroupPermissions(true);
+
+		serviceContext.setGroupPermissions(new String[] {ActionKeys.VIEW});
+
+		if (!BeanPropertiesUtil.getBooleanSilent(baseModel, "privateLayout")) {
+			serviceContext.setAddGuestPermissions(true);
+		}
+
+		InputStream is = new ByteArrayInputStream(bytes);
+
+		DLFileEntry newFileEntry = DLFileEntryLocalServiceUtil.addFileEntry(
+			tempFileEntry.getUserId(), tempFileEntry.getGroupId(),
+			tempFileEntry.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			tempFileEntry.getFileName(), tempFileEntry.getMimeType(),
+			tempFileEntry.getTitle(), tempFileEntry.getDescription(), null,
+			tempFileEntry.getFileEntryTypeId(), null, null, is, bytes.length,
+			serviceContext);
+
+		BeanPropertiesUtil.setProperty(
+			baseModel, fieldName, newFileEntry.getFileEntryId());
 	}
 
 	@Override

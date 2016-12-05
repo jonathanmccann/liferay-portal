@@ -18,8 +18,21 @@
 
 <%
 Layout selLayout = (Layout)request.getAttribute("liferay-theme:layout-icon:layout");
+long iconImageId = selLayout.getIconImageId();
+String layoutIconImageURL = themeDisplay.getPathImage() + "/organization_logo?img_id=0";
+
+if (iconImageId > 0) {
+	layoutIconImageURL = DLUtil.getPreviewURL(iconImageId, themeDisplay);
+}
+else {
+	Group group = GroupLocalServiceUtil.getGroup(selLayout.getGroupId());
+
+	if (group.isOrganization()) {
+		layoutIconImageURL = group.getLogoURL(themeDisplay, true);
+	}
+}
 %>
 
 <c:if test="<%= (selLayout != null) && selLayout.isIconImage() %>">
-	<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="page-icon" />" class="layout-logo-<%= selLayout.getPlid() %>" src="<%= themeDisplay.getPathImage() %>/layout_icon?img_id=<%= selLayout.getIconImageId() %>&t=<%= WebServerServletTokenUtil.getToken(selLayout.getIconImageId()) %>" />
+	<img alt="<liferay-ui:message escapeAttribute="<%= true %>" key="page-icon" />" class="layout-logo-<%= selLayout.getPlid() %>" src="<%= layoutIconImageURL %>" />
 </c:if>
