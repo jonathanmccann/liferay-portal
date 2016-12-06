@@ -993,6 +993,10 @@
 							)
 						)
 					)
+				) AND
+				(
+					(lower(Role_.name) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
+					(lower(Role_.description) LIKE ? [$AND_OR_NULL_CHECK$])
 				)
 		]]>
 	</sql>
@@ -1168,6 +1172,10 @@
 							)
 						)
 					)
+				) AND
+				(
+					(lower(Role_.name) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
+					(lower(Role_.description) LIKE ? [$AND_OR_NULL_CHECK$])
 				)
 			ORDER BY
 				Role_.name ASC

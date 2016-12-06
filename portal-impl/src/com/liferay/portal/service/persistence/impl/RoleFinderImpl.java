@@ -38,6 +38,7 @@ import com.liferay.portal.model.impl.RoleImpl;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -116,12 +117,12 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 
 	@Override
 	public int countByGroupRoleAndTeamRole(
-		long companyId, String[] excludedNames, int[] types,
+		long companyId, String keywords, String[] excludedNames, int[] types,
 		long excludedTeamRoleId, long teamGroupId) {
 
 		return doCountByGroupRoleAndTeamRole(
-			companyId, excludedNames, types, excludedTeamRoleId, teamGroupId,
-			false);
+			companyId, keywords, excludedNames, types, excludedTeamRoleId,
+			teamGroupId, false);
 	}
 
 	@Override
@@ -280,12 +281,12 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 
 	@Override
 	public int filterCountByGroupRoleAndTeamRole(
-		long companyId, String[] excludedNames, int[] types,
+		long companyId, String keywords, String[] excludedNames, int[] types,
 		long excludedTeamRoleId, long teamGroupId) {
 
 		return doCountByGroupRoleAndTeamRole(
-			companyId, excludedNames, types, excludedTeamRoleId, teamGroupId,
-			true);
+			companyId, keywords, excludedNames, types, excludedTeamRoleId,
+			teamGroupId, true);
 	}
 
 	@Override
@@ -332,12 +333,12 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 
 	@Override
 	public List<Role> filterFindByGroupRoleAndTeamRole(
-		long companyId, String[] excludedNames, int[] types,
+		long companyId, String keywords, String[] excludedNames, int[] types,
 		long excludedTeamRoleId, long teamGroupId, int start, int end) {
 
 		return doFindByGroupRoleAndTeamRole(
-			companyId, excludedNames, types, excludedTeamRoleId, teamGroupId,
-			start, end, true);
+			companyId, keywords, excludedNames, types, excludedTeamRoleId,
+			teamGroupId, start, end, true);
 	}
 
 	@Override
@@ -390,12 +391,12 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 
 	@Override
 	public List<Role> findByGroupRoleAndTeamRole(
-		long companyId, String[] excludedNames, int[] types,
+		long companyId, String keywords, String[] excludedNames, int[] types,
 		long excludedTeamRoleId, long teamGroupId, int start, int end) {
 
 		return doFindByGroupRoleAndTeamRole(
-			companyId, excludedNames, types, excludedTeamRoleId, teamGroupId,
-			start, end, false);
+			companyId, keywords, excludedNames, types, excludedTeamRoleId,
+			teamGroupId, start, end, false);
 	}
 
 	@Override
@@ -772,8 +773,24 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 	}
 
 	protected int doCountByGroupRoleAndTeamRole(
-		long companyId, String[] excludedNames, int[] types,
+		long companyId, String keywords, String[] excludedNames, int[] types,
 		long excludedTeamRoleId, long teamGroupId, boolean inlineSQLHelper) {
+
+		if ((types == null) || (types.length == 0)) {
+			return 0;
+		}
+
+		if ((excludedNames == null) || (excludedNames.length == 0)) {
+			excludedNames = new String[] {""};
+		}
+
+		boolean andOperator = false;
+
+		if (Validator.isNull(keywords)) {
+			andOperator = true;
+		}
+
+		String[] keywordsArray = CustomSQLUtil.keywords(keywords);
 
 		Session session = null;
 
@@ -782,12 +799,18 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 
 			String sql = CustomSQLUtil.get(COUNT_BY_GROUP_ROLE_AND_TEAM_ROLE);
 
+			sql = CustomSQLUtil.replaceKeywords(
+				sql, "lower(Role_.name)", StringPool.LIKE, false,
+				keywordsArray);
+			sql = CustomSQLUtil.replaceKeywords(
+				sql, "lower(Role_.description)", StringPool.LIKE, true,
+				keywordsArray);
 			sql = StringUtil.replace(
 				sql, "[$EXCLUDED_NAMES$]", getExcludedNames(excludedNames));
-
 			sql = StringUtil.replace(sql, "[$TYPES$]", StringUtil.merge(types));
+			sql = CustomSQLUtil.replaceAndOperator(sql, andOperator);
 
-			if (inlineSQLHelper) {
+			if (inlineSQLHelper && InlineSQLHelperUtil.isEnabled()) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
 					sql, Role.class.getName(), "Role_.roleId", null, null,
 					new long[] {0}, null);
@@ -810,6 +833,8 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 			qPos.add(ClassNameLocalServiceUtil.getClassNameId(Team.class));
 			qPos.add(excludedTeamRoleId);
 			qPos.add(teamGroupId);
+			qPos.add(keywordsArray, 2);
+			qPos.add(keywordsArray, 2);
 
 			Iterator<Long> itr = q.iterate();
 
@@ -902,9 +927,25 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 	}
 
 	protected List<Role> doFindByGroupRoleAndTeamRole(
-		long companyId, String[] excludedNames, int[] types,
+		long companyId, String keywords, String[] excludedNames, int[] types,
 		long excludedTeamRoleId, long teamGroupId, int start, int end,
 		boolean inlineSQLHelper) {
+
+		if ((types == null) || (types.length == 0)) {
+			return Collections.emptyList();
+		}
+
+		if ((excludedNames == null) || (excludedNames.length == 0)) {
+			excludedNames = new String[] {""};
+		}
+
+		boolean andOperator = false;
+
+		if (Validator.isNull(keywords)) {
+			andOperator = true;
+		}
+
+		String[] keywordsArray = CustomSQLUtil.keywords(keywords);
 
 		Session session = null;
 
@@ -913,10 +954,16 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 
 			String sql = CustomSQLUtil.get(FIND_BY_GROUP_ROLE_AND_TEAM_ROLE);
 
+			sql = CustomSQLUtil.replaceKeywords(
+				sql, "lower(Role_.name)", StringPool.LIKE, false,
+				keywordsArray);
+			sql = CustomSQLUtil.replaceKeywords(
+				sql, "lower(Role_.description)", StringPool.LIKE, true,
+				keywordsArray);
 			sql = StringUtil.replace(
 				sql, "[$EXCLUDED_NAMES$]", getExcludedNames(excludedNames));
-
 			sql = StringUtil.replace(sql, "[$TYPES$]", StringUtil.merge(types));
+			sql = CustomSQLUtil.replaceAndOperator(sql, andOperator);
 
 			if (inlineSQLHelper && InlineSQLHelperUtil.isEnabled()) {
 				sql = InlineSQLHelperUtil.replacePermissionCheck(
@@ -941,6 +988,8 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 			qPos.add(ClassNameLocalServiceUtil.getClassNameId(Team.class));
 			qPos.add(excludedTeamRoleId);
 			qPos.add(teamGroupId);
+			qPos.add(keywordsArray, 2);
+			qPos.add(keywordsArray, 2);
 
 			return (List<Role>)QueryUtil.list(q, getDialect(), start, end);
 		}
