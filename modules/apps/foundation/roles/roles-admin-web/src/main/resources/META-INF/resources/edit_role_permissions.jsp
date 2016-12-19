@@ -278,6 +278,10 @@ if (!portletName.equals(PortletKeys.SERVER_ADMIN)) {
 
 		var permissionContentContainerNode = permissionContainerNode.one('#<portlet:namespace />permissionContentContainer');
 
+		var checkedNodes = permissionContentContainerNode.all(':checked');
+
+		originalSelectedValues = checkedNodes.val();
+
 		permissionContainerNode.delegate(
 			'click',
 			function(event) {
@@ -317,7 +321,7 @@ if (!portletName.equals(PortletKeys.SERVER_ADMIN)) {
 
 								permissionContentContainerNode.setContent(responseData);
 
-								var checkedNodes = permissionContentContainerNode.all(':checked');
+								checkedNodes = permissionContentContainerNode.all(':checked');
 
 								originalSelectedValues = checkedNodes.val();
 							}
