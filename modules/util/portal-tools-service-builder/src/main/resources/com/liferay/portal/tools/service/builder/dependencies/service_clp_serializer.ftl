@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
@@ -216,14 +217,16 @@ public class ClpSerializer {
 
 	public static Throwable translateThrowable(Throwable throwable) {
 		if (_useReflectionToTranslateThrowable) {
+
+			ObjectOutputStream objectOutputStream = null;
+			ObjectInputStream objectInputStream = null;
 			try {
 				UnsyncByteArrayOutputStream unsyncByteArrayOutputStream = new UnsyncByteArrayOutputStream();
-				ObjectOutputStream objectOutputStream = new ObjectOutputStream(unsyncByteArrayOutputStream);
+				objectOutputStream = new ObjectOutputStream(unsyncByteArrayOutputStream);
 
 				objectOutputStream.writeObject(throwable);
 
 				objectOutputStream.flush();
-				objectOutputStream.close();
 
 				UnsyncByteArrayInputStream unsyncByteArrayInputStream = new UnsyncByteArrayInputStream(unsyncByteArrayOutputStream.unsafeGetByteArray(), 0, unsyncByteArrayOutputStream.size());
 
@@ -231,11 +234,9 @@ public class ClpSerializer {
 
 				ClassLoader contextClassLoader = currentThread.getContextClassLoader();
 
-				ObjectInputStream objectInputStream = new ClassLoaderObjectInputStream(unsyncByteArrayInputStream, contextClassLoader);
+				objectInputStream = new ClassLoaderObjectInputStream(unsyncByteArrayInputStream, contextClassLoader);
 
 				throwable = (Throwable)objectInputStream.readObject();
-
-				objectInputStream.close();
 
 				return throwable;
 			}
@@ -257,6 +258,30 @@ public class ClpSerializer {
 				_log.error(throwable2, throwable2);
 
 				return throwable2;
+			}
+			finally {
+				if (objectOutputStream != null) {
+					try {
+						objectOutputStream.close();
+					}
+					catch (IOException ex) {
+						if (_log.isInfoEnabled()) {
+							_log.info("Do not use reflection to translate throwable");
+						}
+						_useReflectionToTranslateThrowable = false;
+					}
+				}
+				if (objectInputStream != null) {
+					try {
+						objectInputStream.close();
+					}
+					catch (IOException ex) {
+						if (_log.isInfoEnabled()) {
+							_log.info("Do not use reflection to translate throwable");
+						}
+						_useReflectionToTranslateThrowable = false;
+					}
+				}
 			}
 		}
 
