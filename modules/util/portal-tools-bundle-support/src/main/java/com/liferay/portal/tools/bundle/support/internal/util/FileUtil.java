@@ -73,9 +73,7 @@ public class FileUtil {
 	public static void appendZip(File entryFile, Path entryPath, File zipFile)
 		throws Exception {
 
-		try (FileSystem fileSystem = _createFileSystem(
-				zipFile, false)) {
-
+		try (FileSystem fileSystem = _createFileSystem(zipFile, false)) {
 			_appendZip(entryFile, entryPath, fileSystem);
 		}
 	}
@@ -162,9 +160,10 @@ public class FileUtil {
 		}
 
 		try (TarArchiveOutputStream tarArchiveOutputStream =
-			new TarArchiveOutputStream(
-				new GzipCompressorOutputStream(
-					new BufferedOutputStream(new FileOutputStream(tarFile))))) {
+				new TarArchiveOutputStream(
+					new GzipCompressorOutputStream(
+						new BufferedOutputStream(
+							new FileOutputStream(tarFile))))) {
 
 			Files.walkFileTree(
 				sourcePath,

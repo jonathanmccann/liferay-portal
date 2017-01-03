@@ -23,6 +23,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.osgi.web.servlet.jsp.compiler.internal.JspBundleClassloader;
 import com.liferay.portal.osgi.web.servlet.jsp.compiler.internal.JspServletContext;
 import com.liferay.portal.osgi.web.servlet.jsp.compiler.internal.JspTagHandlerPool;
+import com.liferay.portal.servlet.delegate.ServletContextDelegate;
 import com.liferay.taglib.servlet.JspFactorySwapper;
 
 import java.io.File;
@@ -231,7 +232,8 @@ public class JspServlet extends HttpServlet {
 	public void init(final ServletConfig servletConfig)
 		throws ServletException {
 
-		final ServletContext servletContext = servletConfig.getServletContext();
+		final ServletContext servletContext = ServletContextDelegate.create(
+			servletConfig.getServletContext());
 
 		ClassLoader classLoader = servletContext.getClassLoader();
 
@@ -529,7 +531,7 @@ public class JspServlet extends HttpServlet {
 		catch (NoSuchMethodException nsme) {
 		}
 
-		return Collections.unmodifiableMap(methods);
+		return methods;
 	}
 
 	private void _deleteOutdatedJspFiles(String dir, List<Path> paths) {

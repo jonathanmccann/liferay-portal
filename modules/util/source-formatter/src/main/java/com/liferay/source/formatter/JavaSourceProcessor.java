@@ -2437,6 +2437,11 @@ public class JavaSourceProcessor extends BaseSourceProcessor {
 
 				String trimmedLine = StringUtil.trimLeading(line);
 
+				if (trimmedLine.startsWith(StringPool.SEMICOLON)) {
+					processMessage(
+						fileName, "Line should not start with ';'", lineCount);
+				}
+
 				if (!trimmedLine.startsWith(StringPool.DOUBLE_SLASH) &&
 					!trimmedLine.startsWith(StringPool.STAR)) {
 
@@ -3301,6 +3306,13 @@ public class JavaSourceProcessor extends BaseSourceProcessor {
 						if (Validator.isNull(nextLine) ||
 							nextLine.endsWith(") {")) {
 
+							if (trimmedPreviousLine.startsWith("try (") &&
+								trimmedLine.startsWith("new ") &&
+								(getLevel(nextLine) == -1)) {
+
+								return null;
+							}
+
 							processMessage(
 								fileName,
 								"'" + trimmedLine + "' should be added to " +
@@ -3337,16 +3349,25 @@ public class JavaSourceProcessor extends BaseSourceProcessor {
 			}
 		}
 
-		if (((trimmedLine.length() + previousLineLength) <= _maxLineLength) &&
-			((previousLine.endsWith(StringPool.PERIOD) &&
-			  !line.endsWith(StringPool.OPEN_PARENTHESIS)) ||
-			 ((previousLine.endsWith(StringPool.OPEN_BRACKET) ||
-			   previousLine.endsWith(StringPool.OPEN_PARENTHESIS)) &&
-			  line.endsWith(StringPool.SEMICOLON)))) {
+		if ((trimmedLine.length() + previousLineLength) <= _maxLineLength) {
+			if (previousLine.endsWith(StringPool.OPEN_PARENTHESIS) &&
+				line.endsWith(") {") && (getLevel(line) < 0)) {
 
-			return getCombinedLinesContent(
-				content, fileName, line, trimmedLine, lineLength, lineCount,
-				previousLine, null, false, false, 0);
+				return getCombinedLinesContent(
+					content, fileName, line, trimmedLine, lineLength, lineCount,
+					previousLine, null, false, false, 0);
+			}
+
+			if ((previousLine.endsWith(StringPool.PERIOD) &&
+				 !line.endsWith(StringPool.OPEN_PARENTHESIS)) ||
+				((previousLine.endsWith(StringPool.OPEN_BRACKET) ||
+				  previousLine.endsWith(StringPool.OPEN_PARENTHESIS)) &&
+				 line.endsWith(StringPool.SEMICOLON))) {
+
+				return getCombinedLinesContent(
+					content, fileName, line, trimmedLine, lineLength, lineCount,
+					previousLine, null, false, false, 0);
+			}
 		}
 
 		if (previousLine.endsWith(StringPool.EQUAL) &&
