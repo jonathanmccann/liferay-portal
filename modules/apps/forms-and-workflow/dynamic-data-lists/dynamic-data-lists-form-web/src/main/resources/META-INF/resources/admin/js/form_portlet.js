@@ -446,8 +446,6 @@ AUI.add(
 
 						var state = instance.getState();
 
-						var definition = state.definition;
-
 						if (!instance.isEmpty()) {
 							if (!instance._isSameState(instance.savedState, state)) {
 								var editForm = instance.get('editForm');

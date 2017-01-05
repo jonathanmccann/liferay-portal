@@ -18,7 +18,8 @@
  * @param options
  * @param readOnly
  * @param required
- * @param? selecteCaretDoubleIcon
+ * @param? selectCaretDoubleIcon
+ * @param? selectSearchIcon
  * @param showLabel
  * @param tip
  * @param strings
@@ -70,24 +71,22 @@
 
 				{if not $readOnly}
 					<div class="drop-chosen hide">
+						<div class="search-chosen">
+							<div class="select-search-container">
+								{if $selectSearchIcon}
+									<a class="" href="javascript:;">{$selectSearchIcon|noAutoescape}</a>
+								{/if}
+							</div>
+							<input placeholder="Search" class="drop-chosen-search" type="text" autocomplete="off">
+						</div>
 						<ul class="results-chosen">
-							{foreach $option in $options}
-								{let $selectedValue}
-									{if $value and $value.value}
-										{$value.value}
-									{/if}
-								{/let}
-
-								<li class="{if $selectedValue == $option.value}option-selected{/if}" data-option-index="{index($option)}">
-									{$option.label}
-								</li>
-							{/foreach}
+							{call ddm.select_options data="all" /}
 						</ul>
 					</div>
 				{/if}
 
-				{if $selecteCaretDoubleIcon}
-					<a class="select-arrow-down-container" href="javascript:;">{$selecteCaretDoubleIcon|noAutoescape}</a>
+				{if $selectCaretDoubleIcon}
+					<a class="select-arrow-down-container" href="javascript:;">{$selectCaretDoubleIcon|noAutoescape}</a>
 				{/if}
 
 			</div>
@@ -140,4 +139,24 @@
 			<option dir="{$dir}" {if $selectedValue == $option.value}selected{/if} value="{$option.value}">{$option.label}</option>
 		{/foreach}
 	</select>
+{/template}
+
+/**
+ * Prints the DDM form select field options.
+ *
+ * @param options
+ * @param value
+ */
+{template .select_options autoescape="deprecated-contextual"}
+	{foreach $option in $options}
+		{let $selectedValue}
+			{if $value and $value.value}
+				{$value.value}
+			{/if}
+		{/let}
+
+		<li class="{if $selectedValue == $option.value}option-selected{/if}" data-option-index="{index($option)}" data-option-value="{$option.value}">
+			{$option.label}
+		</li>
+	{/foreach}
 {/template}

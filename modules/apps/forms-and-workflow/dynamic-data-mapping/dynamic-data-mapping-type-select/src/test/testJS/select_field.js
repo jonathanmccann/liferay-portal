@@ -62,10 +62,7 @@ describe(
 
 						selectField.setValue(['a']);
 
-						assert.equal(
-							selectField.getValue(),
-							'a'
-						);
+						assert.equal(selectField.getValue(), 'a');
 
 						done();
 					}
@@ -150,10 +147,7 @@ describe(
 
 						selectField.cleanSelect();
 
-						assert.equal(
-							selectField.get('value').length,
-							0
-						);
+						assert.equal(selectField.get('value').length, 0);
 					}
 				);
 			}
@@ -169,16 +163,13 @@ describe(
 
 						var container = selectField.get('container');
 
-						container.one('.form-builder-select-field').simulate('mousedown');
+						container.one('.form-builder-select-field').simulate('click');
 
 						var item = container.one('.form-builder-select-field').one('.drop-chosen ul li');
 
-						item.simulate('mousedown');
+						item.simulate('click');
 
-						assert.equal(
-							selectField.getValue(),
-							'foo'
-						);
+						assert.equal(selectField.getValue(), 'foo');
 					}
 				);
 			}

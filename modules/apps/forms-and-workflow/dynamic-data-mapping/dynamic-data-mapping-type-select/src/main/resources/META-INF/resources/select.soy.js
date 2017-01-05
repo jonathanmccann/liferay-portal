@@ -27,18 +27,7 @@ ddm.select = function(opt_data, opt_ignored) {
     output += '<span class="option-selected">' + soy.$$escapeHtml(selectedLabel__soy40) + '</span></a>';
   } else {
   }
-  if (! opt_data.readOnly) {
-    output += '<div class="drop-chosen hide"><ul class="results-chosen">';
-    var optionList66 = opt_data.options;
-    var optionListLen66 = optionList66.length;
-    for (var optionIndex66 = 0; optionIndex66 < optionListLen66; optionIndex66++) {
-      var optionData66 = optionList66[optionIndex66];
-      var selectedValue__soy53 = '' + ((opt_data.value && opt_data.value.value) ? soy.$$escapeHtml(opt_data.value.value) : '');
-      output += '<li class="' + ((selectedValue__soy53 == optionData66.value) ? 'option-selected' : '') + '" data-option-index="' + soy.$$escapeHtmlAttribute(optionIndex66) + '">' + soy.$$escapeHtml(optionData66.label) + '</li>';
-    }
-    output += '</ul></div>';
-  }
-  output += ((opt_data.selecteCaretDoubleIcon) ? '<a class="select-arrow-down-container" href="javascript:;">' + soy.$$filterNoAutoescape(opt_data.selecteCaretDoubleIcon) + '</a>' : '') + '</div>' + ((opt_data.childElementsHTML) ? soy.$$filterNoAutoescape(opt_data.childElementsHTML) : '') + '</div></div>';
+  output += ((! opt_data.readOnly) ? '<div class="drop-chosen hide"><div class="search-chosen"><div class="select-search-container">' + ((opt_data.selectSearchIcon) ? '<a class="" href="javascript:;">' + soy.$$filterNoAutoescape(opt_data.selectSearchIcon) + '</a>' : '') + '</div><input placeholder="Search" class="drop-chosen-search" type="text" autocomplete="off"></div><ul class="results-chosen">' + ddm.select_options(opt_data) + '</ul></div>' : '') + ((opt_data.selectCaretDoubleIcon) ? '<a class="select-arrow-down-container" href="javascript:;">' + soy.$$filterNoAutoescape(opt_data.selectCaretDoubleIcon) + '</a>' : '') + '</div>' + ((opt_data.childElementsHTML) ? soy.$$filterNoAutoescape(opt_data.childElementsHTML) : '') + '</div></div>';
   return output;
 };
 if (goog.DEBUG) {
@@ -56,16 +45,32 @@ if (goog.DEBUG) {
 
 ddm.hidden_select = function(opt_data, opt_ignored) {
   var output = '<select class="form-control hide" dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" id="' + soy.$$escapeHtmlAttribute(opt_data.name) + '" name="' + soy.$$escapeHtmlAttribute(opt_data.name) + '" ' + ((opt_data.multiple) ? 'multiple size="' + soy.$$escapeHtmlAttribute(opt_data.options.length) + '"' : '') + '>';
-  var optionList124 = opt_data.options;
-  var optionListLen124 = optionList124.length;
-  for (var optionIndex124 = 0; optionIndex124 < optionListLen124; optionIndex124++) {
-    var optionData124 = optionList124[optionIndex124];
-    var selectedValue__soy109 = '' + ((opt_data.value && opt_data.value.value) ? soy.$$escapeHtml(opt_data.value.value) : '');
-    output += '<option dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" ' + ((selectedValue__soy109 == optionData124.value) ? 'selected' : '') + ' value="' + soy.$$escapeHtmlAttribute(optionData124.value) + '">' + soy.$$escapeHtml(optionData124.label) + '</option>';
+  var optionList117 = opt_data.options;
+  var optionListLen117 = optionList117.length;
+  for (var optionIndex117 = 0; optionIndex117 < optionListLen117; optionIndex117++) {
+    var optionData117 = optionList117[optionIndex117];
+    var selectedValue__soy102 = '' + ((opt_data.value && opt_data.value.value) ? soy.$$escapeHtml(opt_data.value.value) : '');
+    output += '<option dir="' + soy.$$escapeHtmlAttribute(opt_data.dir) + '" ' + ((selectedValue__soy102 == optionData117.value) ? 'selected' : '') + ' value="' + soy.$$escapeHtmlAttribute(optionData117.value) + '">' + soy.$$escapeHtml(optionData117.label) + '</option>';
   }
   output += '</select>';
   return output;
 };
 if (goog.DEBUG) {
   ddm.hidden_select.soyTemplateName = 'ddm.hidden_select';
+}
+
+
+ddm.select_options = function(opt_data, opt_ignored) {
+  var output = '';
+  var optionList136 = opt_data.options;
+  var optionListLen136 = optionList136.length;
+  for (var optionIndex136 = 0; optionIndex136 < optionListLen136; optionIndex136++) {
+    var optionData136 = optionList136[optionIndex136];
+    var selectedValue__soy121 = '' + ((opt_data.value && opt_data.value.value) ? soy.$$escapeHtml(opt_data.value.value) : '');
+    output += '<li class="' + ((selectedValue__soy121 == optionData136.value) ? 'option-selected' : '') + '" data-option-index="' + soy.$$escapeHtmlAttribute(optionIndex136) + '" data-option-value="' + soy.$$escapeHtmlAttribute(optionData136.value) + '">' + soy.$$escapeHtml(optionData136.label) + '</li>';
+  }
+  return output;
+};
+if (goog.DEBUG) {
+  ddm.select_options.soyTemplateName = 'ddm.select_options';
 }
