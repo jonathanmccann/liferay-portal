@@ -76,7 +76,7 @@ public class AllSitesItemSelectorView
 	public String getTitle(Locale locale) {
 		ResourceBundle resourceBundle = PortalUtil.getResourceBundle(locale);
 
-		return ResourceBundleUtil.getString(resourceBundle, "all-sites");
+		return ResourceBundleUtil.getString(resourceBundle, "my-sites");
 	}
 
 	@Override
