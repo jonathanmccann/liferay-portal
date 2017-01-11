@@ -915,6 +915,10 @@ Boolean renderPortletBoundary = GetterUtil.getBoolean(request.getAttribute(WebKe
 
 	String portletDecoratorId = portletSetup.getValue("portletSetupPortletDecoratorId", StringPool.BLANK);
 
+	if (Validator.isNull(portletDecoratorId)) {
+		portletDecoratorId = PropsValues.DEFAULT_PORTLET_DECORATOR_ID;
+	}
+
 	PortletDecorator portletDecorator = ThemeLocalServiceUtil.getPortletDecorator(company.getCompanyId(), theme.getThemeId(), portletDecoratorId);
 
 	if ((portletDecorator != null) && portletDisplay.isPortletDecorate()) {
