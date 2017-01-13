@@ -69,6 +69,7 @@ import com.liferay.portal.kernel.service.UserLocalServiceUtil;
 import com.liferay.portal.kernel.service.permission.GroupPermissionUtil;
 import com.liferay.portal.kernel.service.permission.LayoutPermissionUtil;
 import com.liferay.portal.kernel.service.permission.PortletPermissionUtil;
+import com.liferay.portal.kernel.servlet.BrowserSnifferUtil;
 import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.servlet.InactiveRequestHandler;
 import com.liferay.portal.kernel.servlet.PortalSessionThreadLocal;
@@ -1312,7 +1313,14 @@ public class WebServerServlet extends HttpServlet {
 		if (!type.equals(ImageConstants.TYPE_NOT_AVAILABLE)) {
 			contentType = MimeTypesUtil.getExtensionContentType(type);
 
-			response.setContentType(contentType);
+			if (contentType.equals("image/x-ms-bmp") &&
+				BrowserSnifferUtil.isIe(request)) {
+
+				response.setContentType(ContentTypes.IMAGE_BMP);
+			}
+			else {
+				response.setContentType(contentType);
+			}
 		}
 
 		String fileName = ParamUtil.getString(request, "fileName");
