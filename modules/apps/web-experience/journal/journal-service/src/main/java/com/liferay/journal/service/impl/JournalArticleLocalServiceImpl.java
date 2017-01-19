@@ -7989,7 +7989,10 @@ public class JournalArticleLocalServiceImpl
 				(classNameId == JournalArticleConstants.CLASSNAME_ID_DEFAULT)) {
 
 				throw new StorageFieldRequiredException(
-					"Required field value is not present for " + defaultlocale);
+					"Required field " + field.getName() +
+					" is not present for structure " +
+					ddmStructure.getNameCurrentValue() +
+					" for locale " + defaultlocale);
 			}
 		}
 	}

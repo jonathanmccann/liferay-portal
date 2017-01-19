@@ -34,7 +34,7 @@ import com.liferay.portal.kernel.servlet.taglib.ui.URLMenuItem;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 
 import java.util.ArrayList;
@@ -76,7 +76,7 @@ public class JournalContentPortletToolbarContributor
 		PortletDisplay portletDisplay = themeDisplay.getPortletDisplay();
 		long scopeGroupId = themeDisplay.getScopeGroupId();
 
-		PortletURL portletURL = PortalUtil.getControlPanelPortletURL(
+		PortletURL portletURL = _portal.getControlPanelPortletURL(
 			portletRequest, JournalPortletKeys.JOURNAL,
 			PortletRequest.RENDER_PHASE);
 
@@ -95,7 +95,7 @@ public class JournalContentPortletToolbarContributor
 
 		List<DDMStructure> ddmStructures =
 			_journalFolderService.getDDMStructures(
-				PortalUtil.getCurrentAndAncestorSiteGroupIds(scopeGroupId),
+				_portal.getCurrentAndAncestorSiteGroupIds(scopeGroupId),
 				JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID,
 				JournalFolderConstants.RESTRICTION_TYPE_INHERIT);
 
@@ -204,6 +204,10 @@ public class JournalContentPortletToolbarContributor
 		JournalContentPortletToolbarContributor.class);
 
 	private JournalFolderService _journalFolderService;
+
+	@Reference
+	private Portal _portal;
+
 	private ResourcePermissionChecker _resourcePermissionChecker;
 
 }
