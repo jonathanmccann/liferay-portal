@@ -208,7 +208,11 @@ public class ${entity.name}CacheModel implements CacheModel<${entity.name}>, Ext
 			${entity.PKVarName} = new ${entity.PKClassName}(
 
 				<#list entity.PKList as column>
-					${column.name}
+					<#if stringUtil.equals(column.type, "Date")>
+						new Date(${column.name})
+					<#else>
+						${column.name}
+					</#if>
 
 					<#if column_has_next>
 						,
