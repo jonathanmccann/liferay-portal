@@ -21,6 +21,8 @@ import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.TreeModel;
 import com.liferay.portal.kernel.util.Accessor;
 
+import java.util.Date;
+
 /**
  * The extended model interface for the SyncDLObject service. Represents a row in the &quot;SyncDLObject&quot; database table, with each column mapped to a property of this class.
  *
@@ -59,7 +61,7 @@ public interface SyncDLObject extends SyncDLObjectModel, PersistedModel,
 	@Override
 	public java.lang.String buildTreePath();
 
-	public void setCreateDate(java.util.Date createDate);
+	public void setCreateDate(Date createDate);
 
-	public void setModifiedDate(java.util.Date modifiedDate);
+	public void setModifiedDate(Date modifiedDate);
 }

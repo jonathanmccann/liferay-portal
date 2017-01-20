@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.annotation.ImplementationClassName;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.util.Accessor;
 
+import java.util.Date;
+
 /**
  * The extended model interface for the ExpandoValue service. Represents a row in the &quot;ExpandoValue&quot; database table, with each column mapped to a property of this class.
  *
@@ -66,10 +68,10 @@ public interface ExpandoValue extends ExpandoValueModel, PersistedModel {
 	public ExpandoColumn getColumn()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public java.util.Date getDate()
+	public Date getDate()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public java.util.Date[] getDateArray()
+	public Date[] getDateArray()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 	public java.util.Locale getDefaultLocale()
@@ -143,10 +145,10 @@ public interface ExpandoValue extends ExpandoValueModel, PersistedModel {
 
 	public void setColumn(ExpandoColumn column);
 
-	public void setDate(java.util.Date data)
+	public void setDate(Date data)
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public void setDateArray(java.util.Date[] data)
+	public void setDateArray(Date[] data)
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 	public void setDouble(double data)
