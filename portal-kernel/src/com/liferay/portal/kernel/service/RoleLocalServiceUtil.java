@@ -587,6 +587,17 @@ public class RoleLocalServiceUtil {
 			excludedNames, types, excludedTeamRoleId, teamGroupId, start, end);
 	}
 
+	public static java.util.List<com.liferay.portal.kernel.model.Role> getGroupRolesAndTeamRolesAndRoleIds(
+		long companyId, java.lang.String keywords,
+		java.util.List<java.lang.String> excludedNames, int[] types,
+		long excludedTeamRoleId, long teamGroupId, long[] roleIds, int start,
+		int end) throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .getGroupRolesAndTeamRolesAndRoleIds(companyId, keywords,
+			excludedNames, types, excludedTeamRoleId, teamGroupId, roleIds,
+			start, end);
+	}
+
 	public static java.util.List<com.liferay.portal.kernel.model.Role> getResourceBlockRoles(
 		long resourceBlockId, java.lang.String className,
 		java.lang.String actionId) {

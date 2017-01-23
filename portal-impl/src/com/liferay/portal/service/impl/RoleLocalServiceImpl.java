@@ -736,6 +736,18 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 			teamGroupId, start, end);
 	}
 
+	public List<Role> getGroupRolesAndTeamRolesAndRoleIds(
+			long companyId, java.lang.String keywords,
+			List<java.lang.String> excludedNames, int[] types,
+			long excludedTeamRoleId, long teamGroupId, long[] roleIds,
+			int start, int end)
+		throws PortalException {
+
+		return roleFinder.findByGroupRoleAndTeamRoleAndRoleIds(
+				companyId, keywords, excludedNames, types, excludedTeamRoleId,
+				teamGroupId, roleIds, start, end);
+	}
+
 	@Override
 	public int getGroupRolesAndTeamRolesCount(
 		long companyId, String keywords, List<String> excludedNames,
