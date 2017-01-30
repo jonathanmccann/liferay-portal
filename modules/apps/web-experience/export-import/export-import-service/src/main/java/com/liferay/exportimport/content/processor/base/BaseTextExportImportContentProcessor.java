@@ -1262,18 +1262,39 @@ public class BaseTextExportImportContentProcessor
 				privateLayout = layoutSet.isPrivateLayout();
 			}
 
-			String groupFriendlyURL = group.getFriendlyURL();
+			long companyId = group.getCompanyId();
 
-			if (url.equals(groupFriendlyURL)) {
+			if (GroupLocalServiceUtil.fetchFriendlyURLGroup(companyId, url) !=
+					null) {
+
 				continue;
 			}
 
-			if (url.startsWith(groupFriendlyURL + StringPool.SLASH)) {
-				url = url.substring(groupFriendlyURL.length());
+			if (LayoutLocalServiceUtil.fetchLayoutByFriendlyURL(
+					groupId, privateLayout, url) != null) {
+
+				continue;
 			}
 
+			int indexOfSecondSlash = url.indexOf(StringPool.SLASH, 1);
+
+			if (indexOfSecondSlash == -1) {
+				throw new NoSuchLayoutException();
+			}
+
+			Group urlGroup = GroupLocalServiceUtil.fetchFriendlyURLGroup(
+				companyId, url.substring(0, indexOfSecondSlash));
+
+			if (urlGroup == null) {
+				throw new NoSuchLayoutException();
+			}
+
+			long urlGroupId = urlGroup.getGroupId();
+
+			url = url.substring(indexOfSecondSlash);
+
 			Layout layout = LayoutLocalServiceUtil.fetchLayoutByFriendlyURL(
-				groupId, privateLayout, url);
+				urlGroupId, privateLayout, url);
 
 			if (layout == null) {
 				throw new NoSuchLayoutException();
