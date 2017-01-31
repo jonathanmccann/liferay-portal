@@ -1,0 +1,7 @@
+Bundle-SymbolicName: core-service
+Bundle-Version: 1.0.0
+Liferay-Require-SchemaVersion: 1.0.0
+Liferay-Service: true
+
+Import-Package: \
+	com.liferay.gsportal.core.service.persistence,com.liferay.portal.kernel.model,*

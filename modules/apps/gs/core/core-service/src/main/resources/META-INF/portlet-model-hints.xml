@@ -1,0 +1,72 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="com.liferay.gsportal.core.model.Client">
+		<field name="clientId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="parentClientId" type="long" />
+		<field name="name" type="String" />
+		<field name="description" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
+		<field name="dashboardUrl" type="String" />
+		<field name="logoId" type="long" />
+		<field name="logoUrl" type="String" />
+		<field name="websiteUrl" type="String" />
+		<field name="addressId" type="long" />
+		<field name="active" type="boolean" />
+	</model>
+	<model name="com.liferay.gsportal.core.model.Engagement">
+		<field name="engagementId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="calendarBookingId" type="long" />
+		<field name="clientId" type="long" />
+		<field name="projectId" type="long" />
+		<field name="title" type="String" />
+		<field name="description" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
+		<field name="leadUserId" type="long" />
+		<field name="leadName" type="String" />
+		<field name="typeCategoryId" type="long" />
+		<field name="difficultyId" type="int" />
+		<field name="progressStatusId" type="int" />
+		<field name="approvalStatusId" type="int" />
+	</model>
+	<model name="com.liferay.gsportal.core.model.MemberOf">
+		<field name="memberOfId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="userId" type="long" />
+		<field name="clientId" type="long" />
+		<field name="projectId" type="long" />
+		<field name="engagementId" type="long" />
+		<field name="memberRoleId" type="int" />
+	</model>
+	<model name="com.liferay.gsportal.core.model.Project">
+		<field name="projectId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="clientId" type="long" />
+		<field name="calendarId" type="long" />
+		<field name="name" type="String" />
+		<field name="description" type="String">
+			<hint-collection name="TEXTAREA" />
+		</field>
+		<field name="dashboardUrl" type="String" />
+		<field name="lesaProjectKey" type="String" />
+		<field name="logoId" type="long" />
+		<field name="logoUrl" type="String" />
+	</model>
+	<model name="com.liferay.gsportal.core.model.StaffMember">
+		<field name="userId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="employeeType" type="int" />
+		<field name="employerName" type="String" />
+	</model>
+</model-hints>

@@ -1,0 +1,194 @@
+<?xml version="1.0"?>
+<!DOCTYPE service-builder PUBLIC "-//Liferay//DTD Service Builder 7.0.0//EN" "http://www.liferay.com/dtd/liferay-service-builder_7_0_0.dtd">
+
+<service-builder package-path="com.liferay.gsportal.core">
+	<namespace>Core</namespace>
+	<entity name="Client" local-service="true" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="clientId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="parentClientId" type="long" />
+		<column name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="dashboardUrl" type="String" />
+		<column name="logoId" type="long" />
+		<column name="logoUrl" type="String" />
+		<column name="websiteUrl" type="String" />
+		<column name="addressId" type="long" />
+		<column name="active" type="boolean" />
+
+		<!-- Order -->
+
+		<order>
+			<order-column name="modifiedDate" order-by="desc" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="ParentClientId" return-type="Collection">
+			<finder-column name="parentClientId" />
+		</finder>
+
+		<!-- References -->
+
+		<reference package-path="com.liferay.portal" entity="Address" />
+		<reference package-path="com.liferay.portal" entity="Website" />
+	</entity>
+	<entity name="Engagement" local-service="true" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="engagementId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="calendarBookingId" type="long" />
+		<column name="clientId" type="long" />
+		<column name="projectId" type="long" />
+		<column name="title" type="String" />
+		<column name="description" type="String" />
+		<column name="leadUserId" type="long" />
+		<column name="leadName" type="String" />
+		<column name="typeCategoryId" type="long" />
+		<column name="difficultyId" type="int" />
+		<column name="progressStatusId" type="int" />
+		<column name="approvalStatusId" type="int" />
+
+		<!-- Order -->
+
+		<order>
+			<order-column name="modifiedDate" order-by="desc" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="ProjectId" return-type="Collection">
+			<finder-column name="projectId" />
+		</finder>
+
+		<!-- References -->
+
+		<reference package-path="com.liferay.portal" entity="Group" />
+		<reference package-path="com.liferay.portlet.asset" entity="AssetTag" />
+		<reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
+	</entity>
+	<entity name="MemberOf" local-service="true" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="memberOfId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="userId" type="long" />
+		<column name="clientId" type="long" />
+		<column name="projectId" type="long" />
+		<column name="engagementId" type="long" />
+		<column name="memberRoleId" type="int" />	<!-- not related to core permission -->
+
+		<!-- Order -->
+
+		<order>
+			<order-column name="createDate" order-by="desc" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="C_P_E" return-type="Collection">
+			<finder-column name="clientId" />
+			<finder-column name="projectId" />
+			<finder-column name="engagementId" />
+		</finder>
+
+		<finder name="U_C_P_E" return-type="MemberOf">
+			<finder-column name="userId" />
+			<finder-column name="clientId" />
+			<finder-column name="projectId" />
+			<finder-column name="engagementId" />
+		</finder>
+	</entity>
+	<entity name="Project" local-service="true" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="projectId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="clientId" type="long" />
+		<column name="calendarId" type="long" />
+		<column name="name" type="String" />
+		<column name="description" type="String" />
+		<column name="dashboardUrl" type="String" />
+		<column name="lesaProjectKey" type="String" />
+		<column name="logoId" type="long" />
+		<column name="logoUrl" type="String" />
+
+		<!-- Order -->
+
+		<order>
+			<order-column name="modifiedDate" order-by="desc" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="ClientId" return-type="Collection">
+			<finder-column name="clientId" />
+		</finder>
+	</entity>
+	<entity name="StaffMember" local-service="true" remote-service="false">
+
+		<!-- PK fields -->
+
+		<column name="userId" type="long" primary="true" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+
+		<!-- Other fields -->
+
+		<column name="employeeType" type="int" />
+		<column name="employerName" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="userId" />
+		</order>
+
+		<!-- References -->
+
+		<reference package-path="com.liferay.portal" entity="Contact" />
+	</entity>
+	<exceptions>
+		<exception>InvalidName</exception>
+	</exceptions>
+</service-builder>

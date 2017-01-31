@@ -1,0 +1,7 @@
+@import "compass";
+@import "mixins";
+
+.new-clients-portlet {
+    /* lots of styles shared and included with /shared/clients-projects-logo-list/css/main.css,
+	    see liferay-portlet.xml */
+}

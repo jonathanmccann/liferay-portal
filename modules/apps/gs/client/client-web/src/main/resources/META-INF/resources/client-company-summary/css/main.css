@@ -1,0 +1,10 @@
+@import "compass";
+@import "mixins";
+
+.client-company-summary-portlet {
+	.client-info {
+		@include letter-spacing(50);
+
+		line-height: 19px;
+	}
+}

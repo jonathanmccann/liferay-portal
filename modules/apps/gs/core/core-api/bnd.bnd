@@ -1,0 +1,10 @@
+Bundle-SymbolicName: core-api
+Bundle-Version: 1.0.0
+Export-Package: \
+	com.liferay.gsportal.core.exception,\
+	com.liferay.gsportal.core.model,\
+	com.liferay.gsportal.core.service,\
+	com.liferay.gsportal.core.service.persistence,\
+	com.liferay.gsportal.core.util,\
+	com.liferay.gsportal.staffmember.util,\
+	com.liferay.gsportal.engagement.util

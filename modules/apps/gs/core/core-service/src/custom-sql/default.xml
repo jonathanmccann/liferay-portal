@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<custom-sql>
+	<sql id="com.liferay.gsportal.core.service.persistence.impl.countStaffByClient">
+		<![CDATA[
+			SELECT COUNT(DISTINCT userId) AS COUNT_VALUE
+			FROM
+				Core_MemberOf
+			WHERE
+				clientId = ?
+		]]>
+	</sql>
+	<sql id="com.liferay.gsportal.core.service.persistence.impl.findStaffByClient">
+		<![CDATA[
+			SELECT
+				Core_StaffMember.*
+			FROM
+				Core_StaffMember INNER JOIN Core_MemberOf
+				ON (Core_StaffMember.userId = Core_MemberOf.userId AND
+					Core_MemberOf.clientId = ?)
+		]]>
+	</sql>
+	<sql id="com.liferay.gsportal.core.service.persistence.impl.countStaffByProject">
+		<![CDATA[
+			SELECT COUNT(DISTINCT userId) AS COUNT_VALUE
+			FROM
+				Core_MemberOf
+			WHERE
+				projectId = ?
+		]]>
+	</sql>
+	<sql id="com.liferay.gsportal.core.service.persistence.impl.findStaffByProject">
+		<![CDATA[
+			SELECT
+				Core_StaffMember.*
+			FROM
+				Core_StaffMember INNER JOIN Core_MemberOf
+				ON (Core_StaffMember.userId = Core_MemberOf.userId AND
+					Core_MemberOf.projectId = ?)
+		]]>
+	</sql>
+</custom-sql>

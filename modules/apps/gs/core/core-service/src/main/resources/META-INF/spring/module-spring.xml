@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" default-destroy-method="destroy" default-init-method="afterPropertiesSet" xsi:schemaLocation=" http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+	<bean class="com.liferay.gsportal.core.service.impl.ClientLocalServiceImpl" id="com.liferay.gsportal.core.service.ClientLocalService" />
+	<bean class="com.liferay.gsportal.core.service.persistence.impl.ClientPersistenceImpl" id="com.liferay.gsportal.core.service.persistence.ClientPersistence" parent="basePersistence" />
+	<bean class="com.liferay.gsportal.core.service.impl.EngagementLocalServiceImpl" id="com.liferay.gsportal.core.service.EngagementLocalService" />
+	<bean class="com.liferay.gsportal.core.service.persistence.impl.EngagementPersistenceImpl" id="com.liferay.gsportal.core.service.persistence.EngagementPersistence" parent="basePersistence" />
+	<bean class="com.liferay.gsportal.core.service.impl.MemberOfLocalServiceImpl" id="com.liferay.gsportal.core.service.MemberOfLocalService" />
+	<bean class="com.liferay.gsportal.core.service.persistence.impl.MemberOfPersistenceImpl" id="com.liferay.gsportal.core.service.persistence.MemberOfPersistence" parent="basePersistence" />
+	<bean class="com.liferay.gsportal.core.service.persistence.impl.MemberOfFinderImpl" id="com.liferay.gsportal.core.service.persistence.MemberOfFinder" parent="basePersistence" />
+	<bean class="com.liferay.gsportal.core.service.impl.ProjectLocalServiceImpl" id="com.liferay.gsportal.core.service.ProjectLocalService" />
+	<bean class="com.liferay.gsportal.core.service.persistence.impl.ProjectPersistenceImpl" id="com.liferay.gsportal.core.service.persistence.ProjectPersistence" parent="basePersistence" />
+	<bean class="com.liferay.gsportal.core.service.impl.StaffMemberLocalServiceImpl" id="com.liferay.gsportal.core.service.StaffMemberLocalService" />
+	<bean class="com.liferay.gsportal.core.service.persistence.impl.StaffMemberPersistenceImpl" id="com.liferay.gsportal.core.service.persistence.StaffMemberPersistence" parent="basePersistence" />
+</beans>

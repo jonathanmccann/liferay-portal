@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN" "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping auto-import="false" default-lazy="false">
+	<import class="com.liferay.gsportal.core.model.Client" />
+	<import class="com.liferay.gsportal.core.model.Engagement" />
+	<import class="com.liferay.gsportal.core.model.MemberOf" />
+	<import class="com.liferay.gsportal.core.model.Project" />
+	<import class="com.liferay.gsportal.core.model.StaffMember" />
+	<class name="com.liferay.gsportal.core.model.impl.ClientImpl" table="Core_Client">
+		<id name="clientId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="parentClientId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="dashboardUrl" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="logoId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="logoUrl" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="websiteUrl" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="addressId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property column="active_" name="active" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
+	</class>
+	<class name="com.liferay.gsportal.core.model.impl.EngagementImpl" table="Core_Engagement">
+		<id name="engagementId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="calendarBookingId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="clientId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="projectId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="title" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="leadUserId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="leadName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="typeCategoryId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="difficultyId" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="progressStatusId" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="approvalStatusId" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+	</class>
+	<class name="com.liferay.gsportal.core.model.impl.MemberOfImpl" table="Core_MemberOf">
+		<id name="memberOfId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="userId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="clientId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="projectId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="engagementId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="memberRoleId" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+	</class>
+	<class name="com.liferay.gsportal.core.model.impl.ProjectImpl" table="Core_Project">
+		<id name="projectId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="createDate" type="org.hibernate.type.TimestampType" />
+		<property name="modifiedDate" type="org.hibernate.type.TimestampType" />
+		<property name="clientId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="calendarId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="name" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="description" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="dashboardUrl" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="lesaProjectKey" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+		<property name="logoId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="logoUrl" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+	<class name="com.liferay.gsportal.core.model.impl.StaffMemberImpl" table="Core_StaffMember">
+		<id name="userId" type="long">
+			<generator class="assigned" />
+		</id>
+		<property name="companyId" type="com.liferay.portal.dao.orm.hibernate.LongType" />
+		<property name="employeeType" type="com.liferay.portal.dao.orm.hibernate.IntegerType" />
+		<property name="employerName" type="com.liferay.portal.dao.orm.hibernate.StringType" />
+	</class>
+</hibernate-mapping>
