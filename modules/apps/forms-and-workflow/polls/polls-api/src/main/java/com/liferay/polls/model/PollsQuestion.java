@@ -20,6 +20,8 @@ import com.liferay.portal.kernel.annotation.ImplementationClassName;
 import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.util.Accessor;
 
+import java.util.Date;
+
 /**
  * The extended model interface for the PollsQuestion service. Represents a row in the &quot;PollsQuestion&quot; database table, with each column mapped to a property of this class.
  *
@@ -66,5 +68,5 @@ public interface PollsQuestion extends PollsQuestionModel, PersistedModel {
 
 	public boolean isExpired(
 		com.liferay.portal.kernel.service.ServiceContext serviceContext,
-		java.util.Date defaultCreateDate);
+		Date defaultCreateDate);
 }

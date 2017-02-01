@@ -19,6 +19,8 @@ import aQute.bnd.annotation.ProviderType;
 import com.liferay.portal.kernel.annotation.ImplementationClassName;
 import com.liferay.portal.kernel.util.Accessor;
 
+import java.util.Date;
+
 /**
  * The extended model interface for the User service. Represents a row in the &quot;User_&quot; database table, with each column mapped to a property of this class.
  *
@@ -70,7 +72,7 @@ public interface User extends UserModel, PersistedModel {
 	*
 	* @return the user's birth date
 	*/
-	public java.util.Date getBirthday()
+	public Date getBirthday()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
 	/**
@@ -364,10 +366,10 @@ public interface User extends UserModel, PersistedModel {
 
 	public java.util.TimeZone getTimeZone();
 
-	public java.util.Date getUnlockDate()
+	public Date getUnlockDate()
 		throws com.liferay.portal.kernel.exception.PortalException;
 
-	public java.util.Date getUnlockDate(PasswordPolicy passwordPolicy);
+	public Date getUnlockDate(PasswordPolicy passwordPolicy);
 
 	public long[] getUserGroupIds();
 
