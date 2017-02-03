@@ -430,7 +430,7 @@ public class ResourceActionsImpl implements ResourceActions {
 		}
 
 		synchronized (this) {
-			actions = getPortletMimeTypeActions(name);
+			actions.addAll(getPortletMimeTypeActions(name));
 
 			if (!name.equals(PortletKeys.PORTAL)) {
 				checkPortletActions(name, actions);
