@@ -1082,6 +1082,18 @@ public class ResourceActionsImpl implements ResourceActions {
 						portletResourceActionsBag.getResourceActions();
 
 					portletResourceActions.clear();
+
+					Set<String> portletResourceGroupDefaultActions =
+						portletResourceActionsBag.
+							getResourceGroupDefaultActions();
+
+					portletResourceGroupDefaultActions.clear();
+
+					Set<String> portletResourceGuestDefaultActions =
+						portletResourceActionsBag.
+							getResourceGuestDefaultActions();
+
+					portletResourceGuestDefaultActions.clear();
 				}
 
 				String portletName = readPortletResource(
@@ -1111,6 +1123,21 @@ public class ResourceActionsImpl implements ResourceActions {
 					modelResourceActionsBag.getResourceActions();
 
 				modelResourceActions.clear();
+
+				Set<String> modelResourceGroupDefaultActions =
+					modelResourceActionsBag.getResourceGroupDefaultActions();
+
+				modelResourceGroupDefaultActions.clear();
+
+				Set<String> modelResourceGuestDefaultActions =
+					modelResourceActionsBag.getResourceGuestDefaultActions();
+
+				modelResourceGuestDefaultActions.clear();
+
+				Set<String> modelResourceOwnerDefaultActions =
+					modelResourceActionsBag.getResourceOwnerDefaultActions();
+
+				modelResourceOwnerDefaultActions.clear();
 			}
 
 			String modelName = readModelResource(
