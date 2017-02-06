@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.SystemEventConstants;
@@ -57,11 +58,13 @@ import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.permission.ModelPermissions;
 import com.liferay.portal.kernel.settings.LocalizedValuesMap;
 import com.liferay.portal.kernel.social.SocialActivityManagerUtil;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.Constants;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -75,6 +78,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
+import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowHandlerRegistryUtil;
 import com.liferay.portal.kernel.workflow.WorkflowThreadLocal;
@@ -2000,27 +2004,36 @@ public class MBMessageLocalServiceImpl extends MBMessageLocalServiceBaseImpl {
 		String portletId = PortletProviderUtil.getPortletId(
 			MBMessage.class.getName(), PortletProvider.Action.VIEW);
 
-		String layoutURL = LayoutURLUtil.getLayoutURL(
-			message.getGroupId(), portletId, serviceContext);
+		Group group = null;
 
-		if (Validator.isNotNull(layoutURL)) {
-			return layoutURL + Portal.FRIENDLY_URL_SEPARATOR +
-				"message_boards/view_message/" + message.getMessageId();
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		if (Validator.isNotNull(themeDisplay)) {
+			String layoutURL = LayoutURLUtil.getLayoutURL(
+				message.getGroupId(), portletId, serviceContext);
+
+			if (Validator.isNotNull(layoutURL)) {
+				return layoutURL + Portal.FRIENDLY_URL_SEPARATOR +
+					"message_boards/view_message/" + message.getMessageId();
+			}
 		}
 		else {
-			portletId = PortletProviderUtil.getPortletId(
-				MBMessage.class.getName(), PortletProvider.Action.MANAGE);
-
-			PortletURL portletURL = PortalUtil.getControlPanelPortletURL(
-				request, portletId, PortletRequest.RENDER_PHASE);
-
-			portletURL.setParameter(
-				"mvcRenderCommandName", "/message_boards/view_message");
-			portletURL.setParameter(
-				"messageId", String.valueOf(message.getMessageId()));
-
-			return portletURL.toString();
+			group = GroupLocalServiceUtil.fetchGroup(message.getGroupId());
 		}
+
+		portletId = PortletProviderUtil.getPortletId(
+			MBMessage.class.getName(), PortletProvider.Action.MANAGE);
+
+		PortletURL portletURL = PortalUtil.getControlPanelPortletURL(
+			request, group, portletId, 0, 0, PortletRequest.RENDER_PHASE);
+
+		portletURL.setParameter(
+			"mvcRenderCommandName", "/message_boards/view_message");
+		portletURL.setParameter(
+			"messageId", String.valueOf(message.getMessageId()));
+
+		return portletURL.toString();
 	}
 
 	protected String getSubject(String subject, String body) {
