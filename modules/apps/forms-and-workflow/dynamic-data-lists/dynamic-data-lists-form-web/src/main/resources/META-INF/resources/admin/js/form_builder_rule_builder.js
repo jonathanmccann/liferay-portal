@@ -17,6 +17,10 @@ AUI.add(
 						value: null
 					},
 
+					functionsMetadata: {
+						value: []
+					},
+
 					rules: {
 						value: []
 					},
@@ -112,6 +116,7 @@ AUI.add(
 							function(field) {
 								fields.push(
 									{
+										dataType: field.get('dataType'),
 										label: field.get('label') || field.get('fieldName'),
 										options: field.get('options'),
 										type: field.get('type'),
@@ -157,6 +162,7 @@ AUI.add(
 									bubbleTargets: [instance],
 									contentBox: instance.get('contentBox'),
 									fields: instance.getFields(),
+									functionsMetadata: instance.get('functionsMetadata'),
 									pages: instance.getPages()
 								}
 							);
@@ -260,10 +266,12 @@ AUI.add(
 						var rulesDescription = [];
 
 						for (var i = 0; i < rules.length; i++) {
-							rulesDescription.push({
-								actions: instance._getActionsDescription(rules[i].actions),
-								conditions: rules[i].conditions
-							});
+							rulesDescription.push(
+								{
+									actions: instance._getActionsDescription(rules[i].actions),
+									conditions: rules[i].conditions
+								}
+							);
 						}
 
 						return rulesDescription;

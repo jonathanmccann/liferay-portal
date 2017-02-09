@@ -26,22 +26,32 @@ import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.dynamic.data.mapping.storage.Field;
 import com.liferay.dynamic.data.mapping.storage.Fields;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.util.PropsValues;
 
 import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.core.classloader.annotations.SuppressStaticInitializationFor;
+import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * @author Marcellus Tavares
  */
-@PrepareForTest({DDMStructureLocalServiceUtil.class, LocaleUtil.class})
+@PrepareForTest(
+	{DDMStructureLocalServiceUtil.class, LocaleUtil.class, PropsValues.class}
+)
+@RunWith(PowerMockRunner.class)
 @SuppressStaticInitializationFor(
-	"com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil"
+	{
+		"com.liferay.dynamic.data.mapping.service.DDMStructureLocalServiceUtil",
+		"com.liferay.portal.kernel.xml.SAXReaderUtil",
+		"com.liferay.portal.util.PropsValues"
+	}
 )
 public class FieldsToDDMFormValuesConverterTest extends BaseDDMTestCase {
 
@@ -58,7 +68,7 @@ public class FieldsToDDMFormValuesConverterTest extends BaseDDMTestCase {
 		setUpJSONFactoryUtil();
 		setUpLanguageUtil();
 		setUpLocaleUtil();
-		setUpPropsUtil();
+		setUpPropsValues();
 		setUpSAXReaderUtil();
 	}
 

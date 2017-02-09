@@ -188,6 +188,31 @@
 		<execute function="AssertTextEquals" locator1="FormRules#RULE_BUILDER_SUMMARY_CONDITION_FIELD" value1="${conditionField}" />
 	</command>
 
+	<command name="viewConditionOperatorOptionsIsPresent">
+		<var name="key_conditionRowNumber" value="${conditionRowNumber}" />
+
+		<execute function="Click" locator1="FormRules#RULE_BUILDER_CONDITION_OPERATOR_FIELD" />
+
+		<for list="Is equal to,Is not equal to,Contains,Does not contain" param="conditionOperator">
+			<var name="key_conditionOperator" value="${conditionOperator}" />
+
+			<execute function="AssertElementPresent" locator1="FormRules#RULE_BUILDER_SELECT_CONDITION_OPERATOR" value1="${conditionOperator}" />
+		</for>
+	</command>
+
+	<command name="viewConditionOperatorOptionsNotPresent">
+		<var name="key_conditionOperator" value="${conditionOperator}" />
+		<var name="key_conditionRowNumber" value="${conditionRowNumber}" />
+
+		<execute function="Click" locator1="FormRules#RULE_BUILDER_CONDITION_OPERATOR_FIELD" />
+
+		<for list="Is equal to,Is not equal to,Contains,Does not contain" param="conditionOperator">
+			<var name="key_conditionOperator" value="${conditionOperator}" />
+
+			<execute function="AssertElementNotPresent" locator1="FormRules#RULE_BUILDER_SELECT_CONDITION_OPERATOR" value1="${conditionOperator}" />
+		</for>
+	</command>
+
 	<command name="viewConditionOperatorSummary">
 		<var name="key_conditionOperator" value="${conditionOperator}" />
 		<var name="key_ruleNumber" value="${ruleNumber}" />

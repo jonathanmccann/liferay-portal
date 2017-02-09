@@ -50,22 +50,17 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
-import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ResourceLocalService;
 import com.liferay.portal.kernel.service.SystemEventLocalService;
-import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.FriendlyURLNormalizerUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
-import com.liferay.portal.kernel.util.HtmlUtil;
-import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.LocaleThreadLocal;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.xml.Document;
@@ -129,16 +124,6 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 				_journalArticleResourceLocalService, _systemEventLocalService);
 
 		verifyProcess.verify();
-	}
-
-	protected String getContextFromDLUrl(String url) {
-		int x = url.indexOf("/documents/");
-
-		if (x < 1) {
-			return StringPool.BLANK;
-		}
-
-		return url.substring(0, x);
 	}
 
 	@Reference(unbind = "-")
@@ -312,47 +297,6 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 		}
 	}
 
-	protected void updateDocumentLibraryElements(Element element) {
-		Element dynamicContentElement = element.element("dynamic-content");
-
-		String path = dynamicContentElement.getStringValue();
-
-		String context = getContextFromDLUrl(path);
-
-		if (!context.isEmpty()) {
-			path = path.replaceFirst(context, StringPool.BLANK);
-		}
-
-		String[] pathArray = StringUtil.split(path, CharPool.SLASH);
-
-		if (pathArray.length != 5) {
-			return;
-		}
-
-		long groupId = GetterUtil.getLong(pathArray[2]);
-		long folderId = GetterUtil.getLong(pathArray[3]);
-		String title = HttpUtil.decodeURL(HtmlUtil.escape(pathArray[4]));
-
-		FileEntry fileEntry = null;
-
-		try {
-			fileEntry = _dlAppLocalService.getFileEntry(
-				groupId, folderId, title);
-		}
-		catch (PortalException pe) {
-			_log.error(
-				"Unable to get file entry with group ID " + groupId +
-					", folder ID " + folderId + ", and title " + title,
-				pe);
-
-			return;
-		}
-
-		Node node = dynamicContentElement.node(0);
-
-		node.setText(context + path + StringPool.SLASH + fileEntry.getUuid());
-	}
-
 	protected void updateDynamicElements(JournalArticle article)
 		throws Exception {
 
@@ -405,10 +349,7 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 
 		String type = element.attributeValue("type");
 
-		if (type.equals("document_library")) {
-			updateDocumentLibraryElements(element);
-		}
-		else if (type.equals("link_to_layout")) {
+		if (type.equals("link_to_layout")) {
 			updateLinkToLayoutElements(groupId, element);
 		}
 	}
@@ -612,8 +553,7 @@ public class JournalServiceVerifyProcess extends VerifyLayout {
 		try (LoggingTimer loggingTimer = new LoggingTimer();
 			PreparedStatement ps = connection.prepareStatement(
 				"select id_ from JournalArticle where (content like " +
-					"'%document_library%' or content like " +
-						"'%link_to_layout%') and DDMStructureKey != ''");
+					"'%link_to_layout%') and DDMStructureKey != ''");
 			ResultSet rs = ps.executeQuery()) {
 
 			while (rs.next()) {

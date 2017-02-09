@@ -171,6 +171,10 @@ public class JournalTemplateHandler extends BaseDDMTemplateHandler {
 	}
 
 	private JournalContent _journalContent;
+
+	@Reference
+	private Portal _portal;
+
 	private final TemplateVariableCodeHandler _templateVariableCodeHandler =
 		new DDMTemplateVariableCodeHandler(
 			JournalTemplateHandler.class.getClassLoader(),
@@ -181,6 +185,4 @@ public class JournalTemplateHandler extends BaseDDMTemplateHandler {
 					"image", "link-to-page"
 				}));
 
-	@Reference
-	private Portal _portal;
 }
