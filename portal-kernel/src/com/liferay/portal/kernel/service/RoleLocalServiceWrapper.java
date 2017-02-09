@@ -401,6 +401,17 @@ public class RoleLocalServiceWrapper implements RoleLocalService,
 	}
 
 	@Override
+	public int getGroupRolesAndTeamRolesAndRoleIdsCount(long companyId,
+		java.lang.String keywords,
+		java.util.List<java.lang.String> excludedNames, int[] types,
+		long excludedTeamRoleId, long teamGroupId, long[] roleIds)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return _roleLocalService.getGroupRolesAndTeamRolesAndRoleIdsCount(companyId,
+			keywords, excludedNames, types, excludedTeamRoleId, teamGroupId,
+			roleIds);
+	}
+
+	@Override
 	public int getGroupRolesAndTeamRolesCount(long companyId,
 		java.lang.String keywords,
 		java.util.List<java.lang.String> excludedNames, int[] types,

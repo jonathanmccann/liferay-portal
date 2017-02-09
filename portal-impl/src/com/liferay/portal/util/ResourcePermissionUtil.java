@@ -40,8 +40,7 @@ public class ResourcePermissionUtil {
 		long companyId, String name, int scope, String primKey) {
 
 		DynamicQuery resoucePermissionQuery = DynamicQueryFactoryUtil.forClass(
-				ResourcePermission.class,
-				PortalClassLoaderUtil.getClassLoader());
+			ResourcePermission.class, PortalClassLoaderUtil.getClassLoader());
 
 		resoucePermissionQuery.add(
 			PropertyFactoryUtil.forName("companyId").eq(companyId));
@@ -51,11 +50,8 @@ public class ResourcePermissionUtil {
 			PropertyFactoryUtil.forName("name").eq(name));
 		resoucePermissionQuery.add(
 			PropertyFactoryUtil.forName("primKey").eq(primKey));
-		//TODO: parameter for primKey - in database = 33570_LAYOUT_com_liferay_site_my_sites_web_portlet_MySitesPortlet or com_liferay_site_my_sites_web_portlet_MySitesPortlet
-		//passed from JSP = com.liferay.portal.kernel.model.Portlet
-		//select active users (resourcePermission table stores everyone that has been assigned permissions at some point)
 		resoucePermissionQuery.add(
-			PropertyFactoryUtil.forName("actionIds").ne(new Long ("0")));
+			PropertyFactoryUtil.forName("actionIds").ne(Long.valueOf("0")));
 
 		List<ResourcePermission> results =
 			ResourcePermissionLocalServiceUtil.dynamicQuery(

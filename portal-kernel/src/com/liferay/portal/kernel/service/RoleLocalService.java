@@ -357,6 +357,12 @@ public interface RoleLocalService extends BaseLocalService,
 	public int getAssigneesTotal(long roleId) throws PortalException;
 
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int getGroupRolesAndTeamRolesAndRoleIdsCount(long companyId,
+		java.lang.String keywords, List<java.lang.String> excludedNames,
+		int[] types, long excludedTeamRoleId, long teamGroupId, long[] roleIds)
+		throws PortalException;
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getGroupRolesAndTeamRolesCount(long companyId,
 		java.lang.String keywords, List<java.lang.String> excludedNames,
 		int[] types, long excludedTeamRoleId, long teamGroupId);

@@ -14,10 +14,12 @@
 
 package com.liferay.portal.kernel.service;
 
-import aQute.bnd.annotation.ProviderType;
-
 import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.model.RoleConstants;
 import com.liferay.portal.kernel.util.ReferenceRegistry;
+
+import aQute.bnd.annotation.ProviderType;
 
 /**
  * Provides the local service utility for Role. This utility wraps
@@ -380,6 +382,17 @@ public class RoleLocalServiceUtil {
 	public static int getAssigneesTotal(long roleId)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		return getService().getAssigneesTotal(roleId);
+	}
+
+	public static int getGroupRolesAndTeamRolesAndRoleIdsCount(long companyId,
+		java.lang.String keywords,
+		java.util.List<java.lang.String> excludedNames, int[] types,
+		long excludedTeamRoleId, long teamGroupId, long[] roleIds)
+		throws com.liferay.portal.kernel.exception.PortalException {
+		return getService()
+				   .getGroupRolesAndTeamRolesAndRoleIdsCount(companyId,
+			keywords, excludedNames, types, excludedTeamRoleId, teamGroupId,
+			roleIds);
 	}
 
 	public static int getGroupRolesAndTeamRolesCount(long companyId,
