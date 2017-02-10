@@ -995,17 +995,22 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 	protected String getPortletId(String securityPath) {
 		if (_portletIdsByStrutsPath.isEmpty()) {
+			Map<String, String> portletIdsByStrutsPath =
+				new ConcurrentHashMap<>(_portletsMap.size());
+
 			for (Portlet portlet : _portletsMap.values()) {
 				String strutsPath = portlet.getStrutsPath();
 
-				if (_portletIdsByStrutsPath.containsKey(strutsPath)) {
+				if (portletIdsByStrutsPath.containsKey(strutsPath)) {
 					if (_log.isWarnEnabled()) {
 						_log.warn("Duplicate struts path " + strutsPath);
 					}
 				}
 
-				_portletIdsByStrutsPath.put(strutsPath, portlet.getPortletId());
+				portletIdsByStrutsPath.put(strutsPath, portlet.getPortletId());
 			}
+
+			_portletIdsByStrutsPath = portletIdsByStrutsPath;
 		}
 
 		String portletId = _portletIdsByStrutsPath.get(securityPath);
@@ -2592,7 +2597,7 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 
 	private static final Map<String, PortletApp> _portletApps =
 		new ConcurrentHashMap<>();
-	private static final Map<String, String> _portletIdsByStrutsPath =
+	private static Map<String, String> _portletIdsByStrutsPath =
 		new ConcurrentHashMap<>();
 	private static final Map<String, Portlet> _portletsMap =
 		new ConcurrentHashMap<>();
