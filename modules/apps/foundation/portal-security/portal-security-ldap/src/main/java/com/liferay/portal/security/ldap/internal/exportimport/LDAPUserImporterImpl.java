@@ -1205,7 +1205,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 			_log.debug(
 				"Importing " + usersLdapAttribute.size() +
 					" users from LDAP server " + ldapServerId +
-					" to company " + companyId);
+						" to company " + companyId);
 		}
 
 		Set<Long> newUserIds = new LinkedHashSet<>(usersLdapAttribute.size());
@@ -1241,7 +1241,7 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 						if (_log.isDebugEnabled()) {
 							_log.debug(
 								"Adding user " + user + " to user group " +
-								userGroupId);
+									userGroupId);
 						}
 
 						newUserIds.add(user.getUserId());
