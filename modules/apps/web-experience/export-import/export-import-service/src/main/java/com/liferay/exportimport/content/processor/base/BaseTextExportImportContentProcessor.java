@@ -48,6 +48,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PredicateFilter;
@@ -1173,6 +1174,12 @@ public class BaseTextExportImportContentProcessor
 			}
 
 			String url = content.substring(beginPos + offset, endPos);
+
+			endPos = url.indexOf(Portal.FRIENDLY_URL_SEPARATOR);
+
+			if (endPos != -1) {
+				url = url.substring(0, endPos);
+			}
 
 			StringBundler urlSB = new StringBundler(1);
 
