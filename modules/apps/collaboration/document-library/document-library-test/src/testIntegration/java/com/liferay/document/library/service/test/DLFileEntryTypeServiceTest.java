@@ -265,7 +265,7 @@ public class DLFileEntryTypeServiceTest {
 				DLFileEntry.class.getName()));
 		sb.append(StringPool.COLON);
 		sb.append(dlFileEntryType.getFileEntryTypeId());
-		sb.append("\n");
+		sb.append(",\n");
 
 		AssetVocabularyLocalServiceUtil.addVocabulary(
 			TestPropsValues.getUserId(), _group.getGroupId(),
