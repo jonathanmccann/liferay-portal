@@ -106,6 +106,14 @@ public class ResourceActionLocalServiceImpl
 				"There are too many actions for resource " + name);
 		}
 
+		List<ResourceAction> resourceActions = getResourceActions(name);
+
+		for (ResourceAction resourceAction : resourceActions) {
+			if (!actionIds.contains(resourceAction.getActionId())) {
+				deleteResourceAction(resourceAction);
+			}
+		}
+
 		long availableBits = -2;
 
 		for (ResourceAction resourceAction : getResourceActions(name)) {

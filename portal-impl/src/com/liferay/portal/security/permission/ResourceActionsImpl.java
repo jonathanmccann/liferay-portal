@@ -430,7 +430,7 @@ public class ResourceActionsImpl implements ResourceActions {
 		}
 
 		synchronized (this) {
-			actions = getPortletMimeTypeActions(name);
+			actions.addAll(getPortletMimeTypeActions(name));
 
 			if (!name.equals(PortletKeys.PORTAL)) {
 				checkPortletActions(name, actions);
@@ -586,17 +586,21 @@ public class ResourceActionsImpl implements ResourceActions {
 	public List<String> getResourceGuestUnsupportedActions(
 		String portletResource, String modelResource) {
 
-		List<String> actions = null;
-
 		if (Validator.isNull(modelResource)) {
-			actions = getPortletResourceGuestUnsupportedActions(
-				portletResource);
+			return getPortletResourceGuestUnsupportedActions(portletResource);
+		}
+		else if (Validator.isNull(portletResource)) {
+			return getModelResourceGuestUnsupportedActions(modelResource);
+		}
+		else if (_modelResourceActionsBags.containsKey(modelResource)) {
+			return getModelResourceGuestUnsupportedActions(modelResource);
+		}
+		else if (_portletResourceActionsBags.containsKey(portletResource)) {
+			return getPortletResourceGuestUnsupportedActions(portletResource);
 		}
 		else {
-			actions = getModelResourceGuestUnsupportedActions(modelResource);
+			return Collections.<String>emptyList();
 		}
-
-		return actions;
 	}
 
 	@Override
@@ -1057,9 +1061,44 @@ public class ResourceActionsImpl implements ResourceActions {
 
 		Element rootElement = document.getRootElement();
 
+		Set<String> portletResourceElementNames = new HashSet<>();
+		Set<String> modelResourceElementNames = new HashSet<>();
+
 		if (PropsValues.RESOURCE_ACTIONS_READ_PORTLET_RESOURCES) {
 			for (Element portletResourceElement :
 					rootElement.elements("portlet-resource")) {
+
+				String name = portletResourceElement.elementTextTrim(
+					"portlet-name");
+
+				if (servletContextName != null) {
+					name = name.concat(PortletConstants.WAR_SEPARATOR).concat(
+						servletContextName);
+				}
+
+				name = JS.getSafeName(name);
+
+				if (portletResourceElementNames.add(name)) {
+					PortletResourceActionsBag portletResourceActionsBag =
+						getPortletResourceActionsBag(name);
+
+					Set<String> portletResourceActions =
+						portletResourceActionsBag.getResourceActions();
+
+					portletResourceActions.clear();
+
+					Set<String> portletResourceGroupDefaultActions =
+						portletResourceActionsBag.
+							getResourceGroupDefaultActions();
+
+					portletResourceGroupDefaultActions.clear();
+
+					Set<String> portletResourceGuestDefaultActions =
+						portletResourceActionsBag.
+							getResourceGuestDefaultActions();
+
+					portletResourceGuestDefaultActions.clear();
+				}
 
 				String portletName = readPortletResource(
 					servletContextName, portletResourceElement);
@@ -1072,6 +1111,38 @@ public class ResourceActionsImpl implements ResourceActions {
 
 		for (Element modelResourceElement :
 				rootElement.elements("model-resource")) {
+
+			String name = modelResourceElement.elementTextTrim("model-name");
+
+			if (Validator.isNull(name)) {
+				name = getCompositeModelName(
+					modelResourceElement.element("composite-model-name"));
+			}
+
+			if (modelResourceElementNames.add(name)) {
+				ModelResourceActionsBag modelResourceActionsBag =
+					getModelResourceActionsBag(name);
+
+				Set<String> modelResourceActions =
+					modelResourceActionsBag.getResourceActions();
+
+				modelResourceActions.clear();
+
+				Set<String> modelResourceGroupDefaultActions =
+					modelResourceActionsBag.getResourceGroupDefaultActions();
+
+				modelResourceGroupDefaultActions.clear();
+
+				Set<String> modelResourceGuestDefaultActions =
+					modelResourceActionsBag.getResourceGuestDefaultActions();
+
+				modelResourceGuestDefaultActions.clear();
+
+				Set<String> modelResourceOwnerDefaultActions =
+					modelResourceActionsBag.getResourceOwnerDefaultActions();
+
+				modelResourceOwnerDefaultActions.clear();
+			}
 
 			String modelName = readModelResource(
 				servletContextName, modelResourceElement);
@@ -1310,13 +1381,13 @@ public class ResourceActionsImpl implements ResourceActions {
 		Set<String> portletResourceActions =
 			portletResourceActionsBag.getResourceActions();
 
-		readSupportsActions(portletResourceElement, portletResourceActions);
-
-		portletResourceActions.addAll(getPortletMimeTypeActions(name));
-
 		if (!name.equals(PortletKeys.PORTAL)) {
 			checkPortletActions(name, portletResourceActions);
 		}
+
+		readSupportsActions(portletResourceElement, portletResourceActions);
+
+		portletResourceActions.addAll(getPortletMimeTypeActions(name));
 
 		if (portletResourceActions.size() > 64) {
 			throw new ResourceActionsException(
