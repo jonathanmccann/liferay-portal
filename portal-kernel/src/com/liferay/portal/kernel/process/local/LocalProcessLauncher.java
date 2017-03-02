@@ -127,6 +127,8 @@ public class LocalProcessLauncher {
 				new ReturnProcessCallable<Serializable>(result));
 
 			outProcessOutputStream.flush();
+
+			System.exit(0);
 		}
 		catch (Throwable t) {
 			errPrintStream.flush();
@@ -144,6 +146,8 @@ public class LocalProcessLauncher {
 				new ExceptionProcessCallable(processException));
 
 			errProcessOutputStream.flush();
+
+			System.exit(1);
 		}
 		finally {
 			currentThread.setContextClassLoader(contextClassLoader);
