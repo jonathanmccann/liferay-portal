@@ -871,6 +871,58 @@ public class WabProcessor {
 		}
 	}
 
+	protected boolean packageContainedInClasspath(
+		Analyzer analyzer, String importPackageName) {
+
+		boolean containedInClasspath = false;
+
+		for (Jar jar : analyzer.getClasspath()) {
+			List<String> packages = jar.getPackages();
+
+			if (packages.contains(importPackageName)) {
+				containedInClasspath = true;
+
+				break;
+			}
+		}
+
+		return containedInClasspath;
+	}
+
+	protected void processImportPackageHeaders(Analyzer analyzer) {
+		processImportPackageHeaders(analyzer, Constants.DYNAMICIMPORT_PACKAGE);
+		processImportPackageHeaders(analyzer, Constants.IMPORT_PACKAGE);
+	}
+
+	protected void processImportPackageHeaders(Analyzer analyzer, String key) {
+		List<String> unresolvedImportPackageNames = new ArrayList<>();
+
+		String[] importPackageNames = StringUtil.split(
+			analyzer.getProperty(key));
+
+		for (String importPackageName : importPackageNames) {
+			if (Validator.isNull(importPackageName)) {
+				continue;
+			}
+
+			importPackageName = StringUtil.removeSubstring(
+				importPackageName, ".*");
+
+			if (packageContainedInClasspath(analyzer, importPackageName)) {
+				continue;
+			}
+
+			unresolvedImportPackageNames.add(importPackageName);
+		}
+
+		if (importPackageNames.length !=
+			unresolvedImportPackageNames.size()) {
+
+			analyzer.setProperty(
+				key, StringUtil.merge(unresolvedImportPackageNames));
+		}
+	}
+
 	protected void processImportPackageNames(Analyzer analyzer) {
 		String packageName = MapUtil.getString(
 			_parameters, Constants.IMPORT_PACKAGE);
@@ -883,23 +935,9 @@ public class WabProcessor {
 				(_importPackageNames.size() * 3) + 1);
 
 			for (String importPackageName : _importPackageNames) {
-				if (Validator.isNull(importPackageName)) {
-					continue;
-				}
+				if (Validator.isNull(importPackageName) ||
+					packageContainedInClasspath(analyzer, importPackageName)) {
 
-				boolean containedInClasspath = false;
-
-				for (Jar jar : analyzer.getClasspath()) {
-					List<String> packages = jar.getPackages();
-
-					if (packages.contains(importPackageName)) {
-						containedInClasspath = true;
-
-						break;
-					}
-				}
-
-				if (containedInClasspath) {
 					continue;
 				}
 
@@ -1231,6 +1269,9 @@ public class WabProcessor {
 		processBundleClasspath(analyzer, pluginPackageProperties);
 		processBundleSymbolicName(analyzer);
 		processExtraHeaders(analyzer);
+
+		processImportPackageHeaders(analyzer);
+
 		processPluginPackagePropertiesExportImportPackages(
 			pluginPackageProperties);
 
