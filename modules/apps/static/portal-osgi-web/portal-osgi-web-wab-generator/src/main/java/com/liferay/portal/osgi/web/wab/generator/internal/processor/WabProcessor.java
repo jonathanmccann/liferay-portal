@@ -882,6 +882,41 @@ public class WabProcessor {
 			StringBundler sb = new StringBundler(
 				(_importPackageNames.size() * 3) + 1);
 
+			List<String> dynamicImportPackageNames = new ArrayList<>();
+
+			String[] initialDynamicImportPackageNames = StringUtil.split(
+				analyzer.getProperty(Constants.DYNAMICIMPORT_PACKAGE));
+
+			for (String dynamicImportPackageName : initialDynamicImportPackageNames) {
+				if (Validator.isNull(dynamicImportPackageName)) {
+					continue;
+				}
+
+				String importPackageName = StringUtil.removeSubstring(dynamicImportPackageName, ".*");
+
+				boolean containedInClasspath = false;
+
+				for (Jar jar : analyzer.getClasspath()) {
+					List<String> packages = jar.getPackages();
+
+					if (packages.contains(importPackageName)) {
+						containedInClasspath = true;
+
+						break;
+					}
+				}
+
+				if (containedInClasspath) {
+					continue;
+				}
+
+				dynamicImportPackageNames.add(dynamicImportPackageName);
+			}
+
+			if (initialDynamicImportPackageNames.length != dynamicImportPackageNames.size()) {
+				analyzer.setProperty(Constants.DYNAMICIMPORT_PACKAGE, StringUtil.merge(dynamicImportPackageNames));
+			}
+
 			for (String importPackageName : _importPackageNames) {
 				if (Validator.isNull(importPackageName)) {
 					continue;
