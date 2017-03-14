@@ -115,7 +115,7 @@ public class DDLXMLExporter extends BaseDDLExporter {
 
 			addFieldElement(
 				fieldsElement, LanguageUtil.get(getLocale(), "modified-date"),
-				recordVersion.getStatusDate());
+				record.getModifiedDate());
 
 			addFieldElement(
 				fieldsElement, LanguageUtil.get(getLocale(), "author"),
