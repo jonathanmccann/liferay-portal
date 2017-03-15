@@ -56,7 +56,7 @@ public class LoginPostAction extends Action {
 			HttpSession session = request.getSession();
 
 			long companyId = PortalUtil.getCompanyId(request);
-			long userId = 0;
+			long userId = PortalUtil.getUserId(request);
 
 			// Language
 
@@ -85,8 +85,6 @@ public class LoginPostAction extends Action {
 
 				jsonObject.put("userAgent", userAgent);
 
-				userId = PortalUtil.getUserId(request);
-
 				jsonObject.put("userId", userId);
 
 				MessageBusUtil.sendMessage(
@@ -96,16 +94,10 @@ public class LoginPostAction extends Action {
 			if (PrefsPropsUtil.getBoolean(
 					companyId, PropsKeys.ADMIN_SYNC_DEFAULT_ASSOCIATIONS)) {
 
-				if (userId == 0) {
-					userId = PortalUtil.getUserId(request);
-				}
-
 				UserLocalServiceUtil.addDefaultGroups(userId);
 				UserLocalServiceUtil.addDefaultRoles(userId);
 				UserLocalServiceUtil.addDefaultUserGroups(userId);
 			}
-
-			userId = PortalUtil.getUserId(request);
 
 			User user = UserLocalServiceUtil.fetchUser(userId);
 
