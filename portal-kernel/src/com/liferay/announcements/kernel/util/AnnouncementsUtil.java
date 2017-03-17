@@ -124,14 +124,16 @@ public class AnnouncementsUtil {
 			roles.addAll(
 				RoleLocalServiceUtil.getUserRelatedRoles(userId, groupsList));
 
+			List<Long> groupIds = new ArrayList<>(groupsList.size());
+
 			for (Group group : groupsList) {
-				roles.addAll(
-					RoleLocalServiceUtil.getUserGroupRoles(
-						userId, group.getGroupId()));
-				roles.addAll(
-					RoleLocalServiceUtil.getUserGroupGroupRoles(
-						userId, group.getGroupId()));
+				groupIds.add(group.getGroupId());
 			}
+
+			roles.addAll(
+				RoleLocalServiceUtil.getUserGroupRoles(userId, groupIds));
+			roles.addAll(
+				RoleLocalServiceUtil.getUserGroupGroupRoles(userId, groupIds));
 		}
 		else {
 			roles.addAll(RoleLocalServiceUtil.getUserRoles(userId));

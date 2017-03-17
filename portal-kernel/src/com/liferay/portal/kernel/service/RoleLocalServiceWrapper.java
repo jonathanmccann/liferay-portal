@@ -788,6 +788,19 @@ public class RoleLocalServiceWrapper implements RoleLocalService,
 		return _roleLocalService.getTypeRoles(type, start, end);
 	}
 
+	@Override
+	public java.util.List<com.liferay.portal.kernel.model.Role> getUserGroupGroupRoles(
+		long userId, java.util.List<java.lang.Long> groupIds) {
+		return _roleLocalService.getUserGroupGroupRoles(userId, groupIds);
+	}
+
+	@Override
+	public java.util.List<com.liferay.portal.kernel.model.Role> getUserGroupGroupRoles(
+		long userId, java.util.List<java.lang.Long> groupIds, int start, int end) {
+		return _roleLocalService.getUserGroupGroupRoles(userId, groupIds,
+			start, end);
+	}
+
 	/**
 	* Returns all the user's roles within the user group.
 	*
@@ -808,6 +821,21 @@ public class RoleLocalServiceWrapper implements RoleLocalService,
 		long userId, long groupId, int start, int end) {
 		return _roleLocalService.getUserGroupGroupRoles(userId, groupId, start,
 			end);
+	}
+
+	/**
+	* Returns all the user's roles within the list of groups.
+	*
+	* @param userId the primary key of the user
+	* @param groupIds the primary keys of the groups
+	* @return the user's roles within the user group
+	* @see com.liferay.portal.kernel.service.persistence.RoleFinder#findByUserGroupRole(
+	long, long)
+	*/
+	@Override
+	public java.util.List<com.liferay.portal.kernel.model.Role> getUserGroupRoles(
+		long userId, java.util.List<java.lang.Long> groupIds) {
+		return _roleLocalService.getUserGroupRoles(userId, groupIds);
 	}
 
 	/**

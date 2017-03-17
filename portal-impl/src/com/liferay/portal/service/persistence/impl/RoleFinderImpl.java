@@ -91,8 +91,14 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 	public static final String FIND_BY_USER_GROUP_GROUP_ROLE =
 		RoleFinder.class.getName() + ".findByUserGroupGroupRole";
 
+	public static final String FIND_BY_USER_GROUP_GROUP_ROLE_ALL_GROUPS =
+		RoleFinder.class.getName() + ".findByUserGroupGroupRoleAllGroups";
+
 	public static final String FIND_BY_USER_GROUP_ROLE =
 		RoleFinder.class.getName() + ".findByUserGroupRole";
+
+	public static final String FIND_BY_USER_GROUP_ROLE_ALL_GROUPS =
+		RoleFinder.class.getName() + ".findByUserGroupRoleAllGroups";
 
 	public static final String FIND_BY_C_N =
 		RoleFinder.class.getName() + ".findByC_N";
@@ -498,6 +504,49 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 	}
 
 	@Override
+	public List<Role> findByUserGroupGroupRoleAllGroups(
+		long userId, long[] groupIds) {
+
+		return findByUserGroupGroupRoleAllGroups(
+			userId, groupIds, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+	}
+
+	@Override
+	public List<Role> findByUserGroupGroupRoleAllGroups(
+		long userId, long[] groupIds, int start, int end) {
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(
+				FIND_BY_USER_GROUP_GROUP_ROLE_ALL_GROUPS);
+
+			sql = StringUtil.replace(
+				sql, "[$GROUP_ID$]",
+				getGroupIds(groupIds, "UserGroupGroupRole"));
+
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
+
+			q.addEntity("Role_", RoleImpl.class);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+			qPos.add(groupIds);
+
+			return (List<Role>)QueryUtil.list(q, getDialect(), start, end);
+		}
+		catch (Exception e) {
+			throw new SystemException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	@Override
 	public List<Role> findByUserGroupRole(long userId, long groupId) {
 		Session session = null;
 
@@ -514,6 +563,39 @@ public class RoleFinderImpl extends RoleFinderBaseImpl implements RoleFinder {
 
 			qPos.add(userId);
 			qPos.add(groupId);
+
+			return q.list(true);
+		}
+		catch (Exception e) {
+			throw new SystemException(e);
+		}
+		finally {
+			closeSession(session);
+		}
+	}
+
+	@Override
+	public List<Role> findByUserGroupRoleAllGroups(
+		long userId, long[] groupIds) {
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(FIND_BY_USER_GROUP_ROLE_ALL_GROUPS);
+
+			sql = StringUtil.replace(
+				sql, "[$GROUP_ID$]", getGroupIds(groupIds, "UserGroupRole"));
+
+			SQLQuery q = session.createSynchronizedSQLQuery(sql);
+
+			q.addEntity("Role_", RoleImpl.class);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+			qPos.add(groupIds);
 
 			return q.list(true);
 		}

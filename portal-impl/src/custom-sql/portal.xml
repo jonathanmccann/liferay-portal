@@ -1230,6 +1230,25 @@
 			)
 		]]>
 	</sql>
+	<sql id="com.liferay.portal.kernel.service.persistence.RoleFinder.findByUserGroupGroupRoleAllGroups">
+		<![CDATA[
+			(
+				SELECT
+					{Role_.*}
+				FROM
+					Role_
+				INNER JOIN
+					UserGroupGroupRole ON
+						(UserGroupGroupRole.roleId = Role_.roleId)
+				INNER JOIN
+					Users_UserGroups ON
+						(Users_UserGroups.userGroupId = UserGroupGroupRole.userGroupId)
+				WHERE
+					(Users_UserGroups.userId = ?) AND
+					([$GROUP_ID$])
+			)
+		]]>
+	</sql>
 	<sql id="com.liferay.portal.kernel.service.persistence.RoleFinder.findByUserGroupRole">
 		<![CDATA[
 			(
@@ -1243,6 +1262,22 @@
 				WHERE
 					(UserGroupRole.userId = ?) AND
 					(UserGroupRole.groupId = ?)
+			)
+		]]>
+	</sql>
+	<sql id="com.liferay.portal.kernel.service.persistence.RoleFinder.findByUserGroupRoleAllGroups">
+		<![CDATA[
+			(
+				SELECT
+					{Role_.*}
+				FROM
+					Role_
+				INNER JOIN
+					UserGroupRole ON
+						(UserGroupRole.roleId = Role_.roleId)
+				WHERE
+					(UserGroupRole.userId = ?) AND
+					([$GROUP_ID$])
 			)
 		]]>
 	</sql>

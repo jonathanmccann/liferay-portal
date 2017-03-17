@@ -79,6 +79,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
@@ -989,6 +990,65 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 		return rolePersistence.countByType(type);
 	}
 
+	@Override
+	public List<Role> getUserGroupGroupRoles(long userId, List<Long> groupIds) {
+		int threshold = PropsValues.SQL_DATA_MAX_PARAMETERS - 1;
+
+		if ((groupIds.size() <= threshold) || (threshold <= 0)) {
+			return roleFinder.findByUserGroupGroupRoleAllGroups(
+				userId, ArrayUtil.toLongArray(groupIds));
+		}
+
+		Set<Role> roles = new HashSet<>();
+
+		for (int i = 0; i < groupIds.size(); i += threshold) {
+			int toIndex = i + threshold;
+
+			if (toIndex > groupIds.size()) {
+				toIndex = groupIds.size();
+			}
+
+			List<Long> groupIdsSublist = groupIds.subList(i, toIndex);
+
+			roles.addAll(
+				roleFinder.findByUserGroupGroupRoleAllGroups(
+					userId, ArrayUtil.toLongArray(groupIdsSublist)));
+		}
+
+		return new ArrayList<>(roles);
+	}
+
+	@Override
+	public List<Role> getUserGroupGroupRoles(
+		long userId, List<Long> groupIds, int start, int end) {
+
+		int threshold = PropsValues.SQL_DATA_MAX_PARAMETERS - 1;
+
+		if ((groupIds.size() <= threshold) || (threshold <= 0)) {
+			return roleFinder.findByUserGroupGroupRoleAllGroups(
+				userId, ArrayUtil.toLongArray(groupIds), start, end);
+		}
+
+		Set<Role> roles = new HashSet<>();
+
+		for (int i = 0; i < groupIds.size(); i += threshold) {
+			int toIndex = i + threshold;
+
+			if (toIndex > groupIds.size()) {
+				toIndex = groupIds.size();
+			}
+
+			List<Long> groupIdsSublist = groupIds.subList(i, toIndex);
+
+			roles.addAll(
+				roleFinder.findByUserGroupGroupRoleAllGroups(
+					userId, ArrayUtil.toLongArray(groupIdsSublist), start,
+					end));
+		}
+
+		return new ArrayList<>(roles);
+	}
+
 	/**
 	 * Returns all the user's roles within the user group.
 	 *
@@ -1013,6 +1073,43 @@ public class RoleLocalServiceImpl extends RoleLocalServiceBaseImpl {
 	@Override
 	public int getUserGroupGroupRolesCount(long userId, long groupId) {
 		return roleFinder.countByUserGroupGroupRole(userId, groupId);
+	}
+
+	/**
+	 * Returns all the user's roles within the list of groups.
+	 *
+	 * @param  userId the primary key of the user
+	 * @param  groupIds the primary keys of the groups
+	 * @return the user's roles within the user group
+	 * @see    com.liferay.portal.kernel.service.persistence.RoleFinder#findByUserGroupRole(
+	 *         long, long)
+	 */
+	@Override
+	public List<Role> getUserGroupRoles(long userId, List<Long> groupIds) {
+		int threshold = PropsValues.SQL_DATA_MAX_PARAMETERS - 1;
+
+		if ((groupIds.size() <= threshold) || (threshold <= 0)) {
+			return roleFinder.findByUserGroupRoleAllGroups(
+				userId, ArrayUtil.toLongArray(groupIds));
+		}
+
+		Set<Role> roles = new HashSet<>();
+
+		for (int i = 0; i < groupIds.size(); i += threshold) {
+			int toIndex = i + threshold;
+
+			if (toIndex > groupIds.size()) {
+				toIndex = groupIds.size();
+			}
+
+			List<Long> groupIdsSublist = groupIds.subList(i, toIndex);
+
+			roles.addAll(
+				roleFinder.findByUserGroupRoleAllGroups(
+					userId, ArrayUtil.toLongArray(groupIdsSublist)));
+		}
+
+		return new ArrayList<>(roles);
 	}
 
 	/**

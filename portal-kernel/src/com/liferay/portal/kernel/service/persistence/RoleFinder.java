@@ -119,8 +119,17 @@ public interface RoleFinder {
 	public java.util.List<com.liferay.portal.kernel.model.Role> findByUserGroupGroupRole(
 		long userId, long groupId, int start, int end);
 
+	public java.util.List<com.liferay.portal.kernel.model.Role> findByUserGroupGroupRoleAllGroups(
+		long userId, long[] groupIds);
+
+	public java.util.List<com.liferay.portal.kernel.model.Role> findByUserGroupGroupRoleAllGroups(
+		long userId, long[] groupIds, int start, int end);
+
 	public java.util.List<com.liferay.portal.kernel.model.Role> findByUserGroupRole(
 		long userId, long groupId);
+
+	public java.util.List<com.liferay.portal.kernel.model.Role> findByUserGroupRoleAllGroups(
+		long userId, long[] groupIds);
 
 	public com.liferay.portal.kernel.model.Role findByC_N(long companyId,
 		java.lang.String name)

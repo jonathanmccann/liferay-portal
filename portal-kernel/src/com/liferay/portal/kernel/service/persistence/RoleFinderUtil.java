@@ -194,9 +194,26 @@ public class RoleFinderUtil {
 		return getFinder().findByUserGroupGroupRole(userId, groupId, start, end);
 	}
 
+	public static java.util.List<com.liferay.portal.kernel.model.Role> findByUserGroupGroupRoleAllGroups(
+		long userId, long[] groupIds) {
+		return getFinder().findByUserGroupGroupRoleAllGroups(userId, groupIds);
+	}
+
+	public static java.util.List<com.liferay.portal.kernel.model.Role> findByUserGroupGroupRoleAllGroups(
+		long userId, long[] groupIds, int start, int end) {
+		return getFinder()
+				   .findByUserGroupGroupRoleAllGroups(userId, groupIds, start,
+			end);
+	}
+
 	public static java.util.List<com.liferay.portal.kernel.model.Role> findByUserGroupRole(
 		long userId, long groupId) {
 		return getFinder().findByUserGroupRole(userId, groupId);
+	}
+
+	public static java.util.List<com.liferay.portal.kernel.model.Role> findByUserGroupRoleAllGroups(
+		long userId, long[] groupIds) {
+		return getFinder().findByUserGroupRoleAllGroups(userId, groupIds);
 	}
 
 	public static com.liferay.portal.kernel.model.Role findByC_N(
