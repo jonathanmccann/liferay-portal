@@ -21,6 +21,7 @@ import com.liferay.expando.kernel.util.ExpandoConverterUtil;
 import com.liferay.portal.kernel.bean.BeanPropertiesUtil;
 import com.liferay.portal.kernel.cache.PortalCache;
 import com.liferay.portal.kernel.cache.SingleVMPool;
+import com.liferay.portal.kernel.exception.GroupFriendlyURLException;
 import com.liferay.portal.kernel.exception.NoSuchRoleException;
 import com.liferay.portal.kernel.exception.NoSuchUserGroupException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -832,6 +833,22 @@ public class LDAPUserImporterImpl implements LDAPUserImporter, UserImporter {
 						ldapImportContext, fullUserDN, userAttributes, null);
 
 					importGroups(ldapImportContext, userAttributes, user);
+				}
+				catch (GroupFriendlyURLException gfurle) {
+					int type = gfurle.getType();
+
+					if (type == GroupFriendlyURLException.DUPLICATE) {
+						_log.error(
+							"importing user " + searchResult +
+								" duplicates a group friendly url",
+							gfurle);
+					}
+					else {
+						_log.error(
+							"Unable to import user " +
+								searchResult,
+							gfurle);
+					}
 				}
 				catch (Exception e) {
 					_log.error("Unable to import user " + searchResult, e);
