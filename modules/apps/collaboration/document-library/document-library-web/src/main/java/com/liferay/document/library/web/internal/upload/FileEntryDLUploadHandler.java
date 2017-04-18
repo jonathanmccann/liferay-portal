@@ -111,7 +111,7 @@ public class FileEntryDLUploadHandler extends BaseUploadHandler {
 		try {
 			return DLUtil.getPreviewURL(
 				fileEntry, fileEntry.getLatestFileVersion(), themeDisplay,
-				StringPool.BLANK);
+				StringPool.BLANK, false, false);
 		}
 		catch (PortalException pe) {
 			if (_log.isWarnEnabled()) {
