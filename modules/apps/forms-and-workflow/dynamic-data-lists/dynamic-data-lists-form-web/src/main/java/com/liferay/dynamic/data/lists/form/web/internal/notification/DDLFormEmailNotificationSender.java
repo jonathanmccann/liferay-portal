@@ -28,6 +28,7 @@ import com.liferay.dynamic.data.mapping.model.DDMFormLayoutPage;
 import com.liferay.dynamic.data.mapping.model.DDMFormLayoutRow;
 import com.liferay.dynamic.data.mapping.model.DDMStructure;
 import com.liferay.dynamic.data.mapping.model.LocalizedValue;
+import com.liferay.dynamic.data.mapping.model.Value;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
 import com.liferay.dynamic.data.mapping.storage.DDMFormValues;
 import com.liferay.mail.kernel.model.MailMessage;
@@ -53,6 +54,7 @@ import com.liferay.portal.kernel.util.PropsKeys;
 import com.liferay.portal.kernel.util.ResourceBundleUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.util.PrefsPropsUtil;
 
@@ -257,7 +259,24 @@ public class DDLFormEmailNotificationSender {
 				}
 			}
 
-			sb.append(renderDDMFormFieldValue(ddmFormFieldValue, locale));
+			Value value = ddmFormFieldValue.getValue();
+
+			if (value != null) {
+				int counterLocalesSeen = 0;
+
+				for (Locale availableLocale : value.getAvailableLocales()) {
+					if (Validator.isNull(value.getString(availableLocale))) {
+						break;
+					}
+
+					counterLocalesSeen++;
+				}
+
+				if (counterLocalesSeen == value.getAvailableLocales().size()) {
+					sb.append(
+						renderDDMFormFieldValue(ddmFormFieldValue, locale));
+				}
+			}
 
 			if (i < (ddmFormFieldValues.size() - 1)) {
 				sb.append(StringPool.COMMA_AND_SPACE);
