@@ -286,6 +286,10 @@ public class StagedLayoutSetStagedModelDataHandler
 
 		updateLastMergeTime(portletDataContext, modifiedLayouts);
 
+		// Validate links between layouts
+
+		validateLinks(portletDataContext);
+
 		// Page priorities
 
 		updateLayoutPriorities(
@@ -634,6 +638,39 @@ public class StagedLayoutSetStagedModelDataHandler
 			}
 
 			_layoutLocalService.updateLayout(layout);
+		}
+	}
+
+	protected void validateLinks(PortletDataContext portletDataContext) {
+		Map<Long, Layout> layouts =
+			(Map<Long, Layout>)portletDataContext.getNewPrimaryKeysMap(
+				Layout.class + ".layout");
+
+		for (Map.Entry<Long, Layout> entry : layouts.entrySet()) {
+			Layout layout = entry.getValue();
+
+			UnicodeProperties typeSettingsProperties =
+				layout.getTypeSettingsProperties();
+
+			long linkToLayoutId = GetterUtil.getLong(
+				typeSettingsProperties.getProperty("linkToLayoutId"));
+
+			if (linkToLayoutId > 0) {
+				Layout linkedLayout = layouts.get(linkToLayoutId);
+
+				long newLinkToLayoutId = linkedLayout.getLayoutId();
+
+				if (newLinkToLayoutId != linkToLayoutId) {
+					layout = _layoutLocalService.fetchLayout(layout.getPlid());
+
+					typeSettingsProperties.setProperty(
+						"linkToLayoutId", "" + newLinkToLayoutId);
+
+					layout.setTypeSettingsProperties(typeSettingsProperties);
+
+					_layoutLocalService.updateLayout(layout);
+				}
+			}
 		}
 	}
 
