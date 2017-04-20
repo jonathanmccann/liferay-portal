@@ -1527,16 +1527,13 @@ public class GroupFinderImpl
 
 				if (ArrayUtil.contains(classNameIds, groupClassNameId)) {
 					params3.put("classNameIds", groupClassNameId);
-					params4.put("classNameIds", groupOrganizationClassNameIds);
-				}
-				else {
-					params4.put("classNameIds", organizationClassNameId);
 				}
 			}
 			else if (ArrayUtil.contains(classNameIds, groupClassNameId)) {
 				params3.put("classNameIds", groupClassNameId);
-				params4.put("classNameIds", groupClassNameId);
 			}
+
+			params4.put("classNameIds", groupOrganizationClassNameIds);
 		}
 	}
 
