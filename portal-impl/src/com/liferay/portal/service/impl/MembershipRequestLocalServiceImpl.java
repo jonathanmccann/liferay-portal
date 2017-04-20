@@ -72,6 +72,18 @@ public class MembershipRequestLocalServiceImpl
 
 		User user = userPersistence.findByPrimaryKey(userId);
 
+		MembershipRequest previousMembershipRequest =
+			membershipRequestPersistence.fetchByG_U_S_First(
+				groupId, userId, MembershipRequestConstants.STATUS_PENDING,
+				null);
+
+		if (Validator.isNotNull(previousMembershipRequest)) {
+			previousMembershipRequest.setCreateDate(new Date());
+			previousMembershipRequest.setComments(comments);
+			membershipRequestPersistence.update(previousMembershipRequest);
+			return previousMembershipRequest;
+		}
+
 		validate(comments);
 
 		long membershipRequestId = counterLocalService.increment();
