@@ -105,7 +105,9 @@ public class LoginPostAction extends Action {
 				UserLocalServiceUtil.addDefaultUserGroups(userId);
 			}
 
-			User user = PortalUtil.getUser(request);
+			userId = PortalUtil.getUserId(request);
+
+			User user = UserLocalServiceUtil.fetchUser(userId);
 
 			if (UserLocalServiceUtil.isPasswordExpiringSoon(user)) {
 				SessionMessages.add(request, "passwordExpiringSoon");
