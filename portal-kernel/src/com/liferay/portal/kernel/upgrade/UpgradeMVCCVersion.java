@@ -52,6 +52,14 @@ public class UpgradeMVCCVersion extends UpgradeProcess {
 
 		tableName = normalizeName(tableName, databaseMetaData);
 
+		DB db = DBManagerUtil.getDB();
+
+		String schema = connection.getSchema();
+
+		if (db.getDBType() == DBType.POSTGRESQL) {
+			schema = null;
+		}
+
 		try (ResultSet tableResultSet = databaseMetaData.getTables(
 				connection.getCatalog(), schema, tableName, null)) {
 
