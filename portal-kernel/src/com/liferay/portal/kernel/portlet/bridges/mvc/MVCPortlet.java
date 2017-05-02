@@ -299,6 +299,9 @@ public class MVCPortlet extends LiferayPortlet {
 			HttpServletRequest baseReq = PortalUtil.getHttpServletRequest(
 				renderRequest);
 
+			HttpServletRequest origReq = PortalUtil.getOriginalServletRequest(
+				baseReq);
+
 			if (Validator.isNotNull(mvcPath)) {
 				renderRequest.setAttribute(
 					getMVCPathAttributeName(renderResponse.getNamespace()),
@@ -306,6 +309,13 @@ public class MVCPortlet extends LiferayPortlet {
 			}
 			else if (!mvcRenderCommandName.equals("/")) {
 				if (_log.isWarnEnabled()) {
+					String mvcRenderCommandNameCleaned = HtmlUtil.escape(
+						mvcRenderCommandName);
+
+					SessionMessages.add(
+						renderRequest, "noSuchMvcRenderCommandX",
+						mvcRenderCommandNameCleaned);
+
 					ThemeDisplay themeDisplay =
 						(ThemeDisplay)renderRequest.getAttribute(
 							WebKeys.THEME_DISPLAY);
