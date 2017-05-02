@@ -306,6 +306,13 @@ public class MVCPortlet extends LiferayPortlet {
 			}
 			else if (!mvcRenderCommandName.equals("/")) {
 				if (_log.isWarnEnabled()) {
+					String mvcRenderCommandNameCleaned = HtmlUtil.escape(
+						mvcRenderCommandName);
+
+					SessionMessages.add(
+						renderRequest, "noSuchMvcRenderCommandX",
+						mvcRenderCommandNameCleaned);
+
 					ThemeDisplay themeDisplay =
 						(ThemeDisplay)renderRequest.getAttribute(
 							WebKeys.THEME_DISPLAY);
