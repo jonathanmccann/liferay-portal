@@ -31,10 +31,6 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
-import java.io.IOException;
-
-import java.util.List;
-
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
 import javax.portlet.EventRequest;
@@ -51,8 +47,9 @@ import javax.portlet.RenderResponse;
 import javax.portlet.ResourceRequest;
 import javax.portlet.ResourceResponse;
 import javax.portlet.WindowState;
-
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
@@ -299,6 +296,9 @@ public class MVCPortlet extends LiferayPortlet {
 			HttpServletRequest baseReq = PortalUtil.getHttpServletRequest(
 				renderRequest);
 
+			HttpServletRequest origReq = PortalUtil.getOriginalServletRequest(
+				baseReq);
+
 			if (Validator.isNotNull(mvcPath)) {
 				renderRequest.setAttribute(
 					getMVCPathAttributeName(renderResponse.getNamespace()),
@@ -306,6 +306,13 @@ public class MVCPortlet extends LiferayPortlet {
 			}
 			else if (!mvcRenderCommandName.equals("/")) {
 				if (_log.isWarnEnabled()) {
+					String mvcRenderCommandNameCleaned = HtmlUtil.escape(
+						mvcRenderCommandName);
+
+					SessionMessages.add(
+						renderRequest, "noSuchMvcRenderCommandX",
+						mvcRenderCommandNameCleaned);
+
 					ThemeDisplay themeDisplay =
 						(ThemeDisplay)renderRequest.getAttribute(
 							WebKeys.THEME_DISPLAY);
