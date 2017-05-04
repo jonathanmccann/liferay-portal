@@ -173,6 +173,10 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 										if (displayDDMTemplateId == template.getTemplateId()) {
 											selected = true;
 										}
+
+										if (!DDMTemplatePermission.contains(permissionChecker, scopeGroupId, template.getTemplateId(), PortletKeys.PORTLET_DISPLAY_TEMPLATE, ActionKeys.VIEW)) {
+											continue;
+										}
 									%>
 
 										<aui:option label="<%= HtmlUtil.escape(template.getName(locale)) %>" selected="<%= selected %>" value="<%= template.getTemplateId() %>" />
@@ -204,6 +208,10 @@ String orderByType = ParamUtil.getString(request, "orderByType", "asc");
 
 										if (formDDMTemplateId == template.getTemplateId()) {
 											selected = true;
+										}
+
+										if (!DDMTemplatePermission.contains(permissionChecker, scopeGroupId, template.getTemplateId(), PortletKeys.PORTLET_DISPLAY_TEMPLATE, ActionKeys.VIEW)) {
+											continue;
 										}
 									%>
 
