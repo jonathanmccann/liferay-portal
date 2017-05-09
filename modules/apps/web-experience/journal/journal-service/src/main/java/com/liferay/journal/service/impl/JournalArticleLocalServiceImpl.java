@@ -122,7 +122,6 @@ import com.liferay.portal.kernel.search.SearchException;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
-import com.liferay.portal.kernel.service.ServiceContextUtil;
 import com.liferay.portal.kernel.settings.GroupServiceSettingsLocator;
 import com.liferay.portal.kernel.social.SocialActivityManagerUtil;
 import com.liferay.portal.kernel.systemevent.SystemEvent;
@@ -487,15 +486,11 @@ public class JournalArticleLocalServiceImpl
 
 		// Email
 
-		PortletPreferences preferences =
-			ServiceContextUtil.getPortletPreferences(serviceContext);
-
 		articleURL = buildArticleURL(articleURL, groupId, folderId, articleId);
 
 		serviceContext.setAttribute("articleURL", articleURL);
 
-		sendEmail(
-			article, articleURL, preferences, "requested", serviceContext);
+		sendEmail(article, articleURL, "requested", serviceContext);
 
 		// Workflow
 
@@ -987,10 +982,7 @@ public class JournalArticleLocalServiceImpl
 		// Email
 
 		if ((serviceContext != null) && Validator.isNotNull(articleURL)) {
-			PortletPreferences preferences =
-				ServiceContextUtil.getPortletPreferences(serviceContext);
-
-			if ((preferences != null) && !article.isApproved() &&
+			if (!article.isApproved() &&
 				isLatestVersion(
 					article.getGroupId(), article.getArticleId(),
 					article.getVersion())) {
@@ -999,8 +991,7 @@ public class JournalArticleLocalServiceImpl
 					articleURL, article.getGroupId(), article.getFolderId(),
 					article.getArticleId());
 
-				sendEmail(
-					article, articleURL, preferences, "denied", serviceContext);
+				sendEmail(article, articleURL, "denied", serviceContext);
 			}
 		}
 
@@ -5544,12 +5535,7 @@ public class JournalArticleLocalServiceImpl
 			smallImage, article.getSmallImageId(), smallImageFile,
 			smallImageBytes);
 
-		// Email
-
-		PortletPreferences preferences =
-			ServiceContextUtil.getPortletPreferences(serviceContext);
-
-		// Workflow
+		// Email and Workflow
 
 		if (expired && imported) {
 			updateStatus(
@@ -5565,8 +5551,7 @@ public class JournalArticleLocalServiceImpl
 
 			serviceContext.setAttribute("articleURL", articleURL);
 
-			sendEmail(
-				article, articleURL, preferences, "requested", serviceContext);
+			sendEmail(article, articleURL, "requested", serviceContext);
 
 			startWorkflowInstance(userId, article, serviceContext);
 		}
@@ -6111,16 +6096,11 @@ public class JournalArticleLocalServiceImpl
 				}
 
 				try {
-					PortletPreferences preferences =
-						ServiceContextUtil.getPortletPreferences(
-							serviceContext);
-
 					articleURL = buildArticleURL(
 						articleURL, article.getGroupId(), article.getFolderId(),
 						article.getArticleId());
 
-					sendEmail(
-						article, articleURL, preferences, msg, serviceContext);
+					sendEmail(article, articleURL, msg, serviceContext);
 				}
 				catch (Exception e) {
 					_log.error(
@@ -6579,11 +6559,6 @@ public class JournalArticleLocalServiceImpl
 					JournalArticle.class.getName(),
 					PortletProvider.Action.EDIT);
 
-				PortletPreferences preferences =
-					portletPreferencesLocalService.getPreferences(
-						article.getCompanyId(), ownerId, ownerType, plid,
-						portletId);
-
 				String articleURL = PortalUtil.getControlPanelFullURL(
 					article.getGroupId(), portletId, null);
 
@@ -6591,9 +6566,7 @@ public class JournalArticleLocalServiceImpl
 					articleURL, article.getGroupId(), article.getFolderId(),
 					article.getArticleId());
 
-				sendEmail(
-					article, articleURL, preferences, "review",
-					new ServiceContext());
+				sendEmail(article, articleURL, "review", new ServiceContext());
 			}
 		}
 	}
@@ -7624,21 +7597,31 @@ public class JournalArticleLocalServiceImpl
 			"Unable to fix the search index after 10 attempts");
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link #sendEmail(JournalArticle,
+	 *             String, String, ServiceContext)}
+	 */
+	@Deprecated
 	protected void sendEmail(
 			JournalArticle article, String articleURL,
 			PortletPreferences preferences, String emailType,
 			ServiceContext serviceContext)
 		throws PortalException {
 
+		sendEmail(article, articleURL, emailType, serviceContext);
+	}
+
+	protected void sendEmail(
+			JournalArticle article, String articleURL, String emailType,
+			ServiceContext serviceContext)
+		throws PortalException {
+
 		JournalGroupServiceConfiguration journalGroupServiceConfiguration =
 			getJournalGroupServiceConfiguration(article.getGroupId());
 
-		if (preferences == null) {
-			return;
-		}
-		else if (emailType.equals("denied") &&
-				 journalGroupServiceConfiguration.
-					 emailArticleApprovalDeniedEnabled()) {
+		if (emailType.equals("denied") &&
+			journalGroupServiceConfiguration.
+				emailArticleApprovalDeniedEnabled()) {
 		}
 		else if (emailType.equals("granted") &&
 				 journalGroupServiceConfiguration.
