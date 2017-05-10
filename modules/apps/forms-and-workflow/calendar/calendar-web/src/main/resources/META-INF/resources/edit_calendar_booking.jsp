@@ -19,6 +19,8 @@
 <%
 String activeView = ParamUtil.getString(request, "activeView", defaultView);
 
+String originalRedirect = ParamUtil.getString(request, "redirect");
+
 TimeZone calendarBookingTimeZone = userTimeZone;
 
 boolean allDay = BeanParamUtil.getBoolean(calendarBooking, request, "allDay");
@@ -271,9 +273,14 @@ while (manageableCalendarsIterator.hasNext()) {
 	<aui:input name="mvcPath" type="hidden" value="/edit_calendar_booking.jsp" />
 
 	<liferay-portlet:renderURL var="redirectURL">
-		<liferay-portlet:param name="mvcPath" value="/edit_calendar_booking.jsp" />
-		<liferay-portlet:param name="calendarBookingId" value="<%= String.valueOf(calendarBookingId) %>" />
+		<liferay-portlet:param name="mvcPath" value="/edit_calendar_booking_redirect.jsp" />
 	</liferay-portlet:renderURL>
+
+	<%
+	if (!originalRedirect.isEmpty()) {
+		redirectURL = originalRedirect;
+	}
+	%>
 
 	<aui:input name="redirect" type="hidden" value="<%= redirectURL %>" />
 	<aui:input name="calendarBookingId" type="hidden" value="<%= calendarBookingId %>" />
