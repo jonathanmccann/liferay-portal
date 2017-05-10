@@ -390,6 +390,7 @@ AUI.add(
 
 						Liferay.Util.openWindow(
 							{
+								id: instance.get('portletNamespace') + 'editEvent',
 								dialog: {
 									after: {
 										destroy: function(event) {

@@ -521,20 +521,12 @@ public class CalendarPortlet extends MVCPortlet {
 		ServiceContext serviceContext = ServiceContextFactory.getInstance(
 			CalendarBooking.class.getName(), actionRequest);
 
-		CalendarBooking calendarBooking = updateCalendarBooking(
+		updateCalendarBooking(
 			calendarBookingId, calendar, childCalendarIds, titleMap,
 			descriptionMap, location, startTimeJCalendar.getTimeInMillis(),
 			endTimeJCalendar.getTimeInMillis(), allDay, recurrence, reminders,
 			remindersType, instanceIndex, updateCalendarBookingInstance,
 			allFollowing, serviceContext);
-
-		String redirect = getRedirect(actionRequest, actionResponse);
-
-		redirect = HttpUtil.setParameter(
-			redirect, actionResponse.getNamespace() + "calendarBookingId",
-			calendarBooking.getCalendarBookingId());
-
-		actionRequest.setAttribute(WebKeys.REDIRECT, redirect);
 	}
 
 	public void updateSchedulerCalendarBooking(
