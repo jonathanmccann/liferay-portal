@@ -36,6 +36,11 @@
 						</div>
 					</c:when>
 					<c:otherwise>
+						<c:if test='<%= SessionMessages.contains(renderRequest, "noSuchMvcRenderCommandX") %>'>
+							<div class="alert alert-info">
+								<liferay-ui:message arguments='<%= SessionMessages.get(renderRequest, "noSuchMvcRenderCommandX") %>' key="no-such-mvc-render-command-x" />
+							</div>
+						</c:if>
 						<%@ include file="/html/common/themes/portlet_content.jspf" %>
 					</c:otherwise>
 				</c:choose>
