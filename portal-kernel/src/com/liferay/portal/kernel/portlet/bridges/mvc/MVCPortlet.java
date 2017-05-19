@@ -14,14 +14,18 @@
 
 package com.liferay.portal.kernel.portlet.bridges.mvc;
 
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -296,6 +300,36 @@ public class MVCPortlet extends LiferayPortlet {
 				renderRequest.setAttribute(
 					getMVCPathAttributeName(renderResponse.getNamespace()),
 					mvcPath);
+			}
+			else if (!mvcRenderCommandName.equals("/")) {
+				String mvcRenderCommandNameCleaned = HtmlUtil.escape(
+					mvcRenderCommandName);
+
+				SessionMessages.add(
+					renderRequest, "noSuchMvcRenderCommandX",
+					mvcRenderCommandNameCleaned);
+
+				if (_log.isWarnEnabled()) {
+					ThemeDisplay themeDisplay =
+						(ThemeDisplay)renderRequest.getAttribute(
+							WebKeys.THEME_DISPLAY);
+
+					HttpServletRequest baseReq =
+						PortalUtil.getHttpServletRequest(renderRequest);
+
+					String portletId = themeDisplay.getPortletDisplay().getId();
+
+					String warningMessage = LanguageUtil.format(
+						baseReq, "no-such-mvc-render-command-x",
+						HtmlUtil.escape(mvcRenderCommandName), false);
+
+					StringBundler sb = new StringBundler("Portlet ");
+
+					sb.append(portletId);
+					sb.append(", ");
+					sb.append(warningMessage);
+					_log.warn(sb.toString());
+				}
 			}
 		}
 
