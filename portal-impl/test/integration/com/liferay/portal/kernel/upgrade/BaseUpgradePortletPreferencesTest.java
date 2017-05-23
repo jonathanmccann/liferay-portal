@@ -211,8 +211,7 @@ public class BaseUpgradePortletPreferencesTest
 		sb.append("'");
 
 		try (Connection connection = DataAccess.getUpgradeOptimizedConnection();
-				PreparedStatement ps = connection.prepareStatement(
-					sb.toString())) {
+			PreparedStatement ps = connection.prepareStatement(sb.toString())) {
 
 			ResultSet rs = ps.executeQuery();
 
