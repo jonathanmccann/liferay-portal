@@ -19,6 +19,9 @@ package com.liferay.portal.kernel.dao.orm;
  */
 public interface SQLQuery extends Query {
 
+	@Deprecated
+	public SQLQuery addDistinctOnRootEntity();
+
 	public SQLQuery addEntity(String alias, Class<?> entityClass);
 
 	public SQLQuery addScalar(String columnAlias, Type type);
