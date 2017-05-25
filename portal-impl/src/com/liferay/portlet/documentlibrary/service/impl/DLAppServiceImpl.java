@@ -2586,6 +2586,19 @@ public class DLAppServiceImpl extends DLAppServiceBaseImpl {
 			}
 		}
 
+		if (Validator.isNull(sourceFileName)) {
+			try {
+				FileEntry fileEntry = getFileEntry(fileEntryId);
+
+				sourceFileName = fileEntry.getFileName();
+				mimeType = fileEntry.getMimeType();
+				size = fileEntry.getSize();
+			}
+			catch (NoSuchFileEntryException nsfee) {
+				_log.error(nsfee, nsfee);
+			}
+		}
+
 		Repository repository = repositoryProvider.getFileEntryRepository(
 			fileEntryId);
 
