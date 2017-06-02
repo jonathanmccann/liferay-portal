@@ -135,24 +135,26 @@ public class ServicePreAction extends Action {
 		initImportLARFiles();
 	}
 
-	public ThemeDisplay initThemeDisplay(
-			HttpServletRequest request, HttpServletResponse response)
+	protected void setThemeDisplayCompany(HttpServletRequest request, ThemeDisplay themeDisplay)
 		throws Exception {
-
-		HttpSession session = request.getSession();
-
 		// Company
 
 		Company company = PortalUtil.getCompany(request);
 
 		long companyId = company.getCompanyId();
 
+		themeDisplay.setCompany(company);
+	}
+
+	protected void setThemeDisplayCDNHost(HttpServletRequest request, ThemeDisplay themeDisplay)
+		throws Exception {
 		// CDN host
 
 		String cdnHost = PortalUtil.getCDNHost(request);
 
 		String dynamicResourcesCDNHost = StringPool.BLANK;
 
+		// Can be done via companyId instead
 		boolean cdnDynamicResourceEnabled =
 			PortalUtil.isCDNDynamicResourcesEnabled(request);
 
@@ -160,10 +162,22 @@ public class ServicePreAction extends Action {
 			dynamicResourcesCDNHost = cdnHost;
 		}
 
+		themeDisplay.setCDNHost(cdnHost);
+		themeDisplay.setCDNDynamicResourcesHost(dynamicResourcesCDNHost);
+	}
+
+	protected void setPortalURL(HttpServletRequest request, ThemeDisplay themeDisplay) {
 		// Portal URL
 
 		String portalURL = PortalUtil.getPortalURL(request);
 
+		themeDisplay.setPortalDomain(_getPortalDomain(portalURL));
+		themeDisplay.setPortalURL(portalURL);
+
+		themeDisplay.setURLPortal(portalURL.concat(PortalUtil.getPathContext()));
+	}
+
+	protected void setPaths(HttpServletRequest request, ThemeDisplay themeDisplay) {
 		// Paths
 
 		String contextPath = PortalUtil.getPathContext();
@@ -201,22 +215,38 @@ public class ServicePreAction extends Action {
 			}
 		}
 
+		themeDisplay.setI18nPath(i18nPath);
+
+		themeDisplay.setPathApplet(contextPath.concat("/applets"));
+		themeDisplay.setPathCms(contextPath.concat("/cms"));
+		themeDisplay.setPathContext(contextPath);
+		themeDisplay.setPathFlash(contextPath.concat("/flash"));
+		themeDisplay.setPathFriendlyURLPrivateGroup(
+			friendlyURLPrivateGroupPath);
+		themeDisplay.setPathFriendlyURLPrivateUser(friendlyURLPrivateUserPath);
+		themeDisplay.setPathFriendlyURLPublic(friendlyURLPublicPath);
+		themeDisplay.setPathImage(imagePath);
+		themeDisplay.setPathMain(mainPath);
+		themeDisplay.setPathSound(contextPath.concat("/html/sound"));
+	}
+
+	protected void setCompanyLogo(long logoId, ThemeDisplay themeDisplay) {
 		// Company logo
 
 		StringBundler sb = new StringBundler(5);
 
 		sb.append(imagePath);
 		sb.append("/company_logo?img_id=");
-		sb.append(company.getLogoId());
+		sb.append(logoId);
 		sb.append("&t=");
-		sb.append(WebServerServletTokenUtil.getToken(company.getLogoId()));
+		sb.append(WebServerServletTokenUtil.getToken(logoId));
 
 		String companyLogo = sb.toString();
 
 		int companyLogoHeight = 0;
 		int companyLogoWidth = 0;
 
-		long companyLogoId = company.getLogoId();
+		long companyLogoId = logoId;
 
 		if (companyLogoId > 0) {
 			Image companyLogoImage = ImageLocalServiceUtil.getCompanyLogo(
@@ -232,6 +262,15 @@ public class ServicePreAction extends Action {
 		int realCompanyLogoHeight = companyLogoHeight;
 		int realCompanyLogoWidth = companyLogoWidth;
 
+		themeDisplay.setCompanyLogo(companyLogo);
+		themeDisplay.setCompanyLogoHeight(companyLogoHeight);
+		themeDisplay.setCompanyLogoWidth(companyLogoWidth);
+		themeDisplay.setRealCompanyLogo(realCompanyLogo);
+		themeDisplay.setRealCompanyLogoHeight(realCompanyLogoHeight);
+		themeDisplay.setRealCompanyLogoWidth(realCompanyLogoWidth);
+	}
+
+	protected void setUser(HttpServletRequest request, HttpServletResponse response, ThemeDisplay themeDisplay) {
 		// User
 
 		User user = null;
@@ -289,6 +328,27 @@ public class ServicePreAction extends Action {
 			refererPlid = 0;
 		}
 
+		themeDisplay.setRefererPlid(refererPlid);
+
+		themeDisplay.setDoAsGroupId(doAsGroupId);
+		themeDisplay.setDoAsUserId(doAsUserId);
+		themeDisplay.setDoAsUserLanguageId(doAsUserLanguageId);
+		themeDisplay.setRealUser(realUser);
+		themeDisplay.setRefererGroupId(refererGroupId);
+		themeDisplay.setSignedIn(signedIn);
+		themeDisplay.setUser(user);
+
+		if (!user.isActive() ||
+			(PrefsPropsUtil.getBoolean(
+				companyId, PropsKeys.TERMS_OF_USE_REQUIRED) &&
+			 !user.isAgreedToTermsOfUse())) {
+
+			themeDisplay.setShowMyAccountIcon(false);
+			themeDisplay.setShowPageSettingsIcon(false);
+		}
+	}
+
+	protected void setPermissionChecker(ThemeDisplay themeDisplay) {
 		// Permission checker
 
 		PermissionChecker permissionChecker =
@@ -302,6 +362,10 @@ public class ServicePreAction extends Action {
 			PermissionThreadLocal.setPermissionChecker(permissionChecker);
 		}
 
+		themeDisplay.setPermissionChecker(permissionChecker);
+	}
+
+	protected void setCookieSupport(HttpServletRequest request, HttpServletResponse response) {
 		// Cookie support
 
 		try {
@@ -313,7 +377,9 @@ public class ServicePreAction extends Action {
 		catch (Exception e) {
 			CookieKeys.addSupportCookie(request, response);
 		}
+	}
 
+	protected void setTimeZone(ThemeDisplay themeDisplay) {
 		// Time zone
 
 		TimeZone timeZone = user.getTimeZone();
@@ -322,6 +388,10 @@ public class ServicePreAction extends Action {
 			timeZone = company.getTimeZone();
 		}
 
+		themeDisplay.setTimeZone(timeZone);
+	}
+
+	protected void setLayouts(HttpServletRequest request, ThemeDisplay themeDisplay) {
 		// Layouts
 
 		if (signedIn) {
@@ -434,7 +504,7 @@ public class ServicePreAction extends Action {
 						user.getUserId());
 				}
 
-				sb = new StringBundler(6);
+				StringBundler sb = new StringBundler(6);
 
 				sb.append("User ");
 				sb.append(user.getUserId());
@@ -543,7 +613,7 @@ public class ServicePreAction extends Action {
 				}
 
 				if (logoId > 0) {
-					sb = new StringBundler(5);
+					StringBundler sb = new StringBundler(5);
 
 					sb.append(imagePath);
 					sb.append("/layout_set_logo?img_id=");
@@ -637,284 +707,13 @@ public class ServicePreAction extends Action {
 			request.setAttribute(WebKeys.LAYOUTS, layouts);
 		}
 
-		// Locale
-
-		String i18nLanguageId = (String)request.getAttribute(
-			WebKeys.I18N_LANGUAGE_ID);
-
-		Locale locale = PortalUtil.getLocale(request, response, true);
-
-		// Scope
-
-		long scopeGroupId = PortalUtil.getScopeGroupId(request);
-
-		if (group.isInheritContent()) {
-			scopeGroupId = group.getParentGroupId();
-		}
-
-		if ((scopeGroupId <= 0) && (doAsGroupId > 0)) {
-			scopeGroupId = doAsGroupId;
-		}
-
-		long siteGroupId = 0;
-
-		if (layout != null) {
-			if (layout.isTypeControlPanel()) {
-				siteGroupId = PortalUtil.getSiteGroupId(scopeGroupId);
-			}
-			else {
-				siteGroupId = PortalUtil.getSiteGroupId(layout.getGroupId());
-			}
-		}
-
-		// Theme and color scheme
-
-		Theme theme = null;
-		ColorScheme colorScheme = null;
-
-		if ((layout != null) &&
-			(layout.isTypeControlPanel() || group.isControlPanel())) {
-
-			String themeId = PrefsPropsUtil.getString(
-				companyId, PropsKeys.CONTROL_PANEL_LAYOUT_REGULAR_THEME_ID);
-			String colorSchemeId =
-				ColorSchemeFactoryUtil.getDefaultRegularColorSchemeId();
-
-			theme = ThemeLocalServiceUtil.getTheme(companyId, themeId);
-
-			colorScheme = ThemeLocalServiceUtil.getColorScheme(
-				companyId, theme.getThemeId(), colorSchemeId);
-
-			request.setAttribute(WebKeys.COLOR_SCHEME, colorScheme);
-
-			request.setAttribute(WebKeys.THEME, theme);
-		}
-
-		boolean themeCssFastLoad = PropsValues.THEME_CSS_FAST_LOAD;
-
-		if (PropsValues.THEME_CSS_FAST_LOAD_CHECK_REQUEST_PARAMETER) {
-			themeCssFastLoad = SessionParamUtil.getBoolean(
-				request, "css_fast_load", PropsValues.THEME_CSS_FAST_LOAD);
-		}
-
-		boolean themeImagesFastLoad = PropsValues.THEME_IMAGES_FAST_LOAD;
-
-		if (PropsValues.THEME_IMAGES_FAST_LOAD_CHECK_REQUEST_PARAMETER) {
-			SessionParamUtil.getBoolean(
-				request, "images_fast_load",
-				PropsValues.THEME_IMAGES_FAST_LOAD);
-		}
-
-		boolean themeJsBarebone = PropsValues.JAVASCRIPT_BAREBONE_ENABLED;
-
-		if (themeJsBarebone) {
-			if (signedIn ||
-				PropsValues.JAVASCRIPT_SINGLE_PAGE_APPLICATION_ENABLED) {
-
-				themeJsBarebone = false;
-			}
-		}
-
-		boolean themeJsFastLoad = SessionParamUtil.getBoolean(
-			request, "js_fast_load", PropsValues.JAVASCRIPT_FAST_LOAD);
-
-		String lifecycle = ParamUtil.getString(request, "p_p_lifecycle", "0");
-
-		lifecycle = ParamUtil.getString(request, "p_t_lifecycle", lifecycle);
-
-		boolean isolated = ParamUtil.getBoolean(request, "p_p_isolated");
-
-		boolean widget = false;
-
-		Boolean widgetObj = (Boolean)request.getAttribute(WebKeys.WIDGET);
-
-		if (widgetObj != null) {
-			widget = widgetObj.booleanValue();
-		}
-
-		// Theme display
-
-		ThemeDisplay themeDisplay = ThemeDisplayFactory.create();
-
-		themeDisplay.setRequest(request);
-		themeDisplay.setResponse(response);
-
-		// Set attributes first that other methods (getCDNBaseURL and
-		// setLookAndFeel) depend on
-
-		boolean secure = PortalUtil.isForwardedSecure(request);
-
-		themeDisplay.setCDNHost(cdnHost);
-		themeDisplay.setCDNDynamicResourcesHost(dynamicResourcesCDNHost);
-		themeDisplay.setPortalDomain(_getPortalDomain(portalURL));
-		themeDisplay.setPortalURL(portalURL);
-		themeDisplay.setRefererPlid(refererPlid);
-		themeDisplay.setSecure(secure);
-		themeDisplay.setServerName(PortalUtil.getForwardedHost(request));
-		themeDisplay.setServerPort(PortalUtil.getForwardedPort(request));
-		themeDisplay.setWidget(widget);
-
-		themeDisplay.setCompany(company);
-		themeDisplay.setCompanyLogo(companyLogo);
-		themeDisplay.setCompanyLogoHeight(companyLogoHeight);
-		themeDisplay.setCompanyLogoWidth(companyLogoWidth);
-		themeDisplay.setDoAsGroupId(doAsGroupId);
-		themeDisplay.setDoAsUserId(doAsUserId);
-		themeDisplay.setDoAsUserLanguageId(doAsUserLanguageId);
-		themeDisplay.setI18nLanguageId(i18nLanguageId);
-		themeDisplay.setI18nPath(i18nPath);
-		themeDisplay.setIsolated(isolated);
-		themeDisplay.setLanguageId(LocaleUtil.toLanguageId(locale));
 		themeDisplay.setLayout(layout);
 		themeDisplay.setLayouts(layouts);
 		themeDisplay.setLayoutSet(layoutSet);
 		themeDisplay.setLayoutSetLogo(layoutSetLogo);
-		themeDisplay.setLayoutTypePortlet(layoutTypePortlet);
-		themeDisplay.setLifecycle(lifecycle);
-		themeDisplay.setLifecycleAction(lifecycle.equals("1"));
-		themeDisplay.setLifecycleEvent(lifecycle.equals("3"));
-		themeDisplay.setLifecycleRender(lifecycle.equals("0"));
-		themeDisplay.setLifecycleResource(lifecycle.equals("2"));
-		themeDisplay.setLocale(locale);
-		themeDisplay.setLookAndFeel(theme, colorScheme);
-		themeDisplay.setPathApplet(contextPath.concat("/applets"));
-		themeDisplay.setPathCms(contextPath.concat("/cms"));
-		themeDisplay.setPathContext(contextPath);
-		themeDisplay.setPathFlash(contextPath.concat("/flash"));
-		themeDisplay.setPathFriendlyURLPrivateGroup(
-			friendlyURLPrivateGroupPath);
-		themeDisplay.setPathFriendlyURLPrivateUser(friendlyURLPrivateUserPath);
-		themeDisplay.setPathFriendlyURLPublic(friendlyURLPublicPath);
-		themeDisplay.setPathImage(imagePath);
-		themeDisplay.setPathJavaScript(
-			PortalWebResourcesUtil.getContextPath(
-				PortalWebResourceConstants.RESOURCE_TYPE_JS));
-		themeDisplay.setPathMain(mainPath);
-		themeDisplay.setPathSound(contextPath.concat("/html/sound"));
-		themeDisplay.setPermissionChecker(permissionChecker);
 		themeDisplay.setPlid(plid);
 		themeDisplay.setPpid(ppid);
-		themeDisplay.setRealCompanyLogo(realCompanyLogo);
-		themeDisplay.setRealCompanyLogoHeight(realCompanyLogoHeight);
-		themeDisplay.setRealCompanyLogoWidth(realCompanyLogoWidth);
-		themeDisplay.setRealUser(realUser);
-		themeDisplay.setRefererGroupId(refererGroupId);
-		themeDisplay.setScopeGroupId(scopeGroupId);
-		themeDisplay.setSignedIn(signedIn);
-		themeDisplay.setSiteDefaultLocale(
-			PortalUtil.getSiteDefaultLocale(siteGroupId));
-		themeDisplay.setSiteGroupId(siteGroupId);
-		themeDisplay.setStateExclusive(LiferayWindowState.isExclusive(request));
-		themeDisplay.setStateMaximized(LiferayWindowState.isMaximized(request));
-		themeDisplay.setStatePopUp(LiferayWindowState.isPopUp(request));
-		themeDisplay.setThemeCssFastLoad(themeCssFastLoad);
-		themeDisplay.setThemeImagesFastLoad(themeImagesFastLoad);
-		themeDisplay.setThemeJsBarebone(themeJsBarebone);
-		themeDisplay.setThemeJsFastLoad(themeJsFastLoad);
-		themeDisplay.setTimeZone(timeZone);
 		themeDisplay.setUnfilteredLayouts(unfilteredLayouts);
-		themeDisplay.setUser(user);
-
-		// Icons
-
-		boolean showControlPanelIcon = false;
-
-		if (signedIn &&
-			PortalPermissionUtil.contains(
-				permissionChecker, ActionKeys.VIEW_CONTROL_PANEL)) {
-
-			showControlPanelIcon = true;
-		}
-
-		themeDisplay.setShowControlPanelIcon(showControlPanelIcon);
-
-		themeDisplay.setShowHomeIcon(true);
-		themeDisplay.setShowMyAccountIcon(signedIn);
-		themeDisplay.setShowPageSettingsIcon(hasUpdateLayoutPermission);
-		themeDisplay.setShowPortalIcon(true);
-		themeDisplay.setShowSignInIcon(!signedIn);
-
-		boolean showSignOutIcon = signedIn;
-
-		if (themeDisplay.isImpersonated()) {
-			showSignOutIcon = false;
-		}
-
-		themeDisplay.setShowSignOutIcon(showSignOutIcon);
-
-		themeDisplay.setShowStagingIcon(false);
-
-		boolean showSiteAdministrationIcon = false;
-
-		if (signedIn &&
-			GroupPermissionUtil.contains(
-				permissionChecker, group,
-				ActionKeys.VIEW_SITE_ADMINISTRATION)) {
-
-			showSiteAdministrationIcon = true;
-		}
-
-		themeDisplay.setShowSiteAdministrationIcon(showSiteAdministrationIcon);
-
-		// Session
-
-		if (PropsValues.SESSION_ENABLE_URL_WITH_SESSION_ID &&
-			!CookieKeys.hasSessionId(request)) {
-
-			themeDisplay.setAddSessionIdToURL(true);
-			themeDisplay.setSessionId(session.getId());
-		}
-
-		// URLs
-
-		String urlControlPanel = friendlyURLPrivateGroupPath.concat(
-			GroupConstants.CONTROL_PANEL_FRIENDLY_URL);
-
-		if (Validator.isNotNull(doAsUserId)) {
-			urlControlPanel = HttpUtil.addParameter(
-				urlControlPanel, "doAsUserId", doAsUserId);
-		}
-
-		if (refererGroupId > 0) {
-			urlControlPanel = HttpUtil.addParameter(
-				urlControlPanel, "refererGroupId", refererGroupId);
-		}
-		else if (scopeGroupId > 0) {
-			Layout refererLayout = LayoutLocalServiceUtil.fetchLayout(plid);
-
-			if (refererLayout != null) {
-				Group refererLayoutGroup = refererLayout.getGroup();
-
-				if (refererLayoutGroup.isUserGroup()) {
-					urlControlPanel = HttpUtil.addParameter(
-						urlControlPanel, "refererGroupId", scopeGroupId);
-				}
-			}
-		}
-
-		if (refererPlid > 0) {
-			urlControlPanel = HttpUtil.addParameter(
-				urlControlPanel, "refererPlid", refererPlid);
-		}
-		else if (plid > 0) {
-			urlControlPanel = HttpUtil.addParameter(
-				urlControlPanel, "refererPlid", plid);
-		}
-
-		if (themeDisplay.isAddSessionIdToURL()) {
-			urlControlPanel = PortalUtil.getURLWithSessionId(
-				urlControlPanel, session.getId());
-		}
-
-		themeDisplay.setURLControlPanel(urlControlPanel);
-
-		String currentURL = PortalUtil.getCurrentURL(request);
-
-		themeDisplay.setURLCurrent(currentURL);
-
-		String urlHome = PortalUtil.getHomeURL(request);
-
-		themeDisplay.setURLHome(urlHome);
 
 		if (layout != null) {
 			if (layout.isTypePortlet()) {
@@ -996,15 +795,6 @@ public class ServicePreAction extends Action {
 			}
 		}
 
-		if (!user.isActive() ||
-			(PrefsPropsUtil.getBoolean(
-				companyId, PropsKeys.TERMS_OF_USE_REQUIRED) &&
-			 !user.isAgreedToTermsOfUse())) {
-
-			themeDisplay.setShowMyAccountIcon(false);
-			themeDisplay.setShowPageSettingsIcon(false);
-		}
-
 		if ((layout != null) && layout.isLayoutPrototypeLinkActive()) {
 			themeDisplay.setShowPageCustomizationIcon(false);
 		}
@@ -1029,9 +819,242 @@ public class ServicePreAction extends Action {
 			themeDisplay.setShowLayoutTemplatesIcon(false);
 			themeDisplay.setShowPageCustomizationIcon(false);
 		}
+	}
 
-		themeDisplay.setURLPortal(portalURL.concat(contextPath));
+	protected void setLocale(HttpServletRequest request, HttpServletResponse response, ThemeDisplay themeDisplay) {
+		// Locale
 
+		String i18nLanguageId = (String)request.getAttribute(
+			WebKeys.I18N_LANGUAGE_ID);
+
+		Locale locale = PortalUtil.getLocale(request, response, true);
+
+		themeDisplay.setI18nLanguageId(i18nLanguageId);
+		themeDisplay.setLanguageId(LocaleUtil.toLanguageId(locale));
+		themeDisplay.setLocale(locale);
+	}
+
+	protected void setScope(HttpServletRequest request, ThemeDisplay themeDisplay) {
+		// Scope
+
+		long scopeGroupId = PortalUtil.getScopeGroupId(request);
+
+		if (group.isInheritContent()) {
+			scopeGroupId = group.getParentGroupId();
+		}
+
+		if ((scopeGroupId <= 0) && (doAsGroupId > 0)) {
+			scopeGroupId = doAsGroupId;
+		}
+
+		long siteGroupId = 0;
+
+		if (layout != null) {
+			if (layout.isTypeControlPanel()) {
+				siteGroupId = PortalUtil.getSiteGroupId(scopeGroupId);
+			}
+			else {
+				siteGroupId = PortalUtil.getSiteGroupId(layout.getGroupId());
+			}
+		}
+
+		themeDisplay.setScopeGroupId(scopeGroupId);
+		themeDisplay.setSiteDefaultLocale(
+			PortalUtil.getSiteDefaultLocale(siteGroupId));
+		themeDisplay.setSiteGroupId(siteGroupId);
+	}
+
+	protected void setThemeAndColorSchemes(HttpServletRequest request, ThemeDisplay themeDisplay) {
+		// Theme and color scheme
+
+		Theme theme = null;
+		ColorScheme colorScheme = null;
+
+		if ((layout != null) &&
+			(layout.isTypeControlPanel() || group.isControlPanel())) {
+
+			String themeId = PrefsPropsUtil.getString(
+				companyId, PropsKeys.CONTROL_PANEL_LAYOUT_REGULAR_THEME_ID);
+			String colorSchemeId =
+				ColorSchemeFactoryUtil.getDefaultRegularColorSchemeId();
+
+			theme = ThemeLocalServiceUtil.getTheme(companyId, themeId);
+
+			colorScheme = ThemeLocalServiceUtil.getColorScheme(
+				companyId, theme.getThemeId(), colorSchemeId);
+
+			request.setAttribute(WebKeys.COLOR_SCHEME, colorScheme);
+
+			request.setAttribute(WebKeys.THEME, theme);
+		}
+
+		boolean themeCssFastLoad = PropsValues.THEME_CSS_FAST_LOAD;
+
+		if (PropsValues.THEME_CSS_FAST_LOAD_CHECK_REQUEST_PARAMETER) {
+			themeCssFastLoad = SessionParamUtil.getBoolean(
+				request, "css_fast_load", PropsValues.THEME_CSS_FAST_LOAD);
+		}
+
+		boolean themeImagesFastLoad = PropsValues.THEME_IMAGES_FAST_LOAD;
+
+		if (PropsValues.THEME_IMAGES_FAST_LOAD_CHECK_REQUEST_PARAMETER) {
+			SessionParamUtil.getBoolean(
+				request, "images_fast_load",
+				PropsValues.THEME_IMAGES_FAST_LOAD);
+		}
+
+		boolean themeJsBarebone = PropsValues.JAVASCRIPT_BAREBONE_ENABLED;
+
+		if (themeJsBarebone) {
+			if (signedIn ||
+				PropsValues.JAVASCRIPT_SINGLE_PAGE_APPLICATION_ENABLED) {
+
+				themeJsBarebone = false;
+			}
+		}
+
+		boolean themeJsFastLoad = SessionParamUtil.getBoolean(
+			request, "js_fast_load", PropsValues.JAVASCRIPT_FAST_LOAD);
+
+		String lifecycle = ParamUtil.getString(request, "p_p_lifecycle", "0");
+
+		lifecycle = ParamUtil.getString(request, "p_t_lifecycle", lifecycle);
+
+		boolean isolated = ParamUtil.getBoolean(request, "p_p_isolated");
+
+		boolean widget = false;
+
+		Boolean widgetObj = (Boolean)request.getAttribute(WebKeys.WIDGET);
+
+		if (widgetObj != null) {
+			widget = widgetObj.booleanValue();
+		}
+
+		themeDisplay.setWidget(widget);
+		themeDisplay.setIsolated(isolated);
+
+		themeDisplay.setLifecycle(lifecycle);
+		themeDisplay.setLifecycleAction(lifecycle.equals("1"));
+		themeDisplay.setLifecycleEvent(lifecycle.equals("3"));
+		themeDisplay.setLifecycleRender(lifecycle.equals("0"));
+		themeDisplay.setLifecycleResource(lifecycle.equals("2"));
+
+		themeDisplay.setLookAndFeel(theme, colorScheme);
+
+		themeDisplay.setThemeCssFastLoad(themeCssFastLoad);
+		themeDisplay.setThemeImagesFastLoad(themeImagesFastLoad);
+		themeDisplay.setThemeJsBarebone(themeJsBarebone);
+		themeDisplay.setThemeJsFastLoad(themeJsFastLoad);
+	}
+
+	protected void setIcons(ThemeDisplay themeDisplay) {
+		// Icons
+
+		boolean showControlPanelIcon = false;
+
+		if (signedIn &&
+			PortalPermissionUtil.contains(
+				permissionChecker, ActionKeys.VIEW_CONTROL_PANEL)) {
+
+			showControlPanelIcon = true;
+		}
+
+		themeDisplay.setShowControlPanelIcon(showControlPanelIcon);
+
+		themeDisplay.setShowHomeIcon(true);
+		themeDisplay.setShowMyAccountIcon(signedIn);
+		themeDisplay.setShowPageSettingsIcon(hasUpdateLayoutPermission);
+		themeDisplay.setShowPortalIcon(true);
+		themeDisplay.setShowSignInIcon(!signedIn);
+
+		boolean showSignOutIcon = signedIn;
+
+		if (themeDisplay.isImpersonated()) {
+			showSignOutIcon = false;
+		}
+
+		themeDisplay.setShowSignOutIcon(showSignOutIcon);
+
+		themeDisplay.setShowStagingIcon(false);
+
+		boolean showSiteAdministrationIcon = false;
+
+		if (signedIn &&
+			GroupPermissionUtil.contains(
+				permissionChecker, group,
+				ActionKeys.VIEW_SITE_ADMINISTRATION)) {
+
+			showSiteAdministrationIcon = true;
+		}
+
+		themeDisplay.setShowSiteAdministrationIcon(showSiteAdministrationIcon);
+	}
+
+	protected void setSession(HttpServletRequest request, ThemeDisplay themeDisplay) {
+		// Session
+
+		if (PropsValues.SESSION_ENABLE_URL_WITH_SESSION_ID &&
+			!CookieKeys.hasSessionId(request)) {
+
+			themeDisplay.setAddSessionIdToURL(true);
+			themeDisplay.setSessionId(session.getId());
+		}
+	}
+
+	protected void setURLs(HttpServletRequest request, ThemeDisplay themeDisplay) {
+		// URLs
+
+		String urlControlPanel = friendlyURLPrivateGroupPath.concat(
+			GroupConstants.CONTROL_PANEL_FRIENDLY_URL);
+
+		if (Validator.isNotNull(doAsUserId)) {
+			urlControlPanel = HttpUtil.addParameter(
+				urlControlPanel, "doAsUserId", doAsUserId);
+		}
+
+		if (refererGroupId > 0) {
+			urlControlPanel = HttpUtil.addParameter(
+				urlControlPanel, "refererGroupId", refererGroupId);
+		}
+		else if (scopeGroupId > 0) {
+			Layout refererLayout = LayoutLocalServiceUtil.fetchLayout(plid);
+
+			if (refererLayout != null) {
+				Group refererLayoutGroup = refererLayout.getGroup();
+
+				if (refererLayoutGroup.isUserGroup()) {
+					urlControlPanel = HttpUtil.addParameter(
+						urlControlPanel, "refererGroupId", scopeGroupId);
+				}
+			}
+		}
+
+		if (refererPlid > 0) {
+			urlControlPanel = HttpUtil.addParameter(
+				urlControlPanel, "refererPlid", refererPlid);
+		}
+		else if (plid > 0) {
+			urlControlPanel = HttpUtil.addParameter(
+				urlControlPanel, "refererPlid", plid);
+		}
+
+		if (themeDisplay.isAddSessionIdToURL()) {
+			urlControlPanel = PortalUtil.getURLWithSessionId(
+				urlControlPanel, session.getId());
+		}
+
+		themeDisplay.setURLControlPanel(urlControlPanel);
+
+		String currentURL = PortalUtil.getCurrentURL(request);
+
+		themeDisplay.setURLCurrent(currentURL);
+
+		String urlHome = PortalUtil.getHomeURL(request);
+
+		themeDisplay.setURLHome(urlHome);
+	}
+
+	protected void setSignInAndSignOut(HttpServletRequest request, ThemeDisplay themeDisplay) {
 		if (!secure && PropsValues.COMPANY_SECURITY_AUTH_REQUIRES_HTTPS) {
 			secure = true;
 		}
@@ -1049,6 +1072,59 @@ public class ServicePreAction extends Action {
 		themeDisplay.setURLSignIn(urlSignIn);
 
 		themeDisplay.setURLSignOut(mainPath.concat(_PATH_PORTAL_LOGOUT));
+	}
+
+	public ThemeDisplay initThemeDisplay(
+			HttpServletRequest request, HttpServletResponse response)
+		throws Exception {
+
+		// Theme display
+
+		ThemeDisplay themeDisplay = ThemeDisplayFactory.create();
+
+		themeDisplay.setRequest(request);
+		themeDisplay.setResponse(response);
+
+		HttpSession session = request.getSession();
+
+		setThemeDisplayCompany(request, themeDisplay);
+		setThemeDisplayCDNHost(request, themeDisplay);
+		setPortalURL(request, themeDisplay);
+		setPaths(request, themeDisplay);
+		setCompanyLogo(themeDisplay);
+		setUser(themeDisplay);
+		setPermissionChecker(themeDisplay);
+		setCookieSupport(themeDisplay);
+		setTimeZone(themeDisplay);
+		setLayouts(themeDisplay);
+		setLocale(themeDisplay);
+		setScope(themeDisplay);
+		setThemeAndColorSchemes(themeDisplay);
+
+		// Set attributes first that other methods (getCDNBaseURL and
+		// setLookAndFeel) depend on
+
+		boolean secure = PortalUtil.isForwardedSecure(request);
+
+		themeDisplay.setSecure(secure);
+		themeDisplay.setServerName(PortalUtil.getForwardedHost(request));
+		themeDisplay.setServerPort(PortalUtil.getForwardedPort(request));
+
+		themeDisplay.setPathJavaScript(
+			PortalWebResourcesUtil.getContextPath(
+				PortalWebResourceConstants.RESOURCE_TYPE_JS));
+
+		themeDisplay.setStateExclusive(LiferayWindowState.isExclusive(request));
+		themeDisplay.setStateMaximized(LiferayWindowState.isMaximized(request));
+		themeDisplay.setStatePopUp(LiferayWindowState.isPopUp(request));
+
+		setIcons();
+
+		setSession();
+
+		setURLs();
+
+		setSignInAndSignOut();
 
 		return themeDisplay;
 	}
@@ -1191,6 +1267,8 @@ public class ServicePreAction extends Action {
 		if (updateLayoutSet) {
 			LayoutSetLocalServiceUtil.updateLayoutSet(layoutSet);
 		}
+
+		themeDisplay.setLayoutTypePortlet(layoutTypePortlet);
 	}
 
 	protected void addDefaultUserPrivateLayouts(User user)
