@@ -18,11 +18,17 @@ import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.portal.kernel.exception.LayoutBranchNameException;
 import com.liferay.portal.kernel.exception.LayoutSetBranchNameException;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutRevision;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutRevisionLocalService;
 import com.liferay.portal.kernel.service.LayoutSetBranchLocalService;
 import com.liferay.portal.kernel.service.LayoutSetBranchService;
@@ -36,6 +42,8 @@ import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
+import com.liferay.staging.bar.web.internal.display.context.LayoutBranchDisplayContext;
+import com.liferay.staging.bar.web.internal.display.context.LayoutSetBranchDisplayContext;
 import com.liferay.staging.bar.web.internal.portlet.constants.StagingBarPortletKeys;
 
 import java.io.IOException;
@@ -110,6 +118,65 @@ public class StagingBarPortlet extends MVCPortlet {
 		}
 
 		addLayoutRevisionSessionMessages(actionRequest, actionResponse);
+	}
+
+	@Override
+	public void render(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws IOException, PortletException {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)renderRequest.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		HttpServletRequest httpServletRequest = _portal.getHttpServletRequest(
+			renderRequest);
+
+		long plid = themeDisplay.getPlid();
+
+		Layout layout = _layoutLocalService.fetchLayout(plid);
+
+		Layout selLayout = layout;
+
+		long selPlid = ParamUtil.getLong(httpServletRequest, "selPlid");
+
+		if (selPlid > 0) {
+			try {
+				selLayout = _layoutLocalService.getLayout(selPlid);
+			}
+			catch (PortalException pe) {
+				throw new PortletException(pe);
+			}
+		}
+
+		Group group = null;
+		boolean privateLayout = false;
+
+		if (selLayout != null) {
+			try {
+				group = selLayout.getGroup();
+			}
+			catch (PortalException pe) {
+				throw new PortletException(pe);
+			}
+
+			privateLayout = selLayout.isPrivateLayout();
+		}
+
+		LayoutBranchDisplayContext layoutBranchDisplayContext =
+			new LayoutBranchDisplayContext(httpServletRequest);
+		LayoutSetBranchDisplayContext layoutSetBranchDisplayContext =
+			new LayoutSetBranchDisplayContext(httpServletRequest);
+
+		renderRequest.setAttribute("group", group);
+		renderRequest.setAttribute("layout", layout);
+		renderRequest.setAttribute(
+			"layoutBranchDisplayContext", layoutBranchDisplayContext);
+		renderRequest.setAttribute(
+			"layoutSetBranchDisplayContext", layoutSetBranchDisplayContext);
+		renderRequest.setAttribute("privateLayout", privateLayout);
+		renderRequest.setAttribute("selLayout", selLayout);
+
+		super.render(renderRequest, renderResponse);
 	}
 
 	public void updateLayoutRevision(
@@ -227,6 +294,13 @@ public class StagingBarPortlet extends MVCPortlet {
 	}
 
 	@Reference
+	protected void setLayoutLocalService(
+		LayoutLocalService layoutLocalService) {
+
+		_layoutLocalService = layoutLocalService;
+	}
+
+	@Reference
 	protected void setLayoutRevisionLocalService(
 		LayoutRevisionLocalService layoutRevisionLocalService) {
 
@@ -261,6 +335,12 @@ public class StagingBarPortlet extends MVCPortlet {
 	protected void setRelease(Release release) {
 	}
 
+	protected void unsetLayoutLocalService(
+		LayoutLocalService layoutLocalService) {
+
+		_layoutLocalService = null;
+	}
+
 	protected void unsetLayoutRevisionLocalService(
 		LayoutRevisionLocalService layoutRevisionLocalService) {
 
@@ -285,6 +365,10 @@ public class StagingBarPortlet extends MVCPortlet {
 		_layoutSetLocalService = null;
 	}
 
+	private static final Log _log = LogFactoryUtil.getLog(
+		StagingBarPortlet.class);
+
+	private LayoutLocalService _layoutLocalService;
 	private LayoutRevisionLocalService _layoutRevisionLocalService;
 	private LayoutSetBranchLocalService _layoutSetBranchLocalService;
 	private LayoutSetBranchService _layoutSetBranchService;
