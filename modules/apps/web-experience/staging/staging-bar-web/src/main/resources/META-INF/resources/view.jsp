@@ -17,75 +17,19 @@
 <%@ include file="/init.jsp" %>
 
 <%
-boolean branchingEnabled = false;
-
-LayoutRevision layoutRevision = null;
-
-LayoutSetBranch layoutSetBranch = null;
-
-LayoutBranch layoutBranch = null;
-
-Layout liveLayout = null;
-
-if (layout != null) {
-	layoutRevision = LayoutStagingUtil.getLayoutRevision(layout);
-
-	if (layoutRevision != null) {
-		branchingEnabled = true;
-
-		layoutSetBranch = LayoutSetBranchLocalServiceUtil.getLayoutSetBranch(layoutRevision.getLayoutSetBranchId());
-
-		layoutBranch = layoutRevision.getLayoutBranch();
-	}
-}
+boolean branchingEnabled = (boolean)renderRequest.getAttribute("branchingEnabled");
+LayoutRevision layoutRevision = (LayoutRevision)renderRequest.getAttribute("layoutRevision");
+Layout liveLayout = (Layout)renderRequest.getAttribute("liveLayout");
+liveGroup = (Group)renderRequest.getAttribute("liveGroup");
+String liveURL = (String)renderRequest.getAttribute("liveURL");
+stagingGroup = (Group)renderRequest.getAttribute("stagingGroup");
+String stagingURL = (String)renderRequest.getAttribute("stagingURL");
+List<LayoutSetBranch> layoutSetBranches = (List<LayoutSetBranch>)renderRequest.getAttribute("layoutSetBranches");
+String remoteURL = (String)renderRequest.getAttribute("remoteURL");
+String remoteSiteURL = (String)renderRequest.getAttribute("remoteSiteURL");
 %>
 
 <c:if test="<%= themeDisplay.isShowStagingIcon() %>">
-
-	<%
-	String liveURL = null;
-
-	if (liveGroup != null) {
-		liveLayout = LayoutLocalServiceUtil.fetchLayoutByUuidAndGroupId(layout.getUuid(), liveGroup.getGroupId(), layout.isPrivateLayout());
-
-		if (liveLayout != null) {
-			liveURL = PortalUtil.getLayoutURL(liveLayout, themeDisplay);
-		}
-		else if ((layout.isPrivateLayout() && (liveGroup.getPrivateLayoutsPageCount() > 0)) || (layout.isPublicLayout() && (liveGroup.getPublicLayoutsPageCount() > 0))) {
-			liveURL = liveGroup.getDisplayURL(themeDisplay, layout.isPrivateLayout());
-		}
-	}
-
-	String stagingURL = null;
-
-	if (stagingGroup != null) {
-		Layout stagingLayout = LayoutLocalServiceUtil.fetchLayoutByUuidAndGroupId(layout.getUuid(), stagingGroup.getGroupId(), layout.isPrivateLayout());
-
-		if (stagingLayout != null) {
-			stagingURL = PortalUtil.getLayoutURL(stagingLayout, themeDisplay);
-		}
-		else {
-			stagingURL = stagingGroup.getDisplayURL(themeDisplay, layout.isPrivateLayout());
-		}
-	}
-
-	List<LayoutSetBranch> layoutSetBranches = null;
-
-	if (group.isStagingGroup() || group.isStagedRemotely()) {
-		layoutSetBranches = LayoutSetBranchLocalServiceUtil.getLayoutSetBranches(stagingGroup.getGroupId(), layout.isPrivateLayout());
-	}
-
-	UnicodeProperties typeSettingsProperties = group.getTypeSettingsProperties();
-
-	String remoteAddress = typeSettingsProperties.getProperty("remoteAddress");
-	int remotePort = GetterUtil.getInteger(typeSettingsProperties.getProperty("remotePort"));
-	String remotePathContext = typeSettingsProperties.getProperty("remotePathContext");
-	boolean secureConnection = GetterUtil.getBoolean(typeSettingsProperties.getProperty("secureConnection"));
-	long remoteGroupId = GetterUtil.getLong(typeSettingsProperties.getProperty("remoteGroupId"));
-
-	String remoteURL = StagingUtil.buildRemoteURL(remoteAddress, remotePort, remotePathContext, secureConnection, remoteGroupId, layout.isPrivateLayout());
-	%>
-
 	<c:if test="<%= liveGroup != null %>">
 		<ul class="control-menu-nav">
 			<li class="control-menu-nav-item dropdown staging-options-toggle visible-xs">
@@ -115,7 +59,7 @@ if (layout != null) {
 
 					<c:if test="<%= !group.isStagingGroup() && !group.isStagedRemotely() && (stagingGroup != null) %>">
 						<li>
-							<a href="<%= stagingURL %>">
+							<a href="<%= HtmlUtil.escape(stagingURL) %>">
 								<liferay-ui:message key="go-to-staging" />
 							</a>
 						</li>
@@ -125,14 +69,14 @@ if (layout != null) {
 						<c:choose>
 							<c:when test="<%= group.isStagedRemotely() %>">
 								<li>
-									<a href="<%= remoteURL %>">
+									<a href="<%= HtmlUtil.escape(remoteURL) %>">
 										<liferay-ui:message key="go-to-remote-live" />
 									</a>
 								</li>
 							</c:when>
 							<c:when test="<%= group.isStagingGroup() && Validator.isNotNull(liveURL) %>">
 								<li>
-									<a href="<%= liveURL %>">
+									<a href="<%= HtmlUtil.escape(liveURL) %>">
 										<liferay-ui:message key="go-to-live" />
 									</a>
 								</li>
@@ -170,52 +114,26 @@ if (layout != null) {
 			<c:choose>
 				<c:when test="<%= group.isStagedRemotely() %>">
 					<li class="control-menu-link control-menu-nav-item hidden-xs live-link">
+						<c:choose>
+							<c:when test="<%= !remoteSiteURL.isEmpty() %>">
+								<a class="control-menu-icon" href="<%= HtmlUtil.escape(remoteSiteURL) %>" value="go-to-remote-live">
+									<aui:icon image="home" label="go-to-remote-live" markupView="lexicon" />
+								</a>
+							</c:when>
+							<c:otherwise>
+								<a class="control-menu-icon" value="go-to-remote-live">
+									<aui:icon image="home" label="go-to-remote-live" markupView="lexicon" />
+								</a>
 
-						<%
-						String remoteSiteURL = StringPool.BLANK;
-
-						try {
-							remoteSiteURL = StagingUtil.getRemoteSiteURL(group, layout.isPrivateLayout());
-						%>
-
-							<a class="control-menu-icon" href="<%= remoteSiteURL %>" value="go-to-remote-live">
-								<aui:icon image="home" label="go-to-remote-live" markupView="lexicon" />
-							</a>
-
-						<%
-						}
-						catch (AuthException pe) {
-							_log.error("Unauthenticated user " + user.getScreenName());
-						%>
-
-							<a class="control-menu-icon" value="go-to-remote-live">
-								<aui:icon image="home" label="go-to-remote-live" markupView="lexicon" />
-							</a>
-
-							<liferay-ui:icon icon="exclamation-full" markupView="lexicon" message="an-unexpected-error-occurred" toolTip="<%= true %>" />
-
-						<%
-						}
-						catch (SystemException se) {
-							_log.error(se, se);
-						%>
-
-							<a class="control-menu-icon" value="go-to-remote-live">
-								<aui:icon image="home" label="go-to-remote-live" markupView="lexicon" />
-							</a>
-
-							<liferay-ui:icon icon="exclamation-full" markupView="lexicon" message="an-unexpected-error-occurred" toolTip="<%= true %>" />
-
-						<%
-						}
-						%>
-
+								<liferay-ui:icon icon="exclamation-full" markupView="lexicon" message="an-unexpected-error-occurred" toolTip="<%= true %>" />
+							</c:otherwise>
+						</c:choose>
 					</li>
 				</c:when>
 				<c:when test="<%= group.isStagingGroup() %>">
 					<c:if test="<%= Validator.isNotNull(liveURL) %>">
 						<li class="control-menu-link control-menu-nav-item hidden-xs live-link">
-							<a class="control-menu-icon" href="<%= liveURL %>" value="live">
+							<a class="control-menu-icon" href="<%= HtmlUtil.escape(liveURL) %>" value="live">
 								<aui:icon image="live" label="live" markupView="lexicon" />
 							</a>
 						</li>
@@ -247,16 +165,6 @@ if (layout != null) {
 									<c:if test="<%= stagingGroup != null %>">
 										<c:choose>
 											<c:when test="<%= branchingEnabled %>">
-
-												<%
-												request.setAttribute(WebKeys.PRIVATE_LAYOUT, privateLayout);
-												request.setAttribute("view.jsp-layoutBranch", layoutBranch);
-												request.setAttribute("view.jsp-layoutRevision", layoutRevision);
-												request.setAttribute("view.jsp-layoutSetBranch", layoutSetBranch);
-												request.setAttribute("view.jsp-layoutSetBranches", layoutSetBranches);
-												request.setAttribute("view.jsp-stagingURL", stagingURL);
-												%>
-
 												<c:if test="<%= !layoutRevision.isIncomplete() %>">
 													<liferay-util:include page="/view_layout_set_branch_details.jsp" servletContext="<%= application %>" />
 
@@ -270,11 +178,6 @@ if (layout != null) {
 												</li>
 											</c:when>
 											<c:otherwise>
-
-												<%
-												request.setAttribute(StagingProcessesWebKeys.BRANCHING_ENABLED, String.valueOf(false));
-												%>
-
 												<liferay-staging:menu cssClass="publish-link" onlyActions="<%= true %>" />
 
 												<li>
@@ -285,12 +188,6 @@ if (layout != null) {
 															</span>
 														</c:when>
 														<c:otherwise>
-
-															<%
-															request.setAttribute("privateLayout", privateLayout);
-															request.setAttribute("view.jsp-typeSettingsProperties", liveLayout.getTypeSettingsProperties());
-															%>
-
 															<liferay-util:include page="/last_publication_date_message.jsp" servletContext="<%= application %>" />
 														</c:otherwise>
 													</c:choose>
@@ -304,10 +201,6 @@ if (layout != null) {
 										<div class="alert alert-warning hide warning-content" id="<portlet:namespace />warningMessage">
 											<liferay-ui:message key="an-inital-staging-publication-is-in-progress" />
 										</div>
-
-										<%
-										request.setAttribute("view.jsp-typeSettingsProperties", liveLayout.getTypeSettingsProperties());
-										%>
 
 										<liferay-util:include page="/last_publication_date_message.jsp" servletContext="<%= application %>" />
 									</li>
@@ -382,7 +275,3 @@ if (layout != null) {
 		checkBackgroundTasks();
 	</aui:script>
 </c:if>
-
-<%!
-private static Log _log = LogFactoryUtil.getLog("com_liferay_staging_bar_web.view_jsp");
-%>
