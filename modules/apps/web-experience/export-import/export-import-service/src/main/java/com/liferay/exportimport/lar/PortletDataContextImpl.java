@@ -1320,6 +1320,11 @@ public class PortletDataContextImpl implements PortletDataContext {
 	}
 
 	@Override
+	public String getSourceTreePath() {
+		return _sourceTreePath;
+	}
+
+	@Override
 	public long getSourceUserPersonalSiteGroupId() {
 		return _sourceUserPersonalSiteGroupId;
 	}
@@ -1327,6 +1332,11 @@ public class PortletDataContextImpl implements PortletDataContext {
 	@Override
 	public Date getStartDate() {
 		return _startDate;
+	}
+
+	@Override
+	public String getTreePath() {
+		return _treePath;
 	}
 
 	@Override
@@ -2006,6 +2016,11 @@ public class PortletDataContextImpl implements PortletDataContext {
 	}
 
 	@Override
+	public void setSourceTreePath(String sourceTreePath) {
+		_sourceTreePath = sourceTreePath;
+	}
+
+	@Override
 	public void setSourceUserPersonalSiteGroupId(
 		long sourceUserPersonalSiteGroupId) {
 
@@ -2015,6 +2030,11 @@ public class PortletDataContextImpl implements PortletDataContext {
 	@Override
 	public void setStartDate(Date startDate) {
 		_startDate = startDate;
+	}
+
+	@Override
+	public void setTreePath(String treePath) {
+		_treePath = treePath;
 	}
 
 	@Override
@@ -2824,8 +2844,10 @@ public class PortletDataContextImpl implements PortletDataContext {
 	private long _sourceCompanyGroupId;
 	private long _sourceCompanyId;
 	private long _sourceGroupId;
+	private String _sourceTreePath;
 	private long _sourceUserPersonalSiteGroupId;
 	private Date _startDate;
+	private String _treePath;
 	private String _type;
 	private transient UserIdStrategy _userIdStrategy;
 	private long _userPersonalSiteGroupId;

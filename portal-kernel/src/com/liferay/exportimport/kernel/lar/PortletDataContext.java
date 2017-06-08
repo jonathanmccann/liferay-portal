@@ -481,9 +481,13 @@ public interface PortletDataContext extends Serializable {
 
 	public long getSourceGroupId();
 
+	public String getSourceTreePath();
+
 	public long getSourceUserPersonalSiteGroupId();
 
 	public Date getStartDate();
+
+	public String getTreePath();
 
 	public String getType();
 
@@ -681,10 +685,14 @@ public interface PortletDataContext extends Serializable {
 
 	public void setSourceGroupId(long sourceGroupId);
 
+	public void setSourceTreePath(String sourceTreePath);
+
 	public void setSourceUserPersonalSiteGroupId(
 		long sourceUserPersonalSiteGroupId);
 
 	public void setStartDate(Date startDate);
+
+	public void setTreePath(String treePath);
 
 	public void setType(String type);
 

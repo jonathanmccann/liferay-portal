@@ -251,6 +251,8 @@ public class LayoutExportController implements ExportController {
 			"user-personal-site-group-id",
 			String.valueOf(portletDataContext.getUserPersonalSiteGroupId()));
 		headerElement.addAttribute(
+			"tree-path", portletDataContext.getTreePath());
+		headerElement.addAttribute(
 			"private-layout",
 			String.valueOf(portletDataContext.isPrivateLayout()));
 
