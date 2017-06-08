@@ -366,6 +366,12 @@ public class DefaultFriendlyURLMapper extends BaseFriendlyURLMapper {
 		Map<String, String> publicRenderParameters =
 			FriendlyURLMapperThreadLocal.getPRPIdentifiers();
 
+		if (publicRenderParameters.keySet().isEmpty() &&
+			!routeParameterKeys.isEmpty()) {
+
+			return false;
+		}
+
 		return routeParameterKeys.containsAll(publicRenderParameters.keySet());
 	}
 
