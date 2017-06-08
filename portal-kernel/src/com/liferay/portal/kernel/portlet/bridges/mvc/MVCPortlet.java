@@ -14,11 +14,13 @@
 
 package com.liferay.portal.kernel.portlet.bridges.mvc;
 
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortlet;
 import com.liferay.portal.kernel.portlet.LiferayPortletConfig;
 import com.liferay.portal.kernel.servlet.SessionMessages;
+import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -294,10 +296,41 @@ public class MVCPortlet extends LiferayPortlet {
 				return;
 			}
 
+			HttpServletRequest baseReq = PortalUtil.getHttpServletRequest(
+				renderRequest);
+
+			HttpServletRequest origReq = PortalUtil.getOriginalServletRequest(
+				baseReq);
+
 			if (Validator.isNotNull(mvcPath)) {
 				renderRequest.setAttribute(
 					getMVCPathAttributeName(renderResponse.getNamespace()),
 					mvcPath);
+				origReq.setAttribute(
+					"mvcRenderCommandNameIsErrored", Boolean.FALSE);
+			}
+			else if (!mvcRenderCommandName.equals("/")) {
+				if (_log.isWarnEnabled()) {
+					origReq.setAttribute(
+						"mvcRenderCommandInvalidName", mvcRenderCommandName);
+					origReq.setAttribute(
+						"mvcRenderCommandNameIsErrored", Boolean.TRUE);
+					ThemeDisplay themeDisplay =
+						(ThemeDisplay)renderRequest.getAttribute(
+							WebKeys.THEME_DISPLAY);
+
+					String portletId = themeDisplay.getPortletDisplay().getId();
+
+					String warningMessage = LanguageUtil.format(
+						baseReq, _NO_SUCH_MVC_RNDR_CMD_X,
+						HtmlUtil.escape(mvcRenderCommandName), false);
+					StringBundler sb = new StringBundler("Portlet ");
+
+					sb.append(portletId);
+					sb.append(", ");
+					sb.append(warningMessage);
+					_log.warn(sb.toString());
+				}
 			}
 			else if (!mvcRenderCommandName.equals("/")) {
 				if (_log.isWarnEnabled()) {
@@ -665,6 +698,9 @@ public class MVCPortlet extends LiferayPortlet {
 
 		return null;
 	}
+
+	private static final String _NO_SUCH_MVC_RNDR_CMD_X =
+		"no-such-mvc-render-command-x";
 
 	private static final Log _log = LogFactoryUtil.getLog(MVCPortlet.class);
 
