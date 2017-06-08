@@ -16,6 +16,7 @@ package com.liferay.portal.service.impl;
 
 import com.liferay.exportimport.kernel.staging.MergeLayoutPrototypesThreadLocal;
 import com.liferay.exportimport.kernel.staging.StagingUtil;
+import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.NoSuchLayoutRevisionException;
 import com.liferay.portal.kernel.exception.NoSuchPortletPreferencesException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -264,12 +265,22 @@ public class LayoutRevisionLocalServiceImpl
 			new LayoutRevisionCreateDateComparator(false));
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	@Override
 	public LayoutRevision fetchLayoutRevision(
 		long layoutSetBranchId, boolean head, long plid) {
 
-		return layoutRevisionPersistence.fetchByL_H_P(
-			layoutSetBranchId, head, plid);
+		List<LayoutRevision> layoutRevisions = getLayoutRevisions(
+			layoutSetBranchId, plid, head);
+
+		if (layoutRevisions.isEmpty()) {
+			return null;
+		}
+
+		return layoutRevisions.get(0);
 	}
 
 	@Override
@@ -306,13 +317,23 @@ public class LayoutRevisionLocalServiceImpl
 			layoutSetBranchId, parentLayoutRevision, plid);
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	@Override
 	public LayoutRevision getLayoutRevision(
 			long layoutSetBranchId, long plid, boolean head)
 		throws PortalException {
 
-		return layoutRevisionPersistence.findByL_H_P(
-			layoutSetBranchId, head, plid);
+		List<LayoutRevision> layoutRevisions = getLayoutRevisions(
+			layoutSetBranchId, plid, head);
+
+		if (layoutRevisions.isEmpty()) {
+			throw new NoSuchLayoutException();
+		}
+
+		return layoutRevisions.get(0);
 	}
 
 	@Override
@@ -366,6 +387,14 @@ public class LayoutRevisionLocalServiceImpl
 		long layoutSetBranchId, long plid) {
 
 		return layoutRevisionPersistence.findByL_P(layoutSetBranchId, plid);
+	}
+
+	@Override
+	public List<LayoutRevision> getLayoutRevisions(
+		long layoutSetBranchId, long plid, boolean head) {
+
+		return layoutRevisionPersistence.findByL_H_P_All(
+			layoutSetBranchId, head, plid);
 	}
 
 	@Override
