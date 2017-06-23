@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 
+import java.util.Map;
 import java.util.Objects;
 
 import javax.portlet.PortletURL;
@@ -73,13 +74,20 @@ public class AssetPublisherHelper {
 
 		PortletURL redirectURL = liferayPortletResponse.createRenderURL();
 
+		Map<String, String[]> parameterMap =
+			liferayPortletRequest.getParameterMap();
+
+		if (parameterMap.containsKey("delta")) {
+			int delta = ParamUtil.getInteger(liferayPortletRequest, "delta");
+
+			redirectURL.setParameter("delta", String.valueOf(delta));
+		}
+
 		int cur = ParamUtil.getInteger(liferayPortletRequest, "cur");
-		int delta = ParamUtil.getInteger(liferayPortletRequest, "delta");
 		boolean resetCur = ParamUtil.getBoolean(
 			liferayPortletRequest, "resetCur");
 
 		redirectURL.setParameter("cur", String.valueOf(cur));
-		redirectURL.setParameter("delta", String.valueOf(delta));
 		redirectURL.setParameter("resetCur", String.valueOf(resetCur));
 		redirectURL.setParameter(
 			"assetEntryId", String.valueOf(assetEntry.getEntryId()));
