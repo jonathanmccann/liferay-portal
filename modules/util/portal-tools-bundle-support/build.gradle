@@ -62,7 +62,3 @@ test {
 	systemProperty "repository.url", System.properties["repository.url"]
 	systemProperty "bundle.support.version", jar.version
 }
-
-updateFileVersions {
-	match(/\t\t\t\t<version>(\d.+)<\/version>/, "samples/pom.xml")
-}
