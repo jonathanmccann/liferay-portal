@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.dao.db.DBType;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQueryFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.EntityCacheUtil;
 import com.liferay.portal.kernel.dao.orm.FinderCacheUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
@@ -235,65 +234,91 @@ public class VerifyPermission extends VerifyProcess {
 
 	protected void fixOrganizationRolePermissions() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			DynamicQuery dynamicQuery = DynamicQueryFactoryUtil.forClass(
-				ResourcePermission.class);
+			ActionableDynamicQuery actionableDynamicQuery =
+				ResourcePermissionLocalServiceUtil.getActionableDynamicQuery();
 
-			dynamicQuery.add(
-				RestrictionsFactoryUtil.eq(
-					"name", Organization.class.getName()));
+			actionableDynamicQuery.setAddCriteriaMethod(
+				new ActionableDynamicQuery.AddCriteriaMethod() {
 
-			List<ResourcePermission> resourcePermissions =
-				ResourcePermissionLocalServiceUtil.dynamicQuery(dynamicQuery);
-
-			for (ResourcePermission resourcePermission : resourcePermissions) {
-				ResourcePermission groupResourcePermission =
-					ResourcePermissionLocalServiceUtil.fetchResourcePermission(
-						resourcePermission.getCompanyId(),
-						Group.class.getName(), resourcePermission.getScope(),
-						resourcePermission.getPrimKey(),
-						resourcePermission.getRoleId());
-
-				if (groupResourcePermission == null) {
-					ResourcePermissionLocalServiceUtil.setResourcePermissions(
-						resourcePermission.getCompanyId(),
-						Group.class.getName(), resourcePermission.getScope(),
-						resourcePermission.getPrimKey(),
-						resourcePermission.getRoleId(),
-						ResourcePermissionLocalServiceImpl.EMPTY_ACTION_IDS);
-
-					groupResourcePermission =
-						ResourcePermissionLocalServiceUtil.
-							getResourcePermission(
-								resourcePermission.getCompanyId(),
-								Group.class.getName(),
-								resourcePermission.getScope(),
-								resourcePermission.getPrimKey(),
-								resourcePermission.getRoleId());
-				}
-
-				for (String actionId : _deprecatedOrganizationActionIds) {
-					if (resourcePermission.hasActionId(actionId)) {
-						resourcePermission.removeResourceAction(actionId);
-
-						groupResourcePermission.addResourceAction(actionId);
+					@Override
+					public void addCriteria(DynamicQuery dynamicQuery) {
+						dynamicQuery.add(
+							RestrictionsFactoryUtil.eq(
+								"name", Organization.class.getName()));
 					}
-				}
 
-				try {
-					resourcePermission.resetOriginalValues();
+				});
+			actionableDynamicQuery.setPerformActionMethod(
+				new ActionableDynamicQuery.
+					PerformActionMethod<ResourcePermission>() {
 
-					ResourcePermissionLocalServiceUtil.updateResourcePermission(
-						resourcePermission);
+					@Override
+					public void performAction(
+							ResourcePermission resourcePermission)
+						throws PortalException {
 
-					groupResourcePermission.resetOriginalValues();
+						ResourcePermission groupResourcePermission =
+							ResourcePermissionLocalServiceUtil.
+								fetchResourcePermission(
+									resourcePermission.getCompanyId(),
+									Group.class.getName(),
+									resourcePermission.getScope(),
+									resourcePermission.getPrimKey(),
+									resourcePermission.getRoleId());
 
-					ResourcePermissionLocalServiceUtil.updateResourcePermission(
-						groupResourcePermission);
-				}
-				catch (Exception e) {
-					_log.error(e, e);
-				}
-			}
+						if (groupResourcePermission == null) {
+							ResourcePermissionLocalServiceUtil.
+								setResourcePermissions(
+									resourcePermission.getCompanyId(),
+									Group.class.getName(),
+									resourcePermission.getScope(),
+									resourcePermission.getPrimKey(),
+									resourcePermission.getRoleId(),
+									ResourcePermissionLocalServiceImpl.
+										EMPTY_ACTION_IDS);
+
+							groupResourcePermission =
+								ResourcePermissionLocalServiceUtil.
+									getResourcePermission(
+										resourcePermission.getCompanyId(),
+										Group.class.getName(),
+										resourcePermission.getScope(),
+										resourcePermission.getPrimKey(),
+										resourcePermission.getRoleId());
+						}
+
+						for (String actionId :
+								_deprecatedOrganizationActionIds) {
+
+							if (resourcePermission.hasActionId(actionId)) {
+								resourcePermission.removeResourceAction(
+									actionId);
+
+								groupResourcePermission.addResourceAction(
+									actionId);
+							}
+						}
+
+						try {
+							resourcePermission.resetOriginalValues();
+
+							ResourcePermissionLocalServiceUtil.
+								updateResourcePermission(resourcePermission);
+
+							groupResourcePermission.resetOriginalValues();
+
+							ResourcePermissionLocalServiceUtil.
+								updateResourcePermission(
+									groupResourcePermission);
+						}
+						catch (Exception e) {
+							_log.error(e, e);
+						}
+					}
+
+				});
+
+			actionableDynamicQuery.performActions();
 		}
 	}
 
