@@ -290,7 +290,7 @@ public class AssetEntriesCheckerUtil {
 					user.getEmailAddress(), user.getFullName());
 			}
 
-			subscriptionSender.setBulk(true);
+			subscriptionSender.setBulk(false);
 
 			subscriptionSender.flushNotificationsAsync();
 		}
