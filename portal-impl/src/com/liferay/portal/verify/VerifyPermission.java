@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.model.PortletConstants;
+import com.liferay.portal.kernel.model.ResourceAction;
 import com.liferay.portal.kernel.model.ResourceConstants;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
@@ -62,7 +63,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Tobias Kaefer
@@ -527,6 +530,9 @@ public class VerifyPermission extends VerifyProcess {
 
 	private static final List<String> _deprecatedOrganizationActionIds =
 		new ArrayList<>();
+	private static final long _deprecatedOrganizationBitwiseValues;
+	private static final Map<Long, Long> _organizationToGroupBitwiseValues =
+		new HashMap<>();
 
 	static {
 		_deprecatedOrganizationActionIds.add(ActionKeys.MANAGE_ARCHIVED_SETUPS);
@@ -536,6 +542,32 @@ public class VerifyPermission extends VerifyProcess {
 		_deprecatedOrganizationActionIds.add(ActionKeys.PUBLISH_STAGING);
 		_deprecatedOrganizationActionIds.add("APPROVE_PROPOSAL");
 		_deprecatedOrganizationActionIds.add("ASSIGN_REVIEWER");
+
+		long deprecatedOrganizationBitwiseValues = 0;
+
+		for (String actionId : _deprecatedOrganizationActionIds) {
+			ResourceAction organizationResourceAction =
+				ResourceActionLocalServiceUtil.fetchResourceAction(
+					Organization.class.getName(), actionId);
+
+			if (organizationResourceAction != null) {
+				deprecatedOrganizationBitwiseValues |=
+					organizationResourceAction.getBitwiseValue();
+
+				ResourceAction groupResourceAction =
+					ResourceActionLocalServiceUtil.fetchResourceAction(
+						Group.class.getName(), actionId);
+
+				if (groupResourceAction != null) {
+					_organizationToGroupBitwiseValues.put(
+						organizationResourceAction.getBitwiseValue(),
+						groupResourceAction.getBitwiseValue());
+				}
+			}
+		}
+
+		_deprecatedOrganizationBitwiseValues =
+			deprecatedOrganizationBitwiseValues;
 	}
 
 }
