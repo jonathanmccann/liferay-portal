@@ -14,6 +14,7 @@
 
 package com.liferay.portal.verify;
 
+import com.liferay.counter.kernel.service.CounterLocalServiceUtil;
 import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
@@ -54,7 +55,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.service.impl.ResourcePermissionLocalServiceImpl;
 import com.liferay.portal.util.PortalInstances;
 
 import java.sql.PreparedStatement;
@@ -300,24 +300,31 @@ public class VerifyPermission extends VerifyProcess {
 									resourcePermission.getRoleId());
 
 						if (groupResourcePermission == null) {
-							ResourcePermissionLocalServiceUtil.
-								setResourcePermissions(
-									resourcePermission.getCompanyId(),
-									Group.class.getName(),
-									resourcePermission.getScope(),
-									resourcePermission.getPrimKey(),
-									resourcePermission.getRoleId(),
-									ResourcePermissionLocalServiceImpl.
-										EMPTY_ACTION_IDS);
+							long resourcePermissionId =
+								CounterLocalServiceUtil.increment(
+									ResourcePermission.class.getName());
 
 							groupResourcePermission =
 								ResourcePermissionLocalServiceUtil.
-									getResourcePermission(
-										resourcePermission.getCompanyId(),
-										Group.class.getName(),
-										resourcePermission.getScope(),
-										resourcePermission.getPrimKey(),
-										resourcePermission.getRoleId());
+									createResourcePermission(
+										resourcePermissionId);
+
+							groupResourcePermission.setCompanyId(
+								resourcePermission.getCompanyId());
+							groupResourcePermission.setName(
+								Group.class.getName());
+							groupResourcePermission.setScope(
+								resourcePermission.getScope());
+							groupResourcePermission.setPrimKey(
+								resourcePermission.getPrimKey());
+							groupResourcePermission.setPrimKeyId(
+								GetterUtil.getLong(
+									resourcePermission.getPrimKey()));
+							groupResourcePermission.setRoleId(
+								resourcePermission.getRoleId());
+							groupResourcePermission.setOwnerId(0);
+							groupResourcePermission.setViewActionId(
+								(newGroupActionIds % 2) == 1);
 						}
 
 						groupResourcePermission.setActionIds(
