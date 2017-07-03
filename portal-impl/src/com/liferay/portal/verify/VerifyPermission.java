@@ -260,6 +260,36 @@ public class VerifyPermission extends VerifyProcess {
 							ResourcePermission resourcePermission)
 						throws PortalException {
 
+						long oldActionIds = resourcePermission.getActionIds();
+
+						long newActionIds =
+							oldActionIds &
+							~_deprecatedOrganizationBitwiseValues;
+
+						if (newActionIds == oldActionIds) {
+							return;
+						}
+
+						resourcePermission.setActionIds(newActionIds);
+
+						ResourcePermissionLocalServiceUtil.
+							updateResourcePermission(resourcePermission);
+
+						long newGroupActionIds = 0;
+
+						for (Map.Entry<Long, Long> entry :
+								_organizationToGroupBitwiseValues.entrySet()) {
+
+							long organizationBitwiseValue = entry.getKey();
+							long groupBitwiseValue = entry.getValue();
+
+							if ((oldActionIds & organizationBitwiseValue) !=
+									0) {
+
+								newGroupActionIds |= groupBitwiseValue;
+							}
+						}
+
 						ResourcePermission groupResourcePermission =
 							ResourcePermissionLocalServiceUtil.
 								fetchResourcePermission(
@@ -290,42 +320,12 @@ public class VerifyPermission extends VerifyProcess {
 										resourcePermission.getRoleId());
 						}
 
-						long oldActionIds = resourcePermission.getActionIds();
+						groupResourcePermission.setActionIds(
+							groupResourcePermission.getActionIds() |
+							newGroupActionIds);
 
-						long newActionIds =
-							oldActionIds &
-								~_deprecatedOrganizationBitwiseValues;
-
-						if (newActionIds != oldActionIds) {
-							resourcePermission.setActionIds(newActionIds);
-
-							ResourcePermissionLocalServiceUtil.
-								updateResourcePermission(resourcePermission);
-
-							long newGroupActionIds =
-								groupResourcePermission.getActionIds();
-
-							for (Map.Entry<Long, Long> entry :
-									_organizationToGroupBitwiseValues.
-										entrySet()) {
-
-								long organizationBitwiseValue = entry.getKey();
-								long groupBitwiseValue = entry.getValue();
-
-								if ((oldActionIds & organizationBitwiseValue) !=
-										0) {
-
-									newGroupActionIds |= groupBitwiseValue;
-								}
-							}
-
-							groupResourcePermission.setActionIds(
-								newGroupActionIds);
-
-							ResourcePermissionLocalServiceUtil.
-								updateResourcePermission(
-									groupResourcePermission);
-						}
+						ResourcePermissionLocalServiceUtil.
+							updateResourcePermission(groupResourcePermission);
 					}
 
 				});
