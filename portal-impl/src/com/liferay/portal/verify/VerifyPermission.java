@@ -544,24 +544,24 @@ public class VerifyPermission extends VerifyProcess {
 	private static final Log _log = LogFactoryUtil.getLog(
 		VerifyPermission.class);
 
-	private static final List<String> _deprecatedOrganizationActionIds =
-		new ArrayList<>();
 	private static final long _deprecatedOrganizationBitwiseValues;
 	private static final Map<Long, Long> _organizationToGroupBitwiseValues =
 		new HashMap<>();
 
 	static {
-		_deprecatedOrganizationActionIds.add(ActionKeys.MANAGE_ARCHIVED_SETUPS);
-		_deprecatedOrganizationActionIds.add(ActionKeys.MANAGE_LAYOUTS);
-		_deprecatedOrganizationActionIds.add(ActionKeys.MANAGE_STAGING);
-		_deprecatedOrganizationActionIds.add(ActionKeys.MANAGE_TEAMS);
-		_deprecatedOrganizationActionIds.add(ActionKeys.PUBLISH_STAGING);
-		_deprecatedOrganizationActionIds.add("APPROVE_PROPOSAL");
-		_deprecatedOrganizationActionIds.add("ASSIGN_REVIEWER");
+		List<String> deprecatedOrganizationActionIds = new ArrayList<>();
+
+		deprecatedOrganizationActionIds.add(ActionKeys.MANAGE_ARCHIVED_SETUPS);
+		deprecatedOrganizationActionIds.add(ActionKeys.MANAGE_LAYOUTS);
+		deprecatedOrganizationActionIds.add(ActionKeys.MANAGE_STAGING);
+		deprecatedOrganizationActionIds.add(ActionKeys.MANAGE_TEAMS);
+		deprecatedOrganizationActionIds.add(ActionKeys.PUBLISH_STAGING);
+		deprecatedOrganizationActionIds.add("APPROVE_PROPOSAL");
+		deprecatedOrganizationActionIds.add("ASSIGN_REVIEWER");
 
 		long deprecatedOrganizationBitwiseValues = 0;
 
-		for (String actionId : _deprecatedOrganizationActionIds) {
+		for (String actionId : deprecatedOrganizationActionIds) {
 			ResourceAction organizationResourceAction =
 				ResourceActionLocalServiceUtil.fetchResourceAction(
 					Organization.class.getName(), actionId);
