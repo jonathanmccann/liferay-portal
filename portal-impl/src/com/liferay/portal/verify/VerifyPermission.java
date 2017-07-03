@@ -290,32 +290,41 @@ public class VerifyPermission extends VerifyProcess {
 										resourcePermission.getRoleId());
 						}
 
-						for (String actionId :
-								_deprecatedOrganizationActionIds) {
+						long oldActionIds = resourcePermission.getActionIds();
 
-							if (resourcePermission.hasActionId(actionId)) {
-								resourcePermission.removeResourceAction(
-									actionId);
+						long newActionIds =
+							oldActionIds &
+								~_deprecatedOrganizationBitwiseValues;
 
-								groupResourcePermission.addResourceAction(
-									actionId);
-							}
-						}
-
-						try {
-							resourcePermission.resetOriginalValues();
+						if (newActionIds != oldActionIds) {
+							resourcePermission.setActionIds(newActionIds);
 
 							ResourcePermissionLocalServiceUtil.
 								updateResourcePermission(resourcePermission);
 
-							groupResourcePermission.resetOriginalValues();
+							long newGroupActionIds =
+								groupResourcePermission.getActionIds();
+
+							for (Map.Entry<Long, Long> entry :
+									_organizationToGroupBitwiseValues.
+										entrySet()) {
+
+								long organizationBitwiseValue = entry.getKey();
+								long groupBitwiseValue = entry.getValue();
+
+								if ((oldActionIds & organizationBitwiseValue) !=
+										0) {
+
+									newGroupActionIds |= groupBitwiseValue;
+								}
+							}
+
+							groupResourcePermission.setActionIds(
+								newGroupActionIds);
 
 							ResourcePermissionLocalServiceUtil.
 								updateResourcePermission(
 									groupResourcePermission);
-						}
-						catch (Exception e) {
-							_log.error(e, e);
 						}
 					}
 
