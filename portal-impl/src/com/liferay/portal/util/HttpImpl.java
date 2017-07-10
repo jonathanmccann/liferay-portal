@@ -1262,22 +1262,18 @@ public class HttpImpl implements Http {
 					sb.append(qName);
 					sb.append(StringPool.EQUAL);
 					sb.append(newURL);
-
-					if (i < (params.length - 1)) {
-						sb.append(StringPool.AMPERSAND);
-					}
+					sb.append(StringPool.AMPERSAND);
 				}
 			}
 			else {
 				sb.append(param);
-
-				if (i < (params.length - 1)) {
-					sb.append(StringPool.AMPERSAND);
-				}
+				sb.append(StringPool.AMPERSAND);
 			}
 		}
 
-		return sb.toString();
+		String shortenedUrl = sb.toString();
+
+		return shortenedUrl.substring(0, shortenedUrl.length() - 1);
 	}
 
 	@Override
