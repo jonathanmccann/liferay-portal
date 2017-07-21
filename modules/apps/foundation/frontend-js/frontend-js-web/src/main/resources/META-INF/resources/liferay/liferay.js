@@ -18,6 +18,12 @@ Liferay = window.Liferay || {};
 		}
 	);
 
+	jQuery.ajaxPrefilter( function( s ) {
+		if ( s.crossDomain ) {
+			s.contents.script = false;
+		}
+	} );
+
 	$.ajaxPrefilter(
 		function(options) {
 			if (options.url) {
