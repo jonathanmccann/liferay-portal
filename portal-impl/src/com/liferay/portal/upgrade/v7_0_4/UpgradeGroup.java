@@ -121,13 +121,15 @@ public class UpgradeGroup extends UpgradeProcess {
 
 	protected void updateParentGroup() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			StringBundler sb = new StringBundler(5);
+			StringBundler sb = new StringBundler(7);
 
 			sb.append("select stagingGroup_.groupId, ");
 			sb.append("stagingGroup_.liveGroupId from Group_ stagingGroup_ ");
 			sb.append("inner join Group_ liveGroup_ on ");
 			sb.append("(liveGroup_.groupId = stagingGroup_.liveGroupId) ");
-			sb.append("where (stagingGroup_.remoteStagingGroupCount = 0)");
+			sb.append("where (stagingGroup_.remoteStagingGroupCount = 0) and ");
+			sb.append("(liveGroup_.parentGroupId != ");
+			sb.append("stagingGroup_.parentGroupId)");
 
 			try (PreparedStatement ps1 = connection.prepareStatement(
 					sb.toString());
