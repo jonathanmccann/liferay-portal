@@ -133,27 +133,25 @@ public class UpgradeGroup extends UpgradeProcess {
 
 			try (PreparedStatement ps1 = connection.prepareStatement(
 					sb.toString());
-
 				PreparedStatement ps2 =
 					AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 						connection,
 						"update Group_ set parentGroupId = ? where groupId = " +
-							"?")) {
+							"?");
+				ResultSet rs1 = ps1.executeQuery()) {
 
-				try (ResultSet rs1 = ps1.executeQuery()) {
-					while (rs1.next()) {
-						long groupId = rs1.getLong(1);
-						long parentGroupId = rs1.getLong(2);
+				while (rs1.next()) {
+					long groupId = rs1.getLong(1);
+					long parentGroupId = rs1.getLong(2);
 
-						ps2.setLong(1, parentGroupId);
+					ps2.setLong(1, parentGroupId);
 
-						ps2.setLong(2, groupId);
+					ps2.setLong(2, groupId);
 
-						ps2.addBatch();
-					}
-
-					ps2.executeBatch();
+					ps2.addBatch();
 				}
+
+				ps2.executeBatch();
 			}
 		}
 	}
