@@ -124,7 +124,7 @@ public class UpgradeGroup extends UpgradeProcess {
 			StringBundler sb = new StringBundler(7);
 
 			sb.append("select stagingGroup_.groupId, ");
-			sb.append("stagingGroup_.liveGroupId from Group_ stagingGroup_ ");
+			sb.append("liveGroup_.parentGroupId from Group_ stagingGroup_ ");
 			sb.append("inner join Group_ liveGroup_ on ");
 			sb.append("(liveGroup_.groupId = stagingGroup_.liveGroupId) ");
 			sb.append("where (stagingGroup_.remoteStagingGroupCount = 0) and ");
@@ -134,10 +134,7 @@ public class UpgradeGroup extends UpgradeProcess {
 			try (PreparedStatement ps1 = connection.prepareStatement(
 					sb.toString());
 
-				PreparedStatement ps2 = connection.prepareStatement(
-					"select parentGroupId from Group_ where groupId = ?");
-
-				PreparedStatement ps3 =
+				PreparedStatement ps2 =
 					AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 						connection,
 						"update Group_ set parentGroupId = ? where groupId = " +
@@ -146,24 +143,16 @@ public class UpgradeGroup extends UpgradeProcess {
 				try (ResultSet rs1 = ps1.executeQuery()) {
 					while (rs1.next()) {
 						long groupId = rs1.getLong(1);
-						long liveGroupId = rs1.getLong(2);
+						long parentGroupId = rs1.getLong(2);
 
-						ps2.setLong(1, liveGroupId);
+						ps2.setLong(1, parentGroupId);
 
-						try (ResultSet rs2 = ps2.executeQuery()) {
-							while (rs2.next()) {
-								long parentGroupId = rs2.getLong(1);
+						ps2.setLong(2, groupId);
 
-								ps3.setLong(1, parentGroupId);
-
-								ps3.setLong(2, groupId);
-
-								ps3.addBatch();
-							}
-
-							ps3.executeBatch();
-						}
+						ps2.addBatch();
 					}
+
+					ps2.executeBatch();
 				}
 			}
 		}
