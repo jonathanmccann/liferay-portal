@@ -47,6 +47,10 @@ public class UpgradeGroup extends UpgradeProcess {
 		updateParentGroup();
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	protected void rebuildTree(
 			long companyId, PreparedStatement preparedStatement)
 		throws PortalException {
@@ -188,6 +192,10 @@ public class UpgradeGroup extends UpgradeProcess {
 		}
 	}
 
+	/**
+	 * @deprecated As of 7.0.0, with no direct replacement
+	 */
+	@Deprecated
 	protected void updateTreePath() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
 			long[] companyIds = PortalInstances.getCompanyIdsBySQL();
