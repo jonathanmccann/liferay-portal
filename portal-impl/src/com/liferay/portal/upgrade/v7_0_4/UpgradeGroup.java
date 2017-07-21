@@ -45,8 +45,6 @@ public class UpgradeGroup extends UpgradeProcess {
 	@Override
 	protected void doUpgrade() throws Exception {
 		updateParentGroup();
-
-		updateTreePath();
 	}
 
 	protected void rebuildTree(
@@ -133,11 +131,13 @@ public class UpgradeGroup extends UpgradeProcess {
 
 			try (PreparedStatement ps1 = connection.prepareStatement(
 					sb.toString());
-				PreparedStatement ps2 =
+				PreparedStatement ps2 = connection.prepareStatement(
+					"select treePath from Group_ where groupId = ?");
+				PreparedStatement ps3 =
 					AutoBatchPreparedStatementUtil.concurrentAutoBatch(
 						connection,
-						"update Group_ set parentGroupId = ? where groupId = " +
-							"?");
+						"update Group_ set parentGroupId = ?, treePath = ?" +
+							"where groupId = ?");
 				ResultSet rs1 = ps1.executeQuery()) {
 
 				while (rs1.next()) {
@@ -146,12 +146,44 @@ public class UpgradeGroup extends UpgradeProcess {
 
 					ps2.setLong(1, parentGroupId);
 
-					ps2.setLong(2, groupId);
+					try (ResultSet rs2 = ps2.executeQuery()) {
+						String treePath = null;
 
-					ps2.addBatch();
+						if (rs2.next()) {
+							treePath = rs2.getString("treePath");
+
+							treePath = treePath.concat(String.valueOf(groupId));
+
+							treePath = treePath.concat(StringPool.SLASH);
+						}
+						else {
+							if (_log.isWarnEnabled()) {
+								_log.warn(
+									"Group " + parentGroupId +
+										" could not be found");
+							}
+
+							StringBundler treePathSB = new StringBundler(5);
+
+							treePathSB.append(StringPool.SLASH);
+							treePathSB.append(parentGroupId);
+							treePathSB.append(StringPool.SLASH);
+							treePathSB.append(groupId);
+							treePathSB.append(StringPool.SLASH);
+
+							treePath = treePathSB.toString();
+						}
+
+						ps3.setLong(1, parentGroupId);
+						ps3.setString(2, treePath);
+
+						ps3.setLong(3, groupId);
+
+						ps3.addBatch();
+					}
 				}
 
-				ps2.executeBatch();
+				ps3.executeBatch();
 			}
 		}
 	}
