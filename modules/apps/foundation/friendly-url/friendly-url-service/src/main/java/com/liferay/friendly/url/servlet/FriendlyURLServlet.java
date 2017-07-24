@@ -43,6 +43,7 @@ import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -367,10 +368,39 @@ public class FriendlyURLServlet extends HttpServlet {
 				requestDispatcher.forward(request, response);
 			}
 		}
+		else if (redirect.isPermanent()) {
+			response.setHeader("Location", redirect.getPath());
+			response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+		}
 		else {
-			if (redirect.isPermanent()) {
-				response.setHeader("Location", redirect.getPath());
-				response.setStatus(HttpServletResponse.SC_MOVED_PERMANENTLY);
+			// https://stackoverflow.com/questions/16386148/why-browser-do-not-follow-redirects-using-xmlhttprequest-and-cors/20854800#20854800
+			// https://stackoverflow.com/questions/228225/prevent-redirection-of-xmlhttprequest
+
+			boolean xPjaxHeader = GetterUtil.getBoolean(request.getHeader("X-PJAX"));
+
+			String xRequestedWith = GetterUtil.getString(request.getHeader("X-Requested-With"));
+
+			boolean sennaRequest = xPjaxHeader && xRequestedWith.equalsIgnoreCase("XMLHttpRequest");
+
+			boolean sameDomainRedirect = true;
+
+			String requestURL = PortalUtil.getCurrentCompleteURL(request);
+
+			String requestDomain = HttpUtil.getDomain(requestURL);
+
+			String redirectDomain = HttpUtil.getDomain(redirect.getPath());
+
+			if (!requestDomain.equalsIgnoreCase(redirectDomain)) {
+				sameDomainRedirect = false;
+			}
+
+			if (sennaRequest && !sameDomainRedirect) {
+				RequestDispatcher requestDispatcher =
+					request.getRequestDispatcher("/html/common/forward_js.jsp");
+
+				request.setAttribute(WebKeys.FORWARD_URL, redirect.getPath());
+
+				requestDispatcher.forward(request, response);
 			}
 			else {
 				response.sendRedirect(redirect.getPath());
