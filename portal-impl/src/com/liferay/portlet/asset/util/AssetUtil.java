@@ -950,10 +950,13 @@ public class AssetUtil {
 			sortField = sortField.concat(StringPool.UNDERLINE).concat(
 				LocaleUtil.toLanguageId(locale));
 
-			if (!fieldType.equals("ddm-date") &&
-				((sortType == Sort.DOUBLE_TYPE) ||
-				 (sortType == Sort.FLOAT_TYPE) || (sortType == Sort.INT_TYPE) ||
-				 (sortType == Sort.LONG_TYPE))) {
+			if (fieldType.equals("ddm-date")) {
+				sortField = sortField.concat(StringPool.UNDERLINE).concat(
+					"Datefield");
+			}
+			else if ((sortType == Sort.DOUBLE_TYPE) ||
+					 (sortType == Sort.FLOAT_TYPE) || (sortType == Sort.INT_TYPE) ||
+					 (sortType == Sort.LONG_TYPE)) {
 
 				sortField = sortField.concat(StringPool.UNDERLINE).concat(
 					"Number");
