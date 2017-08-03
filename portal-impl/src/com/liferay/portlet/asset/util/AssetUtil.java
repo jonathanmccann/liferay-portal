@@ -955,7 +955,8 @@ public class AssetUtil {
 					"Datefield");
 			}
 			else if ((sortType == Sort.DOUBLE_TYPE) ||
-					 (sortType == Sort.FLOAT_TYPE) || (sortType == Sort.INT_TYPE) ||
+					 (sortType == Sort.FLOAT_TYPE) ||
+					 (sortType == Sort.INT_TYPE) ||
 					 (sortType == Sort.LONG_TYPE)) {
 
 				sortField = sortField.concat(StringPool.UNDERLINE).concat(
