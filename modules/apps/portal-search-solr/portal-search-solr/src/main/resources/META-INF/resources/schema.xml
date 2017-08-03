@@ -555,7 +555,7 @@
 		<field indexed="true" name="version" stored="true" type="string" />
 		<field indexed="true" name="visible" stored="true" type="string" />
 		<dynamicField docValues="true" indexed="true" name="*_coordinate" stored="false" type="double" />
-		<dynamicField docValues="true" indexed="true" multiValued="false" name="*Date_sortable" stored="true" type="long" />
+		<dynamicField docValues="true" indexed="true" multiValued="false" name="*Datefield_sortable" stored="true" type="long" />
 		<dynamicField docValues="true" indexed="true" multiValued="false" name="*Number_sortable" stored="true" type="double" />
 		<dynamicField docValues="true" indexed="true" multiValued="false" name="*_sortable" stored="true" type="string" />
 		<dynamicField indexed="true" multiValued="false" name="*_geolocation" stored="true" type="location" />
