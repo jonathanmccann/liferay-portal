@@ -1445,6 +1445,69 @@ public class HttpImpl implements Http {
 		return _closeableHttpClient;
 	}
 
+	protected int getMaxURLDepth(
+		String url, int curLength, int maxLength, int count) {
+
+		String ampersand = StringPool.AMPERSAND;
+		String equal = StringPool.EQUAL;
+		String question = StringPool.QUESTION;
+
+		for (int i = 0; i < count; i++) {
+			ampersand = URLCodec.encodeURL(ampersand);
+			equal = URLCodec.encodeURL(equal);
+			question = URLCodec.encodeURL(question);
+		}
+
+		url = StringUtil.replace(url, question, ampersand);
+
+		List<String> redirectParams = new ArrayList<>();
+
+		String[] params = StringUtil.split(url, ampersand);
+
+		for (int i = 0; i < params.length; i++) {
+			if (params[i].contains("_backURL" + equal) ||
+				params[i].contains("_redirect" + equal) ||
+				params[i].contains("_returnToFullPageURL" + equal) ||
+				params[i].startsWith("redirect")) {
+
+				redirectParams.add(params[i]);
+			}
+			else {
+				curLength += params[i].length();
+
+				if (params[i].contains(equal)) {
+					curLength += ampersand.length();
+				}
+			}
+		}
+
+		if (curLength > maxLength) {
+			return count - 1;
+		}
+
+		StringBundler sb = new StringBundler();
+
+		for (String redirectParam : redirectParams) {
+			int pos = redirectParam.indexOf(equal) + equal.length();
+
+			curLength += pos;
+
+			curLength += ampersand.length();
+
+			sb.append(redirectParam.substring(pos));
+			sb.append(URLCodec.encodeURL(ampersand));
+		}
+
+		if ((sb.index() <= 0) || (curLength > maxLength)) {
+			return count;
+		}
+		else {
+			sb.setIndex(sb.index() - 1);
+		}
+
+		return getMaxURLDepth(sb.toString(), curLength, maxLength, count++);
+	}
+
 	protected RequestConfig.Builder getRequestConfigBuilder(
 		URI uri, int timeout) {
 
