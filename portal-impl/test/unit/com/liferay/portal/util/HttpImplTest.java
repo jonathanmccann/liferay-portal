@@ -140,6 +140,73 @@ public class HttpImplTest extends PowerMockito {
 	}
 
 	@Test
+	public void testGetMaxURLDepth() {
+		Assert.assertEquals(
+			0, _httpImpl.getMaxURLDepth("www.google.com", 0, 1000, 0));
+		Assert.assertEquals(
+			0,
+			_httpImpl.getMaxURLDepth(
+				"www.google.com?parameter=foo&paramTwo=bar", 0, 1000, 0));
+		Assert.assertEquals(
+			1,
+			_httpImpl.getMaxURLDepth(
+				"www.google.com?parameter=foo&redirect=www.yahoo.com", 0, 1000,
+				0));
+		Assert.assertEquals(
+			-1,
+			_httpImpl.getMaxURLDepth(
+				"www.google.com?parameter=foo&redirect=www.yahoo.com", 0, 27,
+				0));
+		Assert.assertEquals(
+			0,
+			_httpImpl.getMaxURLDepth(
+				"www.google.com?parameter=foo&redirect=www.yahoo.com", 0, 28,
+				0));
+		Assert.assertEquals(
+			0,
+			_httpImpl.getMaxURLDepth(
+				"www.google.com?redirect=www.yahoo.com%3Fredirect%3D" +
+					"www.bing.com%26parameter%3Dbar&parameter=foo",
+				0, 28, 0));
+
+		Assert.assertEquals(
+			1,
+			_httpImpl.getMaxURLDepth(
+				"www.google.com?redirect=www.yahoo.com%3Fredirect%3D" +
+					"www.bing.com%26parameter%3Dbar&parameter=foo",
+				0, 70, 0));
+		Assert.assertEquals(
+			2,
+			_httpImpl.getMaxURLDepth(
+				"www.google.com?redirect=www.yahoo.com%3Fredirect%3D" +
+					"www.bing.com%26parameter%3Dbar&parameter=foo",
+				0, 1000, 0));
+
+		StringBundler sb = new StringBundler();
+
+		sb.append("www.google.com?redirect=www.yahoo.com%3Fredirect%3D");
+		sb.append("www.bing.com%253Fredirect%253Dwww.liferay.com%2526");
+		sb.append("parameter%253Dfoofoobar%26parameter%3Dfoobar&");
+		sb.append("_backURL=www.ask.com%3Fredirect%3Dwww.zombo.com%26");
+		sb.append("parameter%3Dbar&parameter=foo");
+
+		Assert.assertEquals(
+			3, _httpImpl.getMaxURLDepth(sb.toString(), 0, 225, 0));
+		Assert.assertEquals(
+			2, _httpImpl.getMaxURLDepth(sb.toString(), 0, 224, 0));
+		Assert.assertEquals(
+			2, _httpImpl.getMaxURLDepth(sb.toString(), 0, 192, 0));
+		Assert.assertEquals(
+			1, _httpImpl.getMaxURLDepth(sb.toString(), 0, 191, 0));
+		Assert.assertEquals(
+			1, _httpImpl.getMaxURLDepth(sb.toString(), 0, 111, 0));
+		Assert.assertEquals(
+			0, _httpImpl.getMaxURLDepth(sb.toString(), 0, 110, 0));
+		Assert.assertEquals(
+			0, _httpImpl.getMaxURLDepth(sb.toString(), 0, 28, 0));
+	}
+
+	@Test
 	public void testGetParameterMapWithCorrectQuery() {
 		Map<String, String[]> parameterMap = _httpImpl.getParameterMap(
 			"a=1&b=2");
