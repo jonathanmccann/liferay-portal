@@ -1220,6 +1220,16 @@ public class HttpImpl implements Http {
 	}
 
 	@Override
+	public String shortenURL(String url) {
+		if (url.length() > URL_MAXIMUM_LENGTH) {
+			url = shortenURL(
+				url, getMaxURLDepth(url, 0, URL_MAXIMUM_LENGTH, 0));
+		}
+
+		return url;
+	}
+
+	@Override
 	public String shortenURL(String url, int count) {
 		StringBundler sb = new StringBundler();
 
