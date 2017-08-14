@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.model.Contact;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Theme;
@@ -119,7 +120,9 @@ public class ThemeDisplay
 			layout = virtualLayout.getSourceLayout();
 		}
 
-		_layoutFriendlyURLs.remove(layout.getPlid());
+		if (_layoutFriendlyURLs.containsKey(layout.getPlid())) {
+			_layoutFriendlyURLs.remove(layout.getPlid());
+		}
 	}
 
 	@Override
@@ -1914,20 +1917,29 @@ public class ThemeDisplay
 	}
 
 	private String _getFriendlyURL(Layout layout) {
+		String layoutFriendlyURL = StringPool.BLANK;
+
 		if (_layoutFriendlyURLs == null) {
-			if (_layouts == null) {
-				_layoutFriendlyURLs = new HashMap<>();
-			}
-			else {
-				_layoutFriendlyURLs =
-					LayoutFriendlyURLLocalServiceUtil.getLayoutFriendlyURLs(
-						_siteGroup, _layouts, _languageId);
-			}
+			_layoutFriendlyURLs = new HashMap<>();
 		}
 
-		String layoutFriendlyURL = _layoutFriendlyURLs.get(layout.getPlid());
+		if (!_layoutFriendlyURLs.containsKey(layout.getPlid())) {
+			LayoutFriendlyURL layoutFriendlyURLToBeCached =
+				LayoutFriendlyURLLocalServiceUtil.fetchLayoutFriendlyURL(
+					layout.getPlid(), _languageId);
 
-		if (layoutFriendlyURL == null) {
+			if (layoutFriendlyURLToBeCached != null) {
+				layoutFriendlyURL =
+					layoutFriendlyURLToBeCached.getFriendlyURL();
+
+				_layoutFriendlyURLs.put(layout.getPlid(), layoutFriendlyURL);
+			}
+		}
+		else {
+			layoutFriendlyURL = _layoutFriendlyURLs.get(layout.getPlid());
+		}
+
+		if (Validator.isNull(layoutFriendlyURL)) {
 			layoutFriendlyURL = layout.getFriendlyURL(_locale);
 
 			_layoutFriendlyURLs.put(layout.getPlid(), layoutFriendlyURL);
