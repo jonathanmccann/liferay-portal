@@ -149,16 +149,10 @@
 		<contains casesensitive="false" string="${os.name}" substring="Windows" />
 	</condition>
 
-	<exec executable="git" outputproperty="liferay.releng.branch">
-		<arg value="rev-parse" />
-		<arg value="--abbrev-ref" />
-		<arg value="HEAD" />
-	</exec>
-
 	<condition property="liferay.releng.ee">
 		<or>
 			<istrue value="${ee.override}" />
-			<matches pattern="ee-.+" string="${liferay.releng.branch}" />
+			<resourcecontains resource="${project.dir}/portal-kernel/src/com/liferay/portal/kernel/util/ReleaseInfo.java" substring=" DXP " />
 		</or>
 	</condition>
 
@@ -574,6 +568,19 @@ information.
 			<setup-binaries-cache unless:true="${setup.binaries.cache.executed}" />
 
 			<if>
+				<not>
+					<available file="${project.dir}/tools/${build.binaries.gradle.file}" />
+				</not>
+				<then>
+					<mirrors-get
+						dest="${project.dir}/tools/${build.binaries.gradle.file}"
+						skipChecksum="true"
+						src="${build.binaries.gradle.url}"
+					/>
+				</then>
+			</if>
+
+			<if>
 				<os family="unix" />
 				<then>
 					<property name="gradlew.suffix" value="" />
@@ -913,6 +920,15 @@ information.
 		<element implicit="true" name="attach-files" optional="true" />
 
 		<sequential>
+			<fail message="Please run this target from a master branch instead.">
+				<condition>
+					<and>
+						<available file="${project.dir}/modules/.releng" type="dir" />
+						<istrue value="@{snapshot}" />
+					</and>
+				</condition>
+			</fail>
+
 			<fail message="Please run this target from a release branch instead.">
 				<condition>
 					<not>
@@ -1061,6 +1077,11 @@ information.
 					<sync-dir
 						dir="${project.dir}/${build.binaries.cache.dir}/.gradle/caches/modules-2/files-2.1"
 						toDir="${project.dir}/.gradle/caches/modules-2/files-2.1"
+					/>
+
+					<copy
+						file="${project.dir}/${build.binaries.cache.dir}/${build.binaries.gradle.file}"
+						todir="${project.dir}/tools"
 					/>
 				</then>
 			</if>

@@ -941,6 +941,57 @@ app.server.type=@{app.server.type}]]></echo>
 		</sequential>
 	</macrodef>
 
+	<macrodef name="run-lpkg-controller-test">
+		<sequential>
+			<run-batch-test tomcat.gc.log="true">
+				<test-action>
+					<database-test-run-test database.type="mysql" stop.app.server="true">
+						<test-action>
+							<setup-lpkg-test database.type="@{database.type}" />
+
+							<gradle-execute dir="modules/apps/static/portal-lpkg-deployer/portal-lpkg-deployer-test" task="test">
+								<arg value="test" />
+								<arg value="--tests" />
+								<arg value="*.LPKGControllerTest" />
+								<arg value="-Dliferay.home=${liferay.home}" />
+							</gradle-execute>
+
+							<trycatch>
+								<try>
+									<antcall inheritall="false" target="start-app-server" />
+
+									<gradle-execute dir="modules/apps/static/portal-lpkg-deployer/portal-lpkg-deployer-test" task="testIntegration">
+										<arg value="testIntegration" />
+										<arg value="--tests" />
+										<arg value="*.LPKGControllerVerifyTest" />
+									</gradle-execute>
+								</try>
+
+								<finally>
+									<ant dir="portal-kernel" inheritAll="false" target="test-class">
+										<property name="test.class" value="PortalLogAssertorTest" />
+									</ant>
+								</finally>
+							</trycatch>
+						</test-action>
+					</database-test-run-test>
+				</test-action>
+
+				<test-set-up>
+					<if>
+						<isset property="env.DIST_PATH" />
+						<then>
+							<prepare-test-environment />
+						</then>
+						<else>
+							<prepare-test-build />
+						</else>
+					</if>
+				</test-set-up>
+			</run-batch-test>
+		</sequential>
+	</macrodef>
+
 	<macrodef name="run-lpkg-override-test">
 		<sequential>
 			<run-batch-test tomcat.gc.log="true">
@@ -1004,6 +1055,7 @@ app.server.type=@{app.server.type}]]></echo>
 										<arg value="*.LPKGOverrideVerifyCleanStartupTest" />
 									</gradle-execute>
 								</try>
+
 								<finally>
 									<ant dir="portal-kernel" inheritAll="false" target="test-class">
 										<property name="test.class" value="PortalLogAssertorTest" />
@@ -2128,6 +2180,10 @@ app.server.type=@{app.server.type}]]></echo>
 		<run-integration-test database.type="hypersonic" />
 	</target>
 
+	<target name="integration-mariadb100-jdk8">
+		<run-integration-test database.type="mariadb" />
+	</target>
+
 	<target name="integration-mysql56-jdk8">
 		<run-integration-test database.type="mysql" />
 	</target>
@@ -2176,6 +2232,10 @@ app.server.type=@{app.server.type}]]></echo>
 
 	<target name="legacy-functional-bundle-tomcat-sybase160-jdk7">
 		<run-legacy-database-dump database.type="sybase" />
+	</target>
+
+	<target name="lpkg-controller-jdk8">
+		<run-lpkg-controller-test />
 	</target>
 
 	<target name="lpkg-override-jdk8">
@@ -2248,6 +2308,10 @@ app.server.type=@{app.server.type}]]></echo>
 
 	<target name="modules-integration-hypersonic20-jdk8">
 		<run-modules-integration-test database.type="hypersonic" />
+	</target>
+
+	<target name="modules-integration-mariadb100-jdk8">
+		<run-modules-integration-test database.type="mariadb" />
 	</target>
 
 	<target name="modules-integration-mysql56-jdk8">
@@ -2810,22 +2874,11 @@ information. Make sure to commit in all build services results.
 		<run-batch-test>
 			<test-action>
 				<if>
-					<contains string="${liferay.releng.branch}" substring="master" />
+					<istrue value="${liferay.releng.public}" />
 					<then>
 						<gradle-execute dir="modules/util/source-formatter" task="deploy">
 							<arg value="clean" />
 						</gradle-execute>
-					</then>
-				</if>
-
-				<local name="source.formatter.excludes" />
-
-				<if>
-					<not>
-						<resourcecontains resource="${project.dir}/portal-kernel/src/com/liferay/portal/kernel/util/ReleaseInfo.java" substring=" DXP " />
-					</not>
-					<then>
-						<property name="source.formatter.excludes" value="modules/private/**" />
 					</then>
 				</if>
 
@@ -2839,7 +2892,7 @@ information. Make sure to commit in all build services results.
 					<property name="show.documentation" value="false" />
 					<property name="source.auto.fix" value="false" />
 					<property name="source.fail.on.error" value="true" />
-					<property name="source.formatter.excludes" value="${source.formatter.excludes}" />
+					<property if:true="${liferay.releng.public}" name="source.formatter.excludes" value="modules/private/**" />
 					<property name="source.print.errors" value="true" />
 					<property name="source.throw.exception" value="true" />
 					<property name="source.use.properties" value="false" />
