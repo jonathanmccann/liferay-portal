@@ -14,14 +14,17 @@
 
 package com.liferay.portal.security.ldap.internal.model.listener;
 
+import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.UserGroup;
+import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.security.exportimport.UserExporter;
 import com.liferay.portal.security.exportimport.UserOperation;
+import com.liferay.portal.security.ldap.PortalLDAPUtil;
 import com.liferay.portal.security.ldap.internal.UserImportTransactionThreadLocal;
 
 import org.osgi.service.component.annotations.Component;
@@ -47,6 +50,10 @@ public class UserGroupModelListener extends BaseModelListener<UserGroup> {
 			}
 		}
 		catch (Exception e) {
+			if (_hasLDAPUser((Long)associationClassPK)) {
+				throw new ModelListenerException(e);
+			}
+
 			_log.error(
 				"Unable to export user group with user ID " +
 					associationClassPK + " to LDAP on after add association",
@@ -67,6 +74,10 @@ public class UserGroupModelListener extends BaseModelListener<UserGroup> {
 			}
 		}
 		catch (Exception e) {
+			if (_hasLDAPUser((Long)associationClassPK)) {
+				throw new ModelListenerException(e);
+			}
+
 			_log.error(
 				"Unable to export user group with user ID " +
 					associationClassPK +
@@ -95,10 +106,30 @@ public class UserGroupModelListener extends BaseModelListener<UserGroup> {
 		}
 	}
 
+	private boolean _hasLDAPUser(long userId) throws ModelListenerException {
+		try {
+			User user = _userLocalService.getUser(userId);
+
+			long ldapServerId = PortalLDAPUtil.getLdapServerId(
+				user.getCompanyId(), user.getScreenName(),
+				user.getEmailAddress());
+
+			return PortalLDAPUtil.hasUser(
+				ldapServerId, user.getCompanyId(), user.getScreenName(),
+				user.getEmailAddress());
+		}
+		catch (Exception e) {
+			throw new ModelListenerException(e);
+		}
+	}
+
 	private static final Log _log = LogFactoryUtil.getLog(
 		UserGroupModelListener.class);
 
 	@Reference(policyOption = ReferencePolicyOption.GREEDY)
 	private UserExporter _userExporter;
+
+	@Reference
+	private UserLocalService _userLocalService;
 
 }

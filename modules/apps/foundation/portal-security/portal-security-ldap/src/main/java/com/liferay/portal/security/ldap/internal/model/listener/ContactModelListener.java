@@ -14,6 +14,7 @@
 
 package com.liferay.portal.security.ldap.internal.model.listener;
 
+import com.liferay.portal.kernel.exception.ModelListenerException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.BaseModelListener;
@@ -24,6 +25,7 @@ import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.security.exportimport.UserExporter;
+import com.liferay.portal.security.ldap.PortalLDAPUtil;
 import com.liferay.portal.security.ldap.internal.UserImportTransactionThreadLocal;
 
 import java.io.Serializable;
@@ -43,24 +45,25 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 public class ContactModelListener extends BaseModelListener<Contact> {
 
 	@Override
-	public void onAfterCreate(Contact contact) {
+	public void onAfterCreate(Contact contact) throws ModelListenerException {
 		try {
 			exportToLDAP(contact);
 		}
 		catch (Exception e) {
-			_log.error(
-				"Unable to export contact with user ID " + contact.getUserId() +
-					" to LDAP on after create",
-				e);
+			throw new ModelListenerException(e);
 		}
 	}
 
 	@Override
-	public void onAfterUpdate(Contact contact) {
+	public void onAfterUpdate(Contact contact) throws ModelListenerException {
 		try {
 			exportToLDAP(contact);
 		}
 		catch (Exception e) {
+			if (_hasLDAPContact(contact)) {
+				throw new ModelListenerException(e);
+			}
+
 			_log.error(
 				"Unable to export contact with user ID " + contact.getUserId() +
 					" to LDAP on after update",
@@ -90,6 +93,25 @@ public class ContactModelListener extends BaseModelListener<Contact> {
 		}
 
 		_userExporter.exportUser(contact, expandoBridgeAttributes);
+	}
+
+	private boolean _hasLDAPContact(Contact contact)
+		throws ModelListenerException {
+
+		try {
+			User user = _userLocalService.getUser(contact.getUserId());
+
+			long ldapServerId = PortalLDAPUtil.getLdapServerId(
+				user.getCompanyId(), user.getScreenName(),
+				user.getEmailAddress());
+
+			return PortalLDAPUtil.hasUser(
+				ldapServerId, user.getCompanyId(), user.getScreenName(),
+				user.getEmailAddress());
+		}
+		catch (Exception e) {
+			throw new ModelListenerException(e);
+		}
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

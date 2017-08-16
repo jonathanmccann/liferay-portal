@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.security.exportimport.UserExporter;
+import com.liferay.portal.security.ldap.PortalLDAPUtil;
 import com.liferay.portal.security.ldap.internal.UserImportTransactionThreadLocal;
 
 import java.io.Serializable;
@@ -78,19 +79,20 @@ public class UserModelListener extends BaseModelListener<User> {
 			exportToLDAP(user);
 		}
 		catch (Exception e) {
-			_log.error(
-				"Unable to export user " + user.getUserId() +
-					" to LDAP on after create",
-				e);
+			throw new ModelListenerException(e);
 		}
 	}
 
 	@Override
-	public void onAfterUpdate(User user) {
+	public void onAfterUpdate(User user) throws ModelListenerException {
 		try {
 			exportToLDAP(user);
 		}
 		catch (Exception e) {
+			if (_hasLDAPUser(user)) {
+				throw new ModelListenerException(e);
+			}
+
 			_log.error(
 				"Unable to export user " + user.getUserId() +
 					" to LDAP on after update",
@@ -111,28 +113,17 @@ public class UserModelListener extends BaseModelListener<User> {
 			return;
 		}
 
-		Callable<Void> callable = new Callable<Void>() {
+		ServiceContext serviceContext =
+			ServiceContextThreadLocal.getServiceContext();
 
-			@Override
-			public Void call() throws Exception {
-				ServiceContext serviceContext =
-					ServiceContextThreadLocal.getServiceContext();
+		Map<String, Serializable> expandoBridgeAttributes = null;
 
-				Map<String, Serializable> expandoBridgeAttributes = null;
+		if (serviceContext != null) {
+			expandoBridgeAttributes =
+				serviceContext.getExpandoBridgeAttributes();
+		}
 
-				if (serviceContext != null) {
-					expandoBridgeAttributes =
-						serviceContext.getExpandoBridgeAttributes();
-				}
-
-				_userExporter.exportUser(user, expandoBridgeAttributes);
-
-				return null;
-			}
-
-		};
-
-		TransactionCommitCallbackUtil.registerCallback(callable);
+		_userExporter.exportUser(user, expandoBridgeAttributes);
 	}
 
 	protected void updateMembershipRequestStatus(long userId, long groupId)
@@ -154,6 +145,21 @@ public class UserModelListener extends BaseModelListener<User> {
 					user.getLocale(), "your-membership-has-been-approved"),
 				MembershipRequestConstants.STATUS_APPROVED, false,
 				new ServiceContext());
+		}
+	}
+
+	private boolean _hasLDAPUser(User user) throws ModelListenerException {
+		try {
+			long ldapServerId = PortalLDAPUtil.getLdapServerId(
+				user.getCompanyId(), user.getScreenName(),
+				user.getEmailAddress());
+
+			return PortalLDAPUtil.hasUser(
+				ldapServerId, user.getCompanyId(), user.getScreenName(),
+				user.getEmailAddress());
+		}
+		catch (Exception e) {
+			throw new ModelListenerException(e);
 		}
 	}
 
