@@ -34,6 +34,10 @@ public class MDRServiceUpgrade implements UpgradeStepRegistrator {
 		registry.register(
 			"com.liferay.mobile.device.rules.service", "1.0.0", "1.0.1",
 			new MDRActionUpgrade(), new MDRRuleUpgrade());
+
+		registry.register(
+			"com.liferay.mobile.device.rules.service", "1.0.1", "1.0.2",
+			new MDRRuleGroupInstanceUpgrade());
 	}
 
 }
