@@ -709,10 +709,11 @@ public class DefaultTextExportImportContentProcessor
 				url = url.substring(pos);
 
 				String siteAdminURL =
-					GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
-						PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
+					VirtualLayoutConstants.CANONICAL_URL_SEPARATOR +
+						GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
+							PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
 
-				if (url.endsWith(siteAdminURL)) {
+				if (url.equals(siteAdminURL)) {
 					urlSB.append(_DATA_HANDLER_SITE_ADMIN_URL);
 
 					url = StringPool.BLANK;
@@ -1341,7 +1342,7 @@ public class DefaultTextExportImportContentProcessor
 				GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
 					PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
 
-			if (url.endsWith(
+			if (url.equals(
 					VirtualLayoutConstants.CANONICAL_URL_SEPARATOR +
 						siteAdminURL)) {
 
