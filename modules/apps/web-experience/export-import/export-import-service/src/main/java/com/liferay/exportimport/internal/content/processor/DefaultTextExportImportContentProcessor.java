@@ -683,22 +683,6 @@ public class DefaultTextExportImportContentProcessor
 					continue;
 				}
 
-				long groupId = group.getGroupId();
-
-				Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-					groupId, privateLayout, url);
-
-				if (layout != null) {
-					Element entityElement =
-						portletDataContext.getExportDataElement(stagedModel);
-
-					portletDataContext.addReferenceElement(
-						stagedModel, entityElement, layout,
-						PortletDataContext.REFERENCE_TYPE_DEPENDENCY, true);
-
-					continue;
-				}
-
 				pos = url.indexOf(StringPool.SLASH, 1);
 
 				String groupFriendlyURL = url;
@@ -736,7 +720,7 @@ public class DefaultTextExportImportContentProcessor
 
 				url = url.substring(pos);
 
-				layout = _layoutLocalService.getFriendlyURLLayout(
+				Layout layout = _layoutLocalService.getFriendlyURLLayout(
 					urlGroup.getGroupId(), privateLayout, url);
 
 				Element entityElement = portletDataContext.getExportDataElement(
@@ -1349,14 +1333,14 @@ public class DefaultTextExportImportContentProcessor
 					continue;
 				}
 
-				privateLayout = layoutSet.isPrivateLayout();
-			}
+				Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+					groupId, layoutSet.isPrivateLayout(), url);
 
-			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-				groupId, privateLayout, url);
-
-			if (layout != null) {
-				continue;
+				if (layout == null) {
+					throw new NoSuchLayoutException(
+						"Unable to validate referenced page because the page " +
+							"group cannot be found: " + groupId);
+				}
 			}
 
 			String siteAdminURL =
@@ -1393,7 +1377,7 @@ public class DefaultTextExportImportContentProcessor
 
 			url = url.substring(pos);
 
-			layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
 				urlGroup.getGroupId(), privateLayout, url);
 
 			if (layout == null) {

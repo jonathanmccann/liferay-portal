@@ -696,22 +696,6 @@ public class BaseTextExportImportContentProcessor
 					continue;
 				}
 
-				long groupId = group.getGroupId();
-
-				Layout layout = LayoutLocalServiceUtil.fetchLayoutByFriendlyURL(
-					groupId, privateLayout, url);
-
-				if (layout != null) {
-					Element entityElement =
-						portletDataContext.getExportDataElement(stagedModel);
-
-					portletDataContext.addReferenceElement(
-						stagedModel, entityElement, layout,
-						PortletDataContext.REFERENCE_TYPE_DEPENDENCY, true);
-
-					continue;
-				}
-
 				pos = url.indexOf(StringPool.SLASH, 1);
 
 				String groupFriendlyURL = url;
@@ -749,7 +733,7 @@ public class BaseTextExportImportContentProcessor
 
 				url = url.substring(pos);
 
-				layout = LayoutLocalServiceUtil.getFriendlyURLLayout(
+				Layout layout = LayoutLocalServiceUtil.getFriendlyURLLayout(
 					urlGroup.getGroupId(), privateLayout, url);
 
 				Element entityElement = portletDataContext.getExportDataElement(
@@ -1360,14 +1344,12 @@ public class BaseTextExportImportContentProcessor
 					continue;
 				}
 
-				privateLayout = layoutSet.isPrivateLayout();
-			}
+				Layout layout = LayoutLocalServiceUtil.fetchLayoutByFriendlyURL(
+					groupId, layoutSet.isPrivateLayout(), url);
 
-			Layout layout = LayoutLocalServiceUtil.fetchLayoutByFriendlyURL(
-				groupId, privateLayout, url);
-
-			if (layout != null) {
-				continue;
+				if (layout == null) {
+					throw new NoSuchLayoutException();
+				}
 			}
 
 			String siteAdminURL =
@@ -1402,7 +1384,7 @@ public class BaseTextExportImportContentProcessor
 
 			url = url.substring(pos);
 
-			layout = LayoutLocalServiceUtil.fetchLayoutByFriendlyURL(
+			Layout layout = LayoutLocalServiceUtil.fetchLayoutByFriendlyURL(
 				urlGroup.getGroupId(), privateLayout, url);
 
 			if (layout == null) {
