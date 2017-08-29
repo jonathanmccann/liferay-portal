@@ -1353,7 +1353,7 @@ public class BaseTextExportImportContentProcessor
 					VirtualLayoutConstants.CANONICAL_URL_SEPARATOR +
 						siteAdminURL)) {
 
-				url = url.substring(url.indexOf(siteAdminURL));
+				continue;
 			}
 
 			url = url.substring(pos);

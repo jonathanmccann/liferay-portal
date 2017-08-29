@@ -1346,7 +1346,7 @@ public class DefaultTextExportImportContentProcessor
 					VirtualLayoutConstants.CANONICAL_URL_SEPARATOR +
 						siteAdminURL)) {
 
-				url = url.substring(url.indexOf(siteAdminURL));
+				continue;
 			}
 
 			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
