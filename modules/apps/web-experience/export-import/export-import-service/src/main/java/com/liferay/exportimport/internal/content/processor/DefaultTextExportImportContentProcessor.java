@@ -613,11 +613,7 @@ public class DefaultTextExportImportContentProcessor
 					url = url.substring(
 						_PRIVATE_GROUP_SERVLET_MAPPING.length() - 1);
 
-					String companyAdminURL =
-						GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
-							PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
-
-					if (url.equals(companyAdminURL)) {
+					if (url.equals(_COMPANY_ADMIN_URL)) {
 						urlSB.append(_DATA_HANDLER_COMPANY_ADMIN_URL);
 
 						url = StringPool.BLANK;
@@ -720,12 +716,7 @@ public class DefaultTextExportImportContentProcessor
 
 				url = url.substring(pos);
 
-				String siteAdminURL =
-					VirtualLayoutConstants.CANONICAL_URL_SEPARATOR +
-						GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
-							PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
-
-				if (url.equals(siteAdminURL)) {
+				if (url.equals(_SITE_ADMIN_URL)) {
 					urlSB.append(_DATA_HANDLER_SITE_ADMIN_URL);
 
 					url = StringPool.BLANK;
@@ -1007,16 +998,8 @@ public class DefaultTextExportImportContentProcessor
 			}
 		}
 
-		String companyAdminURL =
-			GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
-				PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
-
-		String siteAdminURL =
-			VirtualLayoutConstants.CANONICAL_URL_SEPARATOR + companyAdminURL;
-
 		content = StringUtil.replace(
-			content, _DATA_HANDLER_COMPANY_ADMIN_URL, companyAdminURL);
-
+			content, _DATA_HANDLER_COMPANY_ADMIN_URL, _COMPANY_ADMIN_URL);
 		content = StringUtil.replace(
 			content, _DATA_HANDLER_COMPANY_SECURE_URL, companySecurePortalURL);
 		content = StringUtil.replace(
@@ -1047,7 +1030,7 @@ public class DefaultTextExportImportContentProcessor
 			content, _DATA_HANDLER_PUBLIC_SERVLET_MAPPING,
 			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING);
 		content = StringUtil.replace(
-			content, _DATA_HANDLER_SITE_ADMIN_URL, siteAdminURL);
+			content, _DATA_HANDLER_SITE_ADMIN_URL, _SITE_ADMIN_URL);
 
 		return content;
 	}
@@ -1317,11 +1300,7 @@ public class DefaultTextExportImportContentProcessor
 				url = url.substring(
 					_PRIVATE_GROUP_SERVLET_MAPPING.length() - 1);
 
-				String companyAdminURL =
-					GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
-						PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
-
-				if (url.equals(companyAdminURL)) {
+				if (url.equals(_COMPANY_ADMIN_URL)) {
 					continue;
 				}
 
@@ -1362,14 +1341,7 @@ public class DefaultTextExportImportContentProcessor
 
 			url = url.substring(pos);
 
-			String siteAdminURL =
-				GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
-					PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
-
-			if (url.equals(
-					VirtualLayoutConstants.CANONICAL_URL_SEPARATOR +
-						siteAdminURL)) {
-
+			if (url.equals(_SITE_ADMIN_URL)) {
 				continue;
 			}
 
@@ -1416,6 +1388,10 @@ public class DefaultTextExportImportContentProcessor
 			}
 		}
 	}
+
+	private static final String _COMPANY_ADMIN_URL =
+		GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
+			PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
 
 	private static final String _DATA_HANDLER_COMPANY_ADMIN_URL =
 		"@data_handler_company_admin_url@";
@@ -1489,6 +1465,11 @@ public class DefaultTextExportImportContentProcessor
 		PropsUtil.get(
 			PropsKeys.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING) +
 				StringPool.SLASH;
+
+	private static final String _SITE_ADMIN_URL =
+		VirtualLayoutConstants.CANONICAL_URL_SEPARATOR +
+			GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
+				PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultTextExportImportContentProcessor.class);
