@@ -1216,28 +1216,14 @@ public class BaseTextExportImportContentProcessor
 		url = replaceExportHostname(group.getGroupId(), url, urlSB);
 
 		if (!url.startsWith(StringPool.SLASH)) {
-			if (urlSB.length() > 0) {
-				urlSB.append(url);
-				urlSB.append(urlTail);
-
-				return new ObjectValuePair<>(null, urlSB.toString());
-			}
-
-			return new ObjectValuePair<>(null, originalURL);
+			return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 		}
 
 		String pathContext = PortalUtil.getPathContext();
 
 		if (pathContext.length() > 1) {
 			if (!url.startsWith(pathContext)) {
-				if (urlSB.length() > 0) {
-					urlSB.append(url);
-					urlSB.append(urlTail);
-
-					return new ObjectValuePair<>(null, urlSB.toString());
-				}
-
-				return new ObjectValuePair<>(null, originalURL);
+				return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 			}
 
 			urlSB.append(DATA_HANDLER_PATH_CONTEXT);
@@ -1246,14 +1232,7 @@ public class BaseTextExportImportContentProcessor
 		}
 
 		if (!url.startsWith(StringPool.SLASH)) {
-			if (urlSB.length() > 0) {
-				urlSB.append(url);
-				urlSB.append(urlTail);
-
-				return new ObjectValuePair<>(null, urlSB.toString());
-			}
-
-			return new ObjectValuePair<>(null, originalURL);
+			return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 		}
 
 		int pos = url.indexOf(StringPool.SLASH, 1);
@@ -1329,14 +1308,7 @@ public class BaseTextExportImportContentProcessor
 			}
 
 			if (layoutSet == null) {
-				if (urlSB.length() > 0) {
-					urlSB.append(url);
-					urlSB.append(urlTail);
-
-					return new ObjectValuePair<>(null, urlSB.toString());
-				}
-
-				return new ObjectValuePair<>(null, originalURL);
+				return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 			}
 
 			privateLayout = layoutSet.isPrivateLayout();
@@ -1408,6 +1380,18 @@ public class BaseTextExportImportContentProcessor
 		urlSB.append(urlTail);
 
 		return new ObjectValuePair<>(layout, urlSB.toString());
+	}
+
+	private ObjectValuePair<Layout, String> _getObjectValuePair(
+		StringBundler urlSB, String urlTail, String originalURL) {
+
+		if (urlSB.length() > 0) {
+			urlSB.append(urlTail);
+
+			return new ObjectValuePair<>(null, urlSB.toString());
+		}
+
+		return new ObjectValuePair<>(null, originalURL);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

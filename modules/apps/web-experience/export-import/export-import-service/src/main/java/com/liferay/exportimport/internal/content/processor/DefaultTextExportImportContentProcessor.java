@@ -1124,28 +1124,14 @@ public class DefaultTextExportImportContentProcessor
 		url = replaceExportHostname(group.getGroupId(), url, urlSB);
 
 		if (!url.startsWith(StringPool.SLASH)) {
-			if (urlSB.length() > 0) {
-				urlSB.append(url);
-				urlSB.append(urlTail);
-
-				return new ObjectValuePair<>(null, urlSB.toString());
-			}
-
-			return new ObjectValuePair<>(null, originalURL);
+			return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 		}
 
 		String pathContext = _portal.getPathContext();
 
 		if (pathContext.length() > 1) {
 			if (!url.startsWith(pathContext)) {
-				if (urlSB.length() > 0) {
-					urlSB.append(url);
-					urlSB.append(urlTail);
-
-					return new ObjectValuePair<>(null, urlSB.toString());
-				}
-
-				return new ObjectValuePair<>(null, originalURL);
+				return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 			}
 
 			urlSB.append(_DATA_HANDLER_PATH_CONTEXT);
@@ -1154,14 +1140,7 @@ public class DefaultTextExportImportContentProcessor
 		}
 
 		if (!url.startsWith(StringPool.SLASH)) {
-			if (urlSB.length() > 0) {
-				urlSB.append(url);
-				urlSB.append(urlTail);
-
-				return new ObjectValuePair<>(null, urlSB.toString());
-			}
-
-			return new ObjectValuePair<>(null, originalURL);
+			return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 		}
 
 		int pos = url.indexOf(StringPool.SLASH, 1);
@@ -1237,14 +1216,7 @@ public class DefaultTextExportImportContentProcessor
 			}
 
 			if (layoutSet == null) {
-				if (urlSB.length() > 0) {
-					urlSB.append(url);
-					urlSB.append(urlTail);
-
-					return new ObjectValuePair<>(null, urlSB.toString());
-				}
-
-				return new ObjectValuePair<>(null, originalURL);
+				return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 			}
 
 			privateLayout = layoutSet.isPrivateLayout();
@@ -1254,14 +1226,7 @@ public class DefaultTextExportImportContentProcessor
 					group.getGroupId(), privateLayout, url);
 
 			if (layoutFriendlyUrl == null) {
-				if (urlSB.length() > 0) {
-					urlSB.append(url);
-					urlSB.append(urlTail);
-
-					return new ObjectValuePair<>(null, urlSB.toString());
-				}
-
-				return new ObjectValuePair<>(null, originalURL);
+				return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 			}
 
 			if (privateLayout) {
@@ -1327,6 +1292,18 @@ public class DefaultTextExportImportContentProcessor
 		urlSB.append(urlTail);
 
 		return new ObjectValuePair<>(layout, urlSB.toString());
+	}
+
+	private ObjectValuePair<Layout, String> _getObjectValuePair(
+		StringBundler urlSB, String urlTail, String originalURL) {
+
+		if (urlSB.length() > 0) {
+			urlSB.append(urlTail);
+
+			return new ObjectValuePair<>(null, urlSB.toString());
+		}
+
+		return new ObjectValuePair<>(null, originalURL);
 	}
 
 	private static final String _DATA_HANDLER_COMPANY_ADMIN_URL =
