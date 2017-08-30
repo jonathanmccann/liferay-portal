@@ -338,7 +338,7 @@ public class DefaultExportImportContentProcessorTest {
 		Class<?> clazz = _exportImportContentProcessor.getClass();
 
 		setFinalStaticField(
-			clazz.getDeclaredField("_PRIVATE_USER_SERVLET_MAPPING"), "/en/");
+			clazz.getDeclaredField("_privateUserServletMapping"), "/en/");
 
 		String content = replaceParameters(
 			getContent("layout_references.txt"), _fileEntry);
@@ -372,7 +372,7 @@ public class DefaultExportImportContentProcessorTest {
 			_oldLayoutFriendlyURLPrivateUserServletMapping);
 
 		setFinalStaticField(
-			clazz.getDeclaredField("_PRIVATE_USER_SERVLET_MAPPING"),
+			clazz.getDeclaredField("_privateUserServletMapping"),
 			PropsValues.LAYOUT_FRIENDLY_URL_PRIVATE_USER_SERVLET_MAPPING +
 				StringPool.SLASH);
 
@@ -395,7 +395,7 @@ public class DefaultExportImportContentProcessorTest {
 		Class<?> clazz = _exportImportContentProcessor.getClass();
 
 		setFinalStaticField(
-			clazz.getDeclaredField("_PRIVATE_USER_SERVLET_MAPPING"), "/en/");
+			clazz.getDeclaredField("_privateUserServletMapping"), "/en/");
 
 		String content = replaceParameters(
 			getContent("layout_references.txt"), _fileEntry);
@@ -428,7 +428,7 @@ public class DefaultExportImportContentProcessorTest {
 			_oldLayoutFriendlyURLPrivateUserServletMapping);
 
 		setFinalStaticField(
-			clazz.getDeclaredField("_PRIVATE_USER_SERVLET_MAPPING"),
+			clazz.getDeclaredField("_privateUserServletMapping"),
 			PropsValues.LAYOUT_FRIENDLY_URL_PRIVATE_USER_SERVLET_MAPPING +
 				StringPool.SLASH);
 	}

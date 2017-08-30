@@ -55,8 +55,6 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
-import com.liferay.portal.kernel.util.PropsKeys;
-import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -87,6 +85,9 @@ import org.osgi.service.component.annotations.Reference;
 )
 public class DefaultTextExportImportContentProcessor
 	implements ExportImportContentProcessor<String> {
+
+	public DefaultTextExportImportContentProcessor() {
+	}
 
 	@Override
 	public String replaceExportContentReferences(
@@ -823,7 +824,7 @@ public class DefaultTextExportImportContentProcessor
 		}
 
 		content = StringUtil.replace(
-			content, _DATA_HANDLER_COMPANY_ADMIN_URL, _COMPANY_ADMIN_URL);
+			content, _DATA_HANDLER_COMPANY_ADMIN_URL, _companyAdminURL);
 		content = StringUtil.replace(
 			content, _DATA_HANDLER_COMPANY_SECURE_URL, companySecurePortalURL);
 		content = StringUtil.replace(
@@ -854,7 +855,7 @@ public class DefaultTextExportImportContentProcessor
 			content, _DATA_HANDLER_PUBLIC_SERVLET_MAPPING,
 			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING);
 		content = StringUtil.replace(
-			content, _DATA_HANDLER_SITE_ADMIN_URL, _SITE_ADMIN_URL);
+			content, _DATA_HANDLER_SITE_ADMIN_URL, _siteAdminURL);
 
 		return content;
 	}
@@ -1179,9 +1180,9 @@ public class DefaultTextExportImportContentProcessor
 		if (locale != null) {
 			String urlWithoutLocale = url.substring(localePath.length());
 
-			if (urlWithoutLocale.startsWith(_PRIVATE_GROUP_SERVLET_MAPPING) ||
-				urlWithoutLocale.startsWith(_PRIVATE_USER_SERVLET_MAPPING) ||
-				urlWithoutLocale.startsWith(_PUBLIC_GROUP_SERVLET_MAPPING)) {
+			if (urlWithoutLocale.startsWith(_privateGroupServletMapping) ||
+				urlWithoutLocale.startsWith(_privateUserServletMapping) ||
+				urlWithoutLocale.startsWith(_publicGroupServletMapping)) {
 
 				urlSB.append(localePath);
 
@@ -1191,12 +1192,12 @@ public class DefaultTextExportImportContentProcessor
 
 		boolean privateLayout = false;
 
-		if (url.startsWith(_PRIVATE_GROUP_SERVLET_MAPPING)) {
+		if (url.startsWith(_privateGroupServletMapping)) {
 			urlSB.append(_DATA_HANDLER_PRIVATE_GROUP_SERVLET_MAPPING);
 
-			url = url.substring(_PRIVATE_GROUP_SERVLET_MAPPING.length() - 1);
+			url = url.substring(_privateGroupServletMapping.length() - 1);
 
-			if (url.equals(_COMPANY_ADMIN_URL)) {
+			if (url.equals(_companyAdminURL)) {
 				urlSB.append(_DATA_HANDLER_COMPANY_ADMIN_URL);
 
 				return new ObjectValuePair<>(null, urlSB.toString());
@@ -1204,17 +1205,17 @@ public class DefaultTextExportImportContentProcessor
 
 			privateLayout = true;
 		}
-		else if (url.startsWith(_PRIVATE_USER_SERVLET_MAPPING)) {
+		else if (url.startsWith(_privateUserServletMapping)) {
 			urlSB.append(_DATA_HANDLER_PRIVATE_USER_SERVLET_MAPPING);
 
-			url = url.substring(_PRIVATE_USER_SERVLET_MAPPING.length() - 1);
+			url = url.substring(_privateUserServletMapping.length() - 1);
 
 			privateLayout = true;
 		}
-		else if (url.startsWith(_PUBLIC_GROUP_SERVLET_MAPPING)) {
+		else if (url.startsWith(_publicGroupServletMapping)) {
 			urlSB.append(_DATA_HANDLER_PUBLIC_SERVLET_MAPPING);
 
-			url = url.substring(_PUBLIC_GROUP_SERVLET_MAPPING.length() - 1);
+			url = url.substring(_publicGroupServletMapping.length() - 1);
 		}
 		else {
 			String urlSBString = urlSB.toString();
@@ -1307,7 +1308,7 @@ public class DefaultTextExportImportContentProcessor
 
 		url = url.substring(pos);
 
-		if (url.equals(_SITE_ADMIN_URL)) {
+		if (url.equals(_siteAdminURL)) {
 			urlSB.append(_DATA_HANDLER_SITE_ADMIN_URL);
 
 			return new ObjectValuePair<>(null, urlSB.toString());
@@ -1327,10 +1328,6 @@ public class DefaultTextExportImportContentProcessor
 
 		return new ObjectValuePair<>(layout, urlSB.toString());
 	}
-
-	private static final String _COMPANY_ADMIN_URL =
-		GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
-			PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
 
 	private static final String _DATA_HANDLER_COMPANY_ADMIN_URL =
 		"@data_handler_company_admin_url@";
@@ -1390,33 +1387,29 @@ public class DefaultTextExportImportContentProcessor
 		CharPool.SPACE
 	};
 
-	private static final String _PRIVATE_GROUP_SERVLET_MAPPING =
-		PropsUtil.get(
-			PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING) +
-				StringPool.SLASH;
-
-	private static final String _PRIVATE_USER_SERVLET_MAPPING =
-		PropsUtil.get(
-			PropsKeys.LAYOUT_FRIENDLY_URL_PRIVATE_USER_SERVLET_MAPPING) +
-				StringPool.SLASH;
-
-	private static final String _PUBLIC_GROUP_SERVLET_MAPPING =
-		PropsUtil.get(
-			PropsKeys.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING) +
-				StringPool.SLASH;
-
-	private static final String _SITE_ADMIN_URL =
-		VirtualLayoutConstants.CANONICAL_URL_SEPARATOR +
-			GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
-				PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
-
 	private static final Log _log = LogFactoryUtil.getLog(
 		DefaultTextExportImportContentProcessor.class);
 
+	private static String _companyAdminURL =
+		GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
+			PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
 	private static final Pattern _exportLinksToLayoutPattern = Pattern.compile(
 		"\\[([\\d]+)@(private(-group|-user)?|public)(@([\\d]+))?\\]");
 	private static final Pattern _importLinksToLayoutPattern = Pattern.compile(
 		"\\[([\\d]+)@(private(-group|-user)?|public)@([\\d]+)(@([\\d]+))?\\]");
+	private static String _privateGroupServletMapping =
+		PropsValues.LAYOUT_FRIENDLY_URL_PRIVATE_GROUP_SERVLET_MAPPING +
+			StringPool.SLASH;
+	private static String _privateUserServletMapping =
+		PropsValues.LAYOUT_FRIENDLY_URL_PRIVATE_USER_SERVLET_MAPPING +
+			StringPool.SLASH;
+	private static String _publicGroupServletMapping =
+		PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING +
+			StringPool.SLASH;
+	private static String _siteAdminURL =
+		VirtualLayoutConstants.CANONICAL_URL_SEPARATOR +
+			GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
+				PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
 
 	@Reference
 	private CompanyLocalService _companyLocalService;
