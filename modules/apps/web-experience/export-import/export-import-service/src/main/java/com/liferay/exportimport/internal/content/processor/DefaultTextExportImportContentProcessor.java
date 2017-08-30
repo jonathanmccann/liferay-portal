@@ -613,6 +613,18 @@ public class DefaultTextExportImportContentProcessor
 					url = url.substring(
 						_PRIVATE_GROUP_SERVLET_MAPPING.length() - 1);
 
+					String companyAdminURL =
+						GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
+							PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
+
+					if (url.equals(companyAdminURL)) {
+						urlSB.append(_DATA_HANDLER_COMPANY_ADMIN_URL);
+
+						url = StringPool.BLANK;
+
+						continue;
+					}
+
 					privateLayout = true;
 				}
 				else if (url.startsWith(_PRIVATE_USER_SERVLET_MAPPING)) {
@@ -995,11 +1007,15 @@ public class DefaultTextExportImportContentProcessor
 			}
 		}
 
-		StringBundler siteAdminURL = new StringBundler(3);
+		String companyAdminURL =
+			GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
+				PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
 
-		siteAdminURL.append(VirtualLayoutConstants.CANONICAL_URL_SEPARATOR);
-		siteAdminURL.append(GroupConstants.CONTROL_PANEL_FRIENDLY_URL);
-		siteAdminURL.append(PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL);
+		String siteAdminURL =
+			VirtualLayoutConstants.CANONICAL_URL_SEPARATOR + companyAdminURL;
+
+		content = StringUtil.replace(
+			content, _DATA_HANDLER_COMPANY_ADMIN_URL, companyAdminURL);
 
 		content = StringUtil.replace(
 			content, _DATA_HANDLER_COMPANY_SECURE_URL, companySecurePortalURL);
@@ -1031,7 +1047,7 @@ public class DefaultTextExportImportContentProcessor
 			content, _DATA_HANDLER_PUBLIC_SERVLET_MAPPING,
 			PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING);
 		content = StringUtil.replace(
-			content, _DATA_HANDLER_SITE_ADMIN_URL, siteAdminURL.toString());
+			content, _DATA_HANDLER_SITE_ADMIN_URL, siteAdminURL);
 
 		return content;
 	}
@@ -1301,6 +1317,14 @@ public class DefaultTextExportImportContentProcessor
 				url = url.substring(
 					_PRIVATE_GROUP_SERVLET_MAPPING.length() - 1);
 
+				String companyAdminURL =
+					GroupConstants.CONTROL_PANEL_FRIENDLY_URL +
+						PropsValues.CONTROL_PANEL_LAYOUT_FRIENDLY_URL;
+
+				if (url.equals(companyAdminURL)) {
+					continue;
+				}
+
 				privateLayout = true;
 			}
 			else if (url.startsWith(_PRIVATE_USER_SERVLET_MAPPING)) {
@@ -1392,6 +1416,9 @@ public class DefaultTextExportImportContentProcessor
 			}
 		}
 	}
+
+	private static final String _DATA_HANDLER_COMPANY_ADMIN_URL =
+		"@data_handler_company_admin_url@";
 
 	private static final String _DATA_HANDLER_COMPANY_SECURE_URL =
 		"@data_handler_company_secure_url@";
