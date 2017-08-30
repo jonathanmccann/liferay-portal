@@ -1215,10 +1215,6 @@ public class BaseTextExportImportContentProcessor
 
 		url = replaceExportHostname(group.getGroupId(), url, urlSB);
 
-		if (!url.startsWith(StringPool.SLASH)) {
-			return _getObjectValuePair(urlSB, url + urlTail, originalURL);
-		}
-
 		String pathContext = PortalUtil.getPathContext();
 
 		if (pathContext.length() > 1) {
