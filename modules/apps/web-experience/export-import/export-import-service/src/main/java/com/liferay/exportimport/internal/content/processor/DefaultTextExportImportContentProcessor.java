@@ -52,6 +52,7 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortletKeys;
 import com.liferay.portal.kernel.util.PropsKeys;
@@ -545,194 +546,21 @@ public class DefaultTextExportImportContentProcessor
 
 			String url = content.substring(beginPos + offset, endPos);
 
-			if (url.endsWith(StringPool.SLASH)) {
-				url = url.substring(0, url.length() - 1);
-			}
-
-			StringBundler urlSB = new StringBundler(6);
+			ObjectValuePair<Layout, String> ovp = null;
 
 			try {
-				url = replaceExportHostname(
-					portletDataContext.getScopeGroupId(), url, urlSB);
+				ovp = _getLayoutFromURL(url, group);
 
-				if (!url.startsWith(StringPool.SLASH)) {
-					continue;
+				Layout layout = ovp.getKey();
+
+				if (layout != null) {
+					Element entityElement =
+						portletDataContext.getExportDataElement(stagedModel);
+
+					portletDataContext.addReferenceElement(
+						stagedModel, entityElement, layout,
+						PortletDataContext.REFERENCE_TYPE_DEPENDENCY, true);
 				}
-
-				String pathContext = _portal.getPathContext();
-
-				if (pathContext.length() > 1) {
-					if (!url.startsWith(pathContext)) {
-						continue;
-					}
-
-					urlSB.append(_DATA_HANDLER_PATH_CONTEXT);
-
-					url = url.substring(pathContext.length());
-				}
-
-				if (!url.startsWith(StringPool.SLASH)) {
-					continue;
-				}
-
-				int pos = url.indexOf(StringPool.SLASH, 1);
-
-				String localePath = StringPool.BLANK;
-
-				Locale locale = null;
-
-				if (pos != -1) {
-					localePath = url.substring(0, pos);
-
-					locale = LocaleUtil.fromLanguageId(
-						localePath.substring(1), true, false);
-				}
-
-				if (locale != null) {
-					String urlWithoutLocale = url.substring(
-						localePath.length());
-
-					if (urlWithoutLocale.startsWith(
-							_PRIVATE_GROUP_SERVLET_MAPPING) ||
-						urlWithoutLocale.startsWith(
-							_PRIVATE_USER_SERVLET_MAPPING) ||
-						urlWithoutLocale.startsWith(
-							_PUBLIC_GROUP_SERVLET_MAPPING)) {
-
-						urlSB.append(localePath);
-
-						url = urlWithoutLocale;
-					}
-				}
-
-				boolean privateLayout = false;
-
-				if (url.startsWith(_PRIVATE_GROUP_SERVLET_MAPPING)) {
-					urlSB.append(_DATA_HANDLER_PRIVATE_GROUP_SERVLET_MAPPING);
-
-					url = url.substring(
-						_PRIVATE_GROUP_SERVLET_MAPPING.length() - 1);
-
-					if (url.equals(_COMPANY_ADMIN_URL)) {
-						urlSB.append(_DATA_HANDLER_COMPANY_ADMIN_URL);
-
-						url = StringPool.BLANK;
-
-						continue;
-					}
-
-					privateLayout = true;
-				}
-				else if (url.startsWith(_PRIVATE_USER_SERVLET_MAPPING)) {
-					urlSB.append(_DATA_HANDLER_PRIVATE_USER_SERVLET_MAPPING);
-
-					url = url.substring(
-						_PRIVATE_USER_SERVLET_MAPPING.length() - 1);
-
-					privateLayout = true;
-				}
-				else if (url.startsWith(_PUBLIC_GROUP_SERVLET_MAPPING)) {
-					urlSB.append(_DATA_HANDLER_PUBLIC_SERVLET_MAPPING);
-
-					url = url.substring(
-						_PUBLIC_GROUP_SERVLET_MAPPING.length() - 1);
-				}
-				else {
-					String urlSBString = urlSB.toString();
-
-					LayoutSet layoutSet = null;
-
-					if (urlSBString.contains(
-							_DATA_HANDLER_PUBLIC_LAYOUT_SET_SECURE_URL) ||
-						urlSBString.contains(
-							_DATA_HANDLER_PUBLIC_LAYOUT_SET_URL)) {
-
-						layoutSet = group.getPublicLayoutSet();
-					}
-					else if (urlSBString.contains(
-								_DATA_HANDLER_PRIVATE_LAYOUT_SET_SECURE_URL) ||
-							 urlSBString.contains(
-								 _DATA_HANDLER_PRIVATE_LAYOUT_SET_URL)) {
-
-						layoutSet = group.getPrivateLayoutSet();
-					}
-
-					if (layoutSet == null) {
-						continue;
-					}
-
-					privateLayout = layoutSet.isPrivateLayout();
-
-					LayoutFriendlyURL layoutFriendlyUrl =
-						_layoutFriendlyURLLocalService.
-							fetchFirstLayoutFriendlyURL(
-								group.getGroupId(), privateLayout, url);
-
-					if (layoutFriendlyUrl == null) {
-						continue;
-					}
-
-					if (privateLayout) {
-						if (group.isUser()) {
-							urlSB.append(
-								_DATA_HANDLER_PRIVATE_USER_SERVLET_MAPPING);
-						}
-						else {
-							urlSB.append(
-								_DATA_HANDLER_PRIVATE_GROUP_SERVLET_MAPPING);
-						}
-					}
-					else {
-						urlSB.append(_DATA_HANDLER_PUBLIC_SERVLET_MAPPING);
-					}
-
-					urlSB.append(_DATA_HANDLER_GROUP_FRIENDLY_URL);
-
-					continue;
-				}
-
-				pos = url.indexOf(StringPool.SLASH, 1);
-
-				String groupFriendlyURL = url;
-
-				if (pos != -1) {
-					groupFriendlyURL = url.substring(0, pos);
-				}
-
-				Group urlGroup = _groupLocalService.fetchFriendlyURLGroup(
-					group.getCompanyId(), groupFriendlyURL);
-
-				if (urlGroup == null) {
-					throw new NoSuchLayoutException();
-				}
-
-				urlSB.append(_DATA_HANDLER_GROUP_FRIENDLY_URL);
-
-				if (pos == -1) {
-					url = StringPool.BLANK;
-
-					continue;
-				}
-
-				url = url.substring(pos);
-
-				if (url.equals(_SITE_ADMIN_URL)) {
-					urlSB.append(_DATA_HANDLER_SITE_ADMIN_URL);
-
-					url = StringPool.BLANK;
-
-					continue;
-				}
-
-				Layout layout = _layoutLocalService.getFriendlyURLLayout(
-					urlGroup.getGroupId(), privateLayout, url);
-
-				Element entityElement = portletDataContext.getExportDataElement(
-					stagedModel);
-
-				portletDataContext.addReferenceElement(
-					stagedModel, entityElement, layout,
-					PortletDataContext.REFERENCE_TYPE_DEPENDENCY, true);
 			}
 			catch (Exception e) {
 				if (e instanceof NoSuchLayoutException &&
@@ -759,13 +587,9 @@ public class DefaultTextExportImportContentProcessor
 				}
 			}
 			finally {
-				if (urlSB.length() > 0) {
-					urlSB.append(url);
-
-					url = urlSB.toString();
+				if (ovp != null) {
+					sb.replace(beginPos + offset, endPos, ovp.getValue());
 				}
-
-				sb.replace(beginPos + offset, endPos, url);
 			}
 		}
 
@@ -1235,124 +1059,7 @@ public class DefaultTextExportImportContentProcessor
 
 			String url = content.substring(beginPos + offset, endPos);
 
-			endPos = url.indexOf(Portal.FRIENDLY_URL_SEPARATOR);
-
-			if (endPos != -1) {
-				url = url.substring(0, endPos);
-			}
-
-			if (url.endsWith(StringPool.SLASH)) {
-				url = url.substring(0, url.length() - 1);
-			}
-
-			StringBundler urlSB = new StringBundler(1);
-
-			url = replaceExportHostname(groupId, url, urlSB);
-
-			if (!url.startsWith(StringPool.SLASH)) {
-				continue;
-			}
-
-			String pathContext = _portal.getPathContext();
-
-			if (pathContext.length() > 1) {
-				if (!url.startsWith(pathContext)) {
-					continue;
-				}
-
-				url = url.substring(pathContext.length());
-			}
-
-			if (!url.startsWith(StringPool.SLASH)) {
-				continue;
-			}
-
-			int pos = url.indexOf(StringPool.SLASH, 1);
-
-			String localePath = StringPool.BLANK;
-
-			Locale locale = null;
-
-			if (pos != -1) {
-				localePath = url.substring(0, pos);
-
-				locale = LocaleUtil.fromLanguageId(
-					localePath.substring(1), true, false);
-			}
-
-			if (locale != null) {
-				String urlWithoutLocale = url.substring(localePath.length());
-
-				if (urlWithoutLocale.startsWith(
-						_PRIVATE_GROUP_SERVLET_MAPPING) ||
-					urlWithoutLocale.startsWith(
-						_PRIVATE_USER_SERVLET_MAPPING) ||
-					urlWithoutLocale.startsWith(
-						_PUBLIC_GROUP_SERVLET_MAPPING)) {
-
-					url = urlWithoutLocale;
-				}
-			}
-
-			boolean privateLayout = false;
-
-			if (url.startsWith(_PRIVATE_GROUP_SERVLET_MAPPING)) {
-				url = url.substring(
-					_PRIVATE_GROUP_SERVLET_MAPPING.length() - 1);
-
-				if (url.equals(_COMPANY_ADMIN_URL)) {
-					continue;
-				}
-
-				privateLayout = true;
-			}
-			else if (url.startsWith(_PRIVATE_USER_SERVLET_MAPPING)) {
-				url = url.substring(_PRIVATE_USER_SERVLET_MAPPING.length() - 1);
-
-				privateLayout = true;
-			}
-			else if (url.startsWith(_PUBLIC_GROUP_SERVLET_MAPPING)) {
-				url = url.substring(_PUBLIC_GROUP_SERVLET_MAPPING.length() - 1);
-			}
-			else {
-				continue;
-			}
-
-			pos = url.indexOf(StringPool.SLASH, 1);
-
-			String groupFriendlyURL = url;
-
-			if (pos != -1) {
-				groupFriendlyURL = url.substring(0, pos);
-			}
-
-			Group urlGroup = _groupLocalService.fetchFriendlyURLGroup(
-				group.getCompanyId(), groupFriendlyURL);
-
-			if (urlGroup == null) {
-				throw new NoSuchLayoutException(
-					"Unable validate referenced page because it cannot be " +
-						"found with url: " + url);
-			}
-
-			if (pos == -1) {
-				continue;
-			}
-
-			url = url.substring(pos);
-
-			if (url.equals(_SITE_ADMIN_URL)) {
-				continue;
-			}
-
-			Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-				urlGroup.getGroupId(), privateLayout, url);
-
-			if (layout == null) {
-				throw new NoSuchLayoutException(
-					"Unable to validate referenced page because the page " +
-						"group cannot be found: " + groupId);
-			}
+			_getLayoutFromURL(url, group);
 		}
 	}
 
@@ -1387,6 +1094,238 @@ public class DefaultTextExportImportContentProcessor
 				throw new NoSuchLayoutException(exceptionMessage.toString());
 			}
 		}
+	}
+
+	private ObjectValuePair<Layout, String> _getLayoutFromURL(
+			String originalURL, Group group)
+		throws PortalException {
+
+		String url = originalURL;
+
+		String urlTail = StringPool.BLANK;
+
+		int endPos = url.indexOf(Portal.FRIENDLY_URL_SEPARATOR);
+
+		if (endPos != -1) {
+			urlTail = url.substring(endPos);
+
+			url = url.substring(0, endPos);
+		}
+
+		if (url.endsWith(StringPool.SLASH)) {
+			urlTail = StringPool.SLASH + urlTail;
+
+			url = url.substring(0, url.length() - 1);
+		}
+
+		StringBundler urlSB = new StringBundler(7);
+
+		url = replaceExportHostname(group.getGroupId(), url, urlSB);
+
+		if (!url.startsWith(StringPool.SLASH)) {
+			if (urlSB.length() > 0) {
+				urlSB.append(url);
+				urlSB.append(urlTail);
+
+				return new ObjectValuePair<>(null, urlSB.toString());
+			}
+
+			return new ObjectValuePair<>(null, originalURL);
+		}
+
+		String pathContext = _portal.getPathContext();
+
+		if (pathContext.length() > 1) {
+			if (!url.startsWith(pathContext)) {
+				if (urlSB.length() > 0) {
+					urlSB.append(url);
+					urlSB.append(urlTail);
+
+					return new ObjectValuePair<>(null, urlSB.toString());
+				}
+
+				return new ObjectValuePair<>(null, originalURL);
+			}
+
+			urlSB.append(_DATA_HANDLER_PATH_CONTEXT);
+
+			url = url.substring(pathContext.length());
+		}
+
+		if (!url.startsWith(StringPool.SLASH)) {
+			if (urlSB.length() > 0) {
+				urlSB.append(url);
+				urlSB.append(urlTail);
+
+				return new ObjectValuePair<>(null, urlSB.toString());
+			}
+
+			return new ObjectValuePair<>(null, originalURL);
+		}
+
+		int pos = url.indexOf(StringPool.SLASH, 1);
+
+		String localePath = StringPool.BLANK;
+
+		Locale locale = null;
+
+		if (pos != -1) {
+			localePath = url.substring(0, pos);
+
+			locale = LocaleUtil.fromLanguageId(
+				localePath.substring(1), true, false);
+		}
+
+		if (locale != null) {
+			String urlWithoutLocale = url.substring(localePath.length());
+
+			if (urlWithoutLocale.startsWith(_PRIVATE_GROUP_SERVLET_MAPPING) ||
+				urlWithoutLocale.startsWith(_PRIVATE_USER_SERVLET_MAPPING) ||
+				urlWithoutLocale.startsWith(_PUBLIC_GROUP_SERVLET_MAPPING)) {
+
+				urlSB.append(localePath);
+
+				url = urlWithoutLocale;
+			}
+		}
+
+		boolean privateLayout = false;
+
+		if (url.startsWith(_PRIVATE_GROUP_SERVLET_MAPPING)) {
+			urlSB.append(_DATA_HANDLER_PRIVATE_GROUP_SERVLET_MAPPING);
+
+			url = url.substring(_PRIVATE_GROUP_SERVLET_MAPPING.length() - 1);
+
+			if (url.equals(_COMPANY_ADMIN_URL)) {
+				urlSB.append(_DATA_HANDLER_COMPANY_ADMIN_URL);
+
+				return new ObjectValuePair<>(null, urlSB.toString());
+			}
+
+			privateLayout = true;
+		}
+		else if (url.startsWith(_PRIVATE_USER_SERVLET_MAPPING)) {
+			urlSB.append(_DATA_HANDLER_PRIVATE_USER_SERVLET_MAPPING);
+
+			url = url.substring(_PRIVATE_USER_SERVLET_MAPPING.length() - 1);
+
+			privateLayout = true;
+		}
+		else if (url.startsWith(_PUBLIC_GROUP_SERVLET_MAPPING)) {
+			urlSB.append(_DATA_HANDLER_PUBLIC_SERVLET_MAPPING);
+
+			url = url.substring(_PUBLIC_GROUP_SERVLET_MAPPING.length() - 1);
+		}
+		else {
+			String urlSBString = urlSB.toString();
+
+			LayoutSet layoutSet = null;
+
+			if (urlSBString.contains(
+					_DATA_HANDLER_PUBLIC_LAYOUT_SET_SECURE_URL) ||
+				urlSBString.contains(_DATA_HANDLER_PUBLIC_LAYOUT_SET_URL)) {
+
+				layoutSet = group.getPublicLayoutSet();
+			}
+			else if (urlSBString.contains(
+						_DATA_HANDLER_PRIVATE_LAYOUT_SET_SECURE_URL) ||
+					 urlSBString.contains(
+						 _DATA_HANDLER_PRIVATE_LAYOUT_SET_URL)) {
+
+				layoutSet = group.getPrivateLayoutSet();
+			}
+
+			if (layoutSet == null) {
+				if (urlSB.length() > 0) {
+					urlSB.append(url);
+					urlSB.append(urlTail);
+
+					return new ObjectValuePair<>(null, urlSB.toString());
+				}
+
+				return new ObjectValuePair<>(null, originalURL);
+			}
+
+			privateLayout = layoutSet.isPrivateLayout();
+
+			LayoutFriendlyURL layoutFriendlyUrl =
+				_layoutFriendlyURLLocalService.fetchFirstLayoutFriendlyURL(
+					group.getGroupId(), privateLayout, url);
+
+			if (layoutFriendlyUrl == null) {
+				if (urlSB.length() > 0) {
+					urlSB.append(url);
+					urlSB.append(urlTail);
+
+					return new ObjectValuePair<>(null, urlSB.toString());
+				}
+
+				return new ObjectValuePair<>(null, originalURL);
+			}
+
+			if (privateLayout) {
+				if (group.isUser()) {
+					urlSB.append(_DATA_HANDLER_PRIVATE_USER_SERVLET_MAPPING);
+				}
+				else {
+					urlSB.append(_DATA_HANDLER_PRIVATE_GROUP_SERVLET_MAPPING);
+				}
+			}
+			else {
+				urlSB.append(_DATA_HANDLER_PUBLIC_SERVLET_MAPPING);
+			}
+
+			urlSB.append(_DATA_HANDLER_GROUP_FRIENDLY_URL);
+			urlSB.append(url);
+			urlSB.append(urlTail);
+
+			return new ObjectValuePair<>(null, urlSB.toString());
+		}
+
+		pos = url.indexOf(StringPool.SLASH, 1);
+
+		String groupFriendlyURL = url;
+
+		if (pos != -1) {
+			groupFriendlyURL = url.substring(0, pos);
+		}
+
+		Group urlGroup = _groupLocalService.fetchFriendlyURLGroup(
+			group.getCompanyId(), groupFriendlyURL);
+
+		if (urlGroup == null) {
+			throw new NoSuchLayoutException(
+				"Unable validate referenced page because it cannot be found " +
+					"with url: " + url);
+		}
+
+		urlSB.append(_DATA_HANDLER_GROUP_FRIENDLY_URL);
+
+		if (pos == -1) {
+			return new ObjectValuePair<>(null, urlSB.toString());
+		}
+
+		url = url.substring(pos);
+
+		if (url.equals(_SITE_ADMIN_URL)) {
+			urlSB.append(_DATA_HANDLER_SITE_ADMIN_URL);
+
+			return new ObjectValuePair<>(null, urlSB.toString());
+		}
+
+		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			urlGroup.getGroupId(), privateLayout, url);
+
+		if (layout == null) {
+			throw new NoSuchLayoutException(
+				"Unable to validate referenced page because the page group " +
+					"cannot be found: " + group.getGroupId());
+		}
+
+		urlSB.append(url);
+		urlSB.append(urlTail);
+
+		return new ObjectValuePair<>(layout, urlSB.toString());
 	}
 
 	private static final String _COMPANY_ADMIN_URL =
