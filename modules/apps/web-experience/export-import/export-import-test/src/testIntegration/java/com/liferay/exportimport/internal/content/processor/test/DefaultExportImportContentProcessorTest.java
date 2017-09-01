@@ -193,6 +193,13 @@ public class DefaultExportImportContentProcessorTest {
 
 		_portletDataContextImport.setSourceGroupId(_stagingGroup.getGroupId());
 
+		Group virtualHostsDefaultGroup = GroupLocalServiceUtil.getGroup(
+			TestPropsValues.getCompanyId(),
+			PropsValues.VIRTUAL_HOSTS_DEFAULT_SITE_NAME);
+
+		_virtualHostsDefaultGroupPublicLayout = LayoutTestUtil.addLayout(
+			virtualHostsDefaultGroup, false);
+
 		rootElement.addElement("entry");
 
 		_referrerStagedModel = JournalTestUtil.addArticle(
@@ -789,6 +796,7 @@ public class DefaultExportImportContentProcessorTest {
 				"[$PATH_FRIENDLY_URL_PUBLIC$]",
 				"[$PRIVATE_LAYOUT_FRIENDLY_URL$]",
 				"[$PUBLIC_LAYOUT_FRIENDLY_URL$]", "[$TITLE$]", "[$UUID$]",
+				"[$VIRTUAL_HOSTS_DEFAULT_GROUP_PUBLIC_LAYOUT_FRIENDLY_URL$]",
 				"[$WEB_ID$]"
 			},
 			new String[] {
@@ -806,7 +814,9 @@ public class DefaultExportImportContentProcessorTest {
 				PropsValues.LAYOUT_FRIENDLY_URL_PUBLIC_SERVLET_MAPPING,
 				_stagingPrivateLayout.getFriendlyURL(),
 				_stagingPublicLayout.getFriendlyURL(), fileEntry.getTitle(),
-				fileEntry.getUuid(), company.getWebId()
+				fileEntry.getUuid(),
+				_virtualHostsDefaultGroupPublicLayout.getFriendlyURL(),
+				company.getWebId()
 			});
 
 		if (!content.contains("[$TIMESTAMP")) {
@@ -918,5 +928,8 @@ public class DefaultExportImportContentProcessorTest {
 
 	private Layout _stagingPrivateLayout;
 	private Layout _stagingPublicLayout;
+
+	@DeleteAfterTestRun
+	private Layout _virtualHostsDefaultGroupPublicLayout;
 
 }
