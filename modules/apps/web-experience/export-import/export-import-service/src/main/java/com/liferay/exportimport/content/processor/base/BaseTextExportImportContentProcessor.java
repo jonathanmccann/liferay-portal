@@ -1322,34 +1322,7 @@ public class BaseTextExportImportContentProcessor
 				url = url.substring(PUBLIC_GROUP_SERVLET_MAPPING.length() - 1);
 			}
 			else {
-				String urlSBString = urlSB.toString();
-
-				LayoutSet layoutSet = null;
-
-				if (urlSBString.contains(
-						DATA_HANDLER_PUBLIC_LAYOUT_SET_SECURE_URL) ||
-					urlSBString.contains(DATA_HANDLER_PUBLIC_LAYOUT_SET_URL)) {
-
-					layoutSet = group.getPublicLayoutSet();
-				}
-				else if (urlSBString.contains(
-							DATA_HANDLER_PRIVATE_LAYOUT_SET_SECURE_URL) ||
-						 urlSBString.contains(
-							 DATA_HANDLER_PRIVATE_LAYOUT_SET_URL)) {
-
-					layoutSet = group.getPrivateLayoutSet();
-				}
-
-				if (layoutSet == null) {
-					continue;
-				}
-
-				Layout layout = LayoutLocalServiceUtil.fetchLayoutByFriendlyURL(
-					groupId, layoutSet.isPrivateLayout(), url);
-
-				if (layout == null) {
-					throw new NoSuchLayoutException();
-				}
+				continue;
 			}
 
 			String siteAdminURL =

@@ -1311,36 +1311,7 @@ public class DefaultTextExportImportContentProcessor
 				url = url.substring(_PUBLIC_GROUP_SERVLET_MAPPING.length() - 1);
 			}
 			else {
-				String urlSBString = urlSB.toString();
-
-				LayoutSet layoutSet = null;
-
-				if (urlSBString.contains(
-						_DATA_HANDLER_PUBLIC_LAYOUT_SET_SECURE_URL) ||
-					urlSBString.contains(_DATA_HANDLER_PUBLIC_LAYOUT_SET_URL)) {
-
-					layoutSet = group.getPublicLayoutSet();
-				}
-				else if (urlSBString.contains(
-							_DATA_HANDLER_PRIVATE_LAYOUT_SET_SECURE_URL) ||
-						 urlSBString.contains(
-							 _DATA_HANDLER_PRIVATE_LAYOUT_SET_URL)) {
-
-					layoutSet = group.getPrivateLayoutSet();
-				}
-
-				if (layoutSet == null) {
-					continue;
-				}
-
-				Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
-					groupId, layoutSet.isPrivateLayout(), url);
-
-				if (layout == null) {
-					throw new NoSuchLayoutException(
-						"Unable to validate referenced page because the page " +
-							"group cannot be found: " + groupId);
-				}
+				continue;
 			}
 
 			String siteAdminURL =
