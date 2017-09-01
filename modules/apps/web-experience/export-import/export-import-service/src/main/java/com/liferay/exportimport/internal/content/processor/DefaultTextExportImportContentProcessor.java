@@ -1269,9 +1269,17 @@ public class DefaultTextExportImportContentProcessor
 			group.getCompanyId(), groupFriendlyURL);
 
 		if (urlGroup == null) {
-			throw new NoSuchLayoutException(
-				"Unable validate referenced page because it cannot be found " +
-					"with url: " + url);
+			StringBundler sb = new StringBundler(7);
+
+			sb.append("Unable to validate referenced page from URL \"");
+			sb.append(originalURL);
+			sb.append("\" because no group could be found with friendly ");
+			sb.append("URL \"");
+			sb.append(groupFriendlyURL);
+			sb.append("\" in company ");
+			sb.append(group.getCompanyId());
+
+			throw new NoSuchLayoutException(sb.toString());
 		}
 
 		urlSB.append(_DATA_HANDLER_GROUP_FRIENDLY_URL);
@@ -1292,9 +1300,25 @@ public class DefaultTextExportImportContentProcessor
 			urlGroup.getGroupId(), privateLayout, url);
 
 		if (layout == null) {
-			throw new NoSuchLayoutException(
-				"Unable to validate referenced page because the page group " +
-					"cannot be found: " + group.getGroupId());
+			StringBundler sb = new StringBundler(8);
+
+			sb.append("Unable to validate referenced page from URL \"");
+			sb.append(originalURL);
+			sb.append("\" because no ");
+
+			if (privateLayout) {
+				sb.append("private ");
+			}
+			else {
+				sb.append("public ");
+			}
+
+			sb.append("layout could be found with friendly URL \"");
+			sb.append(url);
+			sb.append("\" in group ");
+			sb.append(urlGroup.getGroupId());
+
+			throw new NoSuchLayoutException(sb.toString());
 		}
 
 		urlSB.append(url);
