@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.StagedModel;
+import com.liferay.portal.kernel.model.VirtualHost;
 import com.liferay.portal.kernel.model.VirtualLayoutConstants;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProviderUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -47,10 +48,12 @@ import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.VirtualHostLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.CharPool;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -422,92 +425,7 @@ public class BaseTextExportImportContentProcessor
 			long groupId, String url, StringBundler urlSB)
 		throws PortalException {
 
-		if (!HttpUtil.hasProtocol(url)) {
-			return url;
-		}
-
-		boolean secure = HttpUtil.isSecure(url);
-
-		int serverPort = PortalUtil.getPortalServerPort(secure);
-
-		if (serverPort == -1) {
-			return url;
-		}
-
-		Group group = GroupLocalServiceUtil.getGroup(groupId);
-
-		LayoutSet publicLayoutSet = group.getPublicLayoutSet();
-
-		String publicLayoutSetVirtualHostname =
-			publicLayoutSet.getVirtualHostname();
-
-		String portalUrl = StringPool.BLANK;
-
-		if (Validator.isNotNull(publicLayoutSetVirtualHostname)) {
-			portalUrl = PortalUtil.getPortalURL(
-				publicLayoutSetVirtualHostname, serverPort, secure);
-
-			if (url.startsWith(portalUrl)) {
-				if (secure) {
-					urlSB.append(DATA_HANDLER_PUBLIC_LAYOUT_SET_SECURE_URL);
-				}
-				else {
-					urlSB.append(DATA_HANDLER_PUBLIC_LAYOUT_SET_URL);
-				}
-
-				return url.substring(portalUrl.length());
-			}
-		}
-
-		LayoutSet privateLayoutSet = group.getPrivateLayoutSet();
-
-		String privateLayoutSetVirtualHostname =
-			privateLayoutSet.getVirtualHostname();
-
-		if (Validator.isNotNull(privateLayoutSetVirtualHostname)) {
-			portalUrl = PortalUtil.getPortalURL(
-				privateLayoutSetVirtualHostname, serverPort, secure);
-
-			if (url.startsWith(portalUrl)) {
-				if (secure) {
-					urlSB.append(DATA_HANDLER_PRIVATE_LAYOUT_SET_SECURE_URL);
-				}
-				else {
-					urlSB.append(DATA_HANDLER_PRIVATE_LAYOUT_SET_URL);
-				}
-
-				return url.substring(portalUrl.length());
-			}
-		}
-
-		Company company = CompanyLocalServiceUtil.getCompany(
-			group.getCompanyId());
-
-		String companyVirtualHostname = company.getVirtualHostname();
-
-		if (Validator.isNotNull(companyVirtualHostname)) {
-			portalUrl = PortalUtil.getPortalURL(
-				companyVirtualHostname, serverPort, secure);
-
-			if (url.startsWith(portalUrl)) {
-				if (secure) {
-					urlSB.append(DATA_HANDLER_COMPANY_SECURE_URL);
-				}
-				else {
-					urlSB.append(DATA_HANDLER_COMPANY_URL);
-				}
-
-				return url.substring(portalUrl.length());
-			}
-		}
-
-		portalUrl = PortalUtil.getPortalURL("localhost", serverPort, secure);
-
-		if (url.startsWith(portalUrl)) {
-			return url.substring(portalUrl.length());
-		}
-
-		return url;
+		return _extractVirtualHostFromURL(url, urlSB).getValue();
 	}
 
 	protected String replaceExportLayoutReferences(
@@ -1190,6 +1108,100 @@ public class BaseTextExportImportContentProcessor
 	protected static final Pattern importLinksToLayoutPattern = Pattern.compile(
 		"\\[([\\d]+)@(private(-group|-user)?|public)@([\\d]+)(@([\\d]+))?\\]");
 
+	private ObjectValuePair<VirtualHost, String> _extractVirtualHostFromURL(
+			String url, StringBundler urlSB)
+		throws PortalException {
+
+		if (!HttpUtil.hasProtocol(url)) {
+			return new ObjectValuePair<>(null, url);
+		}
+
+		boolean secure = HttpUtil.isSecure(url);
+
+		int serverPort = PortalUtil.getPortalServerPort(secure);
+
+		if (serverPort == -1) {
+			return new ObjectValuePair<>(null, url);
+		}
+
+		String portString = _getPortString(serverPort, secure);
+
+		int virtualHostnameBeginPos =
+			url.indexOf(Http.PROTOCOL_DELIMITER) +
+				Http.PROTOCOL_DELIMITER.length();
+
+		int virtualHostnameEndPos = -1;
+
+		if (Validator.isNotNull(portString)) {
+			virtualHostnameEndPos = url.indexOf(
+				portString, virtualHostnameBeginPos);
+		}
+		else {
+			virtualHostnameEndPos = url.indexOf(
+				StringPool.SLASH, virtualHostnameBeginPos);
+		}
+
+		if (virtualHostnameEndPos <= virtualHostnameBeginPos) {
+			return new ObjectValuePair<>(null, url);
+		}
+
+		String virtualHostname = url.substring(
+			virtualHostnameBeginPos, virtualHostnameEndPos);
+
+		VirtualHost virtualHost = VirtualHostLocalServiceUtil.fetchVirtualHost(
+			virtualHostname);
+
+		if (virtualHost == null) {
+			if (virtualHostname.equals(PropsValues.WEB_SERVER_HOST) ||
+				virtualHostname.equals("localhost")) {
+
+				Company company = CompanyLocalServiceUtil.getCompanyByWebId(
+					PropsValues.COMPANY_DEFAULT_WEB_ID);
+
+				virtualHost = VirtualHostLocalServiceUtil.getVirtualHost(
+					company.getCompanyId(), 0);
+			}
+		}
+
+		if (virtualHost == null) {
+			return new ObjectValuePair<>(null, url);
+		}
+
+		if (virtualHost.getLayoutSetId() == 0) {
+			if (secure) {
+				urlSB.append(DATA_HANDLER_COMPANY_SECURE_URL);
+			}
+			else {
+				urlSB.append(DATA_HANDLER_COMPANY_URL);
+			}
+		}
+		else {
+			LayoutSet layoutSet = LayoutSetLocalServiceUtil.getLayoutSet(
+				virtualHost.getLayoutSetId());
+
+			if (layoutSet.isPrivateLayout()) {
+				if (secure) {
+					urlSB.append(DATA_HANDLER_PRIVATE_LAYOUT_SET_SECURE_URL);
+				}
+				else {
+					urlSB.append(DATA_HANDLER_PRIVATE_LAYOUT_SET_URL);
+				}
+			}
+			else {
+				if (secure) {
+					urlSB.append(DATA_HANDLER_PUBLIC_LAYOUT_SET_SECURE_URL);
+				}
+				else {
+					urlSB.append(DATA_HANDLER_PUBLIC_LAYOUT_SET_URL);
+				}
+			}
+		}
+
+		url = url.substring(virtualHostnameEndPos + portString.length());
+
+		return new ObjectValuePair<>(virtualHost, url);
+	}
+
 	private ObjectValuePair<Layout, String> _getLayoutFromURL(
 			String originalURL, Group group)
 		throws PortalException {
@@ -1402,6 +1414,46 @@ public class BaseTextExportImportContentProcessor
 		}
 
 		return new ObjectValuePair<>(null, originalURL);
+	}
+
+	private String _getPortString(int serverPort, boolean secure) {
+		boolean https = false;
+
+		if (secure ||
+			StringUtil.equalsIgnoreCase(
+				Http.HTTPS, PropsValues.WEB_SERVER_PROTOCOL)) {
+
+			https = true;
+		}
+
+		if (!https) {
+			if (PropsValues.WEB_SERVER_HTTP_PORT == -1) {
+				if ((serverPort != Http.HTTP_PORT) &&
+					(serverPort != Http.HTTPS_PORT)) {
+
+					return StringPool.COLON + String.valueOf(serverPort);
+				}
+			}
+			else if (PropsValues.WEB_SERVER_HTTP_PORT != Http.HTTP_PORT) {
+				return StringPool.COLON +
+					String.valueOf(PropsValues.WEB_SERVER_HTTP_PORT);
+			}
+		}
+		else {
+			if (PropsValues.WEB_SERVER_HTTPS_PORT == -1) {
+				if ((serverPort != Http.HTTP_PORT) &&
+					(serverPort != Http.HTTPS_PORT)) {
+
+					return StringPool.COLON + String.valueOf(serverPort);
+				}
+			}
+			else if (PropsValues.WEB_SERVER_HTTPS_PORT != Http.HTTPS_PORT) {
+				return StringPool.COLON +
+					String.valueOf(PropsValues.WEB_SERVER_HTTPS_PORT);
+			}
+		}
+
+		return StringPool.BLANK;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(
