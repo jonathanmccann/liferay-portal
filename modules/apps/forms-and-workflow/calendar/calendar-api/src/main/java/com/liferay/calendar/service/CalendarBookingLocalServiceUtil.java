@@ -155,50 +155,50 @@ public class CalendarBookingLocalServiceUtil {
 			allRecurringInstances);
 	}
 
-	public static void deleteCalendarBookingInstance(
+	public static void deleteCalendarBookingInstance(long userId,
 		com.liferay.calendar.model.CalendarBooking calendarBooking,
 		int instanceIndex, boolean allFollowing)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		getService()
-			.deleteCalendarBookingInstance(calendarBooking, instanceIndex,
-			allFollowing);
+			.deleteCalendarBookingInstance(userId, calendarBooking,
+			instanceIndex, allFollowing);
 	}
 
-	public static void deleteCalendarBookingInstance(
+	public static void deleteCalendarBookingInstance(long userId,
 		com.liferay.calendar.model.CalendarBooking calendarBooking,
 		int instanceIndex, boolean allFollowing,
 		boolean deleteRecurringCalendarBookings)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		getService()
-			.deleteCalendarBookingInstance(calendarBooking, instanceIndex,
-			allFollowing, deleteRecurringCalendarBookings);
+			.deleteCalendarBookingInstance(userId, calendarBooking,
+			instanceIndex, allFollowing, deleteRecurringCalendarBookings);
 	}
 
-	public static void deleteCalendarBookingInstance(
+	public static void deleteCalendarBookingInstance(long userId,
 		com.liferay.calendar.model.CalendarBooking calendarBooking,
 		long startTime, boolean allFollowing)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		getService()
-			.deleteCalendarBookingInstance(calendarBooking, startTime,
+			.deleteCalendarBookingInstance(userId, calendarBooking, startTime,
 			allFollowing);
 	}
 
-	public static void deleteCalendarBookingInstance(
+	public static void deleteCalendarBookingInstance(long userId,
 		com.liferay.calendar.model.CalendarBooking calendarBooking,
 		long startTime, boolean allFollowing,
 		boolean deleteRecurringCalendarBookings)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		getService()
-			.deleteCalendarBookingInstance(calendarBooking, startTime,
+			.deleteCalendarBookingInstance(userId, calendarBooking, startTime,
 			allFollowing, deleteRecurringCalendarBookings);
 	}
 
-	public static void deleteCalendarBookingInstance(long calendarBookingId,
-		long startTime, boolean allFollowing)
+	public static void deleteCalendarBookingInstance(long userId,
+		long calendarBookingId, long startTime, boolean allFollowing)
 		throws com.liferay.portal.kernel.exception.PortalException {
 		getService()
-			.deleteCalendarBookingInstance(calendarBookingId, startTime,
-			allFollowing);
+			.deleteCalendarBookingInstance(userId, calendarBookingId,
+			startTime, allFollowing);
 	}
 
 	public static void deleteCalendarBookings(long calendarId)

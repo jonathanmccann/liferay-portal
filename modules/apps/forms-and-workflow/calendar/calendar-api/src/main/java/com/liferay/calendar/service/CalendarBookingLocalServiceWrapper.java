@@ -155,49 +155,51 @@ public class CalendarBookingLocalServiceWrapper
 	}
 
 	@Override
-	public void deleteCalendarBookingInstance(
+	public void deleteCalendarBookingInstance(long userId,
 		com.liferay.calendar.model.CalendarBooking calendarBooking,
 		int instanceIndex, boolean allFollowing)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		_calendarBookingLocalService.deleteCalendarBookingInstance(calendarBooking,
-			instanceIndex, allFollowing);
+		_calendarBookingLocalService.deleteCalendarBookingInstance(userId,
+			calendarBooking, instanceIndex, allFollowing);
 	}
 
 	@Override
-	public void deleteCalendarBookingInstance(
+	public void deleteCalendarBookingInstance(long userId,
 		com.liferay.calendar.model.CalendarBooking calendarBooking,
 		int instanceIndex, boolean allFollowing,
 		boolean deleteRecurringCalendarBookings)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		_calendarBookingLocalService.deleteCalendarBookingInstance(calendarBooking,
-			instanceIndex, allFollowing, deleteRecurringCalendarBookings);
+		_calendarBookingLocalService.deleteCalendarBookingInstance(userId,
+			calendarBooking, instanceIndex, allFollowing,
+			deleteRecurringCalendarBookings);
 	}
 
 	@Override
-	public void deleteCalendarBookingInstance(
+	public void deleteCalendarBookingInstance(long userId,
 		com.liferay.calendar.model.CalendarBooking calendarBooking,
 		long startTime, boolean allFollowing)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		_calendarBookingLocalService.deleteCalendarBookingInstance(calendarBooking,
-			startTime, allFollowing);
+		_calendarBookingLocalService.deleteCalendarBookingInstance(userId,
+			calendarBooking, startTime, allFollowing);
 	}
 
 	@Override
-	public void deleteCalendarBookingInstance(
+	public void deleteCalendarBookingInstance(long userId,
 		com.liferay.calendar.model.CalendarBooking calendarBooking,
 		long startTime, boolean allFollowing,
 		boolean deleteRecurringCalendarBookings)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		_calendarBookingLocalService.deleteCalendarBookingInstance(calendarBooking,
-			startTime, allFollowing, deleteRecurringCalendarBookings);
+		_calendarBookingLocalService.deleteCalendarBookingInstance(userId,
+			calendarBooking, startTime, allFollowing,
+			deleteRecurringCalendarBookings);
 	}
 
 	@Override
-	public void deleteCalendarBookingInstance(long calendarBookingId,
-		long startTime, boolean allFollowing)
+	public void deleteCalendarBookingInstance(long userId,
+		long calendarBookingId, long startTime, boolean allFollowing)
 		throws com.liferay.portal.kernel.exception.PortalException {
-		_calendarBookingLocalService.deleteCalendarBookingInstance(calendarBookingId,
-			startTime, allFollowing);
+		_calendarBookingLocalService.deleteCalendarBookingInstance(userId,
+			calendarBookingId, startTime, allFollowing);
 	}
 
 	@Override
