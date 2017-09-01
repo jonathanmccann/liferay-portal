@@ -1237,19 +1237,17 @@ public class DefaultTextExportImportContentProcessor
 				return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 			}
 
-			privateLayout = layoutSet.isPrivateLayout();
-
 			Group urlGroup = layoutSet.getGroup();
 
 			LayoutFriendlyURL layoutFriendlyUrl =
 				_layoutFriendlyURLLocalService.fetchFirstLayoutFriendlyURL(
-					urlGroup.getGroupId(), privateLayout, url);
+					urlGroup.getGroupId(), layoutSet.isPrivateLayout(), url);
 
 			if (layoutFriendlyUrl == null) {
 				return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 			}
 
-			if (privateLayout) {
+			if (layoutSet.isPrivateLayout()) {
 				if (urlGroup.isUser()) {
 					urlSB.append(_DATA_HANDLER_PRIVATE_USER_SERVLET_MAPPING);
 				}

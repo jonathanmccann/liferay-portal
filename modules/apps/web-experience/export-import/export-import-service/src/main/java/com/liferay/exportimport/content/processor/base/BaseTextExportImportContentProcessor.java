@@ -1330,19 +1330,17 @@ public class BaseTextExportImportContentProcessor
 				return _getObjectValuePair(urlSB, url + urlTail, originalURL);
 			}
 
-			privateLayout = layoutSet.isPrivateLayout();
-
 			Group urlGroup = layoutSet.getGroup();
 
 			LayoutFriendlyURL layoutFriendlyUrl =
 				LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
-					urlGroup.getGroupId(), privateLayout, url);
+					urlGroup.getGroupId(), layoutSet.isPrivateLayout(), url);
 
 			if (layoutFriendlyUrl == null) {
 				throw new NoSuchLayoutException();
 			}
 
-			if (privateLayout) {
+			if (layoutSet.isPrivateLayout()) {
 				if (urlGroup.isUser()) {
 					urlSB.append(DATA_HANDLER_PRIVATE_USER_SERVLET_MAPPING);
 				}
