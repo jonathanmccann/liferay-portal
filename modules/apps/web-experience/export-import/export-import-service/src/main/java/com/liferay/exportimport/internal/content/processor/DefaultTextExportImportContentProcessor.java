@@ -1134,7 +1134,17 @@ public class DefaultTextExportImportContentProcessor
 
 		StringBundler urlSB = new StringBundler(7);
 
-		url = replaceExportHostname(group.getGroupId(), url, urlSB);
+		ObjectValuePair<VirtualHost, String> ovp = _extractVirtualHostFromURL(
+			url, urlSB);
+
+		VirtualHost virtualHost = ovp.getKey();
+
+		if (virtualHost == null) {
+			virtualHost = _virtualHostLocalService.getVirtualHost(
+				group.getCompanyId(), 0);
+		}
+
+		url = ovp.getValue();
 
 		String pathContext = _portal.getPathContext();
 
@@ -1206,26 +1216,15 @@ public class DefaultTextExportImportContentProcessor
 			url = url.substring(_publicGroupServletMapping.length() - 1);
 		}
 		else {
-			String urlSBString = urlSB.toString();
-
 			LayoutSet layoutSet = null;
 
-			if (urlSBString.contains(
-					_DATA_HANDLER_PUBLIC_LAYOUT_SET_SECURE_URL) ||
-				urlSBString.contains(_DATA_HANDLER_PUBLIC_LAYOUT_SET_URL)) {
-
-				layoutSet = group.getPublicLayoutSet();
-			}
-			else if (urlSBString.contains(
-						_DATA_HANDLER_PRIVATE_LAYOUT_SET_SECURE_URL) ||
-					 urlSBString.contains(
-						 _DATA_HANDLER_PRIVATE_LAYOUT_SET_URL)) {
-
-				layoutSet = group.getPrivateLayoutSet();
+			if (virtualHost.getLayoutSetId() != 0) {
+				layoutSet = _layoutSetLocalService.fetchLayoutSet(
+					virtualHost.getLayoutSetId());
 			}
 			else {
 				Group virtualHostsDefaultGroup = _groupLocalService.fetchGroup(
-					group.getCompanyId(),
+					virtualHost.getCompanyId(),
 					PropsValues.VIRTUAL_HOSTS_DEFAULT_SITE_NAME);
 
 				if (virtualHostsDefaultGroup != null) {
@@ -1278,7 +1277,7 @@ public class DefaultTextExportImportContentProcessor
 		}
 
 		Group urlGroup = _groupLocalService.fetchFriendlyURLGroup(
-			group.getCompanyId(), groupFriendlyURL);
+			virtualHost.getCompanyId(), groupFriendlyURL);
 
 		if (urlGroup == null) {
 			StringBundler sb = new StringBundler(7);
@@ -1289,7 +1288,7 @@ public class DefaultTextExportImportContentProcessor
 			sb.append("URL \"");
 			sb.append(groupFriendlyURL);
 			sb.append("\" in company ");
-			sb.append(group.getCompanyId());
+			sb.append(virtualHost.getCompanyId());
 
 			throw new NoSuchLayoutException(sb.toString());
 		}

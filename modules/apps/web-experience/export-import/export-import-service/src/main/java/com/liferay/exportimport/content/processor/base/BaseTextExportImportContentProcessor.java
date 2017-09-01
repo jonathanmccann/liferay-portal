@@ -1226,7 +1226,17 @@ public class BaseTextExportImportContentProcessor
 
 		StringBundler urlSB = new StringBundler(7);
 
-		url = replaceExportHostname(group.getGroupId(), url, urlSB);
+		ObjectValuePair<VirtualHost, String> ovp = _extractVirtualHostFromURL(
+			url, urlSB);
+
+		VirtualHost virtualHost = ovp.getKey();
+
+		if (virtualHost == null) {
+			virtualHost = VirtualHostLocalServiceUtil.getVirtualHost(
+				group.getCompanyId(), 0);
+		}
+
+		url = ovp.getValue();
 
 		String pathContext = PortalUtil.getPathContext();
 
@@ -1298,27 +1308,16 @@ public class BaseTextExportImportContentProcessor
 			url = url.substring(PUBLIC_GROUP_SERVLET_MAPPING.length() - 1);
 		}
 		else {
-			String urlSBString = urlSB.toString();
-
 			LayoutSet layoutSet = null;
 
-			if (urlSBString.contains(
-					DATA_HANDLER_PUBLIC_LAYOUT_SET_SECURE_URL) ||
-				urlSBString.contains(DATA_HANDLER_PUBLIC_LAYOUT_SET_URL)) {
-
-				layoutSet = group.getPublicLayoutSet();
-			}
-			else if (urlSBString.contains(
-						DATA_HANDLER_PRIVATE_LAYOUT_SET_SECURE_URL) ||
-					 urlSBString.contains(
-						 DATA_HANDLER_PRIVATE_LAYOUT_SET_URL)) {
-
-				layoutSet = group.getPrivateLayoutSet();
+			if (virtualHost.getLayoutSetId() != 0) {
+				layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSet(
+					virtualHost.getLayoutSetId());
 			}
 			else {
 				Group virtualHostsDefaultGroup =
 					GroupLocalServiceUtil.fetchGroup(
-						group.getCompanyId(),
+						virtualHost.getCompanyId(),
 						PropsValues.VIRTUAL_HOSTS_DEFAULT_SITE_NAME);
 
 				if (virtualHostsDefaultGroup != null) {
@@ -1371,7 +1370,7 @@ public class BaseTextExportImportContentProcessor
 		}
 
 		Group urlGroup = GroupLocalServiceUtil.fetchFriendlyURLGroup(
-			group.getCompanyId(), groupFriendlyURL);
+			virtualHost.getCompanyId(), groupFriendlyURL);
 
 		if (urlGroup == null) {
 			throw new NoSuchLayoutException();
