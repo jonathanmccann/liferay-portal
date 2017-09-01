@@ -44,6 +44,7 @@ import com.liferay.portal.kernel.service.CompanyLocalServiceUtil;
 import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
+import com.liferay.portal.kernel.service.LayoutSetLocalServiceUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
@@ -1302,6 +1303,17 @@ public class BaseTextExportImportContentProcessor
 
 				layoutSet = group.getPrivateLayoutSet();
 			}
+			else {
+				Group virtualHostsDefaultGroup =
+					GroupLocalServiceUtil.fetchGroup(
+						group.getCompanyId(),
+						PropsValues.VIRTUAL_HOSTS_DEFAULT_SITE_NAME);
+
+				if (virtualHostsDefaultGroup != null) {
+					layoutSet = LayoutSetLocalServiceUtil.fetchLayoutSet(
+						virtualHostsDefaultGroup.getGroupId(), false);
+				}
+			}
 
 			if (layoutSet == null) {
 				return _getObjectValuePair(urlSB, url + urlTail, originalURL);
@@ -1309,16 +1321,18 @@ public class BaseTextExportImportContentProcessor
 
 			privateLayout = layoutSet.isPrivateLayout();
 
+			Group urlGroup = layoutSet.getGroup();
+
 			LayoutFriendlyURL layoutFriendlyUrl =
 				LayoutFriendlyURLLocalServiceUtil.fetchFirstLayoutFriendlyURL(
-					group.getGroupId(), privateLayout, url);
+					urlGroup.getGroupId(), privateLayout, url);
 
 			if (layoutFriendlyUrl == null) {
 				throw new NoSuchLayoutException();
 			}
 
 			if (privateLayout) {
-				if (group.isUser()) {
+				if (urlGroup.isUser()) {
 					urlSB.append(DATA_HANDLER_PRIVATE_USER_SERVLET_MAPPING);
 				}
 				else {
