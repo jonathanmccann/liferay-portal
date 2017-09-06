@@ -147,22 +147,63 @@ public interface CalendarBookingLocalService extends BaseLocalService,
 	public CalendarBooking deleteCalendarBooking(long calendarBookingId,
 		boolean allRecurringInstances) throws PortalException;
 
+	/**
+	* @deprecated As of 7.0.0, with no direct replacement
+	*/
+	@java.lang.Deprecated
 	public void deleteCalendarBookingInstance(CalendarBooking calendarBooking,
 		int instanceIndex, boolean allFollowing) throws PortalException;
 
+	/**
+	* @deprecated As of 7.0.0, with no direct replacement
+	*/
+	@java.lang.Deprecated
 	public void deleteCalendarBookingInstance(CalendarBooking calendarBooking,
 		int instanceIndex, boolean allFollowing,
 		boolean deleteRecurringCalendarBookings) throws PortalException;
 
+	/**
+	* @deprecated As of 7.0.0, with no direct replacement
+	*/
+	@java.lang.Deprecated
 	public void deleteCalendarBookingInstance(CalendarBooking calendarBooking,
 		long startTime, boolean allFollowing) throws PortalException;
 
+	/**
+	* @deprecated As of 7.0.0, with no direct replacement
+	*/
+	@java.lang.Deprecated
 	public void deleteCalendarBookingInstance(CalendarBooking calendarBooking,
 		long startTime, boolean allFollowing,
 		boolean deleteRecurringCalendarBookings) throws PortalException;
 
+	public void deleteCalendarBookingInstance(long userId,
+		CalendarBooking calendarBooking, int instanceIndex, boolean allFollowing)
+		throws PortalException;
+
+	public void deleteCalendarBookingInstance(long userId,
+		CalendarBooking calendarBooking, int instanceIndex,
+		boolean allFollowing, boolean deleteRecurringCalendarBookings)
+		throws PortalException;
+
+	public void deleteCalendarBookingInstance(long userId,
+		CalendarBooking calendarBooking, long startTime, boolean allFollowing)
+		throws PortalException;
+
+	public void deleteCalendarBookingInstance(long userId,
+		CalendarBooking calendarBooking, long startTime, boolean allFollowing,
+		boolean deleteRecurringCalendarBookings) throws PortalException;
+
+	/**
+	* @deprecated As of 7.0.0, with no direct replacement
+	*/
+	@java.lang.Deprecated
 	public void deleteCalendarBookingInstance(long calendarBookingId,
 		long startTime, boolean allFollowing) throws PortalException;
+
+	public void deleteCalendarBookingInstance(long userId,
+		long calendarBookingId, long startTime, boolean allFollowing)
+		throws PortalException;
 
 	public void deleteCalendarBookings(long calendarId)
 		throws PortalException;

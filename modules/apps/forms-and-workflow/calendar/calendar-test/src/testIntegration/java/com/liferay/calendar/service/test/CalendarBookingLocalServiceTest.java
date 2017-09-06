@@ -581,7 +581,7 @@ public class CalendarBookingLocalServiceTest {
 				calendarBooking, 2, titleMap, serviceContext);
 
 		CalendarBookingLocalServiceUtil.deleteCalendarBookingInstance(
-			calendarBooking, 1, true, true);
+			_user.getUserId(), calendarBooking, 1, true, true);
 
 		calendarBookingInstance =
 			CalendarBookingLocalServiceUtil.fetchCalendarBooking(
@@ -659,7 +659,7 @@ public class CalendarBookingLocalServiceTest {
 		long calendarBookingId = calendarBooking.getCalendarBookingId();
 
 		CalendarBookingLocalServiceUtil.deleteCalendarBookingInstance(
-			calendarBooking, 0, false);
+			_user.getUserId(), calendarBooking, 0, false);
 
 		calendarBooking = CalendarBookingLocalServiceUtil.fetchCalendarBooking(
 			calendarBookingId);
@@ -667,7 +667,7 @@ public class CalendarBookingLocalServiceTest {
 		Assert.assertNotNull(calendarBooking);
 
 		CalendarBookingLocalServiceUtil.deleteCalendarBookingInstance(
-			calendarBooking, 0, false);
+			_user.getUserId(), calendarBooking, 0, false);
 
 		calendarBooking = CalendarBookingLocalServiceUtil.fetchCalendarBooking(
 			calendarBookingId);
