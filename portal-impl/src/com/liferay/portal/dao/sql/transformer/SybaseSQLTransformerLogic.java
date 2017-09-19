@@ -20,6 +20,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 
 import java.util.function.Function;
 import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @author Manuel de la Peña
@@ -34,8 +35,8 @@ public class SybaseSQLTransformerLogic extends BaseSQLTransformerLogic {
 			getCastClobTextFunction(), getCastLongFunction(),
 			getCastTextFunction(), getInstrFunction(),
 			getIntegerDivisionFunction(), getModFunction(),
-			getNullDateFunction(), getSubstrFunction(), _getCrossJoinFunction(),
-			_getReplaceFunction());
+			getNullDateFunction(), getSubstrFunction(), _getConcatFunction(),
+			_getCrossJoinFunction(), _getReplaceFunction());
 	}
 
 	@Override
@@ -48,6 +49,22 @@ public class SybaseSQLTransformerLogic extends BaseSQLTransformerLogic {
 		return matcher.replaceAll("CAST($1 AS NVARCHAR(5461))");
 	}
 
+	private Function<String, String> _getConcatFunction() {
+		return (String sql) -> {
+			Matcher matcher = _concatPattern.matcher(sql);
+
+			while (matcher.find()) {
+				matcher.reset();
+
+				sql = matcher.replaceAll("($1 || $2)");
+
+				matcher = _concatPattern.matcher(sql);
+			}
+
+			return sql;
+		};
+	}
+
 	private Function<String, String> _getCrossJoinFunction() {
 		return (String sql) -> StringUtil.replace(
 			sql, "CROSS JOIN", StringPool.COMMA);
@@ -56,5 +73,10 @@ public class SybaseSQLTransformerLogic extends BaseSQLTransformerLogic {
 	private Function<String, String> _getReplaceFunction() {
 		return (String sql) -> sql.replaceAll("(?i)replace\\(", "str_replace(");
 	}
+
+	private static final Pattern _concatPattern = Pattern.compile(
+		"CONCAT\\(((?:'[^']*'|\"[^\"]*\"|[^,]*)*), " +
+			"((?:'[^']*'|\"[^\"]*\"|[^,]*)*)\\)",
+		Pattern.CASE_INSENSITIVE);
 
 }
