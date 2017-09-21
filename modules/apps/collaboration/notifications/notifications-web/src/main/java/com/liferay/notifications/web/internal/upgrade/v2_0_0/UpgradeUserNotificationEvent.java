@@ -14,16 +14,8 @@
 
 package com.liferay.notifications.web.internal.upgrade.v2_0_0;
 
-import com.liferay.portal.kernel.json.JSONFactoryUtil;
-import com.liferay.portal.kernel.json.JSONObject;
-import com.liferay.portal.kernel.model.UserNotificationDeliveryConstants;
-import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.service.UserNotificationEventLocalService;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
-import com.liferay.portal.kernel.util.LoggingTimer;
-
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 
 /**
  * @author Sergio González
@@ -33,57 +25,13 @@ public class UpgradeUserNotificationEvent extends UpgradeProcess {
 
 	public UpgradeUserNotificationEvent(
 		UserNotificationEventLocalService userNotificationEventLocalService) {
-
-		_userNotificationEventLocalService = userNotificationEventLocalService;
 	}
 
 	@Override
 	protected void doUpgrade() throws Exception {
-		if (!hasTable("Notifications_UserNotificationEvent")) {
-			return;
-		}
-
-		updateUserNotificationEvents();
 	}
 
 	protected void updateUserNotificationEvents() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer();
-			PreparedStatement ps = connection.prepareStatement(
-				"select userNotificationEventId from " +
-					"Notifications_UserNotificationEvent");
-			ResultSet rs = ps.executeQuery()) {
-
-			while (rs.next()) {
-				long userNotificationEventId = rs.getLong(
-					"userNotificationEventId");
-
-				UserNotificationEvent userNotificationEvent =
-					_userNotificationEventLocalService.getUserNotificationEvent(
-						userNotificationEventId);
-
-				JSONObject jsonObject = JSONFactoryUtil.createJSONObject(
-					userNotificationEvent.getPayload());
-
-				userNotificationEvent.setDeliveryType(
-					UserNotificationDeliveryConstants.TYPE_WEBSITE);
-				userNotificationEvent.setDelivered(true);
-
-				boolean actionRequired = jsonObject.getBoolean(
-					"actionRequired");
-
-				jsonObject.remove("actionRequired");
-
-				userNotificationEvent.setPayload(jsonObject.toString());
-
-				userNotificationEvent.setActionRequired(actionRequired);
-
-				_userNotificationEventLocalService.updateUserNotificationEvent(
-					userNotificationEvent);
-			}
-		}
 	}
-
-	private final UserNotificationEventLocalService
-		_userNotificationEventLocalService;
 
 }
