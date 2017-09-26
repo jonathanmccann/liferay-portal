@@ -279,10 +279,15 @@ public class S3Store extends BaseStore {
 		S3Object s3Object = null;
 
 		try {
-			s3Object = getS3Object(
+			if (Validator.isNull(versionLabel)) {
+				versionLabel = getHeadVersionLabel(
+					companyId, repositoryId, fileName);
+			}
+
+			String key = _s3KeyTransformer.getFileVersionKey(
 				companyId, repositoryId, fileName, versionLabel);
 
-			return true;
+			return _amazonS3.doesObjectExist(_bucketName, key);
 		}
 		catch (NoSuchFileException nsfe) {
 
