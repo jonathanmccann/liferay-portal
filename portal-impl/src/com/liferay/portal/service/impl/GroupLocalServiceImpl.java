@@ -3680,7 +3680,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 
 			TransactionCommitCallbackUtil.registerCallback(
 				() -> {
-					reindex(group.getCompanyId(), getUserPrimaryKeys(groupId));
+					userLocalService.reindex(
+						group.getCompanyId(), getUserPrimaryKeys(groupId));
 
 					return null;
 				});
