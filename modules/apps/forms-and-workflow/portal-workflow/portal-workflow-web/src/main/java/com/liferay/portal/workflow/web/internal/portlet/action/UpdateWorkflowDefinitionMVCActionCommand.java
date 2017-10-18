@@ -162,7 +162,7 @@ public class UpdateWorkflowDefinitionMVCActionCommand
 		}
 	}
 
-	@Reference(target = "(proxy.bean=false)")
+	@Reference
 	protected WorkflowDefinitionManager workflowDefinitionManager;
 
 }
