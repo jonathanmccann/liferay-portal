@@ -448,6 +448,13 @@
 					'liferay-navigation-interaction': {
 						path: 'navigation_interaction.js',
 						plugins: {
+							'liferay-navigation-interaction-touchmobile': {
+								condition: {
+									name: 'liferay-navigation-interaction-touchmobile',
+									trigger: 'liferay-navigation-interaction',
+									ua: 'touchMobile'
+								}
+							},
 							'liferay-navigation-interaction-touch': {
 								condition: {
 									name: 'liferay-navigation-interaction-touch',
@@ -470,6 +477,12 @@
 							'event-tap',
 							'event-touch',
 							'liferay-navigation-interaction'
+						]
+					},
+					'liferay-navigation-interaction-touchmobile': {
+						path: 'navigation_interaction_touchmobile.js',
+						requires: [
+							'liferay-navigation-interaction-touch'
 						]
 					},
 					'liferay-navigation-touch': {
