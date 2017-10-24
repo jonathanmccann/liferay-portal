@@ -123,7 +123,7 @@ YUI.add(
 					var touch = UA.touchEnabled;
 
 					UAX.touch = touch;
-					UAX.touchMobile = touch && !!UA.mobile;
+					UAX.touchMobile = touch && !UA.mobile;
 
 					A.mix(UA, UAX);
 
@@ -206,7 +206,11 @@ YUI.add(
 						selectors.push('secure');
 					}
 
-					if (UA.touch) {
+					if (UA.touchMobile) {
+						selectors.push('touchMobile');
+					}
+
+					else if (UA.touch) {
 						selectors.push('touch');
 					}
 
