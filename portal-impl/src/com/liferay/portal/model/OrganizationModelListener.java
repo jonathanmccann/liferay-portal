@@ -14,12 +14,13 @@
 
 package com.liferay.portal.model;
 
-import com.liferay.portal.kernel.concurrent.ThreadPoolExecutor;
-import com.liferay.portal.kernel.executor.PortalExecutorManager;
+import com.liferay.petra.concurrent.NoticeableExecutorService;
+import com.liferay.petra.executor.PortalExecutorManager;
 import com.liferay.portal.kernel.model.BaseModelListener;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.service.OrganizationLocalServiceUtil;
 import com.liferay.portal.kernel.service.UserLocalServiceUtil;
+import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.ServiceProxyFactory;
 import com.liferay.portal.model.impl.OrganizationModelImpl;
 import com.liferay.portal.security.permission.PermissionCacheUtil;
@@ -44,16 +45,21 @@ public class OrganizationModelListener extends BaseModelListener<Organization> {
 		long[] userIds = OrganizationLocalServiceUtil.getUserPrimaryKeys(
 			organization.getOrganizationId());
 
-		ThreadPoolExecutor threadPoolExecutor =
+		NoticeableExecutorService noticeableExecutorService =
 			_portalExecutorManager.getPortalExecutor(
 				OrganizationModelListener.class.getName());
 
-		threadPoolExecutor.submit(
+		TransactionCommitCallbackUtil.registerCallback(
 			() -> {
-				UserLocalServiceUtil.reindex(
-					organization.getCompanyId(), userIds);
+				noticeableExecutorService.submit(
+					() -> {
+						UserLocalServiceUtil.reindex(
+							organization.getCompanyId(), userIds);
 
-				PermissionCacheUtil.clearCache();
+						PermissionCacheUtil.clearCache();
+
+						return null;
+					});
 
 				return null;
 			});
