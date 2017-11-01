@@ -1111,7 +1111,8 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				if (ArrayUtil.isNotEmpty(userIds)) {
 					TransactionCommitCallbackUtil.registerCallback(
 						() -> {
-							reindex(group.getCompanyId(), userIds);
+							userLocalService.reindex(
+								group.getCompanyId(), userIds);
 
 							return null;
 						});
