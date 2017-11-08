@@ -398,6 +398,12 @@ public class JournalArticleStagedModelDataHandler
 			PortletDataContext portletDataContext, Element referenceElement)
 		throws PortletDataException {
 
+		if (!portletDataContext.getBooleanParameter(
+				"journal", "referenced-content")) {
+
+			return;
+		}
+
 		importMissingGroupReference(portletDataContext, referenceElement);
 
 		String uuid = referenceElement.attributeValue("uuid");
@@ -740,6 +746,15 @@ public class JournalArticleStagedModelDataHandler
 			boolean latest = GetterUtil.getBoolean(
 				articleElement.attributeValue("latest"));
 
+			boolean validateReferences = false;
+
+			if (latest &&
+				portletDataContext.getBooleanParameter(
+					"journal", "referenced-content")) {
+
+				validateReferences = true;
+			}
+
 			// Used when importing LARs with journal schemas under 1.1.0
 
 			_setLegacyValues(article);
@@ -788,7 +803,7 @@ public class JournalArticleStagedModelDataHandler
 						reviewDateHour, reviewDateMinute, neverReview,
 						article.isIndexable(), article.isSmallImage(),
 						article.getSmallImageURL(), smallFile, null, articleURL,
-						latest, serviceContext);
+						validateReferences, serviceContext);
 				}
 				else {
 					importedArticle = _journalArticleLocalService.updateArticle(
@@ -805,7 +820,7 @@ public class JournalArticleStagedModelDataHandler
 						reviewDateHour, reviewDateMinute, neverReview,
 						article.isIndexable(), article.isSmallImage(),
 						article.getSmallImageURL(), smallFile, null, articleURL,
-						latest, serviceContext);
+						validateReferences, serviceContext);
 
 					String articleUuid = article.getUuid();
 					String importedArticleUuid = importedArticle.getUuid();
