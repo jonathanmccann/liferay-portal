@@ -23,6 +23,7 @@ import com.liferay.dynamic.data.mapping.util.DDMFormValuesTransformer;
 import com.liferay.exportimport.content.processor.ExportImportContentProcessor;
 import com.liferay.exportimport.kernel.lar.ExportImportThreadLocal;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
+import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.StagedModelDataHandlerUtil;
 import com.liferay.journal.constants.JournalPortletKeys;
 import com.liferay.journal.exception.NoSuchArticleException;
@@ -253,6 +254,22 @@ public class JournalArticleExportImportContentProcessor
 					_journalArticleLocalService.fetchLatestArticle(classPK);
 
 				if (journalArticle == null) {
+					if (exportReferencedContent) {
+						PortletDataException pde = new PortletDataException(
+							PortletDataException.MISSING_DEPENDENCY);
+
+						pde.setStagedModelDisplayName(
+							StagedModelDataHandlerUtil.getDisplayName(
+								stagedModel));
+						pde.setStagedModelClassName(
+							stagedModel.getModelClassName());
+						pde.setStagedModelClassPK(
+							GetterUtil.getString(
+								stagedModel.getPrimaryKeyObj()));
+
+						throw pde;
+					}
+
 					if (_log.isInfoEnabled()) {
 						StringBundler messageSB = new StringBundler();
 
