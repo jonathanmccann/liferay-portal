@@ -72,44 +72,23 @@ public class UpgradeAsset extends UpgradeProcess {
 			long classNameId = PortalUtil.getClassNameId(
 				"com.liferay.portlet.journal.model.JournalArticle");
 
-			StringBundler sb = new StringBundler(10);
+			StringBundler sb = new StringBundler(13);
 
-			sb.append("select JournalArticle.resourcePrimKey as ");
-			sb.append("resourcePrimKey from (select ");
+			sb.append("update AssetEntry set listable = FALSE where ");
+			sb.append("classNameId = ");
+			sb.append(classNameId);
+			sb.append(" and classPK in (select ");
+			sb.append("JournalArticle.resourcePrimKey from (select ");
 			sb.append("JournalArticle.resourcePrimKey as primKey, ");
 			sb.append("max(JournalArticle.version) as maxVersion from ");
 			sb.append("JournalArticle group by ");
 			sb.append("JournalArticle.resourcePrimKey) temp_table inner join ");
-			sb.append("JournalArticle on (JournalArticle.indexable = ?) and ");
-			sb.append("(JournalArticle.status = 0) and ");
+			sb.append("JournalArticle on (JournalArticle.indexable = FALSE) ");
+			sb.append("and (JournalArticle.status = 0) and ");
 			sb.append("(JournalArticle.resourcePrimKey = temp_table.primKey) ");
-			sb.append("and (JournalArticle.version = temp_table.maxVersion)");
+			sb.append("and (JournalArticle.version = temp_table.maxVersion))");
 
-			try (PreparedStatement ps1 = connection.prepareStatement(
-					sb.toString())) {
-
-				ps1.setBoolean(1, false);
-
-				try (PreparedStatement ps2 =
-						AutoBatchPreparedStatementUtil.concurrentAutoBatch(
-							connection,
-							"update AssetEntry set listable = ? where " +
-								"classNameId = ? and classPK = ?");
-					ResultSet rs = ps1.executeQuery()) {
-
-					while (rs.next()) {
-						long classPK = rs.getLong("resourcePrimKey");
-
-						ps2.setBoolean(1, false);
-						ps2.setLong(2, classNameId);
-						ps2.setLong(3, classPK);
-
-						ps2.addBatch();
-					}
-
-					ps2.executeBatch();
-				}
-			}
+			runSQL(sb.toString());
 		}
 	}
 
