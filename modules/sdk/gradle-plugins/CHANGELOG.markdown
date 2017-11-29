@@ -2918,6 +2918,54 @@ to version 2.3.26.
 - [LPS-75798]: Update the [Liferay Source Formatter] dependency to version
 1.0.497.
 
+## 3.5.45 - 2017-11-16
+
+### Changed
+- [LPS-75952]: Update the [Liferay Gradle Plugins Source Formatter] dependency
+to version 2.3.27.
+- [LPS-75952]: Update the [Liferay Source Formatter] dependency to version
+1.0.498.
+
+## 3.5.46 - 2017-11-20
+
+### Changed
+- [LPS-75965]: Update the [Liferay Gradle Plugins JS Module Config Generator]
+dependency to version 2.1.22.
+- [LPS-75965]: Update the [Liferay Gradle Plugins JS Transpiler] dependency to
+version 2.4.1.
+
+## 3.5.47 - 2017-11-21
+
+### Changed
+- [LPS-75971]: Update the [Liferay Gradle Plugins Source Formatter] dependency
+to version 2.3.28.
+- [LPS-75971]: Update the [Liferay Source Formatter] dependency to version
+1.0.499.
+
+## 3.5.48 - 2017-11-24
+
+### Changed
+- [LPS-76110]: Update the [Liferay Gradle Plugins Source Formatter] dependency
+to version 2.3.29.
+- [LPS-76110]: Update the [Liferay Source Formatter] dependency to version
+1.0.500.
+
+## 3.5.49 - 2017-11-27
+
+### Changed
+- [LPS-75778]: Update the [Liferay Gradle Plugins Source Formatter] dependency
+to version 2.3.30.
+- [LPS-75778]: Update the [Liferay Source Formatter] dependency to version
+1.0.501.
+
+## 3.5.50 - 2017-11-28
+
+### Changed
+- [LPS-72912]: Update the [Liferay Gradle Plugins Source Formatter] dependency
+to version 2.3.31.
+- [LPS-72912]: Update the [Liferay Source Formatter] dependency to version
+1.0.502.
+
 [Gradle Bundle Plugin]: https://github.com/TomDmitriev/gradle-bundle-plugin
 [Liferay Alloy Taglib]: https://github.com/liferay/alloy-taglibs
 [Liferay Ant BND]: https://github.com/liferay/liferay-portal/tree/master/modules/sdk/ant-bnd
@@ -3082,6 +3130,7 @@ to version 2.3.26.
 [LPS-72851]: https://issues.liferay.com/browse/LPS-72851
 [LPS-72858]: https://issues.liferay.com/browse/LPS-72858
 [LPS-72868]: https://issues.liferay.com/browse/LPS-72868
+[LPS-72912]: https://issues.liferay.com/browse/LPS-72912
 [LPS-72914]: https://issues.liferay.com/browse/LPS-72914
 [LPS-73058]: https://issues.liferay.com/browse/LPS-73058
 [LPS-73070]: https://issues.liferay.com/browse/LPS-73070
@@ -3177,6 +3226,11 @@ to version 2.3.26.
 [LPS-75624]: https://issues.liferay.com/browse/LPS-75624
 [LPS-75633]: https://issues.liferay.com/browse/LPS-75633
 [LPS-75745]: https://issues.liferay.com/browse/LPS-75745
+[LPS-75778]: https://issues.liferay.com/browse/LPS-75778
 [LPS-75798]: https://issues.liferay.com/browse/LPS-75798
 [LPS-75829]: https://issues.liferay.com/browse/LPS-75829
+[LPS-75952]: https://issues.liferay.com/browse/LPS-75952
+[LPS-75965]: https://issues.liferay.com/browse/LPS-75965
+[LPS-75971]: https://issues.liferay.com/browse/LPS-75971
+[LPS-76110]: https://issues.liferay.com/browse/LPS-76110
 [LRDOCS-3023]: https://issues.liferay.com/browse/LRDOCS-3023

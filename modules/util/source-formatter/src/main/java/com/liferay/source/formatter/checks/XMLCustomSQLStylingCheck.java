@@ -18,9 +18,14 @@ import com.liferay.petra.string.CharPool;
 import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.source.formatter.checks.util.SourceUtil;
 
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.dom4j.Document;
+import org.dom4j.Element;
 
 /**
  * @author Hugo Huijser
@@ -37,24 +42,24 @@ public class XMLCustomSQLStylingCheck extends BaseFileCheck {
 			String fileName, String absolutePath, String content)
 		throws Exception {
 
-		if (isSubrepository() || isReadOnly(absolutePath)) {
+		if (!fileName.contains("/custom-sql/")) {
 			return content;
 		}
 
-		if (fileName.contains("/custom-sql/")) {
-			_checkMissingLineBreakAfterKeyword(fileName, content);
-			_checkMissingParentheses(fileName, content);
-			_checkMultiLineClause(fileName, content);
-			_checkScalability(fileName, absolutePath, content);
+		_checkIncorrectLineBreakAfterComma(fileName, content);
+		_checkMissingLineBreakAfterKeyword(fileName, content);
+		_checkMissingParentheses(fileName, content);
+		_checkMultiLineClause(fileName, content);
+		_checkScalability(fileName, absolutePath, content);
 
-			content = _fixIncorrectAndOr(content);
-			content = _fixMissingLineBreakAfterOpenParenthesis(content);
-			content = _fixMissingLineBreakBeforeOpenParenthesis(content);
-			content = _fixRedundantParenthesesForSingleLineClause(content);
-			content = _fixSinglePredicateClause(content);
-			content = _formatSingleLineClauseWithMultiplePredicates(
-				fileName, content);
-		}
+		content = _fixIncorrectAndOr(content);
+		content = _fixMissingLineBreakAfterOpenParenthesis(content);
+		content = _fixMissingLineBreakBeforeOpenParenthesis(content);
+		content = _fixRedundantParenthesesForSingleLineClause(content);
+		content = _fixSinglePredicateClause(content);
+		content = _formatSingleLineClauseWithMultiplePredicates(
+			fileName, content);
+		content = _formatUnionStatement(fileName, content);
 
 		return content;
 	}
@@ -69,6 +74,18 @@ public class XMLCustomSQLStylingCheck extends BaseFileCheck {
 		}
 
 		return content;
+	}
+
+	private void _checkIncorrectLineBreakAfterComma(
+		String fileName, String content) {
+
+		Matcher matcher = _incorrectLineBreakAfterCommaPattern.matcher(content);
+
+		while (matcher.find()) {
+			addMessage(
+				fileName, "Incorrect line break after ','",
+				getLineCount(content, matcher.start()));
+		}
 	}
 
 	private void _checkMissingLineBreakAfterKeyword(
@@ -89,6 +106,28 @@ public class XMLCustomSQLStylingCheck extends BaseFileCheck {
 		Matcher matcher = _missingParenthesesPattern1.matcher(content);
 
 		while (matcher.find()) {
+			String charBeforeOperator = matcher.group(2);
+
+			if (charBeforeOperator.equals(StringPool.CLOSE_PARENTHESIS)) {
+				String s = matcher.group(1);
+
+				if (s.equals(StringPool.CLOSE_PARENTHESIS) ||
+					(s.startsWith(StringPool.OPEN_PARENTHESIS) &&
+					 (getLevel(s) == 0))) {
+
+					continue;
+				}
+			}
+			else if (charBeforeOperator.equals(StringPool.CLOSE_BRACKET)) {
+				String s = matcher.group(1);
+
+				if (s.startsWith(StringPool.OPEN_BRACKET) &&
+					(getLevel(s, "[", "]") == 0)) {
+
+					continue;
+				}
+			}
+
 			addMessage(
 				fileName, "Missing parentheses",
 				getLineCount(content, matcher.start()));
@@ -171,32 +210,36 @@ public class XMLCustomSQLStylingCheck extends BaseFileCheck {
 	}
 
 	private void _checkScalability(
-		String fileName, String absolutePath, String content) {
+			String fileName, String absolutePath, String content)
+		throws Exception {
 
-		Matcher matcher = _whereNotInSQLPattern.matcher(content);
+		Document document = SourceUtil.readXML(content);
 
-		while (matcher.find()) {
-			int x = content.lastIndexOf("<sql id=", matcher.start());
+		Element rootElement = document.getRootElement();
 
-			int y = content.indexOf(CharPool.QUOTE, x);
+		for (Element sqlElement : (List<Element>)rootElement.elements("sql")) {
+			String sql = sqlElement.getText();
 
-			int z = content.indexOf(CharPool.QUOTE, y + 1);
+			Matcher matcher = _whereNotInSQLPattern.matcher(sql);
 
-			String id = content.substring(y + 1, z);
+			while (matcher.find()) {
+				String id = sqlElement.attributeValue("id");
 
-			x = id.lastIndexOf(CharPool.PERIOD);
+				int x = id.lastIndexOf(CharPool.PERIOD);
 
-			y = id.lastIndexOf(CharPool.PERIOD, x - 1);
+				int y = id.lastIndexOf(CharPool.PERIOD, x - 1);
 
-			String entityName = id.substring(y + 1, x);
+				String entityName = id.substring(y + 1, x);
 
-			if (!isExcludedPath(
-					_CUSTOM_FINDER_SCALABILITY_EXCLUDES, absolutePath,
-					entityName)) {
+				if (!isExcludedPath(
+						_CUSTOM_FINDER_SCALABILITY_EXCLUDES, absolutePath,
+						entityName)) {
 
-				addMessage(
-					fileName,
-					"Avoid using WHERE ... NOT IN: " + id + ", see LPS-51315");
+					addMessage(
+						fileName,
+						"Avoid using WHERE ... NOT IN: " + id +
+							", see LPS-51315");
+				}
 			}
 		}
 	}
@@ -382,6 +425,55 @@ public class XMLCustomSQLStylingCheck extends BaseFileCheck {
 		return content;
 	}
 
+	private String _formatUnionStatement(String fileName, String content) {
+		Matcher matcher = _unionPattern.matcher(content);
+
+		while (matcher.find()) {
+			String beforeUnionChar = matcher.group(1);
+
+			if (!beforeUnionChar.equals(StringPool.CLOSE_PARENTHESIS)) {
+				addMessage(
+					fileName, "Missing parentheses around SELECT statement",
+					getLineCount(content, matcher.start()));
+
+				continue;
+			}
+
+			int openParenthesisPos = _getOpenParenthesisPos(
+				content, matcher.start(1));
+
+			String s = StringUtil.trim(
+				content.substring(openParenthesisPos + 1, matcher.start()));
+
+			if (!s.startsWith("SELECT")) {
+				addMessage(
+					fileName, "Missing parentheses around SELECT statement",
+					getLineCount(content, matcher.start()));
+
+				continue;
+			}
+
+			String afterUnionChar = matcher.group(4);
+
+			if (!afterUnionChar.equals(StringPool.OPEN_PARENTHESIS)) {
+				addMessage(
+					fileName, "Missing parentheses around SELECT statement",
+					getLineCount(content, matcher.start(3)));
+
+				continue;
+			}
+
+			String whitespace = matcher.group(2);
+
+			if (whitespace.contains(StringPool.NEW_LINE)) {
+				return StringUtil.replaceFirst(
+					content, whitespace, StringPool.SPACE, matcher.start());
+			}
+		}
+
+		return content;
+	}
+
 	private int _getCloseParenthesisPos(String content, int startPos) {
 		int endPos = startPos;
 
@@ -394,11 +486,25 @@ public class XMLCustomSQLStylingCheck extends BaseFileCheck {
 		}
 	}
 
+	private int _getOpenParenthesisPos(String content, int endPos) {
+		int startPos = endPos;
+
+		while (true) {
+			startPos = content.lastIndexOf("(", startPos - 1);
+
+			if (getLevel(content.substring(startPos, endPos + 1)) == 0) {
+				return startPos;
+			}
+		}
+	}
+
 	private static final String _CUSTOM_FINDER_SCALABILITY_EXCLUDES =
 		"custom.finder.scalability.excludes";
 
 	private final Pattern _incorrectAndOrpattern = Pattern.compile(
 		"(\n\t*)(AND|OR|\\[\\$AND_OR_CONNECTOR\\$\\])( |\n)");
+	private final Pattern _incorrectLineBreakAfterCommaPattern =
+		Pattern.compile(".(?<! (ASC|DESC)),\n");
 	private final Pattern _missingLineBreakAfterKeywordPattern =
 		Pattern.compile("\n\\s*(.*\\s(BY|FROM|HAVING|JOIN|ON|SELECT|WHERE)) ");
 	private final Pattern _missingLineBreakAfterOpenParenthesisPattern =
@@ -406,7 +512,7 @@ public class XMLCustomSQLStylingCheck extends BaseFileCheck {
 	private final Pattern _missingLineBreakBeforeOpenParenthesisPattern =
 		Pattern.compile("\n(\t+).*[^\t\n]\\(\n");
 	private final Pattern _missingParenthesesPattern1 = Pattern.compile(
-		"[^\\)\\]\\s]\\s+(AND|OR|\\[\\$AND_OR_CONNECTOR\\$\\])\\s");
+		"\t([^\t]*(\\S))\\s+(AND|OR|\\[\\$AND_OR_CONNECTOR\\$\\])\\s");
 	private final Pattern _missingParenthesesPattern2 = Pattern.compile(
 		"\\s(AND|OR|\\[\\$AND_OR_CONNECTOR\\$\\])\\s+[^\\(\\[<\\s]");
 	private final Pattern _multiLineSinglePredicatePattern = Pattern.compile(
@@ -416,7 +522,9 @@ public class XMLCustomSQLStylingCheck extends BaseFileCheck {
 	private final Pattern _singleLineClauseWitMultiplePredicatesPattern =
 		Pattern.compile(
 			"\n(\t*)((.*\\)) (AND|OR|\\[\\$AND_OR_CONNECTOR\\$\\]) (\\(.*))");
+	private final Pattern _unionPattern = Pattern.compile(
+		"(\\S)(\\s+)UNION( ALL)?\\s+(\\S)");
 	private final Pattern _whereNotInSQLPattern = Pattern.compile(
-		"WHERE[ \t\n]+\\(*[a-zA-z0-9.]+ NOT IN");
+		"WHERE\\s.*\\sNOT IN", Pattern.DOTALL);
 
 }

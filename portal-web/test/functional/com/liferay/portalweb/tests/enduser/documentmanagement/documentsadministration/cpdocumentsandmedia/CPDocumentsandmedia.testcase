@@ -214,8 +214,8 @@
 			<var name="dmFolderNameEdit" value="DM Folder Name Name" />
 		</execute>
 
-		<execute macro="DMFolder#viewEditCP">
-			<var name="dmFolderNameEdit" value="DM Folder Name Name" />
+		<execute macro="DMFolder#viewCP">
+			<var name="dmFolderName" value="DM Folder Name Name" />
 		</execute>
 	</command>
 
@@ -496,7 +496,7 @@
 	</command>
 
 	<command name="ViewImageEditorControls" priority="5">
-		<property name="portal.acceptance" value="quarantine" />
+		<property name="portal.acceptance" value="false" />
 
 		<execute macro="Navigator#openURL" />
 

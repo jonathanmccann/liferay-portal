@@ -39,9 +39,9 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
 
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 
-import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
@@ -53,14 +53,8 @@ public class TopLevelBuild extends BaseBuild {
 	public void addDownstreamBuilds(String... urls) {
 		super.addDownstreamBuilds(urls);
 
-		if ((result != null) && (urls.length > 0)) {
-			result = null;
-
-			String status = getStatus();
-
-			if (status.equals("completed")) {
-				setStatus("running");
-			}
+		if (urls.length > 0) {
+			setResult(null);
 		}
 	}
 
@@ -234,33 +228,37 @@ public class TopLevelBuild extends BaseBuild {
 
 	@Override
 	public String getResult() {
-		super.getResult();
+		String result = super.getResult();
 
 		if (!downstreamBuilds.isEmpty() && (result == null)) {
+			boolean hasFailure = false;
+
 			for (Build downstreamBuild : downstreamBuilds) {
 				String downstreamBuildResult = downstreamBuild.getResult();
 
 				if (downstreamBuildResult == null) {
-					result = null;
+					setResult(null);
 
-					return result;
+					return null;
 				}
-
-				if (!downstreamBuildResult.equals("SUCCESS")) {
-					result = "FAILURE";
-
-					break;
+				else {
+					if (!downstreamBuildResult.equals("SUCCESS")) {
+						hasFailure = true;
+					}
 				}
 			}
 
 			if (result == null) {
-				result = "SUCCESS";
+				if (hasFailure) {
+					return "FAILURE";
+				}
+				else {
+					return "SUCCESS";
+				}
 			}
-
-			setStatus("completed");
 		}
 
-		return result;
+		return super.getResult();
 	}
 
 	@Override
@@ -672,12 +670,14 @@ public class TopLevelBuild extends BaseBuild {
 		String description = jobJSONObject.optString("description");
 
 		if (!description.isEmpty()) {
+			subheadingElement = Dom4JUtil.getNewElement("h2");
+
 			try {
-				subheadingElement = Dom4JUtil.getNewElement(
-					"h2", null, description);
+				Dom4JUtil.addRawXMLToElement(subheadingElement, description);
 			}
-			catch (JSONException jsone) {
-				jsone.printStackTrace();
+			catch (DocumentException de) {
+				throw new RuntimeException(
+					"Unable to parse description HTML " + description, de);
 			}
 		}
 
@@ -688,6 +688,7 @@ public class TopLevelBuild extends BaseBuild {
 			getJenkinsReportDownstreamElement());
 	}
 
+	@Override
 	protected String getJenkinsReportBuildInfoCellElementTagName() {
 		return "th";
 	}
@@ -744,7 +745,7 @@ public class TopLevelBuild extends BaseBuild {
 	protected Element getJenkinsReportDownstreamTableElement(
 		String result, String status, String captionText) {
 
-		List<Element> tableRowElements = getJenkinsReportTableRowsElements(
+		List<Element> tableRowElements = getJenkinsReportTableRowElements(
 			result, status);
 
 		if (tableRowElements.isEmpty()) {
@@ -755,7 +756,7 @@ public class TopLevelBuild extends BaseBuild {
 			"table", null,
 			Dom4JUtil.getNewElement(
 				"caption", null, captionText,
-				Integer.toString(tableRowElements.size())),
+				Integer.toString(getDownstreamBuildCount(result, status))),
 			getJenkinsReportTableColumnHeadersElement(),
 			tableRowElements.toArray(new Element[tableRowElements.size()]));
 	}
@@ -881,6 +882,8 @@ public class TopLevelBuild extends BaseBuild {
 
 	protected Element getJenkinsReportTopLevelTableElement() {
 		Element topLevelTableElement = Dom4JUtil.getNewElement("table");
+
+		String result = getResult();
 
 		if (result != null) {
 			Dom4JUtil.getNewElement(

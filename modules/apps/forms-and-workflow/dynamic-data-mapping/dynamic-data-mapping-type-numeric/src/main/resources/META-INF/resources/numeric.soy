@@ -15,13 +15,13 @@
 	{@param? label: string}
 	{@param name: string}
 	{@param placeholder: string}
-	{@param? predefinedValue: string}
+	{@param? predefinedValue: any}
 	{@param readOnly: bool}
 	{@param? required: bool}
 	{@param showLabel: bool}
 	{@param? tip: string}
 	{@param? tooltip: string}
-	{@param value: string}
+	{@param value: any}
 	{@param visible: bool}
 
 	{let $displayValue: isNonnull($value) ? $value : $predefinedValue ? $predefinedValue : '' /}

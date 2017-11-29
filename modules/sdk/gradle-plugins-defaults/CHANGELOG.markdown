@@ -2447,6 +2447,53 @@ the `testCompileClasspath` and `testRuntime` configurations:
 - [LPS-75910]: Update the [Liferay Gradle Plugins Dependency Checker] dependency
 to version 1.0.1.
 
+## 5.1.52 - 2017-11-16
+
+### Changed
+- [LPS-75952]: Update the [Liferay Gradle Plugins] dependency to version 3.5.45.
+
+## 5.1.53 - 2017-11-20
+
+### Added
+- [LPS-73070]: Prevent npm from creating a `package-lock.json` file when running
+the `npmInstall` task.
+
+### Changed
+- [LPS-75965]: Update the [Liferay Gradle Plugins] dependency to version 3.5.46.
+
+## 5.1.54 - 2017-11-21
+
+### Changed
+- [LPS-75971]: Update the [Liferay Gradle Plugins] dependency to version 3.5.47.
+
+## 5.1.55 - 2017-11-24
+
+### Changed
+- [LPS-76110]: Update the [Liferay Gradle Plugins] dependency to version 3.5.48.
+
+## 5.2.0 - 2017-11-27
+
+### Added
+- [LPS-76145]: Add new `com.liferay.osgi.portal.compat.defaults.plugin` Gradle
+plugin to properly configure the portal compatibility OSGi modules.
+
+### Changed
+- [LPS-75778]: Update the [Liferay Gradle Plugins] dependency to version 3.5.49.
+
+## 5.2.1 - 2017-11-28
+
+### Changed
+- [LPS-72912]: Update the [Liferay Gradle Plugins] dependency to version 3.5.50.
+
+## 5.2.2 - 2017-11-28
+
+### Added
+- [LPS-76181]: Add property `exactVersion` to the `updateFileVersions`. If set
+to `true`, the task updates all versions to the current one, even if the "major"
+part has not been increased.
+- [LPS-76182]: Ignore a whole subtree if a `.lfrbuild-releng-ignore` marker file
+is found in a parent directory.
+
 [Find Security Bugs]: https://github.com/liferay/liferay-portal/tree/master/modules/third-party/com-h3xstream-findsecbugs
 [Gradle License Report]: https://github.com/jk1/Gradle-License-Report
 [Liferay CDN]: https://cdn.lfrs.sl/repository.liferay.com/nexus/content/groups/public
@@ -2620,6 +2667,7 @@ to version 1.0.1.
 [LPS-72851]: https://issues.liferay.com/browse/LPS-72851
 [LPS-72854]: https://issues.liferay.com/browse/LPS-72854
 [LPS-72868]: https://issues.liferay.com/browse/LPS-72868
+[LPS-72912]: https://issues.liferay.com/browse/LPS-72912
 [LPS-72914]: https://issues.liferay.com/browse/LPS-72914
 [LPS-72989]: https://issues.liferay.com/browse/LPS-72989
 [LPS-73058]: https://issues.liferay.com/browse/LPS-73058
@@ -2721,9 +2769,17 @@ to version 1.0.1.
 [LPS-75633]: https://issues.liferay.com/browse/LPS-75633
 [LPS-75705]: https://issues.liferay.com/browse/LPS-75705
 [LPS-75745]: https://issues.liferay.com/browse/LPS-75745
+[LPS-75778]: https://issues.liferay.com/browse/LPS-75778
 [LPS-75798]: https://issues.liferay.com/browse/LPS-75798
 [LPS-75829]: https://issues.liferay.com/browse/LPS-75829
 [LPS-75910]: https://issues.liferay.com/browse/LPS-75910
+[LPS-75952]: https://issues.liferay.com/browse/LPS-75952
+[LPS-75965]: https://issues.liferay.com/browse/LPS-75965
+[LPS-75971]: https://issues.liferay.com/browse/LPS-75971
+[LPS-76110]: https://issues.liferay.com/browse/LPS-76110
+[LPS-76145]: https://issues.liferay.com/browse/LPS-76145
+[LPS-76181]: https://issues.liferay.com/browse/LPS-76181
+[LPS-76182]: https://issues.liferay.com/browse/LPS-76182
 [LRDOCS-2594]: https://issues.liferay.com/browse/LRDOCS-2594
 [LRDOCS-2841]: https://issues.liferay.com/browse/LRDOCS-2841
 [LRDOCS-2981]: https://issues.liferay.com/browse/LRDOCS-2981

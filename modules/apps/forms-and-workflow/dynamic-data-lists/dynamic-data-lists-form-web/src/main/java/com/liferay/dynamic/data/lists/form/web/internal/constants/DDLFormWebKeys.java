@@ -22,4 +22,9 @@ public class DDLFormWebKeys {
 	public static final String DYNAMIC_DATA_LISTS_RECORD_SET =
 		"DYNAMIC_DATA_LISTS_RECORD_SET";
 
+	public static final String DYNAMIC_DATA_LISTS_RECORD_SET_ID =
+		"DYNAMIC_DATA_LISTS_RECORD_SET_ID";
+
+	public static final String GROUP_ID = "GROUP_ID";
+
 }

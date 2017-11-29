@@ -22,8 +22,8 @@
 				{DDMDataProviderInstance.*}
 			FROM
 				(
-					SELECT DISTINCT
-						DDMDataProviderInstance.dataProviderInstanceId
+					SELECT
+						DISTINCT DDMDataProviderInstance.dataProviderInstanceId
 					FROM
 						DDMDataProviderInstance
 					WHERE
@@ -35,8 +35,9 @@
 						)
 				)
 				TEMP_TABLE
-					INNER JOIN DDMDataProviderInstance ON
-						TEMP_TABLE.dataProviderInstanceId = DDMDataProviderInstance.dataProviderInstanceId
+			INNER JOIN
+				DDMDataProviderInstance ON
+					TEMP_TABLE.dataProviderInstanceId = DDMDataProviderInstance.dataProviderInstanceId
 			ORDER BY
 				DDMDataProviderInstance.dataProviderInstanceId DESC
 		]]>
@@ -49,7 +50,7 @@
 				DDMStructure
 			INNER JOIN
 				DDMStructureLink ON
-					(DDMStructure.structureId = DDMStructureLink.structureId)
+					DDMStructure.structureId = DDMStructureLink.structureId
 			WHERE
 				(DDMStructure.companyId = ?) AND
 				[$GROUP_ID$]
@@ -75,7 +76,10 @@
 					(lower(CAST_TEXT(DDMStructure.name)) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
 					(DDMStructure.description LIKE ? [$AND_OR_NULL_CHECK$])
 				) AND
-				(storageType = ? OR ? IS NULL) AND
+				(
+					(storageType = ?) OR
+					(? IS NULL)
+				) AND
 				(type_ = ?)
 				[$STATUS$]
 		]]>
@@ -88,7 +92,7 @@
 				DDMStructure
 			INNER JOIN
 				DDMStructureLink ON
-					(DDMStructure.structureId = DDMStructureLink.structureId)
+					DDMStructure.structureId = DDMStructureLink.structureId
 			WHERE
 				(DDMStructure.companyId = ?) AND
 				[$GROUP_ID$]
@@ -108,8 +112,8 @@
 				{DDMStructure.*}
 			FROM
 				(
-					SELECT DISTINCT
-						DDMStructure.structureId
+					SELECT
+						DISTINCT DDMStructure.structureId
 					FROM
 						DDMStructure
 					WHERE
@@ -120,13 +124,17 @@
 							(lower(CAST_TEXT(DDMStructure.name)) LIKE ? [$AND_OR_NULL_CHECK$]) [$AND_OR_CONNECTOR$]
 							(DDMStructure.description LIKE ? [$AND_OR_NULL_CHECK$])
 						) AND
-						(DDMStructure.storageType = ? OR ? IS NULL) AND
+						(
+							(DDMStructure.storageType = ?) OR
+							(? IS NULL)
+						) AND
 						(DDMStructure.type_ = ?)
 						[$STATUS$]
 				)
 				TEMP_TABLE
-					INNER JOIN DDMStructure ON
-						TEMP_TABLE.structureId = DDMStructure.structureId
+			INNER JOIN
+				DDMStructure ON
+					TEMP_TABLE.structureId = DDMStructure.structureId
 			ORDER BY
 				DDMStructure.structureId DESC
 		]]>
@@ -139,7 +147,7 @@
 				DDMStructureLink
 			INNER JOIN
 				DDMStructure ON
-					(DDMStructureLink.structureId = DDMStructure.structureId)
+					DDMStructureLink.structureId = DDMStructure.structureId
 			WHERE
 				(DDMStructureLink.classNameId = ?) AND
 				(DDMStructureLink.classPK = ?) AND
@@ -157,7 +165,7 @@
 				DDMStructureLink
 			INNER JOIN
 				DDMStructure ON
-					(DDMStructureLink.structureId = DDMStructure.structureId)
+					DDMStructureLink.structureId = DDMStructure.structureId
 			WHERE
 				(DDMStructureLink.classNameId = ?) AND
 				(DDMStructureLink.classPK = ?) AND
@@ -180,14 +188,17 @@
 				(DDMTemplate.classNameId = ?) AND
 				(
 					(DDMTemplate.classPK = 0) OR
-					(DDMTemplate.classPK IN (
-						SELECT
-							DDMStructure.structureId
-						FROM
-							DDMStructure
-						WHERE
-							(DDMStructure.classNameId = ?)
-					))
+					(
+						DDMTemplate.classPK IN
+							(
+								SELECT
+									DDMStructure.structureId
+								FROM
+									DDMStructure
+								WHERE
+									DDMStructure.classNameId = ?
+							)
+					)
 				)
 				[$STATUS$]
 		]]>
@@ -225,14 +236,17 @@
 				(classNameId = ?) AND
 				(
 					(classPK = 0) OR
-					(classPK IN (
-						SELECT
-							DDMStructure.structureId
-						FROM
-							DDMStructure
-						WHERE
-							(DDMStructure.classNameId = ?)
-					))
+					(
+						classPK IN
+							(
+								SELECT
+									DDMStructure.structureId
+								FROM
+									DDMStructure
+								WHERE
+									DDMStructure.classNameId = ?
+							)
+					)
 				)
 				[$STATUS$]
 			ORDER BY
@@ -245,8 +259,8 @@
 				{DDMTemplate.*}
 			FROM
 				(
-					SELECT DISTINCT
-						DDMTemplate.templateId
+					SELECT
+						DISTINCT DDMTemplate.templateId
 					FROM
 						DDMTemplate
 					WHERE
@@ -265,8 +279,9 @@
 						[$STATUS$]
 				)
 				TEMP_TABLE
-					INNER JOIN DDMTemplate ON
-						TEMP_TABLE.templateId = DDMTemplate.templateId
+			INNER JOIN
+				DDMTemplate ON
+					TEMP_TABLE.templateId = DDMTemplate.templateId
 			ORDER BY
 				DDMTemplate.templateId DESC
 		]]>

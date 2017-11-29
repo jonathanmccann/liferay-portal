@@ -17,6 +17,7 @@ package com.liferay.site.navigation.service.impl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.site.navigation.exception.InvalidSiteNavigationMenuItemOrderException;
 import com.liferay.site.navigation.model.SiteNavigationMenuItem;
 import com.liferay.site.navigation.service.base.SiteNavigationMenuItemLocalServiceBaseImpl;
 
@@ -36,12 +37,12 @@ public class SiteNavigationMenuItemLocalServiceImpl
 			String typeSettings, ServiceContext serviceContext)
 		throws PortalException {
 
+		User user = userLocalService.getUser(userId);
+
 		long siteNavigationMenuItemId = counterLocalService.increment();
 
 		SiteNavigationMenuItem siteNavigationMenuItem =
 			siteNavigationMenuItemPersistence.create(siteNavigationMenuItemId);
-
-		User user = userLocalService.getUser(userId);
 
 		siteNavigationMenuItem.setGroupId(groupId);
 		siteNavigationMenuItem.setCompanyId(user.getCompanyId());
@@ -92,6 +93,78 @@ public class SiteNavigationMenuItemLocalServiceImpl
 
 		return siteNavigationMenuItemPersistence.findBySiteNavigationMenuId(
 			siteNavigationMenuId);
+	}
+
+	@Override
+	public List<SiteNavigationMenuItem> getSiteNavigationMenuItems(
+		long siteNavigationMenuId, long parentSiteNavigationMenuItemId) {
+
+		return siteNavigationMenuItemPersistence.findByS_P(
+			siteNavigationMenuId, parentSiteNavigationMenuItemId);
+	}
+
+	@Override
+	public SiteNavigationMenuItem updateSiteNavigationMenuItem(
+			long userId, long siteNavigationMenuItemId,
+			long parentSiteNavigationMenuItemId, ServiceContext serviceContext)
+		throws PortalException {
+
+		SiteNavigationMenuItem siteNavigationMenuItem =
+			siteNavigationMenuItemPersistence.fetchByPrimaryKey(
+				siteNavigationMenuItemId);
+
+		return updateSiteNavigationMenuItem(
+			userId, siteNavigationMenuItemId, parentSiteNavigationMenuItemId,
+			siteNavigationMenuItem.getTypeSettings(), serviceContext);
+	}
+
+	@Override
+	public SiteNavigationMenuItem updateSiteNavigationMenuItem(
+			long userId, long siteNavigationMenuItemId,
+			long parentSiteNavigationMenuItemId, String typeSettings,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		validate(siteNavigationMenuItemId, parentSiteNavigationMenuItemId);
+
+		User user = userLocalService.getUser(userId);
+
+		SiteNavigationMenuItem siteNavigationMenuItem =
+			siteNavigationMenuItemPersistence.fetchByPrimaryKey(
+				siteNavigationMenuItemId);
+
+		siteNavigationMenuItem.setModifiedDate(
+			serviceContext.getModifiedDate(new Date()));
+		siteNavigationMenuItem.setUserId(userId);
+		siteNavigationMenuItem.setUserName(user.getFullName());
+		siteNavigationMenuItem.setParentSiteNavigationMenuItemId(
+			parentSiteNavigationMenuItemId);
+		siteNavigationMenuItem.setTypeSettings(typeSettings);
+
+		siteNavigationMenuItemPersistence.update(siteNavigationMenuItem);
+
+		return siteNavigationMenuItem;
+	}
+
+	protected void validate(
+			long siteNavigationMenuItemId, long parentSiteNavigationMenuItemId)
+		throws PortalException {
+
+		List<SiteNavigationMenuItem> siteNavigationMenuItems =
+			getChildSiteNavigationMenuItems(siteNavigationMenuItemId);
+
+		for (SiteNavigationMenuItem siteNavigationMenuItem :
+				siteNavigationMenuItems) {
+
+			siteNavigationMenuItemId =
+				siteNavigationMenuItem.getSiteNavigationMenuItemId();
+
+			if (siteNavigationMenuItemId == parentSiteNavigationMenuItemId) {
+				throw new InvalidSiteNavigationMenuItemOrderException();
+			}
+
+			validate(siteNavigationMenuItemId, parentSiteNavigationMenuItemId);
+		}
 	}
 
 }

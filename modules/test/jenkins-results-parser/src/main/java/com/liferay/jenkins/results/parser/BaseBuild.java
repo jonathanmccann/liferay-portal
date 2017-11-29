@@ -433,6 +433,8 @@ public abstract class BaseBuild implements Build {
 
 		int i = 0;
 
+		String result = getResult();
+
 		while (result == null) {
 			if (i == 20) {
 				throw new RuntimeException(
@@ -444,12 +446,12 @@ public abstract class BaseBuild implements Build {
 
 			JenkinsResultsParserUtil.sleep(1000 * 30);
 
-			getResult();
+			result = getResult();
 
 			i++;
 		}
 
-		if (result.equals("SUCCESS")) {
+		if (_result.equals("SUCCESS")) {
 			return Dom4JUtil.getNewAnchorElement(
 				getBuildURL(), getDisplayName());
 		}
@@ -743,17 +745,19 @@ public abstract class BaseBuild implements Build {
 
 	@Override
 	public String getResult() {
-		if ((result == null) && (getBuildURL() != null)) {
+		if ((_result == null) && (getBuildURL() != null)) {
 			JSONObject resultJSONObject = getBuildJSONObject("result");
 
-			result = resultJSONObject.optString("result");
+			String result = resultJSONObject.optString("result");
 
 			if (result.equals("")) {
 				result = null;
 			}
+
+			setResult(result);
 		}
 
-		return result;
+		return _result;
 	}
 
 	@Override
@@ -872,19 +876,12 @@ public abstract class BaseBuild implements Build {
 		return JenkinsResultsParserUtil.combine(
 			Integer.toString(getDownstreamBuildCount("starting")),
 			" Starting  ", "/ ",
-
 			Integer.toString(getDownstreamBuildCount("missing")), " Missing  ",
-			"/ ",
-
-			Integer.toString(getDownstreamBuildCount("queued")), " Queued  ",
-			"/ ",
-
+			"/ ", Integer.toString(getDownstreamBuildCount("queued")),
+			" Queued  ", "/ ",
 			Integer.toString(getDownstreamBuildCount("running")), " Running  ",
-			"/ ",
-
-			Integer.toString(getDownstreamBuildCount("completed")),
+			"/ ", Integer.toString(getDownstreamBuildCount("completed")),
 			" Completed  ", "/ ",
-
 			Integer.toString(getDownstreamBuildCount(null)), " Total ");
 	}
 
@@ -1219,7 +1216,9 @@ public abstract class BaseBuild implements Build {
 							getDownstreamBuildCount("completed")) &&
 						(result != null)) {
 
-						setStatus("completed");
+						if (_isDifferent(_result, result)) {
+							setResult(result);
+						}
 					}
 
 					findDownstreamBuilds();
@@ -1746,7 +1745,7 @@ public abstract class BaseBuild implements Build {
 		return buildInfoElement;
 	}
 
-	protected List<Element> getJenkinsReportTableRowsElements(
+	protected List<Element> getJenkinsReportTableRowElements(
 		String result, String status) {
 
 		List<Element> tableRowElements = new ArrayList<>();
@@ -1771,7 +1770,7 @@ public abstract class BaseBuild implements Build {
 			BaseBuild downstreamBaseBuild = (BaseBuild)downstreamBuild;
 
 			tableRowElements.addAll(
-				downstreamBaseBuild.getJenkinsReportTableRowsElements(
+				downstreamBaseBuild.getJenkinsReportTableRowElements(
 					result, status));
 		}
 
@@ -2088,7 +2087,7 @@ public abstract class BaseBuild implements Build {
 	}
 
 	protected void reset() {
-		result = null;
+		setResult(null);
 
 		badBuildNumbers.add(getBuildNumber());
 
@@ -2211,10 +2210,24 @@ public abstract class BaseBuild implements Build {
 		branchName = "master";
 	}
 
-	protected void setStatus(String status) {
-		if (((status == null) && (_status != null)) ||
-			!status.equals(_status)) {
+	protected void setResult(String result) {
+		if (_isDifferent(result, _result)) {
+			_result = result;
 
+			if ((_result == null) ||
+				(getDownstreamBuildCount("completed") <
+					getDownstreamBuildCount(null))) {
+
+				setStatus("running");
+			}
+			else {
+				setStatus("completed");
+			}
+		}
+	}
+
+	protected void setStatus(String status) {
+		if (_isDifferent(status, _status)) {
 			_status = status;
 
 			statusModifiedTime = System.currentTimeMillis();
@@ -2274,7 +2287,6 @@ public abstract class BaseBuild implements Build {
 	protected List<ReinvokeRule> reinvokeRules =
 		ReinvokeRule.getReinvokeRules();
 	protected String repositoryName;
-	protected String result;
 	protected List<SlaveOfflineRule> slaveOfflineRules =
 		SlaveOfflineRule.getSlaveOfflineRules();
 	protected long statusModifiedTime;
@@ -2380,6 +2392,22 @@ public abstract class BaseBuild implements Build {
 
 	}
 
+	private boolean _isDifferent(String newValue, String oldValue) {
+		if (oldValue == null) {
+			if (newValue != null) {
+				return true;
+			}
+
+			return false;
+		}
+
+		if (oldValue.equals(newValue)) {
+			return false;
+		}
+
+		return true;
+	}
+
 	private static final FailureMessageGenerator[] _FAILURE_MESSAGE_GENERATORS =
 		{
 			new GenericFailureMessageGenerator()
@@ -2394,6 +2422,7 @@ public abstract class BaseBuild implements Build {
 	private JenkinsSlave _jenkinsSlave;
 	private Map<String, String> _parameters = new HashMap<>();
 	private final Build _parentBuild;
+	private String _result;
 	private String _status;
 
 }

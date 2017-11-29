@@ -14,7 +14,6 @@
 
 package com.liferay.wsrp.internal.bind;
 
-import com.liferay.petra.encryptor.Encryptor;
 import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -31,6 +30,7 @@ import com.liferay.portal.kernel.servlet.HttpHeaders;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.Base64;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.DigesterUtil;
 import com.liferay.portal.kernel.util.Http;
 import com.liferay.portal.kernel.util.HttpUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -591,8 +591,7 @@ public class V2MarkupServiceImpl
 
 		if (Validator.isNotNull(opaqueValue)) {
 			opaqueValue = new String(
-				Base64.decode(Base64.fromURLSafe(opaqueValue)),
-				StringPool.UTF8);
+				Base64.decodeFromURL(opaqueValue), StringPool.UTF8);
 		}
 
 		Map<String, String[]> parameterMap = HttpUtil.parameterMapFromString(
@@ -722,7 +721,7 @@ public class V2MarkupServiceImpl
 
 		sb.append(StringPool.QUESTION);
 
-		String propertiesAuthenticatonTokenSharedSecret = Encryptor.digest(
+		String propertiesAuthenticatonTokenSharedSecret = DigesterUtil.digest(
 			PropsUtil.get(PropsKeys.AUTH_TOKEN_SHARED_SECRET));
 
 		sb.append("p_auth_secret=");
@@ -771,8 +770,7 @@ public class V2MarkupServiceImpl
 			sb.append(StringPool.AMPERSAND);
 
 			opaqueValue = new String(
-				Base64.decode(Base64.fromURLSafe(opaqueValue)),
-				StringPool.UTF8);
+				Base64.decodeFromURL(opaqueValue), StringPool.UTF8);
 
 			sb.append(opaqueValue);
 		}

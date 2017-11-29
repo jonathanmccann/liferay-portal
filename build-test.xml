@@ -1446,12 +1446,47 @@ war.path=${app.server.weblogic.portal.dir}/</echo>
 				</then>
 			</if>
 
-			<gradle-execute failonerror="false" task="@{task}">
-				<arg value="--build-file=portal-web/build-test.gradle" />
-				<arg value="-Plocal=${test.poshi.runner.local.release}" />
-				<arg value="-PposhiRunnerExtProperties=${test.ext.properties.file}" />
-				<arg value="-Ptmp.maven.repository.dir=../.m2-tmp" />
-			</gradle-execute>
+			<local name="java.jdk.home" />
+
+			<if>
+				<and>
+					<equals arg1="${ant.java.version}" arg2="1.7" />
+					<isset property="java.jdk.7.x32.home" />
+				</and>
+				<then>
+					<property name="java.jdk.home" value="${java.jdk.7.x32.home}" />
+				</then>
+				<elseif>
+					<isset property="java.jdk.8.x32.home" />
+					<then>
+						<property name="java.jdk.home" value="${java.jdk.8.x32.home}" />
+					</then>
+				</elseif>
+			</if>
+
+			<if>
+				<and>
+					<isset property="env.JENKINS_HOME" />
+					<available file="${java.jdk.home}" />
+				</and>
+				<then>
+					<gradle-execute failonerror="false" task="@{task}">
+						<arg value="--build-file=portal-web/build-test.gradle" />
+						<arg value="-Plocal=${test.poshi.runner.local.release}" />
+						<arg value="-PposhiRunnerExtProperties=${test.ext.properties.file}" />
+						<arg value="-Ptmp.maven.repository.dir=../.m2-tmp" />
+						<env key="JAVA_HOME" path="${java.jdk.home}" />
+					</gradle-execute>
+				</then>
+				<else>
+					<gradle-execute failonerror="false" task="@{task}">
+						<arg value="--build-file=portal-web/build-test.gradle" />
+						<arg value="-Plocal=${test.poshi.runner.local.release}" />
+						<arg value="-PposhiRunnerExtProperties=${test.ext.properties.file}" />
+						<arg value="-Ptmp.maven.repository.dir=../.m2-tmp" />
+					</gradle-execute>
+				</else>
+			</if>
 		</sequential>
 	</macrodef>
 
@@ -1687,13 +1722,33 @@ sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
 						replace=""
 					/>
 
+					<propertyregex
+						global="true"
+						input="${propertyName}"
+						override="true"
+						property="propertyName"
+						regexp="\["
+						replace="\\\\["
+					/>
+
+					<propertyregex
+						global="true"
+						input="${propertyName}"
+						override="true"
+						property="propertyName"
+						regexp="\]"
+						replace="\\\\]"
+					/>
+
 					<replaceregexp file="portal-impl/src/portal-ext.properties"
 						flags="g"
 						match="${propertyName}=.*"
 						replace=""
 					/>
 
-					<echo append="true" file="portal-impl/src/portal-ext.properties" />
+					<echo append="true" file="portal-impl/src/portal-ext.properties">
+
+@{property}</echo>
 				</sequential>
 			</for>
 		</sequential>
@@ -1798,33 +1853,33 @@ sendPasswordCaptchaEnabled=&quot;false&quot;</echo>
 
 	<macrodef name="prepare-elasticsearch-configuration" >
 		<sequential>
-			<echo file="${liferay.home}/osgi/portal/com.liferay.portal.search.elasticsearch.configuration.ElasticsearchConfiguration.config">additionalConfigurations=&quot;
-cluster.routing.allocation.disk.threshold_enabled:\ false
-cluster.service.slow_task_logging_threshold:\ 1800s
-httpEnabled:\ false
-index.indexing.slowlog.threshold.index.warn:\ 1800s
-index.search.slowlog.threshold.fetch.warn:\ 1800s
-index.search.slowlog.threshold.query.warn:\ 1800s
-monitor.jvm.gc.old.warn:\ 1800s
-monitor.jvm.gc.young.warn:\ 1800s
-threadpool.bulk.size:\ 1
-threadpool.fetch_shard_started.size:\ 1
-threadpool.fetch_shard_store.size:\ 1
-threadpool.flush.size:\ 1
-threadpool.force_merge.size:\ 1
-threadpool.generic.size:\ 1
-threadpool.get.size:\ 1
-threadpool.index.size:\ 1
-threadpool.listener.size:\ 1
-threadpool.management.size:\ 1
-threadpool.percolate.size:\ 1
-threadpool.refresh.size:\ 1
-threadpool.search.size:\ 1
-threadpool.snapshot.size:\ 1
-threadpool.suggest.size:\ 1
-threadpool.warmer.size:\ 1
-transport.local.workers:\ 1&quot;
-logExceptionsOnly=&quot;false&quot;</echo>
+			<echo file="${liferay.home}/osgi/config/com.liferay.portal.search.elasticsearch.configuration.ElasticsearchConfiguration.config">additionalConfigurations=&quot;
+    cluster.routing.allocation.disk.threshold_enabled:\ false
+    cluster.service.slow_task_logging_threshold:\ 1800s
+    index.indexing.slowlog.threshold.index.warn:\ 1800s
+    index.search.slowlog.threshold.fetch.warn:\ 1800s
+    index.search.slowlog.threshold.query.warn:\ 1800s
+    monitor.jvm.gc.old.warn:\ 1800s
+    monitor.jvm.gc.young.warn:\ 1800s
+    threadpool.bulk.size:\ 1
+    threadpool.fetch_shard_started.size:\ 1
+    threadpool.fetch_shard_store.size:\ 1
+    threadpool.flush.size:\ 1
+    threadpool.force_merge.size:\ 1
+    threadpool.generic.size:\ 1
+    threadpool.get.size:\ 1
+    threadpool.index.size:\ 1
+    threadpool.listener.size:\ 1
+    threadpool.management.size:\ 1
+    threadpool.percolate.size:\ 1
+    threadpool.refresh.size:\ 1
+    threadpool.search.size:\ 1
+    threadpool.snapshot.size:\ 1
+    threadpool.suggest.size:\ 1
+    threadpool.warmer.size:\ 1
+    transport.local.workers:\ 1&quot;
+httpEnabled=B&quot;false&quot;
+logExceptionsOnly=B&quot;false&quot;</echo>
 		</sequential>
 	</macrodef>
 
@@ -6122,6 +6177,9 @@ go]]></replacevalue>
 				<fileset dir="${blade.samples.dir}/liferay-workspace/tests" erroronmissingdir="false">
 					<include name="**/TEST-*.xml" />
 				</fileset>
+				<fileset dir="${liferay.jenkins.dir}/commands/custom-scripts/test-results" erroronmissingdir="false">
+					<include name="**/TEST-*.xml" />
+				</fileset>
 				<report format="frames" todir="test-results/html" />
 			</junitreport>
 		</parallel>
@@ -6440,7 +6498,16 @@ osb.lcs.portlet.oauth.consumer.secret=${osb.lcs.portlet.oauth.consumer.secret}</
 			</then>
 		</if>
 
-		<prepare-elasticsearch-configuration />
+		<get-testcase-property property.name="testray.main.component.name" />
+
+		<if>
+			<not>
+				<contains string="${testray.main.component.name}" substring="Elastic Search Impl" />
+			</not>
+			<then>
+				<prepare-elasticsearch-configuration />
+			</then>
+		</if>
 	</target>
 
 	<target name="prepare-patching-tool">

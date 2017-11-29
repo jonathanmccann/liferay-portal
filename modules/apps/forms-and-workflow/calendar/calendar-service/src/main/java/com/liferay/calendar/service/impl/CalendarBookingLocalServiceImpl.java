@@ -896,6 +896,7 @@ public class CalendarBookingLocalServiceImpl
 		return followingRecurringCalendarBookings;
 	}
 
+	@Override
 	public boolean hasExclusiveCalendarBooking(
 			Calendar calendar, long startTime, long endTime)
 		throws PortalException {
@@ -1004,6 +1005,7 @@ public class CalendarBookingLocalServiceImpl
 		return calendarBooking;
 	}
 
+	@Override
 	public boolean isStagingCalendarBooking(CalendarBooking calendarBooking)
 		throws PortalException {
 
@@ -1868,6 +1870,14 @@ public class CalendarBookingLocalServiceImpl
 				CalendarBookingWorkflowConstants.STATUS_IN_TRASH) {
 
 			return CalendarBookingWorkflowConstants.STATUS_PENDING;
+		}
+
+		if ((newParentStatus ==
+				CalendarBookingWorkflowConstants.STATUS_DENIED) ||
+			(newParentStatus ==
+				CalendarBookingWorkflowConstants.STATUS_MAYBE)) {
+
+			return oldChildStatus;
 		}
 
 		if (newParentStatus !=

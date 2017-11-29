@@ -3,12 +3,12 @@
 		"metal": "^2.4.7",
 		"metal-dom": "^2.4.7",
 		"metal-uri": "^2.0.2",
-		"senna": "^2.4.0"
+		"senna": "^2.4.2"
 	},
 	"devDependencies": {
 		"liferay-module-config-generator": "^1.2.1",
 		"metal-cli": "^4.0.1"
 	},
 	"name": "frontend-js-spa-web",
-	"version": "1.0.42"
+	"version": "1.0.43"
 }

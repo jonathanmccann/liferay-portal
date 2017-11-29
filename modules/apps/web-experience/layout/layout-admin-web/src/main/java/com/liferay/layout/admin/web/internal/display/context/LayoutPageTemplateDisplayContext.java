@@ -22,9 +22,11 @@ import com.liferay.layout.admin.web.internal.constants.LayoutAdminPortletKeys;
 import com.liferay.layout.admin.web.internal.util.LayoutPageTemplatePortletUtil;
 import com.liferay.layout.page.template.model.LayoutPageTemplateCollection;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.model.LayoutPageTemplateFragment;
 import com.liferay.layout.page.template.service.LayoutPageTemplateCollectionServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryServiceUtil;
+import com.liferay.layout.page.template.service.LayoutPageTemplateFragmentLocalServiceUtil;
 import com.liferay.layout.page.template.service.permission.LayoutPageTemplatePermission;
 import com.liferay.portal.kernel.dao.search.EmptyOnClickRowChecker;
 import com.liferay.portal.kernel.dao.search.SearchContainer;
@@ -87,6 +89,7 @@ public class LayoutPageTemplateDisplayContext {
 
 		portletURL.setParameter(
 			"mvcPath", "/view_layout_page_template_entries.jsp");
+		portletURL.setParameter("tabs1", "page-templates");
 
 		if (getLayoutPageTemplateCollectionId() > 0) {
 			portletURL.setParameter(
@@ -98,11 +101,11 @@ public class LayoutPageTemplateDisplayContext {
 	}
 
 	public JSONArray getFragmentCollectionsJSONArray() throws PortalException {
-		ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
 		JSONArray fragmentCollectionsJSONArray =
 			JSONFactoryUtil.createJSONArray();
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
+			WebKeys.THEME_DISPLAY);
 
 		List<FragmentCollection> fragmentCollections =
 			FragmentCollectionServiceUtil.getFragmentCollections(
@@ -120,6 +123,10 @@ public class LayoutPageTemplateDisplayContext {
 			JSONObject fragmentCollectionJSONObject =
 				JSONFactoryUtil.createJSONObject();
 
+			fragmentCollectionJSONObject.put(
+				"fragmentCollectionId",
+				fragmentCollection.getFragmentCollectionId());
+
 			JSONArray fragmentEntriesJSONArray =
 				JSONFactoryUtil.createJSONArray();
 
@@ -135,11 +142,8 @@ public class LayoutPageTemplateDisplayContext {
 			}
 
 			fragmentCollectionJSONObject.put(
-				"entries", fragmentEntriesJSONArray);
+				"fragmentEntries", fragmentEntriesJSONArray);
 
-			fragmentCollectionJSONObject.put(
-				"fragmentCollectionId",
-				fragmentCollection.getFragmentCollectionId());
 			fragmentCollectionJSONObject.put(
 				"name", fragmentCollection.getName());
 
@@ -195,6 +199,7 @@ public class LayoutPageTemplateDisplayContext {
 
 			backURL.setParameter(
 				"mvcPath", "/view_layout_page_template_collections.jsp");
+			backURL.setParameter("tabs1", "page-templates");
 
 			redirect = backURL.toString();
 		}
@@ -430,6 +435,42 @@ public class LayoutPageTemplateDisplayContext {
 		}
 
 		return layoutPageTemplateEntry.getName();
+	}
+
+	public JSONArray getLayoutPageTemplateFragmentsJSONArray()
+		throws PortalException {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)_request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		LayoutPageTemplateEntry layoutPageTemplateEntry =
+			getLayoutPageTemplateEntry();
+
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
+
+		List<LayoutPageTemplateFragment> layoutPageTemplateFragments =
+			LayoutPageTemplateFragmentLocalServiceUtil.
+				getLayoutPageTemplateFragmentsByPageTemplate(
+					themeDisplay.getScopeGroupId(),
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+
+		for (LayoutPageTemplateFragment layoutPageTemplateFragment :
+				layoutPageTemplateFragments) {
+
+			FragmentEntry fragmentEntry =
+				FragmentEntryServiceUtil.fetchFragmentEntry(
+					layoutPageTemplateFragment.getFragmentEntryId());
+
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+
+			jsonObject.put(
+				"fragmentEntryId", fragmentEntry.getFragmentEntryId());
+			jsonObject.put("name", fragmentEntry.getName());
+
+			jsonArray.put(jsonObject);
+		}
+
+		return jsonArray;
 	}
 
 	public String getOrderByCol() {

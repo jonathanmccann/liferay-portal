@@ -61,9 +61,11 @@ page import="com.liferay.wiki.web.internal.display.context.util.WikiRequestHelpe
 page import="com.liferay.wiki.web.internal.display.context.util.WikiSocialActivityHelper" %><%@
 page import="com.liferay.wiki.web.internal.display.context.util.WikiURLHelper" %><%@
 page import="com.liferay.wiki.web.internal.portlet.toolbar.item.WikiPortletToolbarContributor" %><%@
-page import="com.liferay.wiki.web.util.WikiWebComponentProvider" %>
+page import="com.liferay.wiki.web.internal.util.WikiWebComponentProvider" %>
 
 <%
+AssetHelper assetHelper = (AssetHelper)request.getAttribute(AssetWebKeys.ASSET_HELPER);
+
 WikiRequestHelper wikiRequestHelper = new WikiRequestHelper(request);
 
 WikiGroupServiceOverriddenConfiguration wikiGroupServiceOverriddenConfiguration = wikiRequestHelper.getWikiGroupServiceOverriddenConfiguration();

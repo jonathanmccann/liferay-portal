@@ -52,7 +52,9 @@ public class BNDExportsCheck extends BaseFileCheck {
 			return content;
 		}
 
-		if (!absolutePath.contains("/testIntegration/")) {
+		if (!absolutePath.contains("/testIntegration/") &&
+			!absolutePath.contains("/modules-compat/modules-compat-data/")) {
+
 			_checkExports(
 				fileName, content, _exportContentsPattern, "-exportcontents");
 			_checkExports(fileName, content, _exportsPattern, "Export-Package");

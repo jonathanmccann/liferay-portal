@@ -64,4 +64,26 @@ public class SiteNavigationMenuItemServiceImpl
 			siteNavigationMenuId);
 	}
 
+	@Override
+	public SiteNavigationMenuItem updateSiteNavigationMenuItem(
+			long siteNavigationMenuId, long parentSiteNavigationMenuItemId,
+			ServiceContext serviceContext)
+		throws PortalException {
+
+		return siteNavigationMenuItemLocalService.updateSiteNavigationMenuItem(
+			getUserId(), siteNavigationMenuId, parentSiteNavigationMenuItemId,
+			serviceContext);
+	}
+
+	@Override
+	public SiteNavigationMenuItem updateSiteNavigationMenuItem(
+			long siteNavigationMenuId, long parentSiteNavigationMenuItemId,
+			String typeSettings, ServiceContext serviceContext)
+		throws PortalException {
+
+		return siteNavigationMenuItemLocalService.updateSiteNavigationMenuItem(
+			getUserId(), siteNavigationMenuId, parentSiteNavigationMenuItemId,
+			typeSettings, serviceContext);
+	}
+
 }

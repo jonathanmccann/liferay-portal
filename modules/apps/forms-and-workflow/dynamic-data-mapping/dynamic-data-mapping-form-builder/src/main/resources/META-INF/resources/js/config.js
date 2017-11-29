@@ -30,6 +30,7 @@
 								'liferay-ddm-form-builder-util',
 								'liferay-ddm-form-field-types',
 								'liferay-ddm-form-renderer',
+								'liferay-ddm-form-renderer-layout-visitor',
 								'liferay-ddm-form-renderer-util'
 							]
 						},
@@ -88,14 +89,6 @@
 						'liferay-ddm-form-builder-field-options-toolbar': {
 							path: 'form_builder_field_options_toolbar.js'
 						},
-						'liferay-ddm-form-builder-fieldset': {
-							path: 'form_builder_fieldset.js',
-							requires: [
-								'array-extras',
-								'liferay-ddm-form-builder-fieldset-definition-retriever',
-								'liferay-ddm-form-renderer-type'
-							]
-						},
 						'liferay-ddm-form-builder-field-settings-form': {
 							path: 'form_builder_field_settings_form.js',
 							requires: [
@@ -124,6 +117,14 @@
 								'liferay-ddm-form-builder-fieldset',
 								'liferay-ddm-form-builder-sidebar',
 								'liferay-ddm-form-renderer-types'
+							]
+						},
+						'liferay-ddm-form-builder-fieldset': {
+							path: 'form_builder_fieldset.js',
+							requires: [
+								'array-extras',
+								'liferay-ddm-form-builder-fieldset-definition-retriever',
+								'liferay-ddm-form-renderer-type'
 							]
 						},
 						'liferay-ddm-form-builder-fieldset-definition-retriever': {

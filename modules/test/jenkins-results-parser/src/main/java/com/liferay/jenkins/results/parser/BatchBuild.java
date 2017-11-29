@@ -148,7 +148,7 @@ public class BatchBuild extends BaseBuild {
 		String status = getStatus();
 
 		if (!status.equals("completed")) {
-			return null;
+			return Collections.emptyList();
 		}
 
 		List<TestResult> testResults = new ArrayList<>();
@@ -216,6 +216,8 @@ public class BatchBuild extends BaseBuild {
 		if (badBuildNumbers.size() >= MAX_REINVOCATIONS) {
 			return;
 		}
+
+		String result = getResult();
 
 		if ((status.equals("completed") && result.equals("SUCCESS")) ||
 			fromArchive) {
@@ -359,6 +361,7 @@ public class BatchBuild extends BaseBuild {
 		return getGitHubMessageJobResultsElement(false);
 	}
 
+	@Override
 	protected Element getGitHubMessageJobResultsElement(
 		boolean showCommonFailuresCount) {
 
@@ -411,8 +414,36 @@ public class BatchBuild extends BaseBuild {
 				" Failed.", getFailureMessageElement()));
 	}
 
+	@Override
 	protected String getJenkinsReportBuildInfoCellElementTagName() {
 		return "th";
+	}
+
+	@Override
+	protected List<Element> getJenkinsReportTableRowElements(
+		String result, String status) {
+
+		List<Element> tableRowElements = new ArrayList<>();
+
+		tableRowElements.add(getJenkinsReportTableRowElement());
+
+		List<Build> downstreamBuilds = getDownstreamBuilds(null);
+
+		Collections.sort(
+			downstreamBuilds, new BaseBuild.BuildDisplayNameComparator());
+
+		for (Build downstreamBuild : downstreamBuilds) {
+			if (!(downstreamBuild instanceof AxisBuild)) {
+				continue;
+			}
+
+			AxisBuild downstreamAxisBuild = (AxisBuild)downstreamBuild;
+
+			tableRowElements.add(
+				downstreamAxisBuild.getJenkinsReportTableRowElement());
+		}
+
+		return tableRowElements;
 	}
 
 	@Override
