@@ -152,8 +152,8 @@ public class ModuleApplicationContextExtender extends AbstractExtender {
 		@Override
 		public void destroy() throws Exception {
 			for (ServiceRegistration<UpgradeStep>
-				upgradeStepServiceRegistration :
-				_upgradeStepServiceRegistrations) {
+					upgradeStepServiceRegistration :
+						_upgradeStepServiceRegistrations) {
 
 				upgradeStepServiceRegistration.unregister();
 			}
@@ -270,7 +270,7 @@ public class ModuleApplicationContextExtender extends AbstractExtender {
 		}
 
 		private List<ServiceRegistration<UpgradeStep>>
-		_processInitialUpgrade(ClassLoader classLoader) {
+			_processInitialUpgrade(ClassLoader classLoader) {
 
 			Dictionary<String, String> headers = _bundle.getHeaders();
 
@@ -295,7 +295,7 @@ public class ModuleApplicationContextExtender extends AbstractExtender {
 				if (_log.isDebugEnabled()) {
 					_log.debug(
 						"Unable to read service.properties for bundle " +
-						_bundle.getSymbolicName());
+							_bundle.getSymbolicName());
 				}
 			}
 
