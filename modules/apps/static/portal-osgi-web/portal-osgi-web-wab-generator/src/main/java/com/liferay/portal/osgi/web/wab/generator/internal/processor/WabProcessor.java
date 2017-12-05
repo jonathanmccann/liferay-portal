@@ -625,7 +625,9 @@ public class WabProcessor {
 					}
 				}
 
-				if (containedInClasspath) {
+				if (containedInClasspath ||
+					importPackageName.startsWith("java.")) {
+
 					continue;
 				}
 
