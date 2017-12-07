@@ -161,6 +161,10 @@ public class ModuleApplicationContextExtender extends AbstractExtender {
 			if (_component != null) {
 				_dependencyManager.remove(_component);
 			}
+
+			if (_mismatchComponent != null) {
+				_dependencyManager.remove(_mismatchComponent);
+			}
 		}
 
 		public String getSQLTemplateString(String templateName)
@@ -188,6 +192,7 @@ public class ModuleApplicationContextExtender extends AbstractExtender {
 		@Override
 		public void start() throws Exception {
 			_component = _dependencyManager.createComponent();
+			_mismatchComponent = _dependencyManager.createComponent();
 
 			BundleContext bundleContext =
 				ModuleApplicationContextExtender.this.getBundleContext();
@@ -197,6 +202,9 @@ public class ModuleApplicationContextExtender extends AbstractExtender {
 			_component.setImplementation(
 				new ModuleApplicationContextRegistrator(
 					_bundle, bundle, _serviceConfigurator));
+
+			_mismatchComponent.setImplementation(
+				new MismatchReleaseRegistrator(_bundle));
 
 			ClassLoader classLoader = new BundleResolverClassLoader(
 				_bundle, bundle);
@@ -225,30 +233,40 @@ public class ModuleApplicationContextExtender extends AbstractExtender {
 			String requireSchemaVersion = headers.get(
 				"Liferay-Require-SchemaVersion");
 
-			if (Validator.isNull(requireSchemaVersion)) {
-				_generateReleaseInfo();
-			}
+			_generateReleaseInfo(requireSchemaVersion);
 
 			_dependencyManager.add(_component);
+			_dependencyManager.add(_mismatchComponent);
 
 			_upgradeStepServiceRegistrations = _processInitialUpgrade(
 				classLoader);
 		}
 
-		private void _generateReleaseInfo() {
+		private void _generateReleaseInfo(String requireSchemaVersion) {
 			ServiceDependency serviceDependency =
 				_dependencyManager.createServiceDependency();
 
 			serviceDependency.setRequired(true);
 
-			serviceDependency.setService(
-				Release.class,
-				StringBundler.concat(
-					"(&(release.bundle.symbolic.name=",
-					_bundle.getSymbolicName(), ")(release.schema.version=",
-					String.valueOf(_bundle.getVersion()), "))"));
+			if (Validator.isNull(requireSchemaVersion)) {
+				serviceDependency.setService(
+					Release.class,
+					StringBundler.concat(
+						"(&(release.bundle.symbolic.name=",
+						_bundle.getSymbolicName(), ")(release.schema.version=",
+						String.valueOf(_bundle.getVersion()), "))"));
 
-			_component.add(serviceDependency);
+				_component.add(serviceDependency);
+			}
+			else {
+				serviceDependency.setService(
+					Release.class,
+					StringBundler.concat(
+						"(release.bundle.symbolic.name=",
+						_bundle.getSymbolicName(), ")"));
+
+				_mismatchComponent.add(serviceDependency);
+			}
 		}
 
 		private List<ServiceRegistration<UpgradeStep>>
@@ -396,6 +414,7 @@ public class ModuleApplicationContextExtender extends AbstractExtender {
 		private final Bundle _bundle;
 		private org.apache.felix.dm.Component _component;
 		private final DependencyManager _dependencyManager;
+		private org.apache.felix.dm.Component _mismatchComponent;
 		private List<ServiceRegistration<UpgradeStep>>
 			_upgradeStepServiceRegistrations;
 
