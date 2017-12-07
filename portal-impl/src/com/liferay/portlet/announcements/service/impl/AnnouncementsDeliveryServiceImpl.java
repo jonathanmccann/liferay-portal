@@ -31,8 +31,7 @@ public class AnnouncementsDeliveryServiceImpl
 
 	@Override
 	public AnnouncementsDelivery updateDelivery(
-			long userId, String type, boolean email, boolean sms,
-			boolean website)
+			long userId, String type, boolean email, boolean sms)
 		throws PortalException {
 
 		PermissionChecker permissionChecker = getPermissionChecker();
@@ -47,7 +46,21 @@ public class AnnouncementsDeliveryServiceImpl
 		}
 
 		return announcementsDeliveryLocalService.updateDelivery(
-			userId, type, email, sms, website);
+			userId, type, email, sms);
+	}
+
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link
+	 *             #updateDelivery(long, String, boolean, boolean)}
+	 */
+	@Deprecated
+	@Override
+	public AnnouncementsDelivery updateDelivery(
+			long userId, String type, boolean email, boolean sms,
+			boolean website)
+		throws PortalException {
+
+		return updateDelivery(userId, type, email, sms);
 	}
 
 }

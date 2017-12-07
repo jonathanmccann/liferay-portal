@@ -19,7 +19,6 @@
 		<column name="type" type="String" />
 		<column name="email" type="boolean" />
 		<column name="sms" type="boolean" />
-		<column name="website" type="boolean" />
 
 		<!-- Finder methods -->
 

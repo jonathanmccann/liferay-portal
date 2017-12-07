@@ -127,8 +127,6 @@ public class AnnouncementsDeliveryPersistenceTest {
 
 		newAnnouncementsDelivery.setSms(RandomTestUtil.randomBoolean());
 
-		newAnnouncementsDelivery.setWebsite(RandomTestUtil.randomBoolean());
-
 		_announcementsDeliveries.add(_persistence.update(
 				newAnnouncementsDelivery));
 
@@ -146,8 +144,6 @@ public class AnnouncementsDeliveryPersistenceTest {
 			newAnnouncementsDelivery.getEmail());
 		Assert.assertEquals(existingAnnouncementsDelivery.getSms(),
 			newAnnouncementsDelivery.getSms());
-		Assert.assertEquals(existingAnnouncementsDelivery.getWebsite(),
-			newAnnouncementsDelivery.getWebsite());
 	}
 
 	@Test
@@ -192,7 +188,7 @@ public class AnnouncementsDeliveryPersistenceTest {
 	protected OrderByComparator<AnnouncementsDelivery> getOrderByComparator() {
 		return OrderByComparatorFactoryUtil.create("AnnouncementsDelivery",
 			"deliveryId", true, "companyId", true, "userId", true, "type",
-			true, "email", true, "sms", true, "website", true);
+			true, "email", true, "sms", true);
 	}
 
 	@Test
@@ -427,8 +423,6 @@ public class AnnouncementsDeliveryPersistenceTest {
 		announcementsDelivery.setEmail(RandomTestUtil.randomBoolean());
 
 		announcementsDelivery.setSms(RandomTestUtil.randomBoolean());
-
-		announcementsDelivery.setWebsite(RandomTestUtil.randomBoolean());
 
 		_announcementsDeliveries.add(_persistence.update(announcementsDelivery));
 

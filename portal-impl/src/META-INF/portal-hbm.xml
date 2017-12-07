@@ -1098,7 +1098,6 @@
 		<property column="type_" name="type" type="com.liferay.portal.dao.orm.hibernate.StringType" />
 		<property name="email" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 		<property name="sms" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
-		<property name="website" type="com.liferay.portal.dao.orm.hibernate.BooleanType" />
 	</class>
 	<class name="com.liferay.portlet.announcements.model.impl.AnnouncementsEntryImpl" table="AnnouncementsEntry">
 		<id name="entryId" type="long">

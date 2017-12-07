@@ -40,7 +40,6 @@ public class AnnouncementsDeliverySoap implements Serializable {
 		soapModel.setType(model.getType());
 		soapModel.setEmail(model.getEmail());
 		soapModel.setSms(model.getSms());
-		soapModel.setWebsite(model.getWebsite());
 
 		return soapModel;
 	}
@@ -152,23 +151,10 @@ public class AnnouncementsDeliverySoap implements Serializable {
 		_sms = sms;
 	}
 
-	public boolean getWebsite() {
-		return _website;
-	}
-
-	public boolean isWebsite() {
-		return _website;
-	}
-
-	public void setWebsite(boolean website) {
-		_website = website;
-	}
-
 	private long _deliveryId;
 	private long _companyId;
 	private long _userId;
 	private String _type;
 	private boolean _email;
 	private boolean _sms;
-	private boolean _website;
 }

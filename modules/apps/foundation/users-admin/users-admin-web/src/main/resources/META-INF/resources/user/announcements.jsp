@@ -31,7 +31,6 @@ else {
 		AnnouncementsDelivery delivery = new AnnouncementsDeliveryImpl();
 
 		delivery.setType(type);
-		delivery.setWebsite(true);
 
 		deliveries.add(delivery);
 	}
@@ -63,11 +62,6 @@ else {
 
 		<liferay-ui:search-container-column-jsp
 			name="sms"
-			path="/user/announcements_checkbox.jsp"
-		/>
-
-		<liferay-ui:search-container-column-jsp
-			name="website"
 			path="/user/announcements_checkbox.jsp"
 		/>
 	</liferay-ui:search-container-row>

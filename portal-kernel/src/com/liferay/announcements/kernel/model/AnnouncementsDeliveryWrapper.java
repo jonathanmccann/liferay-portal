@@ -64,7 +64,6 @@ public class AnnouncementsDeliveryWrapper implements AnnouncementsDelivery,
 		attributes.put("type", getType());
 		attributes.put("email", getEmail());
 		attributes.put("sms", getSms());
-		attributes.put("website", getWebsite());
 
 		return attributes;
 	}
@@ -105,12 +104,6 @@ public class AnnouncementsDeliveryWrapper implements AnnouncementsDelivery,
 
 		if (sms != null) {
 			setSms(sms);
-		}
-
-		Boolean website = (Boolean)attributes.get("website");
-
-		if (website != null) {
-			setWebsite(website);
 		}
 	}
 
@@ -214,16 +207,6 @@ public class AnnouncementsDeliveryWrapper implements AnnouncementsDelivery,
 		return _announcementsDelivery.getUserUuid();
 	}
 
-	/**
-	* Returns the website of this announcements delivery.
-	*
-	* @return the website of this announcements delivery
-	*/
-	@Override
-	public boolean getWebsite() {
-		return _announcementsDelivery.getWebsite();
-	}
-
 	@Override
 	public int hashCode() {
 		return _announcementsDelivery.hashCode();
@@ -262,16 +245,6 @@ public class AnnouncementsDeliveryWrapper implements AnnouncementsDelivery,
 	@Override
 	public boolean isSms() {
 		return _announcementsDelivery.isSms();
-	}
-
-	/**
-	* Returns <code>true</code> if this announcements delivery is website.
-	*
-	* @return <code>true</code> if this announcements delivery is website; <code>false</code> otherwise
-	*/
-	@Override
-	public boolean isWebsite() {
-		return _announcementsDelivery.isWebsite();
 	}
 
 	@Override
@@ -388,16 +361,6 @@ public class AnnouncementsDeliveryWrapper implements AnnouncementsDelivery,
 	@Override
 	public void setUserUuid(java.lang.String userUuid) {
 		_announcementsDelivery.setUserUuid(userUuid);
-	}
-
-	/**
-	* Sets whether this announcements delivery is website.
-	*
-	* @param website the website of this announcements delivery
-	*/
-	@Override
-	public void setWebsite(boolean website) {
-		_announcementsDelivery.setWebsite(website);
 	}
 
 	@Override

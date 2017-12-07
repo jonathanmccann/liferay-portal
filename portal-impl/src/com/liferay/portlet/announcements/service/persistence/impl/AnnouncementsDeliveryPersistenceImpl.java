@@ -1207,7 +1207,6 @@ public class AnnouncementsDeliveryPersistenceImpl extends BasePersistenceImpl<An
 		announcementsDeliveryImpl.setType(announcementsDelivery.getType());
 		announcementsDeliveryImpl.setEmail(announcementsDelivery.isEmail());
 		announcementsDeliveryImpl.setSms(announcementsDelivery.isSms());
-		announcementsDeliveryImpl.setWebsite(announcementsDelivery.isWebsite());
 
 		return announcementsDeliveryImpl;
 	}

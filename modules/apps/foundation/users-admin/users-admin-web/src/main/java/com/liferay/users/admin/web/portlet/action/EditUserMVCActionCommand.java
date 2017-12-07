@@ -493,7 +493,6 @@ public class EditUserMVCActionCommand extends BaseMVCActionCommand {
 			announcementsDelivery.setType(type);
 			announcementsDelivery.setEmail(email);
 			announcementsDelivery.setSms(sms);
-			announcementsDelivery.setWebsite(website);
 
 			announcementsDeliveries.add(announcementsDelivery);
 		}
