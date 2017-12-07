@@ -49,7 +49,6 @@ public class AnnouncementsDeliveryLocalServiceImpl
 		delivery.setType(type);
 		delivery.setEmail(false);
 		delivery.setSms(false);
-		delivery.setWebsite(true);
 
 		try {
 			announcementsDeliveryPersistence.update(delivery);
@@ -144,19 +143,31 @@ public class AnnouncementsDeliveryLocalServiceImpl
 
 	@Override
 	public AnnouncementsDelivery updateDelivery(
-			long userId, String type, boolean email, boolean sms,
-			boolean website)
+			long userId, String type, boolean email, boolean sms)
 		throws PortalException {
 
 		AnnouncementsDelivery delivery = getUserDelivery(userId, type);
 
 		delivery.setEmail(email);
 		delivery.setSms(sms);
-		delivery.setWebsite(website);
 
 		announcementsDeliveryPersistence.update(delivery);
 
 		return delivery;
+	}
+
+	/**
+	 * @deprecated As of 7.0.0, replaced by {@link
+	 *             #updateDelivery(long, String, boolean, boolean)}
+	 */
+	@Deprecated
+	@Override
+	public AnnouncementsDelivery updateDelivery(
+			long userId, String type, boolean email, boolean sms,
+			boolean website)
+		throws PortalException {
+
+		return updateDelivery(userId, type, email, sms);
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(

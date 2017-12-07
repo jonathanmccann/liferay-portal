@@ -63,7 +63,7 @@ public class AnnouncementsDeliveryCacheModel implements CacheModel<Announcements
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(15);
+		StringBundler sb = new StringBundler(13);
 
 		sb.append("{deliveryId=");
 		sb.append(deliveryId);
@@ -77,8 +77,6 @@ public class AnnouncementsDeliveryCacheModel implements CacheModel<Announcements
 		sb.append(email);
 		sb.append(", sms=");
 		sb.append(sms);
-		sb.append(", website=");
-		sb.append(website);
 		sb.append("}");
 
 		return sb.toString();
@@ -101,7 +99,6 @@ public class AnnouncementsDeliveryCacheModel implements CacheModel<Announcements
 
 		announcementsDeliveryImpl.setEmail(email);
 		announcementsDeliveryImpl.setSms(sms);
-		announcementsDeliveryImpl.setWebsite(website);
 
 		announcementsDeliveryImpl.resetOriginalValues();
 
@@ -120,8 +117,6 @@ public class AnnouncementsDeliveryCacheModel implements CacheModel<Announcements
 		email = objectInput.readBoolean();
 
 		sms = objectInput.readBoolean();
-
-		website = objectInput.readBoolean();
 	}
 
 	@Override
@@ -143,8 +138,6 @@ public class AnnouncementsDeliveryCacheModel implements CacheModel<Announcements
 		objectOutput.writeBoolean(email);
 
 		objectOutput.writeBoolean(sms);
-
-		objectOutput.writeBoolean(website);
 	}
 
 	public long deliveryId;
@@ -153,5 +146,4 @@ public class AnnouncementsDeliveryCacheModel implements CacheModel<Announcements
 	public String type;
 	public boolean email;
 	public boolean sms;
-	public boolean website;
 }

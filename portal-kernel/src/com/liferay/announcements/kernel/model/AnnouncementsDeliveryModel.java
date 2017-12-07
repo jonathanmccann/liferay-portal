@@ -177,27 +177,6 @@ public interface AnnouncementsDeliveryModel extends BaseModel<AnnouncementsDeliv
 	 */
 	public void setSms(boolean sms);
 
-	/**
-	 * Returns the website of this announcements delivery.
-	 *
-	 * @return the website of this announcements delivery
-	 */
-	public boolean getWebsite();
-
-	/**
-	 * Returns <code>true</code> if this announcements delivery is website.
-	 *
-	 * @return <code>true</code> if this announcements delivery is website; <code>false</code> otherwise
-	 */
-	public boolean isWebsite();
-
-	/**
-	 * Sets whether this announcements delivery is website.
-	 *
-	 * @param website the website of this announcements delivery
-	 */
-	public void setWebsite(boolean website);
-
 	@Override
 	public boolean isNew();
 

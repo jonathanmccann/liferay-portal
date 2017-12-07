@@ -35,7 +35,6 @@
 		<field name="type" type="String" />
 		<field name="email" type="boolean" />
 		<field name="sms" type="boolean" />
-		<field name="website" type="boolean" />
 	</model>
 	<model name="com.liferay.announcements.kernel.model.AnnouncementsEntry">
 		<field name="uuid" type="String" />

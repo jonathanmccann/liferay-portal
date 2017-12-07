@@ -23,7 +23,6 @@ SearchEntry entry = (SearchEntry)request.getAttribute(WebKeys.SEARCH_CONTAINER_R
 AnnouncementsDelivery delivery = (AnnouncementsDelivery)row.getObject();
 
 boolean defaultValue = false;
-boolean disabled = false;
 String messageKey = StringPool.BLANK;
 String param = "announcementsType" + delivery.getType();
 
@@ -39,16 +38,9 @@ else if (index == 2) {
 	messageKey = "receive-x-announcements-via-sms";
 	param += "Sms";
 }
-else if (index == 3) {
-	defaultValue = delivery.isWebsite();
-	disabled = true;
-	messageKey = "receive-x-announcements-via-website";
-	param += "Website";
-}
 %>
 
 <aui:input
-	disabled="<%= disabled %>"
 	label=""
 	name="<%= param %>"
 	title="<%= LanguageUtil.format(request, messageKey, delivery.getType()) %>"

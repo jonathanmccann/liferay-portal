@@ -47,8 +47,7 @@ create table AnnouncementsDelivery (
 	userId LONG,
 	type_ VARCHAR(75) null,
 	email BOOLEAN,
-	sms BOOLEAN,
-	website BOOLEAN
+	sms BOOLEAN
 );
 
 create table AnnouncementsEntry (

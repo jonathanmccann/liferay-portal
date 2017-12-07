@@ -73,8 +73,7 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 			{ "userId", Types.BIGINT },
 			{ "type_", Types.VARCHAR },
 			{ "email", Types.BOOLEAN },
-			{ "sms", Types.BOOLEAN },
-			{ "website", Types.BOOLEAN }
+			{ "sms", Types.BOOLEAN }
 		};
 	public static final Map<String, Integer> TABLE_COLUMNS_MAP = new HashMap<String, Integer>();
 
@@ -85,10 +84,9 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 		TABLE_COLUMNS_MAP.put("type_", Types.VARCHAR);
 		TABLE_COLUMNS_MAP.put("email", Types.BOOLEAN);
 		TABLE_COLUMNS_MAP.put("sms", Types.BOOLEAN);
-		TABLE_COLUMNS_MAP.put("website", Types.BOOLEAN);
 	}
 
-	public static final String TABLE_SQL_CREATE = "create table AnnouncementsDelivery (deliveryId LONG not null primary key,companyId LONG,userId LONG,type_ VARCHAR(75) null,email BOOLEAN,sms BOOLEAN,website BOOLEAN)";
+	public static final String TABLE_SQL_CREATE = "create table AnnouncementsDelivery (deliveryId LONG not null primary key,companyId LONG,userId LONG,type_ VARCHAR(75) null,email BOOLEAN,sms BOOLEAN)";
 	public static final String TABLE_SQL_DROP = "drop table AnnouncementsDelivery";
 	public static final String ORDER_BY_JPQL = " ORDER BY announcementsDelivery.deliveryId ASC";
 	public static final String ORDER_BY_SQL = " ORDER BY AnnouncementsDelivery.deliveryId ASC";
@@ -128,7 +126,6 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 		model.setType(soapModel.getType());
 		model.setEmail(soapModel.getEmail());
 		model.setSms(soapModel.getSms());
-		model.setWebsite(soapModel.getWebsite());
 
 		return model;
 	}
@@ -200,7 +197,6 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 		attributes.put("type", getType());
 		attributes.put("email", getEmail());
 		attributes.put("sms", getSms());
-		attributes.put("website", getWebsite());
 
 		attributes.put("entityCacheEnabled", isEntityCacheEnabled());
 		attributes.put("finderCacheEnabled", isFinderCacheEnabled());
@@ -244,12 +240,6 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 
 		if (sms != null) {
 			setSms(sms);
-		}
-
-		Boolean website = (Boolean)attributes.get("website");
-
-		if (website != null) {
-			setWebsite(website);
 		}
 	}
 
@@ -374,23 +364,6 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 		_sms = sms;
 	}
 
-	@JSON
-	@Override
-	public boolean getWebsite() {
-		return _website;
-	}
-
-	@JSON
-	@Override
-	public boolean isWebsite() {
-		return _website;
-	}
-
-	@Override
-	public void setWebsite(boolean website) {
-		_website = website;
-	}
-
 	public long getColumnBitmask() {
 		return _columnBitmask;
 	}
@@ -428,7 +401,6 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 		announcementsDeliveryImpl.setType(getType());
 		announcementsDeliveryImpl.setEmail(getEmail());
 		announcementsDeliveryImpl.setSms(getSms());
-		announcementsDeliveryImpl.setWebsite(getWebsite());
 
 		announcementsDeliveryImpl.resetOriginalValues();
 
@@ -522,14 +494,12 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 
 		announcementsDeliveryCacheModel.sms = getSms();
 
-		announcementsDeliveryCacheModel.website = getWebsite();
-
 		return announcementsDeliveryCacheModel;
 	}
 
 	@Override
 	public String toString() {
-		StringBundler sb = new StringBundler(15);
+		StringBundler sb = new StringBundler(13);
 
 		sb.append("{deliveryId=");
 		sb.append(getDeliveryId());
@@ -543,8 +513,6 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 		sb.append(getEmail());
 		sb.append(", sms=");
 		sb.append(getSms());
-		sb.append(", website=");
-		sb.append(getWebsite());
 		sb.append("}");
 
 		return sb.toString();
@@ -552,7 +520,7 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 
 	@Override
 	public String toXmlString() {
-		StringBundler sb = new StringBundler(25);
+		StringBundler sb = new StringBundler(22);
 
 		sb.append("<model><model-name>");
 		sb.append(
@@ -583,10 +551,6 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 			"<column><column-name>sms</column-name><column-value><![CDATA[");
 		sb.append(getSms());
 		sb.append("]]></column-value></column>");
-		sb.append(
-			"<column><column-name>website</column-name><column-value><![CDATA[");
-		sb.append(getWebsite());
-		sb.append("]]></column-value></column>");
 
 		sb.append("</model>");
 
@@ -606,7 +570,6 @@ public class AnnouncementsDeliveryModelImpl extends BaseModelImpl<AnnouncementsD
 	private String _originalType;
 	private boolean _email;
 	private boolean _sms;
-	private boolean _website;
 	private long _columnBitmask;
 	private AnnouncementsDelivery _escapedModel;
 }
