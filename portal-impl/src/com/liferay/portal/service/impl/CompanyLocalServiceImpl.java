@@ -1060,6 +1060,7 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 					if (Validator.isNull(oldGroupDefaultName)) {
 						for (String localizedName : nameMap.values()) {
 							oldGroupDefaultName = localizedName;
+
 							break;
 						}
 					}
