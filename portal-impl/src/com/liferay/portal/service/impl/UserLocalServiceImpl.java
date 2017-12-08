@@ -5456,6 +5456,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			sendEmailAddressVerification(user, emailAddress, serviceContext);
 		}
 
+		companyLocalService.updateDisplayGroupNames(user.getCompanyId());
+
 		return user;
 	}
 
