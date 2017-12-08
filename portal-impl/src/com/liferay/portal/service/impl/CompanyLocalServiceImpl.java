@@ -1058,8 +1058,8 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 						LocaleUtil.getDefault());
 
 					if (Validator.isNull(oldGroupDefaultName)) {
-						for (Locale key : nameMap.keySet()) {
-							oldGroupDefaultName = nameMap.get(key);
+						for (String localizedName : nameMap.values()) {
+							oldGroupDefaultName = localizedName;
 							break;
 						}
 					}
