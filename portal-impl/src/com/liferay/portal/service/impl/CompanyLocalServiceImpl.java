@@ -1057,6 +1057,14 @@ public class CompanyLocalServiceImpl extends CompanyLocalServiceBaseImpl {
 					String oldGroupDefaultName = nameMap.get(
 						LocaleUtil.getDefault());
 
+					if (Validator.isNull(oldGroupDefaultName)) {
+						for (String localizedName : nameMap.values()) {
+							oldGroupDefaultName = localizedName;
+
+							break;
+						}
+					}
+
 					if (_log.isWarnEnabled()) {
 						StringBundler sb = new StringBundler(5);
 
