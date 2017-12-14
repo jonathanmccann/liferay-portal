@@ -53,6 +53,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -290,7 +293,10 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 			long lastModified = PortalWebResourcesUtil.getLastModified(
 				PortalWebResourceConstants.RESOURCE_TYPE_JS);
 
-			if (lastModified == cacheFile.lastModified()) {
+			long cachedFileLastModified = Files.getLastModifiedTime(
+				Paths.get(_tempDir + "/" + cacheFileName)).toMillis();
+
+			if (lastModified == cachedFileLastModified) {
 				response.setContentType(ContentTypes.TEXT_JAVASCRIPT);
 
 				return cacheFile;
@@ -315,9 +321,16 @@ public class AggregateFilter extends IgnoreModuleRequestFilter {
 
 		FileUtil.write(cacheFile, content);
 
-		cacheFile.setLastModified(
+		FileTime fileTime = FileTime.fromMillis(
 			PortalWebResourcesUtil.getLastModified(
 				PortalWebResourceConstants.RESOURCE_TYPE_JS));
+
+		Files.setLastModifiedTime(
+			Paths.get(_tempDir + "/" + cacheFileName), fileTime);
+
+		/*cacheFile.setLastModified(
+			PortalWebResourcesUtil.getLastModified(
+				PortalWebResourceConstants.RESOURCE_TYPE_JS));*/
 
 		return content;
 	}
