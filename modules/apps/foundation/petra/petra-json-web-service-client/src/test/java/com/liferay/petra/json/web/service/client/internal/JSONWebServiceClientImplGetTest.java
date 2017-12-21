@@ -14,6 +14,9 @@
 
 package com.liferay.petra.json.web.service.client.internal;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.annotations.VisibleForTesting;
 import com.liferay.petra.json.web.service.client.JSONWebServiceInvocationException;
 import com.liferay.petra.json.web.service.client.server.simulator.HTTPServerSimulator;
 import com.liferay.petra.json.web.service.client.server.simulator.SimulatorConstants;
@@ -41,6 +44,26 @@ public class JSONWebServiceClientImplGetTest
 	@After
 	public void tearDown() {
 		HTTPServerSimulator.stop();
+	}
+
+	public static class CVE {
+		public int id;
+		public Object obj;
+	}
+
+	@Test
+	public void testCVE() throws Exception {
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		objectMapper.configure(
+			DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		objectMapper.enableDefaultTypingAsProperty(
+			ObjectMapper.DefaultTyping.JAVA_LANG_OBJECT, "class");
+
+		String json =
+			"{\"id\":124, \"obj\":[\"com.sun.org.apache.xalan.internal.xsltc.trax.TemplatesImpl\", {\"transletBytecodes\":[\"AAIAZQ==\"], \"transletName\":\"a.b\", \"outputProperties\":{}}]}";
+
+		objectMapper.readValue(json, CVE.class);
 	}
 
 	@Test(expected = JSONWebServiceInvocationException.class)
