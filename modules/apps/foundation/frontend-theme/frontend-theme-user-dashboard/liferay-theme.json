@@ -1,0 +1,9 @@
+{
+  "LiferayTheme": {
+    "deployPath": "/home/jonathan/deploy/trunk/deploy",
+    "themeName": "frontend-theme-user-dashboard",
+    "appServerPathTheme": "/home/jonathan/deploy/trunk/tomcat-8.0.32/webapps/frontend-theme-user-dashboard",
+    "deployed": false,
+    "appServerPath": "/home/jonathan/deploy/trunk/tomcat-8.0.32"
+  }
+}
