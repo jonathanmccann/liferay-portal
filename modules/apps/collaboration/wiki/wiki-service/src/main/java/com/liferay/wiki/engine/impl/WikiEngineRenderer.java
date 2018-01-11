@@ -14,6 +14,7 @@
 
 package com.liferay.wiki.engine.impl;
 
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.diff.DiffHtmlUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.io.unsync.UnsyncStringReader;
@@ -25,7 +26,6 @@ import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.URLCodec;
 import com.liferay.portal.kernel.util.WebKeys;
@@ -307,7 +307,9 @@ public class WikiEngineRenderer {
 			matcher.appendReplacement(sb, replacement);
 		}
 
-		return matcher.appendTail(sb).toString();
+		sb = matcher.appendTail(sb);
+
+		return sb.toString();
 	}
 
 	private String _replaceAttachments(

@@ -15,8 +15,8 @@
 package com.liferay.wiki.internal.translator;
 
 import com.liferay.petra.string.CharPool;
+import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.wiki.importer.impl.mediawiki.MediaWikiImporter;
 
@@ -293,8 +293,9 @@ public class MediaWikiToCreoleTranslator extends BaseTranslator {
 		sb = new StringBuffer(content);
 
 		while (matcher.find()) {
-			String link = matcher.group(1).replace(
-				StringPool.UNDERLINE, StringPool.SPACE);
+			String link = matcher.group(1);
+
+			link = link.replace(StringPool.UNDERLINE, StringPool.SPACE);
 
 			sb.replace(matcher.start(1), matcher.end(1), link);
 		}
