@@ -67,6 +67,8 @@
 			}
 
 			Liferay.fire('showTab', details);
+
+			$(document).trigger('screenChange.lexicon.sidenav');
 		},
 		['aui-base']
 	);
