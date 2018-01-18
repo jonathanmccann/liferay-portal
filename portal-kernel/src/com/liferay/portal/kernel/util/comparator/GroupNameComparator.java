@@ -28,11 +28,11 @@ import java.util.Locale;
  */
 public class GroupNameComparator extends OrderByComparator<Group> {
 
-	public static final String ORDER_BY_ASC = "groupName ASC";
+	public static final String ORDER_BY_ASC = "groupKey ASC";
 
-	public static final String ORDER_BY_DESC = "groupName DESC";
+	public static final String ORDER_BY_DESC = "groupKey DESC";
 
-	public static final String[] ORDER_BY_FIELDS = {"groupName"};
+	public static final String[] ORDER_BY_FIELDS = {"groupKey"};
 
 	public GroupNameComparator() {
 		this(false);
