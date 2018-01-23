@@ -212,9 +212,7 @@ renderResponse.setTitle(layoutPageTemplateDisplayContext.getLayoutPageTemplateCo
 
 	Liferay.on('destroyPortlet', handleDestroyPortlet);
 
-	dom.on(
-		'#<portlet:namespace />deleteSelectedLayoutPageTemplateEntries',
-		'click',
+	$('#<portlet:namespace />deleteSelectedLayoutPageTemplateEntries').unbind('click').click(
 		function() {
 			if (confirm('<liferay-ui:message key="are-you-sure-you-want-to-delete-this" />')) {
 				submitForm($(document.<portlet:namespace />fm));
