@@ -41,6 +41,8 @@ import com.liferay.portal.util.PropsValues;
 import com.liferay.portlet.PortletRequestImpl;
 import com.liferay.portlet.RenderParametersPool;
 
+import java.util.Map;
+
 import javax.portlet.PortletMode;
 import javax.portlet.PortletRequest;
 import javax.portlet.PortletURL;
@@ -268,15 +270,29 @@ public class LayoutAction extends Action {
 
 			String portletId = ParamUtil.getString(request, "p_p_id");
 
-			if (resetLayout &&
-				(Validator.isNull(portletId) ||
-				 ((previousLayoutPlid != null) &&
-				  (layout.getPlid() != previousLayoutPlid.longValue())))) {
+			if (resetLayout) {
 
-				// Always clear render parameters on a layout url, but do not
-				// clear on portlet urls invoked on the same layout
+				// Always clear render parameters on a layout url, but leave the
+				// render parameters for a portlet intact if it is a portlet url
+				// on the same page
 
-				RenderParametersPool.clear(request, plid);
+				if (Validator.isNull(portletId) ||
+					((previousLayoutPlid != null) &&
+					 (layout.getPlid() != previousLayoutPlid.longValue()))) {
+
+					RenderParametersPool.clear(request, plid);
+				}
+				else if (Validator.isNotNull(portletId)) {
+					Map<String, String[]> renderParameters =
+						RenderParametersPool.get(request, plid, portletId);
+
+					RenderParametersPool.clear(request, plid);
+
+					if (renderParameters != null) {
+						RenderParametersPool.put(
+							request, plid, portletId, renderParameters);
+					}
+				}
 			}
 
 			Portlet portlet = null;
