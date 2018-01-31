@@ -1405,7 +1405,8 @@ public class PortalImpl implements Portal {
 
 			if ((pos <= 0) || (pos >= groupFriendlyURL.length())) {
 				sb.append(groupFriendlyURL);
-				sb.append(buildI18NPath(siteDefaultLocale));
+				sb.append(
+					buildI18NPath(siteDefaultLocale, layout.getGroupId()));
 
 				if (!canonicalLayoutFriendlyURL.startsWith(StringPool.SLASH)) {
 					sb.append(StringPool.SLASH);
@@ -1418,7 +1419,8 @@ public class PortalImpl implements Portal {
 				String groupFriendlyURLSuffix = groupFriendlyURL.substring(pos);
 
 				sb.append(groupFriendlyURLPrefix);
-				sb.append(buildI18NPath(siteDefaultLocale));
+				sb.append(
+					buildI18NPath(siteDefaultLocale, layout.getGroupId()));
 				sb.append(groupFriendlyURLSuffix);
 			}
 
@@ -7449,10 +7451,10 @@ public class PortalImpl implements Portal {
 			companyId, groupId, 0, name, primaryKey, false, true, true);
 	}
 
-	protected String buildI18NPath(Locale locale) {
+	protected String buildI18NPath(Locale locale, long groupId) {
 		String languageId = LocaleUtil.toLanguageId(locale);
 
-		return _buildI18NPath(languageId, locale);
+		return _buildI18NPath(languageId, locale, groupId);
 	}
 
 	protected Set<Group> doGetAncestorSiteGroups(
@@ -8213,7 +8215,7 @@ public class PortalImpl implements Portal {
 			 !locale.equals(LocaleUtil.getDefault())) ||
 			(PropsValues.LOCALE_PREPEND_FRIENDLY_URL_STYLE == 2)) {
 
-			i18nPath = buildI18NPath(locale);
+			i18nPath = buildI18NPath(locale, themeDisplay.getSiteGroupId());
 		}
 
 		themeDisplay.setI18nLanguageId(locale.toString());
@@ -8279,7 +8281,8 @@ public class PortalImpl implements Portal {
 
 		if (Validator.isNull(virtualHostname)) {
 			for (Locale locale : availableLocales) {
-				String i18nPath = buildI18NPath(locale);
+				String i18nPath = buildI18NPath(
+					locale, themeDisplay.getSiteGroupId());
 
 				alternateURLs.put(
 					locale,
@@ -8308,7 +8311,9 @@ public class PortalImpl implements Portal {
 		if ((pos <= 0) || (pos >= canonicalURL.length())) {
 			for (Locale locale : availableLocales) {
 				alternateURLs.put(
-					locale, canonicalURL.concat(buildI18NPath(locale)));
+					locale,
+					canonicalURL.concat(
+						buildI18NPath(locale, themeDisplay.getSiteGroupId())));
 			}
 
 			return alternateURLs;
@@ -8358,7 +8363,8 @@ public class PortalImpl implements Portal {
 		String canonicalURLSuffix = canonicalURL.substring(pos);
 
 		if (PropsValues.LOCALE_PREPEND_FRIENDLY_URL_STYLE == 2) {
-			String i18nPath = buildI18NPath(siteDefaultLocale);
+			String i18nPath = buildI18NPath(
+				siteDefaultLocale, layout.getGroupId());
 
 			if (canonicalURLSuffix.startsWith(i18nPath)) {
 				canonicalURLSuffix = canonicalURLSuffix.substring(
@@ -8407,8 +8413,10 @@ public class PortalImpl implements Portal {
 				alternateURLs.put(
 					locale,
 					canonicalURLPrefix.concat(
-						_buildI18NPath(languageId, locale)).concat(
-							alternateURLSuffix));
+						_buildI18NPath(
+							languageId, locale,
+							themeDisplay.getScopeGroupId())).concat(
+								alternateURLSuffix));
 			}
 		}
 
