@@ -8221,21 +8221,28 @@ public class PortalImpl implements Portal {
 		themeDisplay.setLocale(locale);
 	}
 
-	private String _buildI18NPath(String languageId, Locale locale) {
+	private String _buildI18NPath(
+		String languageId, Locale locale, long groupId) {
+
 		if (Validator.isNull(languageId)) {
 			return null;
 		}
 
-		if (LanguageUtil.isDuplicateLanguageCode(locale.getLanguage())) {
-			Locale priorityLocale = LanguageUtil.getLocale(
-				locale.getLanguage());
+		Locale siteDefaultLocale = null;
 
-			if (locale.equals(priorityLocale)) {
-				languageId = locale.getLanguage();
+		try {
+			siteDefaultLocale = getSiteDefaultLocale(groupId);
 			}
 		}
-		else {
-			languageId = locale.getLanguage();
+		catch (Exception e) {
+		}
+
+		if (siteDefaultLocale == null) {
+			siteDefaultLocale = LanguageUtil.getLocale(locale.getLanguage());
+		}
+
+		if (languageId.equals(LanguageUtil.getLanguageId(siteDefaultLocale))) {
+			languageId = siteDefaultLocale.getLanguage();
 		}
 
 		return StringPool.SLASH.concat(languageId);
