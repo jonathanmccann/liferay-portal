@@ -8232,6 +8232,10 @@ public class PortalImpl implements Portal {
 
 		try {
 			siteDefaultLocale = getSiteDefaultLocale(groupId);
+
+			if (!siteDefaultLocale.getLanguage().equals(locale.getLanguage())) {
+				siteDefaultLocale = LanguageUtil.getLocale(
+					groupId, locale.getLanguage());
 			}
 		}
 		catch (Exception e) {
