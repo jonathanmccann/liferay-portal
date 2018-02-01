@@ -8230,21 +8230,22 @@ public class PortalImpl implements Portal {
 			return null;
 		}
 
+		String language = locale.getLanguage();
+
 		Locale siteDefaultLocale = null;
 
 		try {
 			siteDefaultLocale = getSiteDefaultLocale(groupId);
 
-			if (!siteDefaultLocale.getLanguage().equals(locale.getLanguage())) {
-				siteDefaultLocale = LanguageUtil.getLocale(
-					groupId, locale.getLanguage());
+			if (!language.equals(siteDefaultLocale.getLanguage())) {
+				siteDefaultLocale = LanguageUtil.getLocale(groupId, language);
 			}
 		}
 		catch (Exception e) {
 		}
 
 		if (siteDefaultLocale == null) {
-			siteDefaultLocale = LanguageUtil.getLocale(locale.getLanguage());
+			siteDefaultLocale = LanguageUtil.getLocale(language);
 		}
 
 		if (languageId.equals(LanguageUtil.getLanguageId(siteDefaultLocale))) {
