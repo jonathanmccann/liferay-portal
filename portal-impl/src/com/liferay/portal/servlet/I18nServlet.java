@@ -190,7 +190,12 @@ public class I18nServlet extends HttpServlet {
 			}
 		}
 		catch (Exception e) {
-			locale = LanguageUtil.getLocale(i18nLanguageCode);
+			Locale portalDefaultLocale = LanguageUtil.getLocale(
+				i18nLanguageCode);
+
+			if (Validator.isNotNull(portalDefaultLocale)) {
+				locale = portalDefaultLocale;
+			}
 		}
 
 		if (locale != null) {
