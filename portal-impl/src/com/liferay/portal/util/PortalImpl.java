@@ -7451,6 +7451,12 @@ public class PortalImpl implements Portal {
 			companyId, groupId, 0, name, primaryKey, false, true, true);
 	}
 
+	protected String buildI18NPath(Locale locale) {
+		String languageId = LocaleUtil.toLanguageId(locale);
+
+		return _buildI18NPath(languageId, locale, 0);
+	}
+
 	protected String buildI18NPath(Locale locale, long groupId) {
 		String languageId = LocaleUtil.toLanguageId(locale);
 
