@@ -239,7 +239,7 @@ public class FileEntryDisplayContextHelper {
 	private Boolean _hasPermissionsPermission;
 	private Boolean _hasUpdatePermission;
 	private Boolean _hasViewPermission;
-	private final PermissionChecker _permissionChecker;
+	protected final PermissionChecker _permissionChecker;
 	private Boolean _supportsLocking;
 
 }
