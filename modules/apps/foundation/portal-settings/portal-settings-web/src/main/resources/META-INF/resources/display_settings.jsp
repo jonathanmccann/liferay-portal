@@ -43,6 +43,8 @@
 
 		Locale companyLocale = LocaleUtil.fromLanguageId(languageId);
 
+		themeDisplay.setLocale(companyLocale);
+
 		for (Locale availableLocale : LanguageUtil.getAvailableLocales()) {
 		%>
 
