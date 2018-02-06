@@ -18,14 +18,15 @@
 
 <%@ include file="/card/vertical_card/start.jspf" %>
 
-<div class="aspect-ratio <%= imageCSSClass %> <%= backgroundImage ? "aspect-ratio-bg-center aspect-ratio-bg-cover" : StringPool.BLANK %>" style="<%= backgroundImage ? "background-image: url('" + imageUrl + "')" : StringPool.BLANK %>">
-	<aui:a href="<%= url %>">
-		<img alt="" class="<%= backgroundImage ? " sr-only" : StringPool.BLANK %>" src="<%= imageUrl %>" />
-	</aui:a>
+<aui:a href="<%= url %>">
+	<div class="aspect-ratio <%= imageCSSClass %> <%= backgroundImage ? "aspect-ratio-bg-center aspect-ratio-bg-cover" : StringPool.BLANK %>" style="<%= backgroundImage ? "background-image: url('" + imageUrl + "')" : StringPool.BLANK %>">
 
-	<c:if test="<%= Validator.isNotNull(stickerBottom) %>">
-		<%= stickerBottom %>
-	</c:if>
-</div>
+		<img alt="" class="<%= backgroundImage ? " sr-only" : StringPool.BLANK %>" src="<%= imageUrl %>" />
+
+		<c:if test="<%= Validator.isNotNull(stickerBottom) %>">
+			<%= stickerBottom %>
+		</c:if>
+	</div>
+</aui:a>
 
 <%@ include file="/card/vertical_card/end.jspf" %>
