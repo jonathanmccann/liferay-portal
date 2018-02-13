@@ -105,7 +105,7 @@ AUI.add(
 
 							var sort = !instance.get('rightReorder');
 
-							if (cssClass.indexOf('move-right') !== -1) {
+							if (cssClass.indexOf('move-left') !== -1) {
 								from = instance._rightBox;
 								to = instance._leftBox;
 
