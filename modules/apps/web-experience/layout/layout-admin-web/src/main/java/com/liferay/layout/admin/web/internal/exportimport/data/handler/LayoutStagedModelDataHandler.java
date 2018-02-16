@@ -350,35 +350,21 @@ public class LayoutStagedModelDataHandler
 		long layoutId = GetterUtil.getLong(
 			referenceElement.attributeValue("layout-id"));
 
-		Group layoutGroup = null;
-		LayoutSet layoutSet = null;
+		Layout layout = layouts.get(layoutId);
 
-		try {
-			layoutGroup = _groupLocalService.getGroup(groupId);
-		}
-		catch (PortalException e) {
-			_log.debug("No group found for groupId" + groupId);
-		}
-
-		try {
-			layoutSet = _layoutSetLocalService.getLayoutSet(
-				groupId,privateLayout);
-		}
-		catch (PortalException e) {
-			_log.debug(
-				"No layout set found for groupId " + groupId
-				+ " and privateLayout value of: " + privateLayout);
-		}
+		Group layoutGroup = layout.getGroup();
+		LayoutSet layoutSet = layout.getLayoutSet();
 
 		Group existingLayoutGroup = existingLayout.getGroup();
 		LayoutSet existingLayoutSet = existingLayout.getLayoutSet();
 
 		if (existingLayoutGroup.equals(layoutGroup) &&
 			existingLayoutSet.equals(layoutSet)) {
+
 			layouts.put(layoutId, existingLayout);
 
 			Map<Long, Long> layoutPlids =
-				(Map<Long, Long>) portletDataContext.getNewPrimaryKeysMap(
+				(Map<Long, Long>)portletDataContext.getNewPrimaryKeysMap(
 					Layout.class);
 
 			long plid = GetterUtil.getLong(
