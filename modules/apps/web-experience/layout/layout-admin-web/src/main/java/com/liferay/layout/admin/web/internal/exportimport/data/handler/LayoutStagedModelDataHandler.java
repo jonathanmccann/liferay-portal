@@ -351,16 +351,23 @@ public class LayoutStagedModelDataHandler
 			referenceElement.attributeValue("layout-id"));
 
 		Layout layout = layouts.get(layoutId);
+		boolean collision = false;
 
-		Group layoutGroup = layout.getGroup();
-		LayoutSet layoutSet = layout.getLayoutSet();
+		if (layout != null) {
+			Group layoutGroup = layout.getGroup();
+			LayoutSet layoutSet = layout.getLayoutSet();
 
-		Group existingLayoutGroup = existingLayout.getGroup();
-		LayoutSet existingLayoutSet = existingLayout.getLayoutSet();
+			Group existingLayoutGroup = existingLayout.getGroup();
+			LayoutSet existingLayoutSet = existingLayout.getLayoutSet();
 
-		if (existingLayoutGroup.equals(layoutGroup) &&
-			existingLayoutSet.equals(layoutSet)) {
+			if (!existingLayoutGroup.equals(layoutGroup) &&
+				!existingLayoutSet.equals(layoutSet)) {
 
+				collision = true;
+			}
+		}
+
+		if (!collision) {
 			layouts.put(layoutId, existingLayout);
 
 			Map<Long, Long> layoutPlids =
