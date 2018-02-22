@@ -270,7 +270,7 @@ boolean showSearch = (categoriesAndItemsCount > 0);
 					</liferay-ui:search-container-column-text>
 
 					<liferay-ui:search-container-column-jsp
-						cssClass="list-group-item-field"
+						cssClass="autofit-col"
 						path="/item_action.jsp"
 					/>
 				</c:when>
@@ -329,7 +329,7 @@ boolean showSearch = (categoriesAndItemsCount > 0);
 					</liferay-ui:search-container-column-text>
 
 					<liferay-ui:search-container-column-jsp
-						cssClass="list-group-item-field"
+						cssClass="autofit-col"
 						path="/category_action.jsp"
 					/>
 				</c:when>
