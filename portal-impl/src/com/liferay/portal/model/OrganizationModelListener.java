@@ -45,24 +45,26 @@ public class OrganizationModelListener extends BaseModelListener<Organization> {
 		long[] userIds = OrganizationLocalServiceUtil.getUserPrimaryKeys(
 			organization.getOrganizationId());
 
-		NoticeableExecutorService noticeableExecutorService =
-			_portalExecutorManager.getPortalExecutor(
-				OrganizationModelListener.class.getName());
+		if (userIds.length > 0) {
+			NoticeableExecutorService noticeableExecutorService =
+				_portalExecutorManager.getPortalExecutor(
+					OrganizationModelListener.class.getName());
 
-		TransactionCommitCallbackUtil.registerCallback(
-			() -> {
-				noticeableExecutorService.submit(
-					() -> {
-						UserLocalServiceUtil.reindex(
-							organization.getCompanyId(), userIds);
+			TransactionCommitCallbackUtil.registerCallback(
+				() -> {
+					noticeableExecutorService.submit(
+						() -> {
+							UserLocalServiceUtil.reindex(
+								organization.getCompanyId(), userIds);
 
-						PermissionCacheUtil.clearCache();
+							PermissionCacheUtil.clearCache();
 
-						return null;
-					});
+							return null;
+						});
 
-				return null;
-			});
+					return null;
+				});
+		}
 	}
 
 	private static volatile PortalExecutorManager _portalExecutorManager =
