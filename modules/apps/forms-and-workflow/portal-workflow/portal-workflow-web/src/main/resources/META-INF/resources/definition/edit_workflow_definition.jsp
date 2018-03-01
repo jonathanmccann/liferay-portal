@@ -256,6 +256,8 @@ renderResponse.setTitle((workflowDefinition == null) ? LanguageUtil.get(request,
 
 					<aui:button onClick="<%= taglibSaveOnClick %>" value="save" />
 				</c:if>
+
+				<aui:button href="<%= redirect %>" type="cancel" />
 			</aui:button-row>
 		</aui:form>
 	</div>
