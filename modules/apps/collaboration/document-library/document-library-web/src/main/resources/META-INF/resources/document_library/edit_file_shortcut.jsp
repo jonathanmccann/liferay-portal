@@ -109,7 +109,7 @@ if (portletTitleBasedNavigation) {
 				String toGroupName = StringPool.BLANK;
 
 				if (toGroup != null) {
-					toGroupName = HtmlUtil.escape(toGroup.getDescriptiveName(locale));
+					toGroupName = toGroup.getDescriptiveName(locale);
 				}
 				%>
 
@@ -120,7 +120,7 @@ if (portletTitleBasedNavigation) {
 				</div>
 
 				<%
-				String toFileEntryTitle = BeanPropertiesUtil.getString(toFileEntry, "title");
+				String toFileEntryTitle = HtmlUtil.unescape(BeanPropertiesUtil.getString(toFileEntry, "title"));
 				%>
 
 				<div class="form-group">
