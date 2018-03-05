@@ -579,18 +579,7 @@ public class LangBuilder {
 		// http://titlecapitalization.com
 		// http://www.imdb.com
 
-		if (value.contains(" this ")) {
-			if (value.contains(".") || value.contains("?") ||
-				value.contains(":") ||
-				key.equals(
-					"the-url-of-the-page-comparing-this-page-content-with-" +
-						"the-previous-version")) {
-			}
-			else {
-				value = StringUtil.replace(value, " this ", " This ");
-			}
-		}
-		else {
+		if (value.contains(" From ")) {
 			value = StringUtil.replace(value, " From ", " from ");
 		}
 
