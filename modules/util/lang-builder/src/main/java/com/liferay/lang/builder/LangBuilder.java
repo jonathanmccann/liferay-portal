@@ -573,24 +573,13 @@ public class LangBuilder {
 		}
 	}
 
-	private String _fixEnglishTranslation(String key, String value) {
+	private String _fixEnglishTranslation(String value) {
 
 		// http://en.wikibooks.org/wiki/Basic_Book_Design/Capitalizing_Words_in_Titles
 		// http://titlecapitalization.com
 		// http://www.imdb.com
 
-		if (value.contains(" this ")) {
-			if (value.contains(".") || value.contains("?") ||
-				value.contains(":") ||
-				key.equals(
-					"the-url-of-the-page-comparing-this-page-content-with-" +
-						"the-previous-version")) {
-			}
-			else {
-				value = StringUtil.replace(value, " this ", " This ");
-			}
-		}
-		else {
+		if (value.contains(" From ")) {
 			value = StringUtil.replace(value, " From ", " from ");
 		}
 
@@ -699,7 +688,7 @@ public class LangBuilder {
 					if (Validator.isNotNull(value)) {
 						value = _fixTranslation(line.substring(pos + 1));
 
-						value = _fixEnglishTranslation(key, value);
+						value = _fixEnglishTranslation(value);
 
 						if (_portalLanguageProperties != null) {
 							String portalValue = String.valueOf(
