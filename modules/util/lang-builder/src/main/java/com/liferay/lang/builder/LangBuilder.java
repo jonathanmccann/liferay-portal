@@ -573,7 +573,7 @@ public class LangBuilder {
 		}
 	}
 
-	private String _fixEnglishTranslation(String key, String value) {
+	private String _fixEnglishTranslation(String value) {
 
 		// http://en.wikibooks.org/wiki/Basic_Book_Design/Capitalizing_Words_in_Titles
 		// http://titlecapitalization.com
@@ -688,7 +688,7 @@ public class LangBuilder {
 					if (Validator.isNotNull(value)) {
 						value = _fixTranslation(line.substring(pos + 1));
 
-						value = _fixEnglishTranslation(key, value);
+						value = _fixEnglishTranslation(value);
 
 						if (_portalLanguageProperties != null) {
 							String portalValue = String.valueOf(
