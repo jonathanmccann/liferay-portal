@@ -524,7 +524,7 @@ name = HtmlUtil.escapeJS(name);
 						'resize',
 						A.debounce(
 							function() {
-								if (currentToolbarSet != getToolbarSet(initialToolbarSet)) {
+								if (CKEDITOR && currentToolbarSet != getToolbarSet(initialToolbarSet)) {
 									var ckeditorInstance = CKEDITOR.instances['<%= name %>'];
 
 									if (ckeditorInstance) {
