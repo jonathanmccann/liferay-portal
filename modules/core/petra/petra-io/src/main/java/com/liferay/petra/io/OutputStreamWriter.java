@@ -154,8 +154,10 @@ public class OutputStreamWriter extends Writer {
 
 			_inputCharBuffer.compact();
 		}
-		finally {
+		catch (IOException ioe) {
 			_inputCharBuffer.clear();
+
+			throw ioe;
 		}
 	}
 
