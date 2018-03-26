@@ -18,8 +18,8 @@ import com.liferay.exportimport.kernel.lar.BasePortletDataHandler;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.exportimport.kernel.lar.PortletDataException;
 import com.liferay.exportimport.kernel.lar.PortletDataHandler;
-import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.wysiwyg.web.internal.constants.WYSIWYGPortletKeys;
 
 import javax.portlet.PortletPreferences;
@@ -32,7 +32,7 @@ import org.osgi.service.component.annotations.Component;
 @Component(
 	immediate = true,
 	property = {"javax.portlet.name=" + WYSIWYGPortletKeys.WYSIWYG},
-	service = {PortletDataHandler.class}
+	service = PortletDataHandler.class
 )
 public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 
@@ -80,16 +80,11 @@ public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 		String message = portletPreferences.getValue(
 			"message", StringPool.BLANK);
 
-		long groupId = portletDataContext.getGroupId();
-
-		StringBundler sb = new StringBundler(2);
-
-		sb.append("/documents/");
-		sb.append(groupId);
-		String newMessage = message.replace(
-			sb.toString(), "/documents/[$groupId$]");
-
-		portletPreferences.setValue("message", newMessage);
+		portletPreferences.setValue(
+			"message",
+			StringUtil.replace(
+				message, "/documents/" + portletDataContext.getGroupId(),
+				"/documents/[$groupId$]"));
 
 		return portletPreferences;
 	}
@@ -102,15 +97,11 @@ public class WYSIWYGPortletDataHandler extends BasePortletDataHandler {
 		String message = portletPreferences.getValue(
 			"message", StringPool.BLANK);
 
-		long groupId = portletDataContext.getGroupId();
-		StringBundler sb = new StringBundler(2);
-
-		sb.append("/documents/");
-		sb.append(groupId);
-		String newMessage = message.replace(
-			"/documents/[$groupId$]", sb.toString());
-
-		portletPreferences.setValue("message", newMessage);
+		portletPreferences.setValue(
+			"message",
+			StringUtil.replace(
+				message, "/documents/[$groupId$]",
+				"/documents/" + portletDataContext.getGroupId()));
 
 		return portletPreferences;
 	}
