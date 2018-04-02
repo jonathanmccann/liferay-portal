@@ -49,6 +49,7 @@ import com.liferay.subscription.service.SubscriptionLocalService;
 
 import java.io.Serializable;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Callable;
@@ -213,21 +214,35 @@ public class MicroblogsEntryLocalServiceImpl
 			MicroblogsEntry microblogsEntry)
 		throws PortalException {
 
-		// Microblogs entry
+		List<MicroblogsEntry> totalEntries = new ArrayList<>();
 
-		microblogsEntryPersistence.remove(microblogsEntry);
+		if (microblogsEntry.getType() == 0) {
+			totalEntries.addAll(
+				microblogsEntryPersistence.findByT_P(
+					microblogsEntry.getType() + 1,
+					microblogsEntry.getMicroblogsEntryId()));
+		}
 
-		// Asset
+		totalEntries.add(microblogsEntry);
 
-		assetEntryLocalService.deleteEntry(
-			MicroblogsEntry.class.getName(),
-			microblogsEntry.getMicroblogsEntryId());
+		for (MicroblogsEntry mbEntry : totalEntries) {
 
-		// Social
+			// Microblogs entry
 
-		socialActivityLocalService.deleteActivities(
-			MicroblogsEntry.class.getName(),
-			microblogsEntry.getMicroblogsEntryId());
+			microblogsEntryPersistence.remove(mbEntry);
+
+			// Asset
+
+			assetEntryLocalService.deleteEntry(
+				MicroblogsEntry.class.getName(),
+				mbEntry.getMicroblogsEntryId());
+
+			// Social
+
+			socialActivityLocalService.deleteActivities(
+				MicroblogsEntry.class.getName(),
+				mbEntry.getMicroblogsEntryId());
+		}
 
 		return microblogsEntry;
 	}
