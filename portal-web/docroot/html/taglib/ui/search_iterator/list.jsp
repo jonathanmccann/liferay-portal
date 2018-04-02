@@ -61,7 +61,14 @@ if (iteratorURL != null) {
 	</c:if>
 
 	<div id="<%= namespace + id %>SearchContainer">
-		<table class="table table-bordered table-hover table-striped">
+		<c:choose>
+			<c:when test="<%= summary != null %>">
+				<table class="table table-bordered table-hover table-striped" summary="<%= summary %>">
+			</c:when>
+			<c:otherwise>
+				<table class="table table-bordered table-hover table-striped">
+			</c:otherwise>
+		</c:choose>
 
 		<c:if test="<%= ListUtil.isNotNull(headerNames) %>">
 			<thead class="table-columns">

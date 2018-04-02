@@ -30,6 +30,7 @@ ResultRowSplitter resultRowSplitter = (ResultRowSplitter)request.getAttribute("l
 String type = (String)request.getAttribute("liferay-ui:search:type");
 
 String id = searchContainer.getId(request, namespace);
+String summary = searchContainer.getSummary();
 
 String emptyResultsMessage = searchContainer.getEmptyResultsMessage();
 String emptyResultsMessageCssClass = searchContainer.getEmptyResultsMessageCssClass();
