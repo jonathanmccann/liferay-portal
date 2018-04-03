@@ -149,6 +149,10 @@ Map<String, String[]> parameterMap = (Map<String, String[]>)settingsMap.get("par
 											continue;
 										}
 
+										if (portlet.getPortletId().equals(DLPortletKeys.DOCUMENT_LIBRARY)) {
+											continue;
+										}
+
 										portletDataHandlerClassNames.add(portletDataHandlerClassName);
 
 										settingsMap.put("portletId", portlet.getRootPortletId());
