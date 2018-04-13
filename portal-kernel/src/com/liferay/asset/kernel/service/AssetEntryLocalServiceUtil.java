@@ -695,6 +695,19 @@ public class AssetEntryLocalServiceUtil {
 	public static long searchCount(long companyId, long[] groupIds,
 		long userId, java.lang.String className, long classTypeId,
 		java.lang.String userName, java.lang.String title,
+		java.lang.String description, java.lang.String content,
+		java.lang.String assetCategoryIds, java.lang.String assetTagNames,
+		boolean showInvisible, boolean showNonindexable, int[] statuses,
+		boolean andSearch) {
+		return getService()
+					.searchCount(companyId, groupIds, userId, className,
+			classTypeId, userName, title, description, content, assetCategoryIds,
+			assetTagNames, showInvisible, showNonindexable, statuses, andSearch);
+	}
+
+	public static long searchCount(long companyId, long[] groupIds,
+		long userId, java.lang.String className, long classTypeId,
+		java.lang.String userName, java.lang.String title,
 		java.lang.String description, java.lang.String assetCategoryIds,
 		java.lang.String assetTagNames, boolean showNonindexable,
 		int[] statuses, boolean andSearch) {
