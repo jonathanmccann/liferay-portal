@@ -15,20 +15,11 @@
 package com.liferay.blogs.internal.verify;
 
 import com.liferay.blogs.internal.verify.model.BlogsEntryVerifiableModel;
-import com.liferay.blogs.model.BlogsEntry;
-import com.liferay.blogs.service.BlogsEntryLocalService;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
-import com.liferay.portal.kernel.util.StringBundler;
-import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.verify.VerifyProcess;
 import com.liferay.portal.verify.VerifyResourcePermissions;
 
-import java.util.List;
-
 import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author Raymond Augé
@@ -42,48 +33,7 @@ public class BlogsServiceVerifyProcess extends VerifyProcess {
 
 	@Override
 	protected void doVerify() throws Exception {
-		updateEntryAssets();
 		verifyResourcedModels();
-		verifyStatus();
-	}
-
-	@Reference(unbind = "-")
-	protected void setBlogsEntryLocalService(
-		BlogsEntryLocalService blogsEntryLocalService) {
-
-		_blogsEntryLocalService = blogsEntryLocalService;
-	}
-
-	protected void updateEntryAssets() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			List<BlogsEntry> entries =
-				_blogsEntryLocalService.getNoAssetEntries();
-
-			if (_log.isDebugEnabled()) {
-				_log.debug(
-					"Processing " + entries.size() + " entries with no asset");
-			}
-
-			for (BlogsEntry entry : entries) {
-				try {
-					_blogsEntryLocalService.updateAsset(
-						entry.getUserId(), entry, null, null, null, null);
-				}
-				catch (Exception e) {
-					if (_log.isWarnEnabled()) {
-						_log.warn(
-							StringBundler.concat(
-								"Unable to update asset for entry ",
-								String.valueOf(entry.getEntryId()), ": ",
-								e.getMessage()));
-					}
-				}
-			}
-
-			if (_log.isDebugEnabled()) {
-				_log.debug("Assets verified for entries");
-			}
-		}
 	}
 
 	protected void verifyResourcedModels() throws Exception {
@@ -92,19 +42,6 @@ public class BlogsServiceVerifyProcess extends VerifyProcess {
 		}
 	}
 
-	protected void verifyStatus() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			runSQL(
-				"update BlogsEntry set status = " +
-					WorkflowConstants.STATUS_APPROVED +
-						" where status is null");
-		}
-	}
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		BlogsServiceVerifyProcess.class);
-
-	private BlogsEntryLocalService _blogsEntryLocalService;
 	private final VerifyResourcePermissions _verifyResourcePermissions =
 		new VerifyResourcePermissions();
 
