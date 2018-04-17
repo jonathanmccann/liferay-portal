@@ -14,21 +14,17 @@
 
 package com.liferay.portal.verify;
 
-import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
 import com.liferay.portal.kernel.dao.orm.DynamicQuery;
 import com.liferay.portal.kernel.dao.orm.Projection;
 import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
 import com.liferay.portal.kernel.dao.orm.Property;
 import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
-import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalServiceUtil;
 import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringBundler;
-
-import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
@@ -54,7 +50,6 @@ public class VerifyLayout extends VerifyProcess {
 		updateUnlinkedOrphanedLayouts();
 		verifyFriendlyURL();
 		verifyLayoutPrototypeLinkEnabled();
-		verifyUuid();
 	}
 
 	protected void updateUnlinkedOrphanedLayouts() throws Exception {
@@ -72,24 +67,6 @@ public class VerifyLayout extends VerifyProcess {
 
 	protected void verifyFriendlyURL() throws Exception {
 		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			List<Layout> layouts =
-				LayoutLocalServiceUtil.getNullFriendlyURLLayouts();
-
-			for (Layout layout : layouts) {
-				List<LayoutFriendlyURL> layoutFriendlyURLs =
-					LayoutFriendlyURLLocalServiceUtil.getLayoutFriendlyURLs(
-						layout.getPlid());
-
-				for (LayoutFriendlyURL layoutFriendlyURL : layoutFriendlyURLs) {
-					String friendlyURL =
-						StringPool.SLASH + layout.getLayoutId();
-
-					LayoutLocalServiceUtil.updateFriendlyURL(
-						layout.getUserId(), layout.getPlid(), friendlyURL,
-						layoutFriendlyURL.getLanguageId());
-				}
-			}
-
 			ActionableDynamicQuery actionableDynamicQuery =
 				LayoutFriendlyURLLocalServiceUtil.getActionableDynamicQuery();
 
@@ -139,34 +116,6 @@ public class VerifyLayout extends VerifyProcess {
 					"where type_ = 'link_to_layout' and " +
 						"layoutPrototypeLinkEnabled = [$TRUE$]");
 		}
-	}
-
-	protected void verifyUuid() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			runSQL(
-				"update Layout set uuid_ = sourcePrototypeLayoutUuid where " +
-					"sourcePrototypeLayoutUuid != '' and uuid_ != " +
-						"sourcePrototypeLayoutUuid");
-		}
-	}
-
-	protected void verifyUuid(String tableName) throws Exception {
-		StringBundler sb = new StringBundler(12);
-
-		sb.append("update ");
-		sb.append(tableName);
-		sb.append(" set layoutUuid = (select distinct ");
-		sb.append("sourcePrototypeLayoutUuid from Layout where Layout.uuid_ ");
-		sb.append("= ");
-		sb.append(tableName);
-		sb.append(".layoutUuid) where exists (select 1 from Layout where ");
-		sb.append("Layout.uuid_ = ");
-		sb.append(tableName);
-		sb.append(".layoutUuid and Layout.uuid_ != ");
-		sb.append("Layout.sourcePrototypeLayoutUuid and ");
-		sb.append("Layout.sourcePrototypeLayoutUuid != '')");
-
-		runSQL(sb.toString());
 	}
 
 }
