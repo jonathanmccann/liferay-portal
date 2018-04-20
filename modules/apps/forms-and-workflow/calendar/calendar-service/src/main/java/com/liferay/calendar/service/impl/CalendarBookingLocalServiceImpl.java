@@ -2428,14 +2428,14 @@ public class CalendarBookingLocalServiceImpl
 
 		List<NotificationRecipient> notificationRecipients = new ArrayList<>();
 
+		if (calendarBooking.isMasterBooking()) {
+			return notificationRecipients;
+		}
+
 		CalendarResource calendarResource =
 			calendarBooking.getCalendarResource();
 
 		Set<User> users = new HashSet<>();
-
-		if (calendarBooking.isMasterBooking()) {
-			users.add(userLocalService.fetchUser(calendarBooking.getUserId()));
-		}
 
 		users.add(userLocalService.fetchUser(calendarResource.getUserId()));
 
