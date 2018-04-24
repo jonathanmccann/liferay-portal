@@ -14,7 +14,6 @@
 
 package com.liferay.portal.verify;
 
-import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringBundler;
 
 /**
@@ -22,20 +21,6 @@ import com.liferay.portal.kernel.util.StringBundler;
  * @author Kenneth Chang
  */
 public class VerifyLayout extends VerifyProcess {
-
-	@Override
-	protected void doVerify() throws Exception {
-		verifyUuid();
-	}
-
-	protected void verifyUuid() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			runSQL(
-				"update Layout set uuid_ = sourcePrototypeLayoutUuid where " +
-					"sourcePrototypeLayoutUuid != '' and uuid_ != " +
-						"sourcePrototypeLayoutUuid");
-		}
-	}
 
 	protected void verifyUuid(String tableName) throws Exception {
 		StringBundler sb = new StringBundler(12);

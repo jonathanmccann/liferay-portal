@@ -45,6 +45,7 @@ public class UpgradeLayout extends UpgradeProcess {
 		updateUnlinkedOrphanedLayouts();
 		verifyFriendlyURL();
 		verifyLayoutPrototypeLinkEnabled();
+		verifyUuid();
 	}
 
 	protected void updateUnlinkedOrphanedLayouts() throws Exception {
@@ -92,6 +93,15 @@ public class UpgradeLayout extends UpgradeProcess {
 				"update Layout set layoutPrototypeLinkEnabled = [$FALSE$] " +
 					"where type_ = 'link_to_layout' and " +
 						"layoutPrototypeLinkEnabled = [$TRUE$]");
+		}
+	}
+
+	protected void verifyUuid() throws Exception {
+		try (LoggingTimer loggingTimer = new LoggingTimer()) {
+			runSQL(
+				"update Layout set uuid_ = sourcePrototypeLayoutUuid where " +
+					"sourcePrototypeLayoutUuid != '' and uuid_ != " +
+						"sourcePrototypeLayoutUuid");
 		}
 	}
 
