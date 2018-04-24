@@ -14,21 +14,8 @@
 
 package com.liferay.portal.verify;
 
-import com.liferay.petra.string.StringPool;
-import com.liferay.portal.kernel.dao.orm.ActionableDynamicQuery;
-import com.liferay.portal.kernel.dao.orm.DynamicQuery;
-import com.liferay.portal.kernel.dao.orm.Projection;
-import com.liferay.portal.kernel.dao.orm.ProjectionFactoryUtil;
-import com.liferay.portal.kernel.dao.orm.Property;
-import com.liferay.portal.kernel.dao.orm.PropertyFactoryUtil;
-import com.liferay.portal.kernel.model.Layout;
-import com.liferay.portal.kernel.model.LayoutFriendlyURL;
-import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalServiceUtil;
-import com.liferay.portal.kernel.service.LayoutLocalServiceUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringBundler;
-
-import java.util.List;
 
 /**
  * @author Brian Wing Shun Chan
@@ -38,71 +25,8 @@ public class VerifyLayout extends VerifyProcess {
 
 	@Override
 	protected void doVerify() throws Exception {
-		verifyFriendlyURL();
 		verifyLayoutPrototypeLinkEnabled();
 		verifyUuid();
-	}
-
-	protected void verifyFriendlyURL() throws Exception {
-		try (LoggingTimer loggingTimer = new LoggingTimer()) {
-			List<Layout> layouts =
-				LayoutLocalServiceUtil.getNullFriendlyURLLayouts();
-
-			for (Layout layout : layouts) {
-				List<LayoutFriendlyURL> layoutFriendlyURLs =
-					LayoutFriendlyURLLocalServiceUtil.getLayoutFriendlyURLs(
-						layout.getPlid());
-
-				for (LayoutFriendlyURL layoutFriendlyURL : layoutFriendlyURLs) {
-					String friendlyURL =
-						StringPool.SLASH + layout.getLayoutId();
-
-					LayoutLocalServiceUtil.updateFriendlyURL(
-						layout.getUserId(), layout.getPlid(), friendlyURL,
-						layoutFriendlyURL.getLanguageId());
-				}
-			}
-
-			ActionableDynamicQuery actionableDynamicQuery =
-				LayoutFriendlyURLLocalServiceUtil.getActionableDynamicQuery();
-
-			actionableDynamicQuery.setAddCriteriaMethod(
-				new ActionableDynamicQuery.AddCriteriaMethod() {
-
-					@Override
-					public void addCriteria(DynamicQuery dynamicQuery) {
-						DynamicQuery layoutDynamicQuery =
-							LayoutLocalServiceUtil.dynamicQuery();
-
-						Projection projection = ProjectionFactoryUtil.property(
-							"plid");
-
-						layoutDynamicQuery.setProjection(projection);
-
-						Property plidProperty = PropertyFactoryUtil.forName(
-							"plid");
-
-						dynamicQuery.add(
-							plidProperty.notIn(layoutDynamicQuery));
-					}
-
-				});
-			actionableDynamicQuery.setPerformActionMethod(
-				new ActionableDynamicQuery.
-					PerformActionMethod<LayoutFriendlyURL>() {
-
-					@Override
-					public void performAction(
-						LayoutFriendlyURL layoutFriendlyURL) {
-
-						LayoutFriendlyURLLocalServiceUtil.
-							deleteLayoutFriendlyURL(layoutFriendlyURL);
-					}
-
-				});
-
-			actionableDynamicQuery.performActions();
-		}
 	}
 
 	protected void verifyLayoutPrototypeLinkEnabled() throws Exception {
