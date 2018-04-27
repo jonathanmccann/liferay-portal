@@ -14,7 +14,6 @@
 
 package com.liferay.portal.verify;
 
-import com.liferay.portal.kernel.bean.PortalBeanLocatorUtil;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
 import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.util.LoggingTimer;
@@ -27,9 +26,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 
 /**
@@ -43,19 +40,6 @@ public class VerifyUUID extends VerifyProcess {
 		VerifyUUID verifyUUID = new VerifyUUID();
 
 		verifyUUID.doVerify(verifiableUUIDModels);
-	}
-
-	@Override
-	protected void doVerify() throws Exception {
-		Map<String, VerifiableUUIDModel> verifiableUUIDModelsMap =
-			PortalBeanLocatorUtil.locate(VerifiableUUIDModel.class);
-
-		Collection<VerifiableUUIDModel> verifiableUUIDModels =
-			verifiableUUIDModelsMap.values();
-
-		doVerify(
-			verifiableUUIDModels.toArray(
-				new VerifiableUUIDModel[verifiableUUIDModels.size()]));
 	}
 
 	protected void doVerify(VerifiableUUIDModel... verifiableUUIDModels)
