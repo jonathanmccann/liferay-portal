@@ -12,7 +12,7 @@
  * details.
  */
 
-package com.liferay.journal.internal.verify.model;
+package com.liferay.portal.verify.model;
 
 import com.liferay.portal.kernel.verify.model.VerifiableUUIDModel;
 
