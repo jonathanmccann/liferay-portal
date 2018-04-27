@@ -12,24 +12,23 @@
  * details.
  */
 
-package com.liferay.journal.internal.verify.model;
+package com.liferay.portal.verify.model;
 
 import com.liferay.portal.kernel.verify.model.VerifiableUUIDModel;
 
 /**
  * @author Miguel Pastor
  */
-public class JournalArticleResourceVerifiableModel
-	implements VerifiableUUIDModel {
+public class MBDiscussionVerifiableModel implements VerifiableUUIDModel {
 
 	@Override
 	public String getPrimaryKeyColumnName() {
-		return "resourcePrimKey";
+		return "discussionId";
 	}
 
 	@Override
 	public String getTableName() {
-		return "JournalArticleResource";
+		return "MBDiscussion";
 	}
 
 }
