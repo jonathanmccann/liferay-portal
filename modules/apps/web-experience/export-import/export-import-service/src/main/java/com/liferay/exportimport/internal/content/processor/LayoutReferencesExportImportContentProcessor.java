@@ -434,10 +434,13 @@ public class LayoutReferencesExportImportContentProcessor
 						urlSB.append(remoteGroupUuid);
 					}
 				}
-				else if (urlGroup.isStaged()) {
+				else if (urlGroup.isStagingGroup()) {
 					Group liveGroup = urlGroup.getLiveGroup();
 
 					urlSB.append(liveGroup.getUuid());
+				}
+				else if (urlGroup.isStaged()) {
+					urlSB.append(urlGroup.getUuid());
 				}
 				else if (!urlGroup.isControlPanel()) {
 					urlSB.append(urlGroup.getFriendlyURL());
