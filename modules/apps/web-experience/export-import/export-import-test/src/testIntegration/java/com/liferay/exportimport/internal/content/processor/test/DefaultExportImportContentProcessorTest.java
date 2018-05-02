@@ -416,8 +416,8 @@ public class DefaultExportImportContentProcessorTest {
 		Assert.assertTrue(
 			content,
 			content.contains(
-				"@data_handler_group_friendly_url@@" +
-					_liveGroup.getUuid() + "@"));
+				"@data_handler_group_friendly_url@@" + _liveGroup.getUuid() +
+					"@"));
 		Assert.assertFalse(content, content.contains(_stagingGroup.getUuid()));
 		Assert.assertFalse(
 			content, content.contains(_stagingGroup.getFriendlyURL()));
@@ -489,8 +489,8 @@ public class DefaultExportImportContentProcessorTest {
 		Assert.assertTrue(
 			content,
 			content.contains(
-				"@data_handler_group_friendly_url@@" +
-					_liveGroup.getUuid() + "@"));
+				"@data_handler_group_friendly_url@@" + _liveGroup.getUuid() +
+					"@"));
 		Assert.assertFalse(content, content.contains(_stagingGroup.getUuid()));
 		Assert.assertFalse(
 			content, content.contains(_stagingGroup.getFriendlyURL()));
