@@ -1726,6 +1726,15 @@ public class StagingImpl implements Staging {
 
 	@Override
 	public long getRecentLayoutRevisionId(
+			User user, long layoutSetBranchId, boolean head, long plid)
+		throws PortalException {
+
+		return getRecentLayoutRevisionId(
+			user.getUserId(), layoutSetBranchId, head, plid);
+	}
+
+	@Override
+	public long getRecentLayoutRevisionId(
 			User user, long layoutSetBranchId, long plid)
 		throws PortalException {
 
@@ -3322,7 +3331,7 @@ public class StagingImpl implements Staging {
 	}
 
 	protected long getRecentLayoutRevisionId(
-			long userId, long layoutSetBranchId, long plid)
+			long userId, long layoutSetBranchId, boolean head, long plid)
 		throws PortalException {
 
 		RecentLayoutRevision recentLayoutRevision =
@@ -3357,26 +3366,43 @@ public class StagingImpl implements Staging {
 		}
 
 		if (layoutBranchId > 0) {
-			try {
-				LayoutRevision layoutRevision =
-					_layoutRevisionLocalService.getLayoutRevision(
-						layoutSetBranchId, layoutBranchId, plid);
+			LayoutRevision layoutRevision = null;
 
-				if (layoutRevision != null) {
-					return layoutRevision.getLayoutRevisionId();
+			if (head) {
+				layoutRevision =
+					_layoutRevisionLocalService.fetchLayoutRevision(
+						layoutSetBranchId, layoutBranchId, head, plid);
+			}
+			else if (layoutRevision == null) {
+				try {
+					layoutRevision =
+						_layoutRevisionLocalService.getLayoutRevision(
+							layoutSetBranchId, layoutBranchId, plid);
+				}
+				catch (NoSuchLayoutRevisionException nslre) {
+
+					// LPS-52675
+
+					if (_log.isDebugEnabled()) {
+						_log.debug(nslre, nslre);
+					}
 				}
 			}
-			catch (NoSuchLayoutRevisionException nslre) {
 
-				// LPS-52675
-
-				if (_log.isDebugEnabled()) {
-					_log.debug(nslre, nslre);
-				}
+			if (layoutRevision != null) {
+				return layoutRevision.getLayoutRevisionId();
 			}
 		}
 
 		return 0;
+	}
+
+	protected long getRecentLayoutRevisionId(
+			long userId, long layoutSetBranchId, long plid)
+		throws PortalException {
+
+		return getRecentLayoutRevisionId(
+			userId, layoutSetBranchId, false, plid);
 	}
 
 	protected ScheduleInformation getScheduleInformation(
