@@ -48,6 +48,7 @@ import com.liferay.exportimport.kernel.lar.PortletDataHandlerStatusMessageSender
 import com.liferay.exportimport.kernel.lar.StagedModelType;
 import com.liferay.exportimport.kernel.lifecycle.ExportImportLifecycleManager;
 import com.liferay.exportimport.kernel.model.ExportImportConfiguration;
+import com.liferay.exportimport.kernel.staging.Staging;
 import com.liferay.exportimport.portlet.data.handler.provider.PortletDataHandlerProvider;
 import com.liferay.exportimport.portlet.preferences.processor.Capability;
 import com.liferay.exportimport.portlet.preferences.processor.ExportImportPortletPreferencesProcessor;
@@ -66,6 +67,8 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
+import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.model.LayoutSetBranch;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.Portlet;
 import com.liferay.portal.kernel.model.PortletConstants;
@@ -76,6 +79,7 @@ import com.liferay.portal.kernel.model.adapter.ModelAdapterUtil;
 import com.liferay.portal.kernel.portlet.PortletPreferencesFactoryUtil;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
+import com.liferay.portal.kernel.service.LayoutSetBranchLocalService;
 import com.liferay.portal.kernel.service.PortletItemLocalService;
 import com.liferay.portal.kernel.service.PortletLocalService;
 import com.liferay.portal.kernel.service.PortletPreferencesLocalService;
@@ -463,6 +467,37 @@ public class PortletExportControllerImpl implements PortletExportController {
 		// Portlet preferences
 
 		if (exportPortletSetup) {
+			try {
+				ServiceContext serviceContext =
+					ServiceContextThreadLocal.getServiceContext();
+
+				if ((serviceContext == null) || !serviceContext.isSignedIn() ||
+					(layout == null)) {
+
+					throw new PortalException();
+				}
+
+				LayoutSet layoutSet = layout.getLayoutSet();
+
+				long layoutSetBranchId = 0;
+
+				long userId = serviceContext.getUserId();
+
+				User user = _userLocalService.getUser(userId);
+
+				LayoutSetBranch layoutSetBranch =
+					_layoutSetBranchLocalService.getUserLayoutSetBranch(
+						userId, layout.getGroupId(), layout.isPrivateLayout(),
+						layoutSet.getLayoutSetId(), layoutSetBranchId);
+
+				layoutSetBranchId = layoutSetBranch.getLayoutSetBranchId();
+
+				plid = _staging.getRecentLayoutRevisionId(
+					user, layoutSetBranchId, true, plid);
+			}
+			catch (PortalException pe) {
+				_log.debug("No layout revision for plid " + plid, pe);
+			}
 
 			// Company
 
@@ -1357,6 +1392,13 @@ public class PortletExportControllerImpl implements PortletExportController {
 	}
 
 	@Reference(unbind = "-")
+	protected void setLayoutSetBranchLocalService(
+		LayoutSetBranchLocalService layoutSetBranchLocalService) {
+
+		_layoutSetBranchLocalService = layoutSetBranchLocalService;
+	}
+
+	@Reference(unbind = "-")
 	protected void setPortletItemLocalService(
 		PortletItemLocalService portletItemLocalService) {
 
@@ -1401,6 +1443,7 @@ public class PortletExportControllerImpl implements PortletExportController {
 
 	private GroupLocalService _groupLocalService;
 	private LayoutLocalService _layoutLocalService;
+	private LayoutSetBranchLocalService _layoutSetBranchLocalService;
 	private final PermissionExporter _permissionExporter =
 		PermissionExporter.getInstance();
 
@@ -1420,6 +1463,10 @@ public class PortletExportControllerImpl implements PortletExportController {
 	private PortletItemLocalService _portletItemLocalService;
 	private PortletLocalService _portletLocalService;
 	private PortletPreferencesLocalService _portletPreferencesLocalService;
+
+	@Reference
+	private Staging _staging;
+
 	private UserLocalService _userLocalService;
 
 	private class UpdatePortletLastPublishDateCallable
