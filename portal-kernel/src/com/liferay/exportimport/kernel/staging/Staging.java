@@ -202,7 +202,7 @@ public interface Staging {
 		throws PortalException;
 
 	public long getRecentLayoutRevisionId(
-		User user, long layoutSetBranchId, boolean head, long plid)
+			User user, long layoutSetBranchId, boolean head, long plid)
 		throws PortalException;
 
 	public long getRecentLayoutRevisionId(
