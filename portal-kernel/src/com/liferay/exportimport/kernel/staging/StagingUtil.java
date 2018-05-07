@@ -303,6 +303,14 @@ public class StagingUtil {
 	}
 
 	public static long getRecentLayoutRevisionId(
+		User user, long layoutSetBranchId, boolean head, long plid)
+		throws PortalException {
+
+		return _staging.getRecentLayoutRevisionId(
+			user, layoutSetBranchId, head, plid);
+	}
+
+	public static long getRecentLayoutRevisionId(
 			User user, long layoutSetBranchId, long plid)
 		throws PortalException {
 
