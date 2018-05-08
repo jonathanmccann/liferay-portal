@@ -775,6 +775,7 @@ AUI.add(
 							if (localizationMap == "false" || localizationMap == "true") {
 								localizationMap = new Boolean(localizationMap);
 							}
+
 							form.addAvailableLanguageIds(AObject.keys(localizationMap));
 						}
 
