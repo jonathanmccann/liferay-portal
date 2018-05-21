@@ -248,7 +248,7 @@ renderResponse.setTitle((workflowDefinition == null) ? LanguageUtil.get(request,
 
 							<liferay-ui:message arguments="<%= importFileMark %>" key="write-your-definition-or-x" translateArguments="<%= false %>" />
 
-							<input class="workflow-definition-upload-source" id="<portlet:namespace />upload" type="file" />
+							<input accept="application/xml" class="workflow-definition-upload-source" id="<portlet:namespace />upload" type="file" />
 						</aui:col>
 
 						<aui:col cssClass="workflow-definition-content-source-wrapper" id="contentSourceWrapper">
@@ -323,6 +323,10 @@ renderResponse.setTitle((workflowDefinition == null) ? LanguageUtil.get(request,
 	var xmlFormatter = new Liferay.XMLFormatter();
 
 	var content = xmlFormatter.format('<%= HtmlUtil.escapeJS(content) %>');
+
+	if (content) {
+		content = content.trim();
+	}
 
 	contentEditor.set(STR_VALUE, content);
 
