@@ -637,6 +637,10 @@ public class ServletResponseUtil {
 				HttpHeaders.CACHE_CONTROL_PRIVATE_VALUE);
 		}
 
+		if (fileName.matches("(?i).*\\.html#.*")) {
+			fileName = fileName.replaceAll("(?i)\\.html#", StringPool.DOUBLE_DASH);
+		}
+
 		if (Validator.isNull(fileName)) {
 			return;
 		}
