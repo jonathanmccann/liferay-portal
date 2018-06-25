@@ -6068,7 +6068,24 @@ public class ServiceBuilder {
 
 			for (String referenceEntityName : referenceEntityNames) {
 				try {
-					referenceEntities.add(getEntity(referenceEntityName));
+					Entity entity = getEntity(referenceEntityName);
+
+					if (_dtdVersion.isPreviousVersionThan("7.1.0")) {
+
+						// See LPS-76509. Added this hack for
+						// c9c1fcef14c5cdc1325ae97fee79dbc138728c3c in 7.1.x.
+
+						String apiPackagePath = entity.getApiPackagePath();
+
+						if (apiPackagePath.equals(
+								"com.liferay.message.boards")) {
+
+							entity.setApiPackagePath(
+								apiPackagePath + ".kernel");
+						}
+					}
+
+					referenceEntities.add(entity);
 				}
 				catch (RuntimeException re) {
 					unresolvedReferenceEntityNames.add(referenceEntityName);

@@ -379,9 +379,9 @@ public class JournalArticleAssetRenderer
 			JournalArticle.class.getName(), getClassPK());
 
 		AssetDisplayPageEntry assetDisplayPageEntry =
-			AssetDisplayPageEntryLocalServiceUtil.
-				fetchAssetDisplayPageEntryByAssetEntryId(
-					assetEntry.getEntryId());
+			AssetDisplayPageEntryLocalServiceUtil.fetchAssetDisplayPageEntry(
+				assetEntry.getGroupId(), assetEntry.getClassNameId(),
+				getClassPK());
 
 		Group group = themeDisplay.getScopeGroup();
 

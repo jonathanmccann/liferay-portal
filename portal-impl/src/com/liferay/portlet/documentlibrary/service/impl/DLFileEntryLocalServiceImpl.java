@@ -179,7 +179,7 @@ public class DLFileEntryLocalServiceImpl
 
 		String name = String.valueOf(
 			counterLocalService.increment(DLFileEntry.class.getName()));
-		String extension = DLAppUtil.getExtension(title, sourceFileName);
+		String extension = DLAppUtil.getExtension(sourceFileName);
 
 		String fileName = DLUtil.getSanitizedFileName(title, extension);
 
@@ -1971,7 +1971,7 @@ public class DLFileEntryLocalServiceImpl
 		DLFileEntry dlFileEntry = dlFileEntryPersistence.findByPrimaryKey(
 			fileEntryId);
 
-		String extension = DLAppUtil.getExtension(title, sourceFileName);
+		String extension = DLAppUtil.getExtension(sourceFileName);
 
 		String extraSettings = StringPool.BLANK;
 
