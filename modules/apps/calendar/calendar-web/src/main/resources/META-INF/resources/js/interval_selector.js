@@ -155,7 +155,7 @@ AUI.add(
 
 						instance._setStartTime();
 
-						if (instance._validDate) {
+						if (instance._validDate && (instance._endDate.valueOf() - instance._startDate.valueOf()) <= 0) {
 							instance._endDate = new Date(instance._startDate.valueOf() + instance._duration);
 
 							instance._setEndDatePickerDate();
