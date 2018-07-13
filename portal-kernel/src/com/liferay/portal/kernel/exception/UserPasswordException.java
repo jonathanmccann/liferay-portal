@@ -150,6 +150,66 @@ public class UserPasswordException extends PortalException {
 
 	}
 
+	public static class MustHaveMoreAlphanumeric extends UserPasswordException {
+
+		public MustHaveMoreAlphanumeric(long userId, long minAlphanumeric) {
+			super(
+				String.format(
+					"Password for user %s must have at least %s alphanumeric " +
+						"characters",
+					userId, minAlphanumeric));
+		}
+
+	}
+
+	public static class MustHaveMoreLowercase extends UserPasswordException {
+
+		public MustHaveMoreLowercase(long userId, long minLowercase) {
+			super(
+				String.format(
+					"Password for user %s must have at least %s lowercase " +
+						"characters",
+					userId, minLowercase));
+		}
+
+	}
+
+	public static class MustHaveMoreNumbers extends UserPasswordException {
+
+		public MustHaveMoreNumbers(long userId, long minNumbers) {
+			super(
+				String.format(
+					"Password for user %s must have at least %s number " +
+						"characters",
+					userId, minNumbers));
+		}
+
+	}
+
+	public static class MustHaveMoreSymbols extends UserPasswordException {
+
+		public MustHaveMoreSymbols(long userId, long minSymbols) {
+			super(
+				String.format(
+					"Password for user %s must have at least %s symbol " +
+						"characters",
+					userId, minSymbols));
+		}
+
+	}
+
+	public static class MustHaveMoreUppercase extends UserPasswordException {
+
+		public MustHaveMoreUppercase(long userId, long minUppercase) {
+			super(
+				String.format(
+					"Password for user %s must have at least %s uppercase " +
+						"characters",
+					userId, minUppercase));
+		}
+
+	}
+
 	public static class MustMatch extends UserPasswordException {
 
 		public MustMatch(long userId) {
@@ -309,6 +369,10 @@ public class UserPasswordException extends PortalException {
 
 		return sampleDictionaryWords.toString() + StringPool.SPACE +
 			StringPool.TRIPLE_PERIOD;
+	}
+
+	private UserPasswordException(String message) {
+		super(message);
 	}
 
 	private UserPasswordException(String message, int type) {
