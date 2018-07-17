@@ -20,7 +20,7 @@
 String randomNamespace = PortalUtil.generateRandomKey(request, "taglib_ui_form_navigator_init") + StringPool.UNDERLINE;
 
 String tabs1Param = randomNamespace + "tabs1";
-String tabs1Value = GetterUtil.getString(SessionClicks.get(request, namespace + id, null));
+String tabs1Value = ParamUtil.getString(request, tabs1Param);
 %>
 
 <c:choose>
@@ -90,7 +90,11 @@ String tabs1Value = GetterUtil.getString(SessionClicks.get(request, namespace + 
 
 				redirectField.value = redirectURL.toString();
 
-				Liferay.Store('<portlet:namespace /><%= id %>', event.id);
+				var refreshURL = new uri(document.location.href);
+
+				refreshURL.setParameterValue(tabs1Param, event.id);
+
+				history.replaceState({tabs1Param: event.id}, document.title, refreshURL);
 			};
 
 			var clearFormNavigatorHandles = function(event) {
