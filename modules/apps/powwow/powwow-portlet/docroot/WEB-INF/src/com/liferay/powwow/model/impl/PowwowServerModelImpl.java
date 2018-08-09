@@ -307,7 +307,7 @@ public class PowwowServerModelImpl extends BaseModelImpl<PowwowServer>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -350,7 +350,7 @@ public class PowwowServerModelImpl extends BaseModelImpl<PowwowServer>
 	public void setName(String name) {
 		_columnBitmask = -1L;
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -371,7 +371,7 @@ public class PowwowServerModelImpl extends BaseModelImpl<PowwowServer>
 			_originalProviderType = _providerType;
 		}
 
-		_providerType = providerType;
+		_providerType = normalize(providerType);
 	}
 
 	public String getOriginalProviderType() {
@@ -390,7 +390,7 @@ public class PowwowServerModelImpl extends BaseModelImpl<PowwowServer>
 
 	@Override
 	public void setUrl(String url) {
-		_url = url;
+		_url = normalize(url);
 	}
 
 	@Override
@@ -405,7 +405,7 @@ public class PowwowServerModelImpl extends BaseModelImpl<PowwowServer>
 
 	@Override
 	public void setApiKey(String apiKey) {
-		_apiKey = apiKey;
+		_apiKey = normalize(apiKey);
 	}
 
 	@Override
@@ -420,7 +420,7 @@ public class PowwowServerModelImpl extends BaseModelImpl<PowwowServer>
 
 	@Override
 	public void setSecret(String secret) {
-		_secret = secret;
+		_secret = normalize(secret);
 	}
 
 	@Override

@@ -309,7 +309,7 @@ public class ExpandoColumnModelImpl extends BaseModelImpl<ExpandoColumn>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -340,7 +340,7 @@ public class ExpandoColumnModelImpl extends BaseModelImpl<ExpandoColumn>
 
 	@Override
 	public void setDefaultData(String defaultData) {
-		_defaultData = defaultData;
+		_defaultData = normalize(defaultData);
 	}
 
 	@JSON
@@ -356,7 +356,7 @@ public class ExpandoColumnModelImpl extends BaseModelImpl<ExpandoColumn>
 
 	@Override
 	public void setTypeSettings(String typeSettings) {
-		_typeSettings = typeSettings;
+		_typeSettings = normalize(typeSettings);
 	}
 
 	public long getColumnBitmask() {

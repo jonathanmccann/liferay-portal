@@ -507,7 +507,7 @@ public class DDLRecordSetModelImpl extends BaseModelImpl<DDLRecordSet>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -550,7 +550,7 @@ public class DDLRecordSetModelImpl extends BaseModelImpl<DDLRecordSet>
 
 	@Override
 	public void setVersionUserName(String versionUserName) {
-		_versionUserName = versionUserName;
+		_versionUserName = normalize(versionUserName);
 	}
 
 	@JSON
@@ -611,7 +611,7 @@ public class DDLRecordSetModelImpl extends BaseModelImpl<DDLRecordSet>
 			_originalRecordSetKey = _recordSetKey;
 		}
 
-		_recordSetKey = recordSetKey;
+		_recordSetKey = normalize(recordSetKey);
 	}
 
 	public String getOriginalRecordSetKey() {
@@ -631,7 +631,7 @@ public class DDLRecordSetModelImpl extends BaseModelImpl<DDLRecordSet>
 
 	@Override
 	public void setVersion(String version) {
-		_version = version;
+		_version = normalize(version);
 	}
 
 	@JSON
@@ -690,7 +690,7 @@ public class DDLRecordSetModelImpl extends BaseModelImpl<DDLRecordSet>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -789,7 +789,7 @@ public class DDLRecordSetModelImpl extends BaseModelImpl<DDLRecordSet>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -871,7 +871,7 @@ public class DDLRecordSetModelImpl extends BaseModelImpl<DDLRecordSet>
 
 	@Override
 	public void setSettings(String settings) {
-		_settings = settings;
+		_settings = normalize(settings);
 	}
 
 	@JSON

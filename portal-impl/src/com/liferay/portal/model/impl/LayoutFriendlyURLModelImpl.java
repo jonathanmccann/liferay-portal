@@ -399,7 +399,7 @@ public class LayoutFriendlyURLModelImpl extends BaseModelImpl<LayoutFriendlyURL>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -495,7 +495,7 @@ public class LayoutFriendlyURLModelImpl extends BaseModelImpl<LayoutFriendlyURL>
 			_originalFriendlyURL = _friendlyURL;
 		}
 
-		_friendlyURL = friendlyURL;
+		_friendlyURL = normalize(friendlyURL);
 	}
 
 	public String getOriginalFriendlyURL() {
@@ -520,7 +520,7 @@ public class LayoutFriendlyURLModelImpl extends BaseModelImpl<LayoutFriendlyURL>
 			_originalLanguageId = _languageId;
 		}
 
-		_languageId = languageId;
+		_languageId = normalize(languageId);
 	}
 
 	public String getOriginalLanguageId() {

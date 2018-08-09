@@ -442,7 +442,7 @@ public class KBFolderModelImpl extends BaseModelImpl<KBFolder>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -515,7 +515,7 @@ public class KBFolderModelImpl extends BaseModelImpl<KBFolder>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -541,7 +541,7 @@ public class KBFolderModelImpl extends BaseModelImpl<KBFolder>
 			_originalUrlTitle = _urlTitle;
 		}
 
-		_urlTitle = urlTitle;
+		_urlTitle = normalize(urlTitle);
 	}
 
 	public String getOriginalUrlTitle() {
@@ -561,7 +561,7 @@ public class KBFolderModelImpl extends BaseModelImpl<KBFolder>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON

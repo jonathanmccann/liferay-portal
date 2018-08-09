@@ -393,7 +393,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -466,7 +466,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public void setSender(String sender) {
-		_sender = sender;
+		_sender = normalize(sender);
 	}
 
 	@Override
@@ -481,7 +481,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public void setTo(String to) {
-		_to = to;
+		_to = normalize(to);
 	}
 
 	@Override
@@ -496,7 +496,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public void setCc(String cc) {
-		_cc = cc;
+		_cc = normalize(cc);
 	}
 
 	@Override
@@ -511,7 +511,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public void setBcc(String bcc) {
-		_bcc = bcc;
+		_bcc = normalize(bcc);
 	}
 
 	@Override
@@ -538,7 +538,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public void setSubject(String subject) {
-		_subject = subject;
+		_subject = normalize(subject);
 	}
 
 	@Override
@@ -553,7 +553,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public void setPreview(String preview) {
-		_preview = preview;
+		_preview = normalize(preview);
 	}
 
 	@Override
@@ -568,7 +568,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public void setBody(String body) {
-		_body = body;
+		_body = normalize(body);
 	}
 
 	@Override
@@ -583,7 +583,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public void setFlags(String flags) {
-		_flags = flags;
+		_flags = normalize(flags);
 	}
 
 	@Override
@@ -630,7 +630,7 @@ public class MessageModelImpl extends BaseModelImpl<Message>
 
 	@Override
 	public void setContentType(String contentType) {
-		_contentType = contentType;
+		_contentType = normalize(contentType);
 	}
 
 	public long getColumnBitmask() {

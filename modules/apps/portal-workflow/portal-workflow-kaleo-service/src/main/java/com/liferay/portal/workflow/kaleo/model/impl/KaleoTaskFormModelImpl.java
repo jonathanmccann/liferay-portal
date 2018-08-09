@@ -404,7 +404,7 @@ public class KaleoTaskFormModelImpl extends BaseModelImpl<KaleoTaskForm>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -511,7 +511,7 @@ public class KaleoTaskFormModelImpl extends BaseModelImpl<KaleoTaskForm>
 
 	@Override
 	public void setKaleoTaskName(String kaleoTaskName) {
-		_kaleoTaskName = kaleoTaskName;
+		_kaleoTaskName = normalize(kaleoTaskName);
 	}
 
 	@Override
@@ -526,7 +526,7 @@ public class KaleoTaskFormModelImpl extends BaseModelImpl<KaleoTaskForm>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -541,7 +541,7 @@ public class KaleoTaskFormModelImpl extends BaseModelImpl<KaleoTaskForm>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -566,7 +566,7 @@ public class KaleoTaskFormModelImpl extends BaseModelImpl<KaleoTaskForm>
 
 	@Override
 	public void setFormDefinition(String formDefinition) {
-		_formDefinition = formDefinition;
+		_formDefinition = normalize(formDefinition);
 	}
 
 	@Override
@@ -607,7 +607,7 @@ public class KaleoTaskFormModelImpl extends BaseModelImpl<KaleoTaskForm>
 			_originalFormUuid = _formUuid;
 		}
 
-		_formUuid = formUuid;
+		_formUuid = normalize(formUuid);
 	}
 
 	public String getOriginalFormUuid() {
@@ -626,7 +626,7 @@ public class KaleoTaskFormModelImpl extends BaseModelImpl<KaleoTaskForm>
 
 	@Override
 	public void setMetadata(String metadata) {
-		_metadata = metadata;
+		_metadata = normalize(metadata);
 	}
 
 	@Override

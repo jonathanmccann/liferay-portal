@@ -441,7 +441,7 @@ public class OAuth2ApplicationModelImpl extends BaseModelImpl<OAuth2Application>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -497,7 +497,7 @@ public class OAuth2ApplicationModelImpl extends BaseModelImpl<OAuth2Application>
 
 	@Override
 	public void setAllowedGrantTypes(String allowedGrantTypes) {
-		_allowedGrantTypes = allowedGrantTypes;
+		_allowedGrantTypes = normalize(allowedGrantTypes);
 	}
 
 	@JSON
@@ -519,7 +519,7 @@ public class OAuth2ApplicationModelImpl extends BaseModelImpl<OAuth2Application>
 			_originalClientId = _clientId;
 		}
 
-		_clientId = clientId;
+		_clientId = normalize(clientId);
 	}
 
 	public String getOriginalClientId() {
@@ -550,7 +550,7 @@ public class OAuth2ApplicationModelImpl extends BaseModelImpl<OAuth2Application>
 
 	@Override
 	public void setClientSecret(String clientSecret) {
-		_clientSecret = clientSecret;
+		_clientSecret = normalize(clientSecret);
 	}
 
 	@JSON
@@ -566,7 +566,7 @@ public class OAuth2ApplicationModelImpl extends BaseModelImpl<OAuth2Application>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -582,7 +582,7 @@ public class OAuth2ApplicationModelImpl extends BaseModelImpl<OAuth2Application>
 
 	@Override
 	public void setFeatures(String features) {
-		_features = features;
+		_features = normalize(features);
 	}
 
 	@JSON
@@ -598,7 +598,7 @@ public class OAuth2ApplicationModelImpl extends BaseModelImpl<OAuth2Application>
 
 	@Override
 	public void setHomePageURL(String homePageURL) {
-		_homePageURL = homePageURL;
+		_homePageURL = normalize(homePageURL);
 	}
 
 	@JSON
@@ -625,7 +625,7 @@ public class OAuth2ApplicationModelImpl extends BaseModelImpl<OAuth2Application>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -641,7 +641,7 @@ public class OAuth2ApplicationModelImpl extends BaseModelImpl<OAuth2Application>
 
 	@Override
 	public void setPrivacyPolicyURL(String privacyPolicyURL) {
-		_privacyPolicyURL = privacyPolicyURL;
+		_privacyPolicyURL = normalize(privacyPolicyURL);
 	}
 
 	@JSON
@@ -657,7 +657,7 @@ public class OAuth2ApplicationModelImpl extends BaseModelImpl<OAuth2Application>
 
 	@Override
 	public void setRedirectURIs(String redirectURIs) {
-		_redirectURIs = redirectURIs;
+		_redirectURIs = normalize(redirectURIs);
 	}
 
 	public long getColumnBitmask() {

@@ -244,7 +244,7 @@ public class DLSyncEventModelImpl extends BaseModelImpl<DLSyncEvent>
 
 	@Override
 	public void setEvent(String event) {
-		_event = event;
+		_event = normalize(event);
 	}
 
 	@Override
@@ -259,7 +259,7 @@ public class DLSyncEventModelImpl extends BaseModelImpl<DLSyncEvent>
 
 	@Override
 	public void setType(String type) {
-		_type = type;
+		_type = normalize(type);
 	}
 
 	@Override

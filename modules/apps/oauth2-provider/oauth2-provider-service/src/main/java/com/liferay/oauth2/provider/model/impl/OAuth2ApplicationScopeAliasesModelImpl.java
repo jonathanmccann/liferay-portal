@@ -287,7 +287,7 @@ public class OAuth2ApplicationScopeAliasesModelImpl extends BaseModelImpl<OAuth2
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -334,7 +334,7 @@ public class OAuth2ApplicationScopeAliasesModelImpl extends BaseModelImpl<OAuth2
 
 	@Override
 	public void setScopeAliases(String scopeAliases) {
-		_scopeAliases = scopeAliases;
+		_scopeAliases = normalize(scopeAliases);
 	}
 
 	@Override

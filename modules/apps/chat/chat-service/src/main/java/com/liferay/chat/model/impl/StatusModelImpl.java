@@ -337,7 +337,7 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 
 	@Override
 	public void setActivePanelIds(String activePanelIds) {
-		_activePanelIds = activePanelIds;
+		_activePanelIds = normalize(activePanelIds);
 	}
 
 	@Override
@@ -352,7 +352,7 @@ public class StatusModelImpl extends BaseModelImpl<Status>
 
 	@Override
 	public void setMessage(String message) {
-		_message = message;
+		_message = normalize(message);
 	}
 
 	@Override

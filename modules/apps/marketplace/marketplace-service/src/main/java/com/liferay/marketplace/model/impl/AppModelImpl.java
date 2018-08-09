@@ -426,7 +426,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -493,7 +493,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 
 	@Override
 	public void setTitle(String title) {
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@JSON
@@ -509,7 +509,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -531,7 +531,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 			_originalCategory = _category;
 		}
 
-		_category = category;
+		_category = normalize(category);
 	}
 
 	public String getOriginalCategory() {
@@ -551,7 +551,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 
 	@Override
 	public void setIconURL(String iconURL) {
-		_iconURL = iconURL;
+		_iconURL = normalize(iconURL);
 	}
 
 	@JSON
@@ -567,7 +567,7 @@ public class AppModelImpl extends BaseModelImpl<App> implements AppModel {
 
 	@Override
 	public void setVersion(String version) {
-		_version = version;
+		_version = normalize(version);
 	}
 
 	@JSON

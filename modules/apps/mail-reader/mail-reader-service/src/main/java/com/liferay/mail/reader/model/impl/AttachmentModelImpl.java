@@ -320,7 +320,7 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 
 	@Override
 	public void setContentPath(String contentPath) {
-		_contentPath = contentPath;
+		_contentPath = normalize(contentPath);
 	}
 
 	@Override
@@ -335,7 +335,7 @@ public class AttachmentModelImpl extends BaseModelImpl<Attachment>
 
 	@Override
 	public void setFileName(String fileName) {
-		_fileName = fileName;
+		_fileName = normalize(fileName);
 	}
 
 	@Override

@@ -320,7 +320,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 			_originalContent = _content;
 		}
 
-		_content = content;
+		_content = normalize(content);
 	}
 
 	public String getOriginalContent() {

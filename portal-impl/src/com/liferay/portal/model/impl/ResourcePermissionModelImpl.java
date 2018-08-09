@@ -359,7 +359,7 @@ public class ResourcePermissionModelImpl extends BaseModelImpl<ResourcePermissio
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -408,7 +408,7 @@ public class ResourcePermissionModelImpl extends BaseModelImpl<ResourcePermissio
 			_originalPrimKey = _primKey;
 		}
 
-		_primKey = primKey;
+		_primKey = normalize(primKey);
 	}
 
 	public String getOriginalPrimKey() {

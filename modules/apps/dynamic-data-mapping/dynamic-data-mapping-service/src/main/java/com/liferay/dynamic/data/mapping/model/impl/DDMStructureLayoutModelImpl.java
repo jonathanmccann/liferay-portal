@@ -351,7 +351,7 @@ public class DDMStructureLayoutModelImpl extends BaseModelImpl<DDMStructureLayou
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -414,7 +414,7 @@ public class DDMStructureLayoutModelImpl extends BaseModelImpl<DDMStructureLayou
 
 	@Override
 	public void setDefinition(String definition) {
-		_definition = definition;
+		_definition = normalize(definition);
 	}
 
 	public com.liferay.dynamic.data.mapping.model.DDMFormLayout getDDMFormLayout() {

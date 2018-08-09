@@ -425,7 +425,7 @@ public class SyncDeviceModelImpl extends BaseModelImpl<SyncDevice>
 			_originalUserName = _userName;
 		}
 
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	public String getOriginalUserName() {
@@ -473,7 +473,7 @@ public class SyncDeviceModelImpl extends BaseModelImpl<SyncDevice>
 
 	@Override
 	public void setType(String type) {
-		_type = type;
+		_type = normalize(type);
 	}
 
 	@JSON
@@ -511,7 +511,7 @@ public class SyncDeviceModelImpl extends BaseModelImpl<SyncDevice>
 
 	@Override
 	public void setHostname(String hostname) {
-		_hostname = hostname;
+		_hostname = normalize(hostname);
 	}
 
 	@JSON

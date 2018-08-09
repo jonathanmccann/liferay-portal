@@ -314,7 +314,7 @@ public class SocialActivityAchievementModelImpl extends BaseModelImpl<SocialActi
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {

@@ -568,7 +568,7 @@ public class SocialRequestModelImpl extends BaseModelImpl<SocialRequest>
 
 	@Override
 	public void setExtraData(String extraData) {
-		_extraData = extraData;
+		_extraData = normalize(extraData);
 	}
 
 	@JSON

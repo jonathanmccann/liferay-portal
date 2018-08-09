@@ -621,7 +621,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -763,7 +763,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 			_originalVEventUid = _vEventUid;
 		}
 
-		_vEventUid = vEventUid;
+		_vEventUid = normalize(vEventUid);
 	}
 
 	public String getOriginalVEventUid() {
@@ -828,7 +828,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 	public void setTitle(String title) {
 		_columnBitmask = -1L;
 
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@Override
@@ -927,7 +927,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -987,7 +987,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 
 	@Override
 	public void setLocation(String location) {
-		_location = location;
+		_location = normalize(location);
 	}
 
 	@JSON
@@ -1044,7 +1044,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 
 	@Override
 	public void setRecurrence(String recurrence) {
-		_recurrence = recurrence;
+		_recurrence = normalize(recurrence);
 	}
 
 	@JSON
@@ -1071,7 +1071,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 
 	@Override
 	public void setFirstReminderType(String firstReminderType) {
-		_firstReminderType = firstReminderType;
+		_firstReminderType = normalize(firstReminderType);
 	}
 
 	@JSON
@@ -1098,7 +1098,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 
 	@Override
 	public void setSecondReminderType(String secondReminderType) {
-		_secondReminderType = secondReminderType;
+		_secondReminderType = normalize(secondReminderType);
 	}
 
 	@JSON
@@ -1175,7 +1175,7 @@ public class CalendarBookingModelImpl extends BaseModelImpl<CalendarBooking>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

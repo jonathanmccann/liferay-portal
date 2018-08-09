@@ -343,7 +343,7 @@ public class WebDAVPropsModelImpl extends BaseModelImpl<WebDAVProps>
 
 	@Override
 	public void setProps(String props) {
-		_props = props;
+		_props = normalize(props);
 	}
 
 	public long getColumnBitmask() {

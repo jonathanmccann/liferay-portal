@@ -384,7 +384,7 @@ public class UserNotificationEventModelImpl extends BaseModelImpl<UserNotificati
 			_originalType = _type;
 		}
 
-		_type = type;
+		_type = normalize(type);
 	}
 
 	public String getOriginalType() {
@@ -474,7 +474,7 @@ public class UserNotificationEventModelImpl extends BaseModelImpl<UserNotificati
 
 	@Override
 	public void setPayload(String payload) {
-		_payload = payload;
+		_payload = normalize(payload);
 	}
 
 	@Override

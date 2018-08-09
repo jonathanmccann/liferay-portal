@@ -299,7 +299,7 @@ public class ReleaseModelImpl extends BaseModelImpl<Release>
 			_originalServletContextName = _servletContextName;
 		}
 
-		_servletContextName = servletContextName;
+		_servletContextName = normalize(servletContextName);
 	}
 
 	public String getOriginalServletContextName() {
@@ -318,7 +318,7 @@ public class ReleaseModelImpl extends BaseModelImpl<Release>
 
 	@Override
 	public void setSchemaVersion(String schemaVersion) {
-		_schemaVersion = schemaVersion;
+		_schemaVersion = normalize(schemaVersion);
 	}
 
 	@Override
@@ -378,7 +378,7 @@ public class ReleaseModelImpl extends BaseModelImpl<Release>
 
 	@Override
 	public void setTestString(String testString) {
-		_testString = testString;
+		_testString = normalize(testString);
 	}
 
 	public long getColumnBitmask() {

@@ -641,7 +641,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -778,7 +778,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	@Override
 	public void setTitle(String title) {
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@JSON
@@ -800,7 +800,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 			_originalUrlTitle = _urlTitle;
 		}
 
-		_urlTitle = urlTitle;
+		_urlTitle = normalize(urlTitle);
 	}
 
 	public String getOriginalUrlTitle() {
@@ -820,7 +820,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	@Override
 	public void setContent(String content) {
-		_content = content;
+		_content = normalize(content);
 	}
 
 	@JSON
@@ -836,7 +836,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -869,7 +869,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 			_originalSections = _sections;
 		}
 
-		_sections = sections;
+		_sections = normalize(sections);
 	}
 
 	public String getOriginalSections() {
@@ -958,7 +958,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	@Override
 	public void setSourceURL(String sourceURL) {
-		_sourceURL = sourceURL;
+		_sourceURL = normalize(sourceURL);
 	}
 
 	@JSON
@@ -1035,7 +1035,7 @@ public class KBArticleModelImpl extends BaseModelImpl<KBArticle>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

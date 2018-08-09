@@ -597,7 +597,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -700,7 +700,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 
 	@Override
 	public void setTreePath(String treePath) {
-		_treePath = treePath;
+		_treePath = normalize(treePath);
 	}
 
 	@JSON
@@ -716,7 +716,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 
 	@Override
 	public void setFileName(String fileName) {
-		_fileName = fileName;
+		_fileName = normalize(fileName);
 	}
 
 	@JSON
@@ -732,7 +732,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 
 	@Override
 	public void setExtension(String extension) {
-		_extension = extension;
+		_extension = normalize(extension);
 	}
 
 	@JSON
@@ -754,7 +754,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 			_originalMimeType = _mimeType;
 		}
 
-		_mimeType = mimeType;
+		_mimeType = normalize(mimeType);
 	}
 
 	public String getOriginalMimeType() {
@@ -780,7 +780,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 			_originalTitle = _title;
 		}
 
-		_title = title;
+		_title = normalize(title);
 	}
 
 	public String getOriginalTitle() {
@@ -800,7 +800,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -816,7 +816,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 
 	@Override
 	public void setChangeLog(String changeLog) {
-		_changeLog = changeLog;
+		_changeLog = normalize(changeLog);
 	}
 
 	@JSON
@@ -832,7 +832,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 
 	@Override
 	public void setExtraSettings(String extraSettings) {
-		_extraSettings = extraSettings;
+		_extraSettings = normalize(extraSettings);
 	}
 
 	@JSON
@@ -865,7 +865,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 			_originalVersion = _version;
 		}
 
-		_version = version;
+		_version = normalize(version);
 	}
 
 	public String getOriginalVersion() {
@@ -896,7 +896,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 
 	@Override
 	public void setChecksum(String checksum) {
-		_checksum = checksum;
+		_checksum = normalize(checksum);
 	}
 
 	@JSON
@@ -973,7 +973,7 @@ public class DLFileVersionModelImpl extends BaseModelImpl<DLFileVersion>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

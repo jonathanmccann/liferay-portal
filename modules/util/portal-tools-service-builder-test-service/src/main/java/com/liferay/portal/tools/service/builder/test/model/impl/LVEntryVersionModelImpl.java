@@ -257,7 +257,7 @@ public class LVEntryVersionModelImpl extends BaseModelImpl<LVEntryVersion>
 
 	@Override
 	public void setDefaultLanguageId(String defaultLanguageId) {
-		_defaultLanguageId = defaultLanguageId;
+		_defaultLanguageId = normalize(defaultLanguageId);
 	}
 
 	@Override

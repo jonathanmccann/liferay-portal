@@ -304,7 +304,7 @@ public class RegionModelImpl extends BaseModelImpl<Region>
 			_originalRegionCode = _regionCode;
 		}
 
-		_regionCode = regionCode;
+		_regionCode = normalize(regionCode);
 	}
 
 	public String getOriginalRegionCode() {
@@ -326,7 +326,7 @@ public class RegionModelImpl extends BaseModelImpl<Region>
 	public void setName(String name) {
 		_columnBitmask = -1L;
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON

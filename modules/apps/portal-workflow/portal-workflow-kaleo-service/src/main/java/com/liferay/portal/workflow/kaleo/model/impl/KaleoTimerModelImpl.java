@@ -365,7 +365,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -412,7 +412,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 			_originalKaleoClassName = _kaleoClassName;
 		}
 
-		_kaleoClassName = kaleoClassName;
+		_kaleoClassName = normalize(kaleoClassName);
 	}
 
 	public String getOriginalKaleoClassName() {
@@ -463,7 +463,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -505,7 +505,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -530,7 +530,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 
 	@Override
 	public void setScale(String scale) {
-		_scale = scale;
+		_scale = normalize(scale);
 	}
 
 	@Override
@@ -555,7 +555,7 @@ public class KaleoTimerModelImpl extends BaseModelImpl<KaleoTimer>
 
 	@Override
 	public void setRecurrenceScale(String recurrenceScale) {
-		_recurrenceScale = recurrenceScale;
+		_recurrenceScale = normalize(recurrenceScale);
 	}
 
 	public long getColumnBitmask() {

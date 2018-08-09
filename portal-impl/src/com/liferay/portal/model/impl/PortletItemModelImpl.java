@@ -333,7 +333,7 @@ public class PortletItemModelImpl extends BaseModelImpl<PortletItem>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -380,7 +380,7 @@ public class PortletItemModelImpl extends BaseModelImpl<PortletItem>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -405,7 +405,7 @@ public class PortletItemModelImpl extends BaseModelImpl<PortletItem>
 			_originalPortletId = _portletId;
 		}
 
-		_portletId = portletId;
+		_portletId = normalize(portletId);
 	}
 
 	public String getOriginalPortletId() {

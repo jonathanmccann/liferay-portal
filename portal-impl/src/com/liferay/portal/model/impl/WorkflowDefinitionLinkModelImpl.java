@@ -369,7 +369,7 @@ public class WorkflowDefinitionLinkModelImpl extends BaseModelImpl<WorkflowDefin
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -502,7 +502,7 @@ public class WorkflowDefinitionLinkModelImpl extends BaseModelImpl<WorkflowDefin
 			_originalWorkflowDefinitionName = _workflowDefinitionName;
 		}
 
-		_workflowDefinitionName = workflowDefinitionName;
+		_workflowDefinitionName = normalize(workflowDefinitionName);
 	}
 
 	public String getOriginalWorkflowDefinitionName() {

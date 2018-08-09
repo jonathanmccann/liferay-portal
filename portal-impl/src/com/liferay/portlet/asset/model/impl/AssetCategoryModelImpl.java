@@ -425,7 +425,7 @@ public class AssetCategoryModelImpl extends BaseModelImpl<AssetCategory>
 			_originalExternalReferenceCode = _externalReferenceCode;
 		}
 
-		_externalReferenceCode = externalReferenceCode;
+		_externalReferenceCode = normalize(externalReferenceCode);
 	}
 
 	public String getOriginalExternalReferenceCode() {
@@ -529,7 +529,7 @@ public class AssetCategoryModelImpl extends BaseModelImpl<AssetCategory>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -624,7 +624,7 @@ public class AssetCategoryModelImpl extends BaseModelImpl<AssetCategory>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -687,7 +687,7 @@ public class AssetCategoryModelImpl extends BaseModelImpl<AssetCategory>
 
 	@Override
 	public void setTitle(String title) {
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@Override
@@ -786,7 +786,7 @@ public class AssetCategoryModelImpl extends BaseModelImpl<AssetCategory>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override

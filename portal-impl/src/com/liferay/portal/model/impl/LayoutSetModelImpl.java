@@ -484,7 +484,7 @@ public class LayoutSetModelImpl extends BaseModelImpl<LayoutSet>
 
 	@Override
 	public void setThemeId(String themeId) {
-		_themeId = themeId;
+		_themeId = normalize(themeId);
 	}
 
 	@JSON
@@ -500,7 +500,7 @@ public class LayoutSetModelImpl extends BaseModelImpl<LayoutSet>
 
 	@Override
 	public void setColorSchemeId(String colorSchemeId) {
-		_colorSchemeId = colorSchemeId;
+		_colorSchemeId = normalize(colorSchemeId);
 	}
 
 	@JSON
@@ -516,7 +516,7 @@ public class LayoutSetModelImpl extends BaseModelImpl<LayoutSet>
 
 	@Override
 	public void setCss(String css) {
-		_css = css;
+		_css = normalize(css);
 	}
 
 	@JSON
@@ -543,7 +543,7 @@ public class LayoutSetModelImpl extends BaseModelImpl<LayoutSet>
 
 	@Override
 	public void setSettings(String settings) {
-		_settings = settings;
+		_settings = normalize(settings);
 	}
 
 	@JSON
@@ -565,7 +565,7 @@ public class LayoutSetModelImpl extends BaseModelImpl<LayoutSet>
 			_originalLayoutSetPrototypeUuid = _layoutSetPrototypeUuid;
 		}
 
-		_layoutSetPrototypeUuid = layoutSetPrototypeUuid;
+		_layoutSetPrototypeUuid = normalize(layoutSetPrototypeUuid);
 	}
 
 	public String getOriginalLayoutSetPrototypeUuid() {

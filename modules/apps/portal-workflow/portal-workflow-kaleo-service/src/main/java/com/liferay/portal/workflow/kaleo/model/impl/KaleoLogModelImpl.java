@@ -507,7 +507,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -554,7 +554,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 			_originalKaleoClassName = _kaleoClassName;
 		}
 
-		_kaleoClassName = kaleoClassName;
+		_kaleoClassName = normalize(kaleoClassName);
 	}
 
 	public String getOriginalKaleoClassName() {
@@ -683,7 +683,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 
 	@Override
 	public void setKaleoNodeName(String kaleoNodeName) {
-		_kaleoNodeName = kaleoNodeName;
+		_kaleoNodeName = normalize(kaleoNodeName);
 	}
 
 	@Override
@@ -723,7 +723,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 
 	@Override
 	public void setKaleoActionName(String kaleoActionName) {
-		_kaleoActionName = kaleoActionName;
+		_kaleoActionName = normalize(kaleoActionName);
 	}
 
 	@Override
@@ -738,7 +738,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 
 	@Override
 	public void setKaleoActionDescription(String kaleoActionDescription) {
-		_kaleoActionDescription = kaleoActionDescription;
+		_kaleoActionDescription = normalize(kaleoActionDescription);
 	}
 
 	@Override
@@ -763,7 +763,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 
 	@Override
 	public void setPreviousKaleoNodeName(String previousKaleoNodeName) {
-		_previousKaleoNodeName = previousKaleoNodeName;
+		_previousKaleoNodeName = normalize(previousKaleoNodeName);
 	}
 
 	@Override
@@ -778,7 +778,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 
 	@Override
 	public void setPreviousAssigneeClassName(String previousAssigneeClassName) {
-		_previousAssigneeClassName = previousAssigneeClassName;
+		_previousAssigneeClassName = normalize(previousAssigneeClassName);
 	}
 
 	@Override
@@ -803,7 +803,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 
 	@Override
 	public void setCurrentAssigneeClassName(String currentAssigneeClassName) {
-		_currentAssigneeClassName = currentAssigneeClassName;
+		_currentAssigneeClassName = normalize(currentAssigneeClassName);
 	}
 
 	@Override
@@ -834,7 +834,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 			_originalType = _type;
 		}
 
-		_type = type;
+		_type = normalize(type);
 	}
 
 	public String getOriginalType() {
@@ -853,7 +853,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 
 	@Override
 	public void setComment(String comment) {
-		_comment = comment;
+		_comment = normalize(comment);
 	}
 
 	@Override
@@ -898,7 +898,7 @@ public class KaleoLogModelImpl extends BaseModelImpl<KaleoLog>
 
 	@Override
 	public void setWorkflowContext(String workflowContext) {
-		_workflowContext = workflowContext;
+		_workflowContext = normalize(workflowContext);
 	}
 
 	public long getColumnBitmask() {

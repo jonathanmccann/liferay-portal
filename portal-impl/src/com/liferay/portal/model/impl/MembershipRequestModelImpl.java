@@ -417,7 +417,7 @@ public class MembershipRequestModelImpl extends BaseModelImpl<MembershipRequest>
 
 	@Override
 	public void setComments(String comments) {
-		_comments = comments;
+		_comments = normalize(comments);
 	}
 
 	@JSON
@@ -433,7 +433,7 @@ public class MembershipRequestModelImpl extends BaseModelImpl<MembershipRequest>
 
 	@Override
 	public void setReplyComments(String replyComments) {
-		_replyComments = replyComments;
+		_replyComments = normalize(replyComments);
 	}
 
 	@JSON

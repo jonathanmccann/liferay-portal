@@ -421,7 +421,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -476,7 +476,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -492,7 +492,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setLegalName(String legalName) {
-		_legalName = legalName;
+		_legalName = normalize(legalName);
 	}
 
 	@JSON
@@ -508,7 +508,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setLegalId(String legalId) {
-		_legalId = legalId;
+		_legalId = normalize(legalId);
 	}
 
 	@JSON
@@ -524,7 +524,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setLegalType(String legalType) {
-		_legalType = legalType;
+		_legalType = normalize(legalType);
 	}
 
 	@JSON
@@ -540,7 +540,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setSicCode(String sicCode) {
-		_sicCode = sicCode;
+		_sicCode = normalize(sicCode);
 	}
 
 	@JSON
@@ -556,7 +556,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setTickerSymbol(String tickerSymbol) {
-		_tickerSymbol = tickerSymbol;
+		_tickerSymbol = normalize(tickerSymbol);
 	}
 
 	@JSON
@@ -572,7 +572,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setIndustry(String industry) {
-		_industry = industry;
+		_industry = normalize(industry);
 	}
 
 	@JSON
@@ -588,7 +588,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setType(String type) {
-		_type = type;
+		_type = normalize(type);
 	}
 
 	@JSON
@@ -604,7 +604,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setSize(String size) {
-		_size = size;
+		_size = normalize(size);
 	}
 
 	@Override

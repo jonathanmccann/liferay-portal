@@ -623,7 +623,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -669,7 +669,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 
 	@Override
 	public void setTitle(String title) {
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@JSON
@@ -685,7 +685,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 
 	@Override
 	public void setSubtitle(String subtitle) {
-		_subtitle = subtitle;
+		_subtitle = normalize(subtitle);
 	}
 
 	@JSON
@@ -707,7 +707,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 			_originalUrlTitle = _urlTitle;
 		}
 
-		_urlTitle = urlTitle;
+		_urlTitle = normalize(urlTitle);
 	}
 
 	public String getOriginalUrlTitle() {
@@ -727,7 +727,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -743,7 +743,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 
 	@Override
 	public void setContent(String content) {
-		_content = content;
+		_content = normalize(content);
 	}
 
 	@JSON
@@ -814,7 +814,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 
 	@Override
 	public void setTrackbacks(String trackbacks) {
-		_trackbacks = trackbacks;
+		_trackbacks = normalize(trackbacks);
 	}
 
 	@JSON
@@ -830,7 +830,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 
 	@Override
 	public void setCoverImageCaption(String coverImageCaption) {
-		_coverImageCaption = coverImageCaption;
+		_coverImageCaption = normalize(coverImageCaption);
 	}
 
 	@JSON
@@ -857,7 +857,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 
 	@Override
 	public void setCoverImageURL(String coverImageURL) {
-		_coverImageURL = coverImageURL;
+		_coverImageURL = normalize(coverImageURL);
 	}
 
 	@JSON
@@ -912,7 +912,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 
 	@Override
 	public void setSmallImageURL(String smallImageURL) {
-		_smallImageURL = smallImageURL;
+		_smallImageURL = normalize(smallImageURL);
 	}
 
 	@JSON
@@ -989,7 +989,7 @@ public class BlogsEntryModelImpl extends BaseModelImpl<BlogsEntry>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

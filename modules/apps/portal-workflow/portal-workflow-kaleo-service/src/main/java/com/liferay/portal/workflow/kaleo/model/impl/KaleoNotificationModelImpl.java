@@ -379,7 +379,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -426,7 +426,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 			_originalKaleoClassName = _kaleoClassName;
 		}
 
-		_kaleoClassName = kaleoClassName;
+		_kaleoClassName = normalize(kaleoClassName);
 	}
 
 	public String getOriginalKaleoClassName() {
@@ -489,7 +489,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 
 	@Override
 	public void setKaleoNodeName(String kaleoNodeName) {
-		_kaleoNodeName = kaleoNodeName;
+		_kaleoNodeName = normalize(kaleoNodeName);
 	}
 
 	@Override
@@ -504,7 +504,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -519,7 +519,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -540,7 +540,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 			_originalExecutionType = _executionType;
 		}
 
-		_executionType = executionType;
+		_executionType = normalize(executionType);
 	}
 
 	public String getOriginalExecutionType() {
@@ -559,7 +559,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 
 	@Override
 	public void setTemplate(String template) {
-		_template = template;
+		_template = normalize(template);
 	}
 
 	@Override
@@ -574,7 +574,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 
 	@Override
 	public void setTemplateLanguage(String templateLanguage) {
-		_templateLanguage = templateLanguage;
+		_templateLanguage = normalize(templateLanguage);
 	}
 
 	@Override
@@ -589,7 +589,7 @@ public class KaleoNotificationModelImpl extends BaseModelImpl<KaleoNotification>
 
 	@Override
 	public void setNotificationTypes(String notificationTypes) {
-		_notificationTypes = notificationTypes;
+		_notificationTypes = normalize(notificationTypes);
 	}
 
 	public long getColumnBitmask() {

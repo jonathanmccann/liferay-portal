@@ -407,7 +407,7 @@ public class AuditEventModelImpl extends BaseModelImpl<AuditEvent>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -436,7 +436,7 @@ public class AuditEventModelImpl extends BaseModelImpl<AuditEvent>
 
 	@Override
 	public void setEventType(String eventType) {
-		_eventType = eventType;
+		_eventType = normalize(eventType);
 	}
 
 	@JSON
@@ -452,7 +452,7 @@ public class AuditEventModelImpl extends BaseModelImpl<AuditEvent>
 
 	@Override
 	public void setClassName(String className) {
-		_className = className;
+		_className = normalize(className);
 	}
 
 	@JSON
@@ -468,7 +468,7 @@ public class AuditEventModelImpl extends BaseModelImpl<AuditEvent>
 
 	@Override
 	public void setClassPK(String classPK) {
-		_classPK = classPK;
+		_classPK = normalize(classPK);
 	}
 
 	@JSON
@@ -484,7 +484,7 @@ public class AuditEventModelImpl extends BaseModelImpl<AuditEvent>
 
 	@Override
 	public void setMessage(String message) {
-		_message = message;
+		_message = normalize(message);
 	}
 
 	@JSON
@@ -500,7 +500,7 @@ public class AuditEventModelImpl extends BaseModelImpl<AuditEvent>
 
 	@Override
 	public void setClientHost(String clientHost) {
-		_clientHost = clientHost;
+		_clientHost = normalize(clientHost);
 	}
 
 	@JSON
@@ -516,7 +516,7 @@ public class AuditEventModelImpl extends BaseModelImpl<AuditEvent>
 
 	@Override
 	public void setClientIP(String clientIP) {
-		_clientIP = clientIP;
+		_clientIP = normalize(clientIP);
 	}
 
 	@JSON
@@ -532,7 +532,7 @@ public class AuditEventModelImpl extends BaseModelImpl<AuditEvent>
 
 	@Override
 	public void setServerName(String serverName) {
-		_serverName = serverName;
+		_serverName = normalize(serverName);
 	}
 
 	@JSON
@@ -559,7 +559,7 @@ public class AuditEventModelImpl extends BaseModelImpl<AuditEvent>
 
 	@Override
 	public void setSessionID(String sessionID) {
-		_sessionID = sessionID;
+		_sessionID = normalize(sessionID);
 	}
 
 	@JSON
@@ -575,7 +575,7 @@ public class AuditEventModelImpl extends BaseModelImpl<AuditEvent>
 
 	@Override
 	public void setAdditionalInfo(String additionalInfo) {
-		_additionalInfo = additionalInfo;
+		_additionalInfo = normalize(additionalInfo);
 	}
 
 	public long getColumnBitmask() {

@@ -447,7 +447,7 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -503,7 +503,7 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 			_originalVersion = _version;
 		}
 
-		_version = version;
+		_version = normalize(version);
 	}
 
 	public String getOriginalVersion() {
@@ -577,7 +577,7 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -676,7 +676,7 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -736,7 +736,7 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 
 	@Override
 	public void setDefinition(String definition) {
-		_definition = definition;
+		_definition = normalize(definition);
 	}
 
 	@JSON
@@ -752,7 +752,7 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 
 	@Override
 	public void setStorageType(String storageType) {
-		_storageType = storageType;
+		_storageType = normalize(storageType);
 	}
 
 	@JSON
@@ -829,7 +829,7 @@ public class DDMStructureVersionModelImpl extends BaseModelImpl<DDMStructureVers
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

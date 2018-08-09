@@ -314,7 +314,7 @@ public class PluginSettingModelImpl extends BaseModelImpl<PluginSetting>
 			_originalPluginId = _pluginId;
 		}
 
-		_pluginId = pluginId;
+		_pluginId = normalize(pluginId);
 	}
 
 	public String getOriginalPluginId() {
@@ -340,7 +340,7 @@ public class PluginSettingModelImpl extends BaseModelImpl<PluginSetting>
 			_originalPluginType = _pluginType;
 		}
 
-		_pluginType = pluginType;
+		_pluginType = normalize(pluginType);
 	}
 
 	public String getOriginalPluginType() {
@@ -360,7 +360,7 @@ public class PluginSettingModelImpl extends BaseModelImpl<PluginSetting>
 
 	@Override
 	public void setRoles(String roles) {
-		_roles = roles;
+		_roles = normalize(roles);
 	}
 
 	@JSON

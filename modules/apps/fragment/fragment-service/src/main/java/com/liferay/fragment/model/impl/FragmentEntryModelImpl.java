@@ -513,7 +513,7 @@ public class FragmentEntryModelImpl extends BaseModelImpl<FragmentEntry>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -586,7 +586,7 @@ public class FragmentEntryModelImpl extends BaseModelImpl<FragmentEntry>
 			_originalFragmentEntryKey = _fragmentEntryKey;
 		}
 
-		_fragmentEntryKey = fragmentEntryKey;
+		_fragmentEntryKey = normalize(fragmentEntryKey);
 	}
 
 	public String getOriginalFragmentEntryKey() {
@@ -612,7 +612,7 @@ public class FragmentEntryModelImpl extends BaseModelImpl<FragmentEntry>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -632,7 +632,7 @@ public class FragmentEntryModelImpl extends BaseModelImpl<FragmentEntry>
 
 	@Override
 	public void setCss(String css) {
-		_css = css;
+		_css = normalize(css);
 	}
 
 	@JSON
@@ -648,7 +648,7 @@ public class FragmentEntryModelImpl extends BaseModelImpl<FragmentEntry>
 
 	@Override
 	public void setHtml(String html) {
-		_html = html;
+		_html = normalize(html);
 	}
 
 	@JSON
@@ -664,7 +664,7 @@ public class FragmentEntryModelImpl extends BaseModelImpl<FragmentEntry>
 
 	@Override
 	public void setJs(String js) {
-		_js = js;
+		_js = normalize(js);
 	}
 
 	@JSON
@@ -752,7 +752,7 @@ public class FragmentEntryModelImpl extends BaseModelImpl<FragmentEntry>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

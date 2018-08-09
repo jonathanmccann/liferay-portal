@@ -482,7 +482,7 @@ public class RepositoryModelImpl extends BaseModelImpl<Repository>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -563,7 +563,7 @@ public class RepositoryModelImpl extends BaseModelImpl<Repository>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -583,7 +583,7 @@ public class RepositoryModelImpl extends BaseModelImpl<Repository>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -605,7 +605,7 @@ public class RepositoryModelImpl extends BaseModelImpl<Repository>
 			_originalPortletId = _portletId;
 		}
 
-		_portletId = portletId;
+		_portletId = normalize(portletId);
 	}
 
 	public String getOriginalPortletId() {
@@ -625,7 +625,7 @@ public class RepositoryModelImpl extends BaseModelImpl<Repository>
 
 	@Override
 	public void setTypeSettings(String typeSettings) {
-		_typeSettings = typeSettings;
+		_typeSettings = normalize(typeSettings);
 	}
 
 	@JSON

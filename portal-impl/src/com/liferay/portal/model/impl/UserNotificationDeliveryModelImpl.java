@@ -313,7 +313,7 @@ public class UserNotificationDeliveryModelImpl extends BaseModelImpl<UserNotific
 			_originalPortletId = _portletId;
 		}
 
-		_portletId = portletId;
+		_portletId = normalize(portletId);
 	}
 
 	public String getOriginalPortletId() {

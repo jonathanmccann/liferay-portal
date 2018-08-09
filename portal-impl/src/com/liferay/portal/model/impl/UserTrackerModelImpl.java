@@ -330,7 +330,7 @@ public class UserTrackerModelImpl extends BaseModelImpl<UserTracker>
 			_originalSessionId = _sessionId;
 		}
 
-		_sessionId = sessionId;
+		_sessionId = normalize(sessionId);
 	}
 
 	public String getOriginalSessionId() {
@@ -349,7 +349,7 @@ public class UserTrackerModelImpl extends BaseModelImpl<UserTracker>
 
 	@Override
 	public void setRemoteAddr(String remoteAddr) {
-		_remoteAddr = remoteAddr;
+		_remoteAddr = normalize(remoteAddr);
 	}
 
 	@Override
@@ -364,7 +364,7 @@ public class UserTrackerModelImpl extends BaseModelImpl<UserTracker>
 
 	@Override
 	public void setRemoteHost(String remoteHost) {
-		_remoteHost = remoteHost;
+		_remoteHost = normalize(remoteHost);
 	}
 
 	@Override
@@ -379,7 +379,7 @@ public class UserTrackerModelImpl extends BaseModelImpl<UserTracker>
 
 	@Override
 	public void setUserAgent(String userAgent) {
-		_userAgent = userAgent;
+		_userAgent = normalize(userAgent);
 	}
 
 	public long getColumnBitmask() {

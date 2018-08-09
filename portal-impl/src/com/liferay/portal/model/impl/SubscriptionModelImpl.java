@@ -360,7 +360,7 @@ public class SubscriptionModelImpl extends BaseModelImpl<Subscription>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -465,7 +465,7 @@ public class SubscriptionModelImpl extends BaseModelImpl<Subscription>
 
 	@Override
 	public void setFrequency(String frequency) {
-		_frequency = frequency;
+		_frequency = normalize(frequency);
 	}
 
 	public long getColumnBitmask() {

@@ -621,7 +621,7 @@ public class SocialActivityModelImpl extends BaseModelImpl<SocialActivity>
 
 	@Override
 	public void setExtraData(String extraData) {
-		_extraData = extraData;
+		_extraData = normalize(extraData);
 	}
 
 	@JSON

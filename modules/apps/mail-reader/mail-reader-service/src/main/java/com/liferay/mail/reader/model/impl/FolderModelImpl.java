@@ -289,7 +289,7 @@ public class FolderModelImpl extends BaseModelImpl<Folder>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -358,7 +358,7 @@ public class FolderModelImpl extends BaseModelImpl<Folder>
 			_originalFullName = _fullName;
 		}
 
-		_fullName = fullName;
+		_fullName = normalize(fullName);
 	}
 
 	public String getOriginalFullName() {
@@ -377,7 +377,7 @@ public class FolderModelImpl extends BaseModelImpl<Folder>
 
 	@Override
 	public void setDisplayName(String displayName) {
-		_displayName = displayName;
+		_displayName = normalize(displayName);
 	}
 
 	@Override

@@ -639,7 +639,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -801,7 +801,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -900,7 +900,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 
 	@Override
 	public void setTitle(String title) {
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@Override
@@ -999,7 +999,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -1102,7 +1102,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 
 	@Override
 	public void setKeywords(String keywords) {
-		_keywords = keywords;
+		_keywords = normalize(keywords);
 	}
 
 	@Override
@@ -1203,7 +1203,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 
 	@Override
 	public void setRobots(String robots) {
-		_robots = robots;
+		_robots = normalize(robots);
 	}
 
 	@Override
@@ -1265,7 +1265,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 			_originalType = _type;
 		}
 
-		_type = type;
+		_type = normalize(type);
 	}
 
 	public String getOriginalType() {
@@ -1285,7 +1285,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 
 	@Override
 	public void setTypeSettings(String typeSettings) {
-		_typeSettings = typeSettings;
+		_typeSettings = normalize(typeSettings);
 	}
 
 	@JSON
@@ -1324,7 +1324,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 			_originalFriendlyURL = _friendlyURL;
 		}
 
-		_friendlyURL = friendlyURL;
+		_friendlyURL = normalize(friendlyURL);
 	}
 
 	public String getOriginalFriendlyURL() {
@@ -1367,7 +1367,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 
 	@Override
 	public void setThemeId(String themeId) {
-		_themeId = themeId;
+		_themeId = normalize(themeId);
 	}
 
 	@JSON
@@ -1383,7 +1383,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 
 	@Override
 	public void setColorSchemeId(String colorSchemeId) {
-		_colorSchemeId = colorSchemeId;
+		_colorSchemeId = normalize(colorSchemeId);
 	}
 
 	@JSON
@@ -1399,7 +1399,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 
 	@Override
 	public void setCss(String css) {
-		_css = css;
+		_css = normalize(css);
 	}
 
 	@JSON
@@ -1444,7 +1444,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 			_originalLayoutPrototypeUuid = _layoutPrototypeUuid;
 		}
 
-		_layoutPrototypeUuid = layoutPrototypeUuid;
+		_layoutPrototypeUuid = normalize(layoutPrototypeUuid);
 	}
 
 	public String getOriginalLayoutPrototypeUuid() {
@@ -1488,7 +1488,7 @@ public class LayoutModelImpl extends BaseModelImpl<Layout>
 			_originalSourcePrototypeLayoutUuid = _sourcePrototypeLayoutUuid;
 		}
 
-		_sourcePrototypeLayoutUuid = sourcePrototypeLayoutUuid;
+		_sourcePrototypeLayoutUuid = normalize(sourcePrototypeLayoutUuid);
 	}
 
 	public String getOriginalSourcePrototypeLayoutUuid() {

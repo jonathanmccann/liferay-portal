@@ -350,7 +350,7 @@ public class AssetCategoryPropertyModelImpl extends BaseModelImpl<AssetCategoryP
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -423,7 +423,7 @@ public class AssetCategoryPropertyModelImpl extends BaseModelImpl<AssetCategoryP
 			_originalKey = _key;
 		}
 
-		_key = key;
+		_key = normalize(key);
 	}
 
 	public String getOriginalKey() {
@@ -443,7 +443,7 @@ public class AssetCategoryPropertyModelImpl extends BaseModelImpl<AssetCategoryP
 
 	@Override
 	public void setValue(String value) {
-		_value = value;
+		_value = normalize(value);
 	}
 
 	public long getColumnBitmask() {

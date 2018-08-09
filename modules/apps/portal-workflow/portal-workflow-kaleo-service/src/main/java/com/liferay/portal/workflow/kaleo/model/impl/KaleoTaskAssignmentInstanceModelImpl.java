@@ -397,7 +397,7 @@ public class KaleoTaskAssignmentInstanceModelImpl extends BaseModelImpl<KaleoTas
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -524,7 +524,7 @@ public class KaleoTaskAssignmentInstanceModelImpl extends BaseModelImpl<KaleoTas
 
 	@Override
 	public void setKaleoTaskName(String kaleoTaskName) {
-		_kaleoTaskName = kaleoTaskName;
+		_kaleoTaskName = normalize(kaleoTaskName);
 	}
 
 	@Override
@@ -545,7 +545,7 @@ public class KaleoTaskAssignmentInstanceModelImpl extends BaseModelImpl<KaleoTas
 			_originalAssigneeClassName = _assigneeClassName;
 		}
 
-		_assigneeClassName = assigneeClassName;
+		_assigneeClassName = normalize(assigneeClassName);
 	}
 
 	public String getOriginalAssigneeClassName() {

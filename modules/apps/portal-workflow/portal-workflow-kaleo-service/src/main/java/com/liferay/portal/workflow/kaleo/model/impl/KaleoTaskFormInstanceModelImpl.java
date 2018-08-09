@@ -383,7 +383,7 @@ public class KaleoTaskFormInstanceModelImpl extends BaseModelImpl<KaleoTaskFormI
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -534,7 +534,7 @@ public class KaleoTaskFormInstanceModelImpl extends BaseModelImpl<KaleoTaskFormI
 
 	@Override
 	public void setFormValues(String formValues) {
-		_formValues = formValues;
+		_formValues = normalize(formValues);
 	}
 
 	@Override
@@ -569,7 +569,7 @@ public class KaleoTaskFormInstanceModelImpl extends BaseModelImpl<KaleoTaskFormI
 
 	@Override
 	public void setFormValueEntryUuid(String formValueEntryUuid) {
-		_formValueEntryUuid = formValueEntryUuid;
+		_formValueEntryUuid = normalize(formValueEntryUuid);
 	}
 
 	@Override
@@ -584,7 +584,7 @@ public class KaleoTaskFormInstanceModelImpl extends BaseModelImpl<KaleoTaskFormI
 
 	@Override
 	public void setMetadata(String metadata) {
-		_metadata = metadata;
+		_metadata = normalize(metadata);
 	}
 
 	public long getColumnBitmask() {

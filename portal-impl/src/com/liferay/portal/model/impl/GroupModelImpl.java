@@ -698,7 +698,7 @@ public class GroupModelImpl extends BaseModelImpl<Group> implements GroupModel {
 			_originalTreePath = _treePath;
 		}
 
-		_treePath = treePath;
+		_treePath = normalize(treePath);
 	}
 
 	public String getOriginalTreePath() {
@@ -724,7 +724,7 @@ public class GroupModelImpl extends BaseModelImpl<Group> implements GroupModel {
 			_originalGroupKey = _groupKey;
 		}
 
-		_groupKey = groupKey;
+		_groupKey = normalize(groupKey);
 	}
 
 	public String getOriginalGroupKey() {
@@ -789,7 +789,7 @@ public class GroupModelImpl extends BaseModelImpl<Group> implements GroupModel {
 	public void setName(String name) {
 		_columnBitmask = -1L;
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -888,7 +888,7 @@ public class GroupModelImpl extends BaseModelImpl<Group> implements GroupModel {
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -971,7 +971,7 @@ public class GroupModelImpl extends BaseModelImpl<Group> implements GroupModel {
 
 	@Override
 	public void setTypeSettings(String typeSettings) {
-		_typeSettings = typeSettings;
+		_typeSettings = normalize(typeSettings);
 	}
 
 	@JSON
@@ -1021,7 +1021,7 @@ public class GroupModelImpl extends BaseModelImpl<Group> implements GroupModel {
 			_originalFriendlyURL = _friendlyURL;
 		}
 
-		_friendlyURL = friendlyURL;
+		_friendlyURL = normalize(friendlyURL);
 	}
 
 	public String getOriginalFriendlyURL() {

@@ -254,7 +254,7 @@ public class UserTrackerPathModelImpl extends BaseModelImpl<UserTrackerPath>
 
 	@Override
 	public void setPath(String path) {
-		_path = path;
+		_path = normalize(path);
 	}
 
 	@Override

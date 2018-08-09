@@ -396,7 +396,7 @@ public class PortletPreferencesModelImpl extends BaseModelImpl<PortletPreference
 			_originalPortletId = _portletId;
 		}
 
-		_portletId = portletId;
+		_portletId = normalize(portletId);
 	}
 
 	public String getOriginalPortletId() {
@@ -416,7 +416,7 @@ public class PortletPreferencesModelImpl extends BaseModelImpl<PortletPreference
 
 	@Override
 	public void setPreferences(String preferences) {
-		_preferences = preferences;
+		_preferences = normalize(preferences);
 	}
 
 	public long getColumnBitmask() {

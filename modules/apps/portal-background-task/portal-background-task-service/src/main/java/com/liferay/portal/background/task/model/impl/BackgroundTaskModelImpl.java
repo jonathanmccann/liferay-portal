@@ -459,7 +459,7 @@ public class BackgroundTaskModelImpl extends BaseModelImpl<BackgroundTask>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -511,7 +511,7 @@ public class BackgroundTaskModelImpl extends BaseModelImpl<BackgroundTask>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -531,7 +531,7 @@ public class BackgroundTaskModelImpl extends BaseModelImpl<BackgroundTask>
 
 	@Override
 	public void setServletContextNames(String servletContextNames) {
-		_servletContextNames = servletContextNames;
+		_servletContextNames = normalize(servletContextNames);
 	}
 
 	@JSON
@@ -553,7 +553,7 @@ public class BackgroundTaskModelImpl extends BaseModelImpl<BackgroundTask>
 			_originalTaskExecutorClassName = _taskExecutorClassName;
 		}
 
-		_taskExecutorClassName = taskExecutorClassName;
+		_taskExecutorClassName = normalize(taskExecutorClassName);
 	}
 
 	public String getOriginalTaskExecutorClassName() {
@@ -647,7 +647,7 @@ public class BackgroundTaskModelImpl extends BaseModelImpl<BackgroundTask>
 
 	@Override
 	public void setStatusMessage(String statusMessage) {
-		_statusMessage = statusMessage;
+		_statusMessage = normalize(statusMessage);
 	}
 
 	public long getColumnBitmask() {

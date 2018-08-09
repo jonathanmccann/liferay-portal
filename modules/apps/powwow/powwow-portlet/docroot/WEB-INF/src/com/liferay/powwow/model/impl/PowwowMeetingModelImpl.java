@@ -435,7 +435,7 @@ public class PowwowMeetingModelImpl extends BaseModelImpl<PowwowMeeting>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -504,7 +504,7 @@ public class PowwowMeetingModelImpl extends BaseModelImpl<PowwowMeeting>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -520,7 +520,7 @@ public class PowwowMeetingModelImpl extends BaseModelImpl<PowwowMeeting>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -536,7 +536,7 @@ public class PowwowMeetingModelImpl extends BaseModelImpl<PowwowMeeting>
 
 	@Override
 	public void setProviderType(String providerType) {
-		_providerType = providerType;
+		_providerType = normalize(providerType);
 	}
 
 	@JSON
@@ -552,7 +552,7 @@ public class PowwowMeetingModelImpl extends BaseModelImpl<PowwowMeeting>
 
 	@Override
 	public void setProviderTypeMetadata(String providerTypeMetadata) {
-		_providerTypeMetadata = providerTypeMetadata;
+		_providerTypeMetadata = normalize(providerTypeMetadata);
 	}
 
 	@JSON
@@ -568,7 +568,7 @@ public class PowwowMeetingModelImpl extends BaseModelImpl<PowwowMeeting>
 
 	@Override
 	public void setLanguageId(String languageId) {
-		_languageId = languageId;
+		_languageId = normalize(languageId);
 	}
 
 	@JSON

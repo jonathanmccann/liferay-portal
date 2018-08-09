@@ -390,7 +390,7 @@ public class PowwowParticipantModelImpl extends BaseModelImpl<PowwowParticipant>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -457,7 +457,7 @@ public class PowwowParticipantModelImpl extends BaseModelImpl<PowwowParticipant>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -518,7 +518,7 @@ public class PowwowParticipantModelImpl extends BaseModelImpl<PowwowParticipant>
 			_originalEmailAddress = _emailAddress;
 		}
 
-		_emailAddress = emailAddress;
+		_emailAddress = normalize(emailAddress);
 	}
 
 	public String getOriginalEmailAddress() {

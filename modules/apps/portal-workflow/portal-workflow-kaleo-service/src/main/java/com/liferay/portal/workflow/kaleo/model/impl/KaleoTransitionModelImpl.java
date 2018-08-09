@@ -372,7 +372,7 @@ public class KaleoTransitionModelImpl extends BaseModelImpl<KaleoTransition>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -463,7 +463,7 @@ public class KaleoTransitionModelImpl extends BaseModelImpl<KaleoTransition>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -482,7 +482,7 @@ public class KaleoTransitionModelImpl extends BaseModelImpl<KaleoTransition>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -507,7 +507,7 @@ public class KaleoTransitionModelImpl extends BaseModelImpl<KaleoTransition>
 
 	@Override
 	public void setSourceKaleoNodeName(String sourceKaleoNodeName) {
-		_sourceKaleoNodeName = sourceKaleoNodeName;
+		_sourceKaleoNodeName = normalize(sourceKaleoNodeName);
 	}
 
 	@Override
@@ -532,7 +532,7 @@ public class KaleoTransitionModelImpl extends BaseModelImpl<KaleoTransition>
 
 	@Override
 	public void setTargetKaleoNodeName(String targetKaleoNodeName) {
-		_targetKaleoNodeName = targetKaleoNodeName;
+		_targetKaleoNodeName = normalize(targetKaleoNodeName);
 	}
 
 	@Override

@@ -303,7 +303,7 @@ public class PortletModelImpl extends BaseModelImpl<Portlet>
 			_originalPortletId = _portletId;
 		}
 
-		_portletId = portletId;
+		_portletId = normalize(portletId);
 	}
 
 	public String getOriginalPortletId() {
@@ -323,7 +323,7 @@ public class PortletModelImpl extends BaseModelImpl<Portlet>
 
 	@Override
 	public void setRoles(String roles) {
-		_roles = roles;
+		_roles = normalize(roles);
 	}
 
 	@JSON

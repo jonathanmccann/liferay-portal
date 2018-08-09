@@ -469,7 +469,7 @@ public class CalendarNotificationTemplateModelImpl extends BaseModelImpl<Calenda
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -542,7 +542,7 @@ public class CalendarNotificationTemplateModelImpl extends BaseModelImpl<Calenda
 			_originalNotificationType = _notificationType;
 		}
 
-		_notificationType = notificationType;
+		_notificationType = normalize(notificationType);
 	}
 
 	public String getOriginalNotificationType() {
@@ -562,7 +562,7 @@ public class CalendarNotificationTemplateModelImpl extends BaseModelImpl<Calenda
 
 	@Override
 	public void setNotificationTypeSettings(String notificationTypeSettings) {
-		_notificationTypeSettings = notificationTypeSettings;
+		_notificationTypeSettings = normalize(notificationTypeSettings);
 	}
 
 	@JSON
@@ -584,7 +584,7 @@ public class CalendarNotificationTemplateModelImpl extends BaseModelImpl<Calenda
 			_originalNotificationTemplateType = _notificationTemplateType;
 		}
 
-		_notificationTemplateType = notificationTemplateType;
+		_notificationTemplateType = normalize(notificationTemplateType);
 	}
 
 	public String getOriginalNotificationTemplateType() {
@@ -604,7 +604,7 @@ public class CalendarNotificationTemplateModelImpl extends BaseModelImpl<Calenda
 
 	@Override
 	public void setSubject(String subject) {
-		_subject = subject;
+		_subject = normalize(subject);
 	}
 
 	@JSON
@@ -620,7 +620,7 @@ public class CalendarNotificationTemplateModelImpl extends BaseModelImpl<Calenda
 
 	@Override
 	public void setBody(String body) {
-		_body = body;
+		_body = normalize(body);
 	}
 
 	@JSON

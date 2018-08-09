@@ -368,7 +368,7 @@ public class TicketModelImpl extends BaseModelImpl<Ticket>
 			_originalKey = _key;
 		}
 
-		_key = key;
+		_key = normalize(key);
 	}
 
 	public String getOriginalKey() {
@@ -409,7 +409,7 @@ public class TicketModelImpl extends BaseModelImpl<Ticket>
 
 	@Override
 	public void setExtraInfo(String extraInfo) {
-		_extraInfo = extraInfo;
+		_extraInfo = normalize(extraInfo);
 	}
 
 	@Override

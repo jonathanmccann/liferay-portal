@@ -385,7 +385,7 @@ public class SocialActivityCounterModelImpl extends BaseModelImpl<SocialActivity
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {

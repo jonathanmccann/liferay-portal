@@ -253,7 +253,7 @@ public class LocalizedEntryLocalizationModelImpl extends BaseModelImpl<Localized
 			_originalLanguageId = _languageId;
 		}
 
-		_languageId = languageId;
+		_languageId = normalize(languageId);
 	}
 
 	public String getOriginalLanguageId() {
@@ -272,7 +272,7 @@ public class LocalizedEntryLocalizationModelImpl extends BaseModelImpl<Localized
 
 	@Override
 	public void setTitle(String title) {
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@Override
@@ -287,7 +287,7 @@ public class LocalizedEntryLocalizationModelImpl extends BaseModelImpl<Localized
 
 	@Override
 	public void setContent(String content) {
-		_content = content;
+		_content = normalize(content);
 	}
 
 	public long getColumnBitmask() {

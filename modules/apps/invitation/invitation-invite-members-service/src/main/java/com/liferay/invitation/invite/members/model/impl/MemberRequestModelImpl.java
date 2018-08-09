@@ -332,7 +332,7 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -381,7 +381,7 @@ public class MemberRequestModelImpl extends BaseModelImpl<MemberRequest>
 			_originalKey = _key;
 		}
 
-		_key = key;
+		_key = normalize(key);
 	}
 
 	public String getOriginalKey() {

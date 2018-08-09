@@ -387,7 +387,7 @@ public class KaleoActionModelImpl extends BaseModelImpl<KaleoAction>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -434,7 +434,7 @@ public class KaleoActionModelImpl extends BaseModelImpl<KaleoAction>
 			_originalKaleoClassName = _kaleoClassName;
 		}
 
-		_kaleoClassName = kaleoClassName;
+		_kaleoClassName = normalize(kaleoClassName);
 	}
 
 	public String getOriginalKaleoClassName() {
@@ -497,7 +497,7 @@ public class KaleoActionModelImpl extends BaseModelImpl<KaleoAction>
 
 	@Override
 	public void setKaleoNodeName(String kaleoNodeName) {
-		_kaleoNodeName = kaleoNodeName;
+		_kaleoNodeName = normalize(kaleoNodeName);
 	}
 
 	@Override
@@ -512,7 +512,7 @@ public class KaleoActionModelImpl extends BaseModelImpl<KaleoAction>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -527,7 +527,7 @@ public class KaleoActionModelImpl extends BaseModelImpl<KaleoAction>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -548,7 +548,7 @@ public class KaleoActionModelImpl extends BaseModelImpl<KaleoAction>
 			_originalExecutionType = _executionType;
 		}
 
-		_executionType = executionType;
+		_executionType = normalize(executionType);
 	}
 
 	public String getOriginalExecutionType() {
@@ -567,7 +567,7 @@ public class KaleoActionModelImpl extends BaseModelImpl<KaleoAction>
 
 	@Override
 	public void setScript(String script) {
-		_script = script;
+		_script = normalize(script);
 	}
 
 	@Override
@@ -582,7 +582,7 @@ public class KaleoActionModelImpl extends BaseModelImpl<KaleoAction>
 
 	@Override
 	public void setScriptLanguage(String scriptLanguage) {
-		_scriptLanguage = scriptLanguage;
+		_scriptLanguage = normalize(scriptLanguage);
 	}
 
 	@Override
@@ -597,7 +597,7 @@ public class KaleoActionModelImpl extends BaseModelImpl<KaleoAction>
 
 	@Override
 	public void setScriptRequiredContexts(String scriptRequiredContexts) {
-		_scriptRequiredContexts = scriptRequiredContexts;
+		_scriptRequiredContexts = normalize(scriptRequiredContexts);
 	}
 
 	@Override

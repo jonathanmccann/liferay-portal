@@ -453,7 +453,7 @@ public class OrganizationModelImpl extends BaseModelImpl<Organization>
 			_originalExternalReferenceCode = _externalReferenceCode;
 		}
 
-		_externalReferenceCode = externalReferenceCode;
+		_externalReferenceCode = normalize(externalReferenceCode);
 	}
 
 	public String getOriginalExternalReferenceCode() {
@@ -546,7 +546,7 @@ public class OrganizationModelImpl extends BaseModelImpl<Organization>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -619,7 +619,7 @@ public class OrganizationModelImpl extends BaseModelImpl<Organization>
 			_originalTreePath = _treePath;
 		}
 
-		_treePath = treePath;
+		_treePath = normalize(treePath);
 	}
 
 	public String getOriginalTreePath() {
@@ -645,7 +645,7 @@ public class OrganizationModelImpl extends BaseModelImpl<Organization>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -665,7 +665,7 @@ public class OrganizationModelImpl extends BaseModelImpl<Organization>
 
 	@Override
 	public void setType(String type) {
-		_type = type;
+		_type = normalize(type);
 	}
 
 	@JSON
@@ -731,7 +731,7 @@ public class OrganizationModelImpl extends BaseModelImpl<Organization>
 
 	@Override
 	public void setComments(String comments) {
-		_comments = comments;
+		_comments = normalize(comments);
 	}
 
 	@JSON

@@ -521,7 +521,7 @@ public class DDMStructureModelImpl extends BaseModelImpl<DDMStructure>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -564,7 +564,7 @@ public class DDMStructureModelImpl extends BaseModelImpl<DDMStructure>
 
 	@Override
 	public void setVersionUserName(String versionUserName) {
-		_versionUserName = versionUserName;
+		_versionUserName = normalize(versionUserName);
 	}
 
 	@JSON
@@ -660,7 +660,7 @@ public class DDMStructureModelImpl extends BaseModelImpl<DDMStructure>
 			_originalStructureKey = _structureKey;
 		}
 
-		_structureKey = structureKey;
+		_structureKey = normalize(structureKey);
 	}
 
 	public String getOriginalStructureKey() {
@@ -680,7 +680,7 @@ public class DDMStructureModelImpl extends BaseModelImpl<DDMStructure>
 
 	@Override
 	public void setVersion(String version) {
-		_version = version;
+		_version = normalize(version);
 	}
 
 	@JSON
@@ -745,7 +745,7 @@ public class DDMStructureModelImpl extends BaseModelImpl<DDMStructure>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -854,7 +854,7 @@ public class DDMStructureModelImpl extends BaseModelImpl<DDMStructure>
 			_originalDescription = _description;
 		}
 
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -918,7 +918,7 @@ public class DDMStructureModelImpl extends BaseModelImpl<DDMStructure>
 
 	@Override
 	public void setDefinition(String definition) {
-		_definition = definition;
+		_definition = normalize(definition);
 	}
 
 	@JSON
@@ -934,7 +934,7 @@ public class DDMStructureModelImpl extends BaseModelImpl<DDMStructure>
 
 	@Override
 	public void setStorageType(String storageType) {
-		_storageType = storageType;
+		_storageType = normalize(storageType);
 	}
 
 	@JSON

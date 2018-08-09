@@ -259,7 +259,7 @@ public class ListTypeModelImpl extends BaseModelImpl<ListType>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -285,7 +285,7 @@ public class ListTypeModelImpl extends BaseModelImpl<ListType>
 			_originalType = _type;
 		}
 
-		_type = type;
+		_type = normalize(type);
 	}
 
 	public String getOriginalType() {

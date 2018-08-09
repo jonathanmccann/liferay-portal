@@ -329,7 +329,7 @@ public class ChangesetEntryModelImpl extends BaseModelImpl<ChangesetEntry>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override

@@ -432,7 +432,7 @@ public class FragmentCollectionModelImpl extends BaseModelImpl<FragmentCollectio
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -482,7 +482,7 @@ public class FragmentCollectionModelImpl extends BaseModelImpl<FragmentCollectio
 			_originalFragmentCollectionKey = _fragmentCollectionKey;
 		}
 
-		_fragmentCollectionKey = fragmentCollectionKey;
+		_fragmentCollectionKey = normalize(fragmentCollectionKey);
 	}
 
 	public String getOriginalFragmentCollectionKey() {
@@ -508,7 +508,7 @@ public class FragmentCollectionModelImpl extends BaseModelImpl<FragmentCollectio
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -528,7 +528,7 @@ public class FragmentCollectionModelImpl extends BaseModelImpl<FragmentCollectio
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON

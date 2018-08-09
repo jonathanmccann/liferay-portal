@@ -246,7 +246,7 @@ public class JournalArticleLocalizationModelImpl extends BaseModelImpl<JournalAr
 
 	@Override
 	public void setTitle(String title) {
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@Override
@@ -261,7 +261,7 @@ public class JournalArticleLocalizationModelImpl extends BaseModelImpl<JournalAr
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -282,7 +282,7 @@ public class JournalArticleLocalizationModelImpl extends BaseModelImpl<JournalAr
 			_originalLanguageId = _languageId;
 		}
 
-		_languageId = languageId;
+		_languageId = normalize(languageId);
 	}
 
 	public String getOriginalLanguageId() {

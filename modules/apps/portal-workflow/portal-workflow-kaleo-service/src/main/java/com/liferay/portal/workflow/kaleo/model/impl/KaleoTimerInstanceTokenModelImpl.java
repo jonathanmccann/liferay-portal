@@ -397,7 +397,7 @@ public class KaleoTimerInstanceTokenModelImpl extends BaseModelImpl<KaleoTimerIn
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -438,7 +438,7 @@ public class KaleoTimerInstanceTokenModelImpl extends BaseModelImpl<KaleoTimerIn
 
 	@Override
 	public void setKaleoClassName(String kaleoClassName) {
-		_kaleoClassName = kaleoClassName;
+		_kaleoClassName = normalize(kaleoClassName);
 	}
 
 	@Override
@@ -549,7 +549,7 @@ public class KaleoTimerInstanceTokenModelImpl extends BaseModelImpl<KaleoTimerIn
 
 	@Override
 	public void setKaleoTimerName(String kaleoTimerName) {
-		_kaleoTimerName = kaleoTimerName;
+		_kaleoTimerName = normalize(kaleoTimerName);
 	}
 
 	@Override
@@ -654,7 +654,7 @@ public class KaleoTimerInstanceTokenModelImpl extends BaseModelImpl<KaleoTimerIn
 
 	@Override
 	public void setWorkflowContext(String workflowContext) {
-		_workflowContext = workflowContext;
+		_workflowContext = normalize(workflowContext);
 	}
 
 	public long getColumnBitmask() {

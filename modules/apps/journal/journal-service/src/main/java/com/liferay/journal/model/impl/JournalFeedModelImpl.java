@@ -541,7 +541,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -591,7 +591,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 			_originalFeedId = _feedId;
 		}
 
-		_feedId = feedId;
+		_feedId = normalize(feedId);
 	}
 
 	public String getOriginalFeedId() {
@@ -611,7 +611,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -627,7 +627,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -643,7 +643,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setDDMStructureKey(String DDMStructureKey) {
-		_DDMStructureKey = DDMStructureKey;
+		_DDMStructureKey = normalize(DDMStructureKey);
 	}
 
 	@JSON
@@ -659,7 +659,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setDDMTemplateKey(String DDMTemplateKey) {
-		_DDMTemplateKey = DDMTemplateKey;
+		_DDMTemplateKey = normalize(DDMTemplateKey);
 	}
 
 	@JSON
@@ -675,7 +675,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setDDMRendererTemplateKey(String DDMRendererTemplateKey) {
-		_DDMRendererTemplateKey = DDMRendererTemplateKey;
+		_DDMRendererTemplateKey = normalize(DDMRendererTemplateKey);
 	}
 
 	@JSON
@@ -702,7 +702,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setOrderByCol(String orderByCol) {
-		_orderByCol = orderByCol;
+		_orderByCol = normalize(orderByCol);
 	}
 
 	@JSON
@@ -718,7 +718,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setOrderByType(String orderByType) {
-		_orderByType = orderByType;
+		_orderByType = normalize(orderByType);
 	}
 
 	@JSON
@@ -734,7 +734,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setTargetLayoutFriendlyUrl(String targetLayoutFriendlyUrl) {
-		_targetLayoutFriendlyUrl = targetLayoutFriendlyUrl;
+		_targetLayoutFriendlyUrl = normalize(targetLayoutFriendlyUrl);
 	}
 
 	@JSON
@@ -750,7 +750,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setTargetPortletId(String targetPortletId) {
-		_targetPortletId = targetPortletId;
+		_targetPortletId = normalize(targetPortletId);
 	}
 
 	@JSON
@@ -766,7 +766,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setContentField(String contentField) {
-		_contentField = contentField;
+		_contentField = normalize(contentField);
 	}
 
 	@JSON
@@ -782,7 +782,7 @@ public class JournalFeedModelImpl extends BaseModelImpl<JournalFeed>
 
 	@Override
 	public void setFeedFormat(String feedFormat) {
-		_feedFormat = feedFormat;
+		_feedFormat = normalize(feedFormat);
 	}
 
 	@JSON

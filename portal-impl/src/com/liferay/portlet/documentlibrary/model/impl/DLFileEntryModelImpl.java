@@ -638,7 +638,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -770,7 +770,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 
 	@Override
 	public void setTreePath(String treePath) {
-		_treePath = treePath;
+		_treePath = normalize(treePath);
 	}
 
 	@JSON
@@ -792,7 +792,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -818,7 +818,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 			_originalFileName = _fileName;
 		}
 
-		_fileName = fileName;
+		_fileName = normalize(fileName);
 	}
 
 	public String getOriginalFileName() {
@@ -838,7 +838,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 
 	@Override
 	public void setExtension(String extension) {
-		_extension = extension;
+		_extension = normalize(extension);
 	}
 
 	@JSON
@@ -860,7 +860,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 			_originalMimeType = _mimeType;
 		}
 
-		_mimeType = mimeType;
+		_mimeType = normalize(mimeType);
 	}
 
 	public String getOriginalMimeType() {
@@ -886,7 +886,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 			_originalTitle = _title;
 		}
 
-		_title = title;
+		_title = normalize(title);
 	}
 
 	public String getOriginalTitle() {
@@ -906,7 +906,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -922,7 +922,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 
 	@Override
 	public void setExtraSettings(String extraSettings) {
-		_extraSettings = extraSettings;
+		_extraSettings = normalize(extraSettings);
 	}
 
 	@JSON
@@ -961,7 +961,7 @@ public class DLFileEntryModelImpl extends BaseModelImpl<DLFileEntry>
 
 	@Override
 	public void setVersion(String version) {
-		_version = version;
+		_version = normalize(version);
 	}
 
 	@JSON

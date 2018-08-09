@@ -299,7 +299,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 			_originalBundleSymbolicName = _bundleSymbolicName;
 		}
 
-		_bundleSymbolicName = bundleSymbolicName;
+		_bundleSymbolicName = normalize(bundleSymbolicName);
 	}
 
 	public String getOriginalBundleSymbolicName() {
@@ -324,7 +324,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 			_originalBundleVersion = _bundleVersion;
 		}
 
-		_bundleVersion = bundleVersion;
+		_bundleVersion = normalize(bundleVersion);
 	}
 
 	public String getOriginalBundleVersion() {
@@ -349,7 +349,7 @@ public class ModuleModelImpl extends BaseModelImpl<Module>
 			_originalContextName = _contextName;
 		}
 
-		_contextName = contextName;
+		_contextName = normalize(contextName);
 	}
 
 	public String getOriginalContextName() {

@@ -564,7 +564,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -708,7 +708,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setEmailAddress(String emailAddress) {
-		_emailAddress = emailAddress;
+		_emailAddress = normalize(emailAddress);
 	}
 
 	@JSON
@@ -724,7 +724,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setFirstName(String firstName) {
-		_firstName = firstName;
+		_firstName = normalize(firstName);
 	}
 
 	@JSON
@@ -740,7 +740,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setMiddleName(String middleName) {
-		_middleName = middleName;
+		_middleName = normalize(middleName);
 	}
 
 	@JSON
@@ -756,7 +756,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setLastName(String lastName) {
-		_lastName = lastName;
+		_lastName = normalize(lastName);
 	}
 
 	@JSON
@@ -822,7 +822,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setSmsSn(String smsSn) {
-		_smsSn = smsSn;
+		_smsSn = normalize(smsSn);
 	}
 
 	@JSON
@@ -838,7 +838,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setFacebookSn(String facebookSn) {
-		_facebookSn = facebookSn;
+		_facebookSn = normalize(facebookSn);
 	}
 
 	@JSON
@@ -854,7 +854,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setJabberSn(String jabberSn) {
-		_jabberSn = jabberSn;
+		_jabberSn = normalize(jabberSn);
 	}
 
 	@JSON
@@ -870,7 +870,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setSkypeSn(String skypeSn) {
-		_skypeSn = skypeSn;
+		_skypeSn = normalize(skypeSn);
 	}
 
 	@JSON
@@ -886,7 +886,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setTwitterSn(String twitterSn) {
-		_twitterSn = twitterSn;
+		_twitterSn = normalize(twitterSn);
 	}
 
 	@JSON
@@ -902,7 +902,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setEmployeeStatusId(String employeeStatusId) {
-		_employeeStatusId = employeeStatusId;
+		_employeeStatusId = normalize(employeeStatusId);
 	}
 
 	@JSON
@@ -918,7 +918,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setEmployeeNumber(String employeeNumber) {
-		_employeeNumber = employeeNumber;
+		_employeeNumber = normalize(employeeNumber);
 	}
 
 	@JSON
@@ -934,7 +934,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setJobTitle(String jobTitle) {
-		_jobTitle = jobTitle;
+		_jobTitle = normalize(jobTitle);
 	}
 
 	@JSON
@@ -950,7 +950,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setJobClass(String jobClass) {
-		_jobClass = jobClass;
+		_jobClass = normalize(jobClass);
 	}
 
 	@JSON
@@ -966,7 +966,7 @@ public class ContactModelImpl extends BaseModelImpl<Contact>
 
 	@Override
 	public void setHoursOfOperation(String hoursOfOperation) {
-		_hoursOfOperation = hoursOfOperation;
+		_hoursOfOperation = normalize(hoursOfOperation);
 	}
 
 	public long getColumnBitmask() {

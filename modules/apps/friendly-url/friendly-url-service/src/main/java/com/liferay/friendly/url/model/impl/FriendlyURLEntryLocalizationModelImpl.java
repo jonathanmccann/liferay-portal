@@ -296,7 +296,7 @@ public class FriendlyURLEntryLocalizationModelImpl extends BaseModelImpl<Friendl
 			_originalLanguageId = _languageId;
 		}
 
-		_languageId = languageId;
+		_languageId = normalize(languageId);
 	}
 
 	public String getOriginalLanguageId() {
@@ -321,7 +321,7 @@ public class FriendlyURLEntryLocalizationModelImpl extends BaseModelImpl<Friendl
 			_originalUrlTitle = _urlTitle;
 		}
 
-		_urlTitle = urlTitle;
+		_urlTitle = normalize(urlTitle);
 	}
 
 	public String getOriginalUrlTitle() {

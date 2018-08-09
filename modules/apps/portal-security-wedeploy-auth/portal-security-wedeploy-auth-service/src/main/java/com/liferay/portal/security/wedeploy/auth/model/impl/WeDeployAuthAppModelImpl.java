@@ -347,7 +347,7 @@ public class WeDeployAuthAppModelImpl extends BaseModelImpl<WeDeployAuthApp>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -391,7 +391,7 @@ public class WeDeployAuthAppModelImpl extends BaseModelImpl<WeDeployAuthApp>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -413,7 +413,7 @@ public class WeDeployAuthAppModelImpl extends BaseModelImpl<WeDeployAuthApp>
 			_originalRedirectURI = _redirectURI;
 		}
 
-		_redirectURI = redirectURI;
+		_redirectURI = normalize(redirectURI);
 	}
 
 	public String getOriginalRedirectURI() {
@@ -439,7 +439,7 @@ public class WeDeployAuthAppModelImpl extends BaseModelImpl<WeDeployAuthApp>
 			_originalClientId = _clientId;
 		}
 
-		_clientId = clientId;
+		_clientId = normalize(clientId);
 	}
 
 	public String getOriginalClientId() {
@@ -465,7 +465,7 @@ public class WeDeployAuthAppModelImpl extends BaseModelImpl<WeDeployAuthApp>
 			_originalClientSecret = _clientSecret;
 		}
 
-		_clientSecret = clientSecret;
+		_clientSecret = normalize(clientSecret);
 	}
 
 	public String getOriginalClientSecret() {

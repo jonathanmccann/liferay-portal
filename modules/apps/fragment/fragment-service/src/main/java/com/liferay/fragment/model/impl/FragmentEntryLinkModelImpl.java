@@ -446,7 +446,7 @@ public class FragmentEntryLinkModelImpl extends BaseModelImpl<FragmentEntryLink>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -583,7 +583,7 @@ public class FragmentEntryLinkModelImpl extends BaseModelImpl<FragmentEntryLink>
 
 	@Override
 	public void setCss(String css) {
-		_css = css;
+		_css = normalize(css);
 	}
 
 	@Override
@@ -598,7 +598,7 @@ public class FragmentEntryLinkModelImpl extends BaseModelImpl<FragmentEntryLink>
 
 	@Override
 	public void setHtml(String html) {
-		_html = html;
+		_html = normalize(html);
 	}
 
 	@Override
@@ -613,7 +613,7 @@ public class FragmentEntryLinkModelImpl extends BaseModelImpl<FragmentEntryLink>
 
 	@Override
 	public void setJs(String js) {
-		_js = js;
+		_js = normalize(js);
 	}
 
 	@Override
@@ -628,7 +628,7 @@ public class FragmentEntryLinkModelImpl extends BaseModelImpl<FragmentEntryLink>
 
 	@Override
 	public void setEditableValues(String editableValues) {
-		_editableValues = editableValues;
+		_editableValues = normalize(editableValues);
 	}
 
 	@Override
@@ -665,7 +665,7 @@ public class FragmentEntryLinkModelImpl extends BaseModelImpl<FragmentEntryLink>
 
 	@Override
 	public void setNamespace(String namespace) {
-		_namespace = namespace;
+		_namespace = normalize(namespace);
 	}
 
 	@Override

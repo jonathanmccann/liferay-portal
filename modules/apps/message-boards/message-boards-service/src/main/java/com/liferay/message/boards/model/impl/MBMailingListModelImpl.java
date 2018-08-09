@@ -496,7 +496,7 @@ public class MBMailingListModelImpl extends BaseModelImpl<MBMailingList>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -559,7 +559,7 @@ public class MBMailingListModelImpl extends BaseModelImpl<MBMailingList>
 
 	@Override
 	public void setEmailAddress(String emailAddress) {
-		_emailAddress = emailAddress;
+		_emailAddress = normalize(emailAddress);
 	}
 
 	@Override
@@ -574,7 +574,7 @@ public class MBMailingListModelImpl extends BaseModelImpl<MBMailingList>
 
 	@Override
 	public void setInProtocol(String inProtocol) {
-		_inProtocol = inProtocol;
+		_inProtocol = normalize(inProtocol);
 	}
 
 	@Override
@@ -589,7 +589,7 @@ public class MBMailingListModelImpl extends BaseModelImpl<MBMailingList>
 
 	@Override
 	public void setInServerName(String inServerName) {
-		_inServerName = inServerName;
+		_inServerName = normalize(inServerName);
 	}
 
 	@Override
@@ -629,7 +629,7 @@ public class MBMailingListModelImpl extends BaseModelImpl<MBMailingList>
 
 	@Override
 	public void setInUserName(String inUserName) {
-		_inUserName = inUserName;
+		_inUserName = normalize(inUserName);
 	}
 
 	@Override
@@ -644,7 +644,7 @@ public class MBMailingListModelImpl extends BaseModelImpl<MBMailingList>
 
 	@Override
 	public void setInPassword(String inPassword) {
-		_inPassword = inPassword;
+		_inPassword = normalize(inPassword);
 	}
 
 	@Override
@@ -669,7 +669,7 @@ public class MBMailingListModelImpl extends BaseModelImpl<MBMailingList>
 
 	@Override
 	public void setOutEmailAddress(String outEmailAddress) {
-		_outEmailAddress = outEmailAddress;
+		_outEmailAddress = normalize(outEmailAddress);
 	}
 
 	@Override
@@ -699,7 +699,7 @@ public class MBMailingListModelImpl extends BaseModelImpl<MBMailingList>
 
 	@Override
 	public void setOutServerName(String outServerName) {
-		_outServerName = outServerName;
+		_outServerName = normalize(outServerName);
 	}
 
 	@Override
@@ -739,7 +739,7 @@ public class MBMailingListModelImpl extends BaseModelImpl<MBMailingList>
 
 	@Override
 	public void setOutUserName(String outUserName) {
-		_outUserName = outUserName;
+		_outUserName = normalize(outUserName);
 	}
 
 	@Override
@@ -754,7 +754,7 @@ public class MBMailingListModelImpl extends BaseModelImpl<MBMailingList>
 
 	@Override
 	public void setOutPassword(String outPassword) {
-		_outPassword = outPassword;
+		_outPassword = normalize(outPassword);
 	}
 
 	@Override

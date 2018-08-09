@@ -371,7 +371,7 @@ public class SystemEventModelImpl extends BaseModelImpl<SystemEvent>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -462,7 +462,7 @@ public class SystemEventModelImpl extends BaseModelImpl<SystemEvent>
 
 	@Override
 	public void setClassUuid(String classUuid) {
-		_classUuid = classUuid;
+		_classUuid = normalize(classUuid);
 	}
 
 	@Override
@@ -541,7 +541,7 @@ public class SystemEventModelImpl extends BaseModelImpl<SystemEvent>
 
 	@Override
 	public void setExtraData(String extraData) {
-		_extraData = extraData;
+		_extraData = normalize(extraData);
 	}
 
 	public long getColumnBitmask() {

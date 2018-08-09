@@ -377,7 +377,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 	public void setName(String name) {
 		_columnBitmask = -1L;
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -399,7 +399,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 			_originalUrl = _url;
 		}
 
-		_url = url;
+		_url = normalize(url);
 	}
 
 	public String getOriginalUrl() {
@@ -419,7 +419,7 @@ public class GadgetModelImpl extends BaseModelImpl<Gadget>
 
 	@Override
 	public void setPortletCategoryNames(String portletCategoryNames) {
-		_portletCategoryNames = portletCategoryNames;
+		_portletCategoryNames = normalize(portletCategoryNames);
 	}
 
 	@JSON

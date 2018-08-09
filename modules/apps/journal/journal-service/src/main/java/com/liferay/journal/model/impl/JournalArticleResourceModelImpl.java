@@ -279,7 +279,7 @@ public class JournalArticleResourceModelImpl extends BaseModelImpl<JournalArticl
 			_originalArticleId = _articleId;
 		}
 
-		_articleId = articleId;
+		_articleId = normalize(articleId);
 	}
 
 	public String getOriginalArticleId() {

@@ -286,7 +286,7 @@ public class ResourceTypePermissionModelImpl extends BaseModelImpl<ResourceTypeP
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
