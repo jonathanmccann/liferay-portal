@@ -770,6 +770,8 @@ public class ${entity.name}ModelImpl extends BaseModelImpl<${entity.name}> imple
 					else {
 						_${entityColumn.name}BlobModel.set${entityColumn.methodName}Blob(${entityColumn.name});
 					}
+				<#elseif stringUtil.equals(entityColumn.type, "String")>
+					_${entityColumn.name} = normalize(${entityColumn.name});
 				<#else>
 					_${entityColumn.name} = ${entityColumn.name};
 				</#if>

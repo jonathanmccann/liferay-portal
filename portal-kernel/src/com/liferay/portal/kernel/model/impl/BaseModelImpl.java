@@ -21,6 +21,11 @@ import com.liferay.portal.kernel.model.BaseModel;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.PropsKeys;
+import com.liferay.portal.kernel.util.PropsUtil;
+
+import java.text.Normalizer;
+import java.text.Normalizer.Form;
 
 import java.util.Collections;
 import java.util.Locale;
@@ -134,7 +139,37 @@ public abstract class BaseModelImpl<T> implements BaseModel<T> {
 		return locale;
 	}
 
+	protected String normalize(String input) {
+		if (_FORM == null) {
+			return input;
+		}
+
+		return Normalizer.normalize(input, _FORM);
+	}
+
 	private static final boolean _ESCAPED_MODEL = false;
+
+	private static final Form _FORM;
+
+	static {
+		String form = PropsUtil.get(PropsKeys.UNICODE_TEXT_NORMALIZER_FORM);
+
+		if (form.equals("NFC")) {
+			_FORM = Form.NFC;
+		}
+		else if (form.equals("NFD")) {
+			_FORM = Form.NFD;
+		}
+		else if (form.equals("NFKC")) {
+			_FORM = Form.NFKC;
+		}
+		else if (form.equals("NFKD")) {
+			_FORM = Form.NFKD;
+		}
+		else {
+			_FORM = null;
+		}
+	}
 
 	private boolean _cachedModel;
 	private boolean _new;
