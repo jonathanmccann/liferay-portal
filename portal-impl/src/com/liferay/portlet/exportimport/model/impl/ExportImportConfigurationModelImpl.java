@@ -464,7 +464,7 @@ public class ExportImportConfigurationModelImpl extends BaseModelImpl<ExportImpo
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -510,7 +510,7 @@ public class ExportImportConfigurationModelImpl extends BaseModelImpl<ExportImpo
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -526,7 +526,7 @@ public class ExportImportConfigurationModelImpl extends BaseModelImpl<ExportImpo
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -565,7 +565,7 @@ public class ExportImportConfigurationModelImpl extends BaseModelImpl<ExportImpo
 
 	@Override
 	public void setSettings(String settings) {
-		_settings = settings;
+		_settings = normalize(settings);
 	}
 
 	@JSON
@@ -631,7 +631,7 @@ public class ExportImportConfigurationModelImpl extends BaseModelImpl<ExportImpo
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

@@ -444,7 +444,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -491,7 +491,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 			_originalAddress = _address;
 		}
 
-		_address = address;
+		_address = normalize(address);
 	}
 
 	public String getOriginalAddress() {
@@ -510,7 +510,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setPersonalName(String personalName) {
-		_personalName = personalName;
+		_personalName = normalize(personalName);
 	}
 
 	@Override
@@ -525,7 +525,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setProtocol(String protocol) {
-		_protocol = protocol;
+		_protocol = normalize(protocol);
 	}
 
 	@Override
@@ -540,7 +540,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setIncomingHostName(String incomingHostName) {
-		_incomingHostName = incomingHostName;
+		_incomingHostName = normalize(incomingHostName);
 	}
 
 	@Override
@@ -580,7 +580,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setOutgoingHostName(String outgoingHostName) {
-		_outgoingHostName = outgoingHostName;
+		_outgoingHostName = normalize(outgoingHostName);
 	}
 
 	@Override
@@ -620,7 +620,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setLogin(String login) {
-		_login = login;
+		_login = normalize(login);
 	}
 
 	@Override
@@ -635,7 +635,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setPassword(String password) {
-		_password = password;
+		_password = normalize(password);
 	}
 
 	@Override
@@ -665,7 +665,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setSignature(String signature) {
-		_signature = signature;
+		_signature = normalize(signature);
 	}
 
 	@Override
@@ -695,7 +695,7 @@ public class AccountModelImpl extends BaseModelImpl<Account>
 
 	@Override
 	public void setFolderPrefix(String folderPrefix) {
-		_folderPrefix = folderPrefix;
+		_folderPrefix = normalize(folderPrefix);
 	}
 
 	@Override

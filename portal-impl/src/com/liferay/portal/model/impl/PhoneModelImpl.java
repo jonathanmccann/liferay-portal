@@ -452,7 +452,7 @@ public class PhoneModelImpl extends BaseModelImpl<Phone> implements PhoneModel {
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -564,7 +564,7 @@ public class PhoneModelImpl extends BaseModelImpl<Phone> implements PhoneModel {
 
 	@Override
 	public void setNumber(String number) {
-		_number = number;
+		_number = normalize(number);
 	}
 
 	@JSON
@@ -580,7 +580,7 @@ public class PhoneModelImpl extends BaseModelImpl<Phone> implements PhoneModel {
 
 	@Override
 	public void setExtension(String extension) {
-		_extension = extension;
+		_extension = normalize(extension);
 	}
 
 	@JSON

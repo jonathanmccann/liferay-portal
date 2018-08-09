@@ -414,7 +414,7 @@ public class SAPEntryModelImpl extends BaseModelImpl<SAPEntry>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -458,7 +458,7 @@ public class SAPEntryModelImpl extends BaseModelImpl<SAPEntry>
 
 	@Override
 	public void setAllowedServiceSignatures(String allowedServiceSignatures) {
-		_allowedServiceSignatures = allowedServiceSignatures;
+		_allowedServiceSignatures = normalize(allowedServiceSignatures);
 	}
 
 	@JSON
@@ -526,7 +526,7 @@ public class SAPEntryModelImpl extends BaseModelImpl<SAPEntry>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -589,7 +589,7 @@ public class SAPEntryModelImpl extends BaseModelImpl<SAPEntry>
 
 	@Override
 	public void setTitle(String title) {
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@Override

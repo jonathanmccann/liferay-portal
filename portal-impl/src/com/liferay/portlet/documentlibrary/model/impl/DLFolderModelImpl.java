@@ -576,7 +576,7 @@ public class DLFolderModelImpl extends BaseModelImpl<DLFolder>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -701,7 +701,7 @@ public class DLFolderModelImpl extends BaseModelImpl<DLFolder>
 			_originalTreePath = _treePath;
 		}
 
-		_treePath = treePath;
+		_treePath = normalize(treePath);
 	}
 
 	public String getOriginalTreePath() {
@@ -727,7 +727,7 @@ public class DLFolderModelImpl extends BaseModelImpl<DLFolder>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -747,7 +747,7 @@ public class DLFolderModelImpl extends BaseModelImpl<DLFolder>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -886,7 +886,7 @@ public class DLFolderModelImpl extends BaseModelImpl<DLFolder>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

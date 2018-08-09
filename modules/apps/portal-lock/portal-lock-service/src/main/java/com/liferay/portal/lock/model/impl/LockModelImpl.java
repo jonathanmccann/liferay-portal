@@ -353,7 +353,7 @@ public class LockModelImpl extends BaseModelImpl<Lock> implements LockModel {
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -384,7 +384,7 @@ public class LockModelImpl extends BaseModelImpl<Lock> implements LockModel {
 			_originalClassName = _className;
 		}
 
-		_className = className;
+		_className = normalize(className);
 	}
 
 	public String getOriginalClassName() {
@@ -409,7 +409,7 @@ public class LockModelImpl extends BaseModelImpl<Lock> implements LockModel {
 			_originalKey = _key;
 		}
 
-		_key = key;
+		_key = normalize(key);
 	}
 
 	public String getOriginalKey() {
@@ -428,7 +428,7 @@ public class LockModelImpl extends BaseModelImpl<Lock> implements LockModel {
 
 	@Override
 	public void setOwner(String owner) {
-		_owner = owner;
+		_owner = normalize(owner);
 	}
 
 	@Override

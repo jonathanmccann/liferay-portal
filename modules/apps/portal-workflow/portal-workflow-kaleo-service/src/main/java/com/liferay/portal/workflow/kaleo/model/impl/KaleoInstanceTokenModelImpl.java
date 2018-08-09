@@ -373,7 +373,7 @@ public class KaleoInstanceTokenModelImpl extends BaseModelImpl<KaleoInstanceToke
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -490,7 +490,7 @@ public class KaleoInstanceTokenModelImpl extends BaseModelImpl<KaleoInstanceToke
 
 	@Override
 	public void setCurrentKaleoNodeName(String currentKaleoNodeName) {
-		_currentKaleoNodeName = currentKaleoNodeName;
+		_currentKaleoNodeName = normalize(currentKaleoNodeName);
 	}
 
 	@Override
@@ -505,7 +505,7 @@ public class KaleoInstanceTokenModelImpl extends BaseModelImpl<KaleoInstanceToke
 
 	@Override
 	public void setClassName(String className) {
-		_className = className;
+		_className = normalize(className);
 	}
 
 	@Override

@@ -474,7 +474,7 @@ public class LayoutSetBranchModelImpl extends BaseModelImpl<LayoutSetBranch>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -553,7 +553,7 @@ public class LayoutSetBranchModelImpl extends BaseModelImpl<LayoutSetBranch>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -573,7 +573,7 @@ public class LayoutSetBranchModelImpl extends BaseModelImpl<LayoutSetBranch>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -629,7 +629,7 @@ public class LayoutSetBranchModelImpl extends BaseModelImpl<LayoutSetBranch>
 
 	@Override
 	public void setThemeId(String themeId) {
-		_themeId = themeId;
+		_themeId = normalize(themeId);
 	}
 
 	@JSON
@@ -645,7 +645,7 @@ public class LayoutSetBranchModelImpl extends BaseModelImpl<LayoutSetBranch>
 
 	@Override
 	public void setColorSchemeId(String colorSchemeId) {
-		_colorSchemeId = colorSchemeId;
+		_colorSchemeId = normalize(colorSchemeId);
 	}
 
 	@JSON
@@ -661,7 +661,7 @@ public class LayoutSetBranchModelImpl extends BaseModelImpl<LayoutSetBranch>
 
 	@Override
 	public void setCss(String css) {
-		_css = css;
+		_css = normalize(css);
 	}
 
 	@JSON
@@ -677,7 +677,7 @@ public class LayoutSetBranchModelImpl extends BaseModelImpl<LayoutSetBranch>
 
 	@Override
 	public void setSettings(String settings) {
-		_settings = settings;
+		_settings = normalize(settings);
 	}
 
 	@JSON
@@ -693,7 +693,7 @@ public class LayoutSetBranchModelImpl extends BaseModelImpl<LayoutSetBranch>
 
 	@Override
 	public void setLayoutSetPrototypeUuid(String layoutSetPrototypeUuid) {
-		_layoutSetPrototypeUuid = layoutSetPrototypeUuid;
+		_layoutSetPrototypeUuid = normalize(layoutSetPrototypeUuid);
 	}
 
 	@JSON

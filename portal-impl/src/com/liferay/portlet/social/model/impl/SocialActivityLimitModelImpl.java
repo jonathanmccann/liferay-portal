@@ -412,7 +412,7 @@ public class SocialActivityLimitModelImpl extends BaseModelImpl<SocialActivityLi
 			_originalActivityCounterName = _activityCounterName;
 		}
 
-		_activityCounterName = activityCounterName;
+		_activityCounterName = normalize(activityCounterName);
 	}
 
 	public String getOriginalActivityCounterName() {
@@ -431,7 +431,7 @@ public class SocialActivityLimitModelImpl extends BaseModelImpl<SocialActivityLi
 
 	@Override
 	public void setValue(String value) {
-		_value = value;
+		_value = normalize(value);
 	}
 
 	public long getColumnBitmask() {

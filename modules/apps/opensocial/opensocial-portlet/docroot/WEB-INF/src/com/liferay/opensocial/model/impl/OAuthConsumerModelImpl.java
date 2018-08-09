@@ -282,7 +282,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 			_originalGadgetKey = _gadgetKey;
 		}
 
-		_gadgetKey = gadgetKey;
+		_gadgetKey = normalize(gadgetKey);
 	}
 
 	public String getOriginalGadgetKey() {
@@ -307,7 +307,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 			_originalServiceName = _serviceName;
 		}
 
-		_serviceName = serviceName;
+		_serviceName = normalize(serviceName);
 	}
 
 	public String getOriginalServiceName() {
@@ -326,7 +326,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 
 	@Override
 	public void setConsumerKey(String consumerKey) {
-		_consumerKey = consumerKey;
+		_consumerKey = normalize(consumerKey);
 	}
 
 	@Override
@@ -341,7 +341,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 
 	@Override
 	public void setConsumerSecret(String consumerSecret) {
-		_consumerSecret = consumerSecret;
+		_consumerSecret = normalize(consumerSecret);
 	}
 
 	@Override
@@ -356,7 +356,7 @@ public class OAuthConsumerModelImpl extends BaseModelImpl<OAuthConsumer>
 
 	@Override
 	public void setKeyType(String keyType) {
-		_keyType = keyType;
+		_keyType = normalize(keyType);
 	}
 
 	public long getColumnBitmask() {

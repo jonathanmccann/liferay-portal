@@ -389,7 +389,7 @@ public class RepositoryEntryModelImpl extends BaseModelImpl<RepositoryEntry>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -458,7 +458,7 @@ public class RepositoryEntryModelImpl extends BaseModelImpl<RepositoryEntry>
 			_originalMappedId = _mappedId;
 		}
 
-		_mappedId = mappedId;
+		_mappedId = normalize(mappedId);
 	}
 
 	public String getOriginalMappedId() {

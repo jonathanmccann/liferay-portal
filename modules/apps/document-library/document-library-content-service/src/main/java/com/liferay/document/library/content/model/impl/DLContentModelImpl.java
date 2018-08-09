@@ -295,7 +295,7 @@ public class DLContentModelImpl extends BaseModelImpl<DLContent>
 			_originalPath = _path;
 		}
 
-		_path = path;
+		_path = normalize(path);
 	}
 
 	public String getOriginalPath() {
@@ -320,7 +320,7 @@ public class DLContentModelImpl extends BaseModelImpl<DLContent>
 			_originalVersion = _version;
 		}
 
-		_version = version;
+		_version = normalize(version);
 	}
 
 	public String getOriginalVersion() {

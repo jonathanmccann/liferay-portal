@@ -498,7 +498,7 @@ public class DLFileShortcutModelImpl extends BaseModelImpl<DLFileShortcut>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -599,7 +599,7 @@ public class DLFileShortcutModelImpl extends BaseModelImpl<DLFileShortcut>
 
 	@Override
 	public void setTreePath(String treePath) {
-		_treePath = treePath;
+		_treePath = normalize(treePath);
 	}
 
 	@JSON
@@ -705,7 +705,7 @@ public class DLFileShortcutModelImpl extends BaseModelImpl<DLFileShortcut>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

@@ -340,7 +340,7 @@ public class ResourceBlockModelImpl extends BaseModelImpl<ResourceBlock>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -366,7 +366,7 @@ public class ResourceBlockModelImpl extends BaseModelImpl<ResourceBlock>
 			_originalPermissionsHash = _permissionsHash;
 		}
 
-		_permissionsHash = permissionsHash;
+		_permissionsHash = normalize(permissionsHash);
 	}
 
 	public String getOriginalPermissionsHash() {

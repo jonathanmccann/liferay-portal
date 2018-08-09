@@ -343,7 +343,7 @@ public class CompanyModelImpl extends BaseModelImpl<Company>
 			_originalWebId = _webId;
 		}
 
-		_webId = webId;
+		_webId = normalize(webId);
 	}
 
 	public String getOriginalWebId() {
@@ -363,7 +363,7 @@ public class CompanyModelImpl extends BaseModelImpl<Company>
 
 	@Override
 	public void setKey(String key) {
-		_key = key;
+		_key = normalize(key);
 	}
 
 	@JSON
@@ -385,7 +385,7 @@ public class CompanyModelImpl extends BaseModelImpl<Company>
 			_originalMx = _mx;
 		}
 
-		_mx = mx;
+		_mx = normalize(mx);
 	}
 
 	public String getOriginalMx() {
@@ -405,7 +405,7 @@ public class CompanyModelImpl extends BaseModelImpl<Company>
 
 	@Override
 	public void setHomeURL(String homeURL) {
-		_homeURL = homeURL;
+		_homeURL = normalize(homeURL);
 	}
 
 	@JSON

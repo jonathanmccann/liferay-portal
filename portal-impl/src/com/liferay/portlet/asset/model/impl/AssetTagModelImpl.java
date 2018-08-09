@@ -429,7 +429,7 @@ public class AssetTagModelImpl extends BaseModelImpl<AssetTag>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -479,7 +479,7 @@ public class AssetTagModelImpl extends BaseModelImpl<AssetTag>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {

@@ -311,7 +311,7 @@ public class WikiPageResourceModelImpl extends BaseModelImpl<WikiPageResource>
 			_originalTitle = _title;
 		}
 
-		_title = title;
+		_title = normalize(title);
 	}
 
 	public String getOriginalTitle() {

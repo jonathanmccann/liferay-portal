@@ -467,7 +467,7 @@ public class SiteNavigationMenuItemModelImpl extends BaseModelImpl<SiteNavigatio
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -564,7 +564,7 @@ public class SiteNavigationMenuItemModelImpl extends BaseModelImpl<SiteNavigatio
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -584,7 +584,7 @@ public class SiteNavigationMenuItemModelImpl extends BaseModelImpl<SiteNavigatio
 
 	@Override
 	public void setType(String type) {
-		_type = type;
+		_type = normalize(type);
 	}
 
 	@JSON
@@ -600,7 +600,7 @@ public class SiteNavigationMenuItemModelImpl extends BaseModelImpl<SiteNavigatio
 
 	@Override
 	public void setTypeSettings(String typeSettings) {
-		_typeSettings = typeSettings;
+		_typeSettings = normalize(typeSettings);
 	}
 
 	@JSON

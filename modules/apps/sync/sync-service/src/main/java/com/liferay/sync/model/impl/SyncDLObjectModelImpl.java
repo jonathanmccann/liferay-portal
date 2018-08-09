@@ -532,7 +532,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -634,7 +634,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 			_originalTreePath = _treePath;
 		}
 
-		_treePath = treePath;
+		_treePath = normalize(treePath);
 	}
 
 	public String getOriginalTreePath() {
@@ -654,7 +654,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -670,7 +670,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setExtension(String extension) {
-		_extension = extension;
+		_extension = normalize(extension);
 	}
 
 	@JSON
@@ -686,7 +686,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setMimeType(String mimeType) {
-		_mimeType = mimeType;
+		_mimeType = normalize(mimeType);
 	}
 
 	@JSON
@@ -702,7 +702,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -718,7 +718,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setChangeLog(String changeLog) {
-		_changeLog = changeLog;
+		_changeLog = normalize(changeLog);
 	}
 
 	@JSON
@@ -734,7 +734,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setExtraSettings(String extraSettings) {
-		_extraSettings = extraSettings;
+		_extraSettings = normalize(extraSettings);
 	}
 
 	@JSON
@@ -756,7 +756,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 			_originalVersion = _version;
 		}
 
-		_version = version;
+		_version = normalize(version);
 	}
 
 	public String getOriginalVersion() {
@@ -798,7 +798,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setChecksum(String checksum) {
-		_checksum = checksum;
+		_checksum = normalize(checksum);
 	}
 
 	@JSON
@@ -820,7 +820,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 			_originalEvent = _event;
 		}
 
-		_event = event;
+		_event = normalize(event);
 	}
 
 	public String getOriginalEvent() {
@@ -840,7 +840,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setLanTokenKey(String lanTokenKey) {
-		_lanTokenKey = lanTokenKey;
+		_lanTokenKey = normalize(lanTokenKey);
 	}
 
 	@JSON(include = false)
@@ -905,7 +905,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setLockUserName(String lockUserName) {
-		_lockUserName = lockUserName;
+		_lockUserName = normalize(lockUserName);
 	}
 
 	@JSON
@@ -927,7 +927,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 			_originalType = _type;
 		}
 
-		_type = type;
+		_type = normalize(type);
 	}
 
 	public String getOriginalType() {
@@ -970,7 +970,7 @@ public class SyncDLObjectModelImpl extends BaseModelImpl<SyncDLObject>
 
 	@Override
 	public void setTypeUuid(String typeUuid) {
-		_typeUuid = typeUuid;
+		_typeUuid = normalize(typeUuid);
 	}
 
 	public long getColumnBitmask() {

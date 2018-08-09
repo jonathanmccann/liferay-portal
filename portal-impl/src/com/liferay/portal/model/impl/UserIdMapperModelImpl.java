@@ -289,7 +289,7 @@ public class UserIdMapperModelImpl extends BaseModelImpl<UserIdMapper>
 			_originalType = _type;
 		}
 
-		_type = type;
+		_type = normalize(type);
 	}
 
 	public String getOriginalType() {
@@ -308,7 +308,7 @@ public class UserIdMapperModelImpl extends BaseModelImpl<UserIdMapper>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -329,7 +329,7 @@ public class UserIdMapperModelImpl extends BaseModelImpl<UserIdMapper>
 			_originalExternalUserId = _externalUserId;
 		}
 
-		_externalUserId = externalUserId;
+		_externalUserId = normalize(externalUserId);
 	}
 
 	public String getOriginalExternalUserId() {

@@ -603,7 +603,7 @@ public class WikiPageModelImpl extends BaseModelImpl<WikiPage>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -676,7 +676,7 @@ public class WikiPageModelImpl extends BaseModelImpl<WikiPage>
 			_originalTitle = _title;
 		}
 
-		_title = title;
+		_title = normalize(title);
 	}
 
 	public String getOriginalTitle() {
@@ -736,7 +736,7 @@ public class WikiPageModelImpl extends BaseModelImpl<WikiPage>
 
 	@Override
 	public void setContent(String content) {
-		_content = content;
+		_content = normalize(content);
 	}
 
 	@JSON
@@ -752,7 +752,7 @@ public class WikiPageModelImpl extends BaseModelImpl<WikiPage>
 
 	@Override
 	public void setSummary(String summary) {
-		_summary = summary;
+		_summary = normalize(summary);
 	}
 
 	@JSON
@@ -774,7 +774,7 @@ public class WikiPageModelImpl extends BaseModelImpl<WikiPage>
 			_originalFormat = _format;
 		}
 
-		_format = format;
+		_format = normalize(format);
 	}
 
 	public String getOriginalFormat() {
@@ -829,7 +829,7 @@ public class WikiPageModelImpl extends BaseModelImpl<WikiPage>
 			_originalParentTitle = _parentTitle;
 		}
 
-		_parentTitle = parentTitle;
+		_parentTitle = normalize(parentTitle);
 	}
 
 	public String getOriginalParentTitle() {
@@ -855,7 +855,7 @@ public class WikiPageModelImpl extends BaseModelImpl<WikiPage>
 			_originalRedirectTitle = _redirectTitle;
 		}
 
-		_redirectTitle = redirectTitle;
+		_redirectTitle = normalize(redirectTitle);
 	}
 
 	public String getOriginalRedirectTitle() {
@@ -936,7 +936,7 @@ public class WikiPageModelImpl extends BaseModelImpl<WikiPage>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

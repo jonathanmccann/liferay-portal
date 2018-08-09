@@ -312,7 +312,7 @@ public class JournalContentSearchModelImpl extends BaseModelImpl<JournalContentS
 			_originalPortletId = _portletId;
 		}
 
-		_portletId = portletId;
+		_portletId = normalize(portletId);
 	}
 
 	public String getOriginalPortletId() {
@@ -337,7 +337,7 @@ public class JournalContentSearchModelImpl extends BaseModelImpl<JournalContentS
 			_originalArticleId = _articleId;
 		}
 
-		_articleId = articleId;
+		_articleId = normalize(articleId);
 	}
 
 	public String getOriginalArticleId() {

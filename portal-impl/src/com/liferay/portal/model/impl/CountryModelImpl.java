@@ -311,7 +311,7 @@ public class CountryModelImpl extends BaseModelImpl<Country>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -337,7 +337,7 @@ public class CountryModelImpl extends BaseModelImpl<Country>
 			_originalA2 = _a2;
 		}
 
-		_a2 = a2;
+		_a2 = normalize(a2);
 	}
 
 	public String getOriginalA2() {
@@ -363,7 +363,7 @@ public class CountryModelImpl extends BaseModelImpl<Country>
 			_originalA3 = _a3;
 		}
 
-		_a3 = a3;
+		_a3 = normalize(a3);
 	}
 
 	public String getOriginalA3() {
@@ -383,7 +383,7 @@ public class CountryModelImpl extends BaseModelImpl<Country>
 
 	@Override
 	public void setNumber(String number) {
-		_number = number;
+		_number = normalize(number);
 	}
 
 	@JSON
@@ -399,7 +399,7 @@ public class CountryModelImpl extends BaseModelImpl<Country>
 
 	@Override
 	public void setIdd(String idd) {
-		_idd = idd;
+		_idd = normalize(idd);
 	}
 
 	@JSON

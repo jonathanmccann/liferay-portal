@@ -399,7 +399,7 @@ public class KaleoTaskInstanceTokenModelImpl extends BaseModelImpl<KaleoTaskInst
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -516,7 +516,7 @@ public class KaleoTaskInstanceTokenModelImpl extends BaseModelImpl<KaleoTaskInst
 
 	@Override
 	public void setKaleoTaskName(String kaleoTaskName) {
-		_kaleoTaskName = kaleoTaskName;
+		_kaleoTaskName = normalize(kaleoTaskName);
 	}
 
 	@Override
@@ -537,7 +537,7 @@ public class KaleoTaskInstanceTokenModelImpl extends BaseModelImpl<KaleoTaskInst
 			_originalClassName = _className;
 		}
 
-		_className = className;
+		_className = normalize(className);
 	}
 
 	public String getOriginalClassName() {
@@ -639,7 +639,7 @@ public class KaleoTaskInstanceTokenModelImpl extends BaseModelImpl<KaleoTaskInst
 
 	@Override
 	public void setWorkflowContext(String workflowContext) {
-		_workflowContext = workflowContext;
+		_workflowContext = normalize(workflowContext);
 	}
 
 	public long getColumnBitmask() {

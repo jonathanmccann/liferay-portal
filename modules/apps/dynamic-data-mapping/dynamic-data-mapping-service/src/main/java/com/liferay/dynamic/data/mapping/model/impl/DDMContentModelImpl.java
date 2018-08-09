@@ -367,7 +367,7 @@ public class DDMContentModelImpl extends BaseModelImpl<DDMContent>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -451,7 +451,7 @@ public class DDMContentModelImpl extends BaseModelImpl<DDMContent>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -506,7 +506,7 @@ public class DDMContentModelImpl extends BaseModelImpl<DDMContent>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -521,7 +521,7 @@ public class DDMContentModelImpl extends BaseModelImpl<DDMContent>
 
 	@Override
 	public void setData(String data) {
-		_data = data;
+		_data = normalize(data);
 	}
 
 	@Override

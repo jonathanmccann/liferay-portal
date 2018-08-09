@@ -458,7 +458,7 @@ public class MDRRuleModelImpl extends BaseModelImpl<MDRRule>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -570,7 +570,7 @@ public class MDRRuleModelImpl extends BaseModelImpl<MDRRule>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -669,7 +669,7 @@ public class MDRRuleModelImpl extends BaseModelImpl<MDRRule>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -729,7 +729,7 @@ public class MDRRuleModelImpl extends BaseModelImpl<MDRRule>
 
 	@Override
 	public void setType(String type) {
-		_type = type;
+		_type = normalize(type);
 	}
 
 	@JSON
@@ -745,7 +745,7 @@ public class MDRRuleModelImpl extends BaseModelImpl<MDRRule>
 
 	@Override
 	public void setTypeSettings(String typeSettings) {
-		_typeSettings = typeSettings;
+		_typeSettings = normalize(typeSettings);
 	}
 
 	@JSON

@@ -699,7 +699,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -832,7 +832,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 
 	@Override
 	public void setTreePath(String treePath) {
-		_treePath = treePath;
+		_treePath = normalize(treePath);
 	}
 
 	@JSON
@@ -854,7 +854,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 			_originalArticleId = _articleId;
 		}
 
-		_articleId = articleId;
+		_articleId = normalize(articleId);
 	}
 
 	public String getOriginalArticleId() {
@@ -903,7 +903,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 			_originalUrlTitle = _urlTitle;
 		}
 
-		_urlTitle = urlTitle;
+		_urlTitle = normalize(urlTitle);
 	}
 
 	public String getOriginalUrlTitle() {
@@ -923,7 +923,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 
 	@Override
 	public void setContent(String content) {
-		_content = content;
+		_content = normalize(content);
 	}
 
 	@JSON
@@ -945,7 +945,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 			_originalDDMStructureKey = _DDMStructureKey;
 		}
 
-		_DDMStructureKey = DDMStructureKey;
+		_DDMStructureKey = normalize(DDMStructureKey);
 	}
 
 	public String getOriginalDDMStructureKey() {
@@ -971,7 +971,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 			_originalDDMTemplateKey = _DDMTemplateKey;
 		}
 
-		_DDMTemplateKey = DDMTemplateKey;
+		_DDMTemplateKey = normalize(DDMTemplateKey);
 	}
 
 	public String getOriginalDDMTemplateKey() {
@@ -991,7 +991,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 
 	@Override
 	public void setDefaultLanguageId(String defaultLanguageId) {
-		_defaultLanguageId = defaultLanguageId;
+		_defaultLanguageId = normalize(defaultLanguageId);
 	}
 
 	@JSON
@@ -1013,7 +1013,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 			_originalLayoutUuid = _layoutUuid;
 		}
 
-		_layoutUuid = layoutUuid;
+		_layoutUuid = normalize(layoutUuid);
 	}
 
 	public String getOriginalLayoutUuid() {
@@ -1155,7 +1155,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 
 	@Override
 	public void setSmallImageURL(String smallImageURL) {
-		_smallImageURL = smallImageURL;
+		_smallImageURL = normalize(smallImageURL);
 	}
 
 	@JSON
@@ -1232,7 +1232,7 @@ public class JournalArticleModelImpl extends BaseModelImpl<JournalArticle>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

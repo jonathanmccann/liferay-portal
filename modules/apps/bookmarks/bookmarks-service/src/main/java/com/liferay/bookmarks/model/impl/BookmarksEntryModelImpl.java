@@ -529,7 +529,7 @@ public class BookmarksEntryModelImpl extends BaseModelImpl<BookmarksEntry>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -596,7 +596,7 @@ public class BookmarksEntryModelImpl extends BaseModelImpl<BookmarksEntry>
 
 	@Override
 	public void setTreePath(String treePath) {
-		_treePath = treePath;
+		_treePath = normalize(treePath);
 	}
 
 	@JSON
@@ -614,7 +614,7 @@ public class BookmarksEntryModelImpl extends BaseModelImpl<BookmarksEntry>
 	public void setName(String name) {
 		_columnBitmask = -1L;
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -630,7 +630,7 @@ public class BookmarksEntryModelImpl extends BaseModelImpl<BookmarksEntry>
 
 	@Override
 	public void setUrl(String url) {
-		_url = url;
+		_url = normalize(url);
 	}
 
 	@JSON
@@ -646,7 +646,7 @@ public class BookmarksEntryModelImpl extends BaseModelImpl<BookmarksEntry>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -745,7 +745,7 @@ public class BookmarksEntryModelImpl extends BaseModelImpl<BookmarksEntry>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

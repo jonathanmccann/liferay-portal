@@ -514,7 +514,7 @@ public class AddressModelImpl extends BaseModelImpl<Address>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -626,7 +626,7 @@ public class AddressModelImpl extends BaseModelImpl<Address>
 
 	@Override
 	public void setStreet1(String street1) {
-		_street1 = street1;
+		_street1 = normalize(street1);
 	}
 
 	@JSON
@@ -642,7 +642,7 @@ public class AddressModelImpl extends BaseModelImpl<Address>
 
 	@Override
 	public void setStreet2(String street2) {
-		_street2 = street2;
+		_street2 = normalize(street2);
 	}
 
 	@JSON
@@ -658,7 +658,7 @@ public class AddressModelImpl extends BaseModelImpl<Address>
 
 	@Override
 	public void setStreet3(String street3) {
-		_street3 = street3;
+		_street3 = normalize(street3);
 	}
 
 	@JSON
@@ -674,7 +674,7 @@ public class AddressModelImpl extends BaseModelImpl<Address>
 
 	@Override
 	public void setCity(String city) {
-		_city = city;
+		_city = normalize(city);
 	}
 
 	@JSON
@@ -690,7 +690,7 @@ public class AddressModelImpl extends BaseModelImpl<Address>
 
 	@Override
 	public void setZip(String zip) {
-		_zip = zip;
+		_zip = normalize(zip);
 	}
 
 	@JSON

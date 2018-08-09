@@ -731,7 +731,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 			_originalExternalReferenceCode = _externalReferenceCode;
 		}
 
-		_externalReferenceCode = externalReferenceCode;
+		_externalReferenceCode = normalize(externalReferenceCode);
 	}
 
 	public String getOriginalExternalReferenceCode() {
@@ -913,7 +913,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setPassword(String password) {
-		_password = password;
+		_password = normalize(password);
 	}
 
 	@JSON(include = false)
@@ -972,7 +972,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setDigest(String digest) {
-		_digest = digest;
+		_digest = normalize(digest);
 	}
 
 	@JSON
@@ -988,7 +988,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setReminderQueryQuestion(String reminderQueryQuestion) {
-		_reminderQueryQuestion = reminderQueryQuestion;
+		_reminderQueryQuestion = normalize(reminderQueryQuestion);
 	}
 
 	@JSON
@@ -1004,7 +1004,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setReminderQueryAnswer(String reminderQueryAnswer) {
-		_reminderQueryAnswer = reminderQueryAnswer;
+		_reminderQueryAnswer = normalize(reminderQueryAnswer);
 	}
 
 	@JSON
@@ -1037,7 +1037,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 			_originalScreenName = _screenName;
 		}
 
-		_screenName = screenName;
+		_screenName = normalize(screenName);
 	}
 
 	public String getOriginalScreenName() {
@@ -1063,7 +1063,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 			_originalEmailAddress = _emailAddress;
 		}
 
-		_emailAddress = emailAddress;
+		_emailAddress = normalize(emailAddress);
 	}
 
 	public String getOriginalEmailAddress() {
@@ -1112,7 +1112,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 			_originalGoogleUserId = _googleUserId;
 		}
 
-		_googleUserId = googleUserId;
+		_googleUserId = normalize(googleUserId);
 	}
 
 	public String getOriginalGoogleUserId() {
@@ -1149,7 +1149,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 			_originalOpenId = _openId;
 		}
 
-		_openId = openId;
+		_openId = normalize(openId);
 	}
 
 	public String getOriginalOpenId() {
@@ -1192,7 +1192,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setLanguageId(String languageId) {
-		_languageId = languageId;
+		_languageId = normalize(languageId);
 	}
 
 	@JSON
@@ -1208,7 +1208,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setTimeZoneId(String timeZoneId) {
-		_timeZoneId = timeZoneId;
+		_timeZoneId = normalize(timeZoneId);
 	}
 
 	@JSON
@@ -1224,7 +1224,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setGreeting(String greeting) {
-		_greeting = greeting;
+		_greeting = normalize(greeting);
 	}
 
 	@JSON
@@ -1240,7 +1240,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setComments(String comments) {
-		_comments = comments;
+		_comments = normalize(comments);
 	}
 
 	@JSON
@@ -1256,7 +1256,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setFirstName(String firstName) {
-		_firstName = firstName;
+		_firstName = normalize(firstName);
 	}
 
 	@JSON
@@ -1272,7 +1272,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setMiddleName(String middleName) {
-		_middleName = middleName;
+		_middleName = normalize(middleName);
 	}
 
 	@JSON
@@ -1288,7 +1288,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setLastName(String lastName) {
-		_lastName = lastName;
+		_lastName = normalize(lastName);
 	}
 
 	@JSON
@@ -1304,7 +1304,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setJobTitle(String jobTitle) {
-		_jobTitle = jobTitle;
+		_jobTitle = normalize(jobTitle);
 	}
 
 	@JSON
@@ -1331,7 +1331,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setLoginIP(String loginIP) {
-		_loginIP = loginIP;
+		_loginIP = normalize(loginIP);
 	}
 
 	@JSON
@@ -1358,7 +1358,7 @@ public class UserModelImpl extends BaseModelImpl<User> implements UserModel {
 
 	@Override
 	public void setLastLoginIP(String lastLoginIP) {
-		_lastLoginIP = lastLoginIP;
+		_lastLoginIP = normalize(lastLoginIP);
 	}
 
 	@JSON

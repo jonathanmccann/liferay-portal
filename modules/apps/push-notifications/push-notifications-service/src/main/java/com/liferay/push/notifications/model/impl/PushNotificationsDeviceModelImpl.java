@@ -340,7 +340,7 @@ public class PushNotificationsDeviceModelImpl extends BaseModelImpl<PushNotifica
 			_originalPlatform = _platform;
 		}
 
-		_platform = platform;
+		_platform = normalize(platform);
 	}
 
 	public String getOriginalPlatform() {
@@ -366,7 +366,7 @@ public class PushNotificationsDeviceModelImpl extends BaseModelImpl<PushNotifica
 			_originalToken = _token;
 		}
 
-		_token = token;
+		_token = normalize(token);
 	}
 
 	public String getOriginalToken() {

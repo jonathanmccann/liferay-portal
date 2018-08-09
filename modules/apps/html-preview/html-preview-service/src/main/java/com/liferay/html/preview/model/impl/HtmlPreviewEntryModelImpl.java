@@ -314,7 +314,7 @@ public class HtmlPreviewEntryModelImpl extends BaseModelImpl<HtmlPreviewEntry>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override

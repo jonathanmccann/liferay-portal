@@ -329,7 +329,7 @@ public class ChangesetCollectionModelImpl extends BaseModelImpl<ChangesetCollect
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -376,7 +376,7 @@ public class ChangesetCollectionModelImpl extends BaseModelImpl<ChangesetCollect
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -395,7 +395,7 @@ public class ChangesetCollectionModelImpl extends BaseModelImpl<ChangesetCollect
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	public long getColumnBitmask() {

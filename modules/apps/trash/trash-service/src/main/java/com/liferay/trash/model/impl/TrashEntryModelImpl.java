@@ -396,7 +396,7 @@ public class TrashEntryModelImpl extends BaseModelImpl<TrashEntry>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -510,7 +510,7 @@ public class TrashEntryModelImpl extends BaseModelImpl<TrashEntry>
 
 	@Override
 	public void setTypeSettings(String typeSettings) {
-		_typeSettings = typeSettings;
+		_typeSettings = normalize(typeSettings);
 	}
 
 	@JSON

@@ -208,7 +208,7 @@ public class ClusterGroupModelImpl extends BaseModelImpl<ClusterGroup>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -223,7 +223,7 @@ public class ClusterGroupModelImpl extends BaseModelImpl<ClusterGroup>
 
 	@Override
 	public void setClusterNodeIds(String clusterNodeIds) {
-		_clusterNodeIds = clusterNodeIds;
+		_clusterNodeIds = normalize(clusterNodeIds);
 	}
 
 	@Override

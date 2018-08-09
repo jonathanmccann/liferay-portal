@@ -317,7 +317,7 @@ public class ImageModelImpl extends BaseModelImpl<Image> implements ImageModel {
 
 	@Override
 	public void setType(String type) {
-		_type = type;
+		_type = normalize(type);
 	}
 
 	@JSON

@@ -583,7 +583,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -626,7 +626,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 
 	@Override
 	public void setVersionUserName(String versionUserName) {
-		_versionUserName = versionUserName;
+		_versionUserName = normalize(versionUserName);
 	}
 
 	@JSON
@@ -753,7 +753,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 			_originalTemplateKey = _templateKey;
 		}
 
-		_templateKey = templateKey;
+		_templateKey = normalize(templateKey);
 	}
 
 	public String getOriginalTemplateKey() {
@@ -773,7 +773,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 
 	@Override
 	public void setVersion(String version) {
-		_version = version;
+		_version = normalize(version);
 	}
 
 	@JSON
@@ -832,7 +832,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -931,7 +931,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -997,7 +997,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 			_originalType = _type;
 		}
 
-		_type = type;
+		_type = normalize(type);
 	}
 
 	public String getOriginalType() {
@@ -1023,7 +1023,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 			_originalMode = _mode;
 		}
 
-		_mode = mode;
+		_mode = normalize(mode);
 	}
 
 	public String getOriginalMode() {
@@ -1049,7 +1049,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 			_originalLanguage = _language;
 		}
 
-		_language = language;
+		_language = normalize(language);
 	}
 
 	public String getOriginalLanguage() {
@@ -1069,7 +1069,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 
 	@Override
 	public void setScript(String script) {
-		_script = script;
+		_script = normalize(script);
 	}
 
 	@JSON
@@ -1142,7 +1142,7 @@ public class DDMTemplateModelImpl extends BaseModelImpl<DDMTemplate>
 
 	@Override
 	public void setSmallImageURL(String smallImageURL) {
-		_smallImageURL = smallImageURL;
+		_smallImageURL = normalize(smallImageURL);
 	}
 
 	@JSON

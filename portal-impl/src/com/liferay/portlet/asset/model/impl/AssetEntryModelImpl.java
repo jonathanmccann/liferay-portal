@@ -589,7 +589,7 @@ public class AssetEntryModelImpl extends BaseModelImpl<AssetEntry>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -705,7 +705,7 @@ public class AssetEntryModelImpl extends BaseModelImpl<AssetEntry>
 			_originalClassUuid = _classUuid;
 		}
 
-		_classUuid = classUuid;
+		_classUuid = normalize(classUuid);
 	}
 
 	public String getOriginalClassUuid() {
@@ -846,7 +846,7 @@ public class AssetEntryModelImpl extends BaseModelImpl<AssetEntry>
 
 	@Override
 	public void setMimeType(String mimeType) {
-		_mimeType = mimeType;
+		_mimeType = normalize(mimeType);
 	}
 
 	@JSON
@@ -905,7 +905,7 @@ public class AssetEntryModelImpl extends BaseModelImpl<AssetEntry>
 
 	@Override
 	public void setTitle(String title) {
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@Override
@@ -1004,7 +1004,7 @@ public class AssetEntryModelImpl extends BaseModelImpl<AssetEntry>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -1107,7 +1107,7 @@ public class AssetEntryModelImpl extends BaseModelImpl<AssetEntry>
 
 	@Override
 	public void setSummary(String summary) {
-		_summary = summary;
+		_summary = normalize(summary);
 	}
 
 	@Override
@@ -1164,7 +1164,7 @@ public class AssetEntryModelImpl extends BaseModelImpl<AssetEntry>
 
 	@Override
 	public void setUrl(String url) {
-		_url = url;
+		_url = normalize(url);
 	}
 
 	@JSON
@@ -1186,7 +1186,7 @@ public class AssetEntryModelImpl extends BaseModelImpl<AssetEntry>
 			_originalLayoutUuid = _layoutUuid;
 		}
 
-		_layoutUuid = layoutUuid;
+		_layoutUuid = normalize(layoutUuid);
 	}
 
 	public String getOriginalLayoutUuid() {

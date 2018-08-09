@@ -386,7 +386,7 @@ public class SocialActivitySettingModelImpl extends BaseModelImpl<SocialActivity
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -406,7 +406,7 @@ public class SocialActivitySettingModelImpl extends BaseModelImpl<SocialActivity
 
 	@Override
 	public void setValue(String value) {
-		_value = value;
+		_value = normalize(value);
 	}
 
 	public long getColumnBitmask() {

@@ -270,7 +270,7 @@ public class ExpandoTableModelImpl extends BaseModelImpl<ExpandoTable>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {

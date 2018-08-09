@@ -271,7 +271,7 @@ public class ClassNameModelImpl extends BaseModelImpl<ClassName>
 			_originalValue = _value;
 		}
 
-		_value = value;
+		_value = normalize(value);
 	}
 
 	public String getOriginalValue() {

@@ -323,7 +323,7 @@ public class KaleoTaskModelImpl extends BaseModelImpl<KaleoTask>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -408,7 +408,7 @@ public class KaleoTaskModelImpl extends BaseModelImpl<KaleoTask>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -423,7 +423,7 @@ public class KaleoTaskModelImpl extends BaseModelImpl<KaleoTask>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	public long getColumnBitmask() {

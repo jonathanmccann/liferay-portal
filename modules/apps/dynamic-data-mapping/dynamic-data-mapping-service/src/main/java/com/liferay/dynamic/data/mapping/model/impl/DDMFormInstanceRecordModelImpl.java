@@ -477,7 +477,7 @@ public class DDMFormInstanceRecordModelImpl extends BaseModelImpl<DDMFormInstanc
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -520,7 +520,7 @@ public class DDMFormInstanceRecordModelImpl extends BaseModelImpl<DDMFormInstanc
 
 	@Override
 	public void setVersionUserName(String versionUserName) {
-		_versionUserName = versionUserName;
+		_versionUserName = normalize(versionUserName);
 	}
 
 	@JSON
@@ -593,7 +593,7 @@ public class DDMFormInstanceRecordModelImpl extends BaseModelImpl<DDMFormInstanc
 			_originalFormInstanceVersion = _formInstanceVersion;
 		}
 
-		_formInstanceVersion = formInstanceVersion;
+		_formInstanceVersion = normalize(formInstanceVersion);
 	}
 
 	public String getOriginalFormInstanceVersion() {
@@ -624,7 +624,7 @@ public class DDMFormInstanceRecordModelImpl extends BaseModelImpl<DDMFormInstanc
 
 	@Override
 	public void setVersion(String version) {
-		_version = version;
+		_version = normalize(version);
 	}
 
 	@JSON

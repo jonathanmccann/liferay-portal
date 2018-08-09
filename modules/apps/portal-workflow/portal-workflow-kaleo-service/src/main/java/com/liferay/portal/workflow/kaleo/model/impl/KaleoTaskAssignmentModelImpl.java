@@ -383,7 +383,7 @@ public class KaleoTaskAssignmentModelImpl extends BaseModelImpl<KaleoTaskAssignm
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -430,7 +430,7 @@ public class KaleoTaskAssignmentModelImpl extends BaseModelImpl<KaleoTaskAssignm
 			_originalKaleoClassName = _kaleoClassName;
 		}
 
-		_kaleoClassName = kaleoClassName;
+		_kaleoClassName = normalize(kaleoClassName);
 	}
 
 	public String getOriginalKaleoClassName() {
@@ -509,7 +509,7 @@ public class KaleoTaskAssignmentModelImpl extends BaseModelImpl<KaleoTaskAssignm
 			_originalAssigneeClassName = _assigneeClassName;
 		}
 
-		_assigneeClassName = assigneeClassName;
+		_assigneeClassName = normalize(assigneeClassName);
 	}
 
 	public String getOriginalAssigneeClassName() {
@@ -538,7 +538,7 @@ public class KaleoTaskAssignmentModelImpl extends BaseModelImpl<KaleoTaskAssignm
 
 	@Override
 	public void setAssigneeActionId(String assigneeActionId) {
-		_assigneeActionId = assigneeActionId;
+		_assigneeActionId = normalize(assigneeActionId);
 	}
 
 	@Override
@@ -553,7 +553,7 @@ public class KaleoTaskAssignmentModelImpl extends BaseModelImpl<KaleoTaskAssignm
 
 	@Override
 	public void setAssigneeScript(String assigneeScript) {
-		_assigneeScript = assigneeScript;
+		_assigneeScript = normalize(assigneeScript);
 	}
 
 	@Override
@@ -568,7 +568,7 @@ public class KaleoTaskAssignmentModelImpl extends BaseModelImpl<KaleoTaskAssignm
 
 	@Override
 	public void setAssigneeScriptLanguage(String assigneeScriptLanguage) {
-		_assigneeScriptLanguage = assigneeScriptLanguage;
+		_assigneeScriptLanguage = normalize(assigneeScriptLanguage);
 	}
 
 	@Override
@@ -584,7 +584,7 @@ public class KaleoTaskAssignmentModelImpl extends BaseModelImpl<KaleoTaskAssignm
 	@Override
 	public void setAssigneeScriptRequiredContexts(
 		String assigneeScriptRequiredContexts) {
-		_assigneeScriptRequiredContexts = assigneeScriptRequiredContexts;
+		_assigneeScriptRequiredContexts = normalize(assigneeScriptRequiredContexts);
 	}
 
 	public long getColumnBitmask() {

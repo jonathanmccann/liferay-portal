@@ -389,7 +389,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -458,7 +458,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 			_originalKaleoDefinitionName = _kaleoDefinitionName;
 		}
 
-		_kaleoDefinitionName = kaleoDefinitionName;
+		_kaleoDefinitionName = normalize(kaleoDefinitionName);
 	}
 
 	public String getOriginalKaleoDefinitionName() {
@@ -515,7 +515,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 			_originalClassName = _className;
 		}
 
-		_className = className;
+		_className = normalize(className);
 	}
 
 	public String getOriginalClassName() {
@@ -603,7 +603,7 @@ public class KaleoInstanceModelImpl extends BaseModelImpl<KaleoInstance>
 
 	@Override
 	public void setWorkflowContext(String workflowContext) {
-		_workflowContext = workflowContext;
+		_workflowContext = normalize(workflowContext);
 	}
 
 	public long getColumnBitmask() {

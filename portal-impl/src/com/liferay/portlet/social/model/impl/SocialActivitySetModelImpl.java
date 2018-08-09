@@ -444,7 +444,7 @@ public class SocialActivitySetModelImpl extends BaseModelImpl<SocialActivitySet>
 
 	@Override
 	public void setExtraData(String extraData) {
-		_extraData = extraData;
+		_extraData = normalize(extraData);
 	}
 
 	@Override

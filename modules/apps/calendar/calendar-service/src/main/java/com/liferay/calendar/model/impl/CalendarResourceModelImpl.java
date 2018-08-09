@@ -480,7 +480,7 @@ public class CalendarResourceModelImpl extends BaseModelImpl<CalendarResource>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -590,7 +590,7 @@ public class CalendarResourceModelImpl extends BaseModelImpl<CalendarResource>
 
 	@Override
 	public void setClassUuid(String classUuid) {
-		_classUuid = classUuid;
+		_classUuid = normalize(classUuid);
 	}
 
 	@JSON
@@ -612,7 +612,7 @@ public class CalendarResourceModelImpl extends BaseModelImpl<CalendarResource>
 			_originalCode = _code;
 		}
 
-		_code = code;
+		_code = normalize(code);
 	}
 
 	public String getOriginalCode() {
@@ -675,7 +675,7 @@ public class CalendarResourceModelImpl extends BaseModelImpl<CalendarResource>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -774,7 +774,7 @@ public class CalendarResourceModelImpl extends BaseModelImpl<CalendarResource>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override

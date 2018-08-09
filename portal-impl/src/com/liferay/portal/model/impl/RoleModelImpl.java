@@ -473,7 +473,7 @@ public class RoleModelImpl extends BaseModelImpl<Role> implements RoleModel {
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -589,7 +589,7 @@ public class RoleModelImpl extends BaseModelImpl<Role> implements RoleModel {
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -652,7 +652,7 @@ public class RoleModelImpl extends BaseModelImpl<Role> implements RoleModel {
 
 	@Override
 	public void setTitle(String title) {
-		_title = title;
+		_title = normalize(title);
 	}
 
 	@Override
@@ -751,7 +751,7 @@ public class RoleModelImpl extends BaseModelImpl<Role> implements RoleModel {
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -840,7 +840,7 @@ public class RoleModelImpl extends BaseModelImpl<Role> implements RoleModel {
 			_originalSubtype = _subtype;
 		}
 
-		_subtype = subtype;
+		_subtype = normalize(subtype);
 	}
 
 	public String getOriginalSubtype() {

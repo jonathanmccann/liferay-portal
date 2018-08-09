@@ -345,7 +345,7 @@ public class AMImageEntryModelImpl extends BaseModelImpl<AMImageEntry>
 			_originalConfigurationUuid = _configurationUuid;
 		}
 
-		_configurationUuid = configurationUuid;
+		_configurationUuid = normalize(configurationUuid);
 	}
 
 	public String getOriginalConfigurationUuid() {
@@ -386,7 +386,7 @@ public class AMImageEntryModelImpl extends BaseModelImpl<AMImageEntry>
 
 	@Override
 	public void setMimeType(String mimeType) {
-		_mimeType = mimeType;
+		_mimeType = normalize(mimeType);
 	}
 
 	@Override

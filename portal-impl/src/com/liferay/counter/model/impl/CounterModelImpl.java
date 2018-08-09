@@ -158,7 +158,7 @@ public class CounterModelImpl extends BaseModelImpl<Counter>
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override

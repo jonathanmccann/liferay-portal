@@ -172,7 +172,7 @@ public class TestEntityModelImpl extends BaseModelImpl<TestEntity>
 
 	@Override
 	public void setData(String data) {
-		_data = data;
+		_data = normalize(data);
 	}
 
 	@Override

@@ -453,7 +453,7 @@ public class WebsiteModelImpl extends BaseModelImpl<Website>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -565,7 +565,7 @@ public class WebsiteModelImpl extends BaseModelImpl<Website>
 
 	@Override
 	public void setUrl(String url) {
-		_url = url;
+		_url = normalize(url);
 	}
 
 	@JSON

@@ -438,7 +438,7 @@ public class OAuth2AuthorizationModelImpl extends BaseModelImpl<OAuth2Authorizat
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -496,7 +496,7 @@ public class OAuth2AuthorizationModelImpl extends BaseModelImpl<OAuth2Authorizat
 
 	@Override
 	public void setAccessTokenContent(String accessTokenContent) {
-		_accessTokenContent = accessTokenContent;
+		_accessTokenContent = normalize(accessTokenContent);
 	}
 
 	@Override
@@ -553,7 +553,7 @@ public class OAuth2AuthorizationModelImpl extends BaseModelImpl<OAuth2Authorizat
 
 	@Override
 	public void setRemoteIPInfo(String remoteIPInfo) {
-		_remoteIPInfo = remoteIPInfo;
+		_remoteIPInfo = normalize(remoteIPInfo);
 	}
 
 	@Override
@@ -568,7 +568,7 @@ public class OAuth2AuthorizationModelImpl extends BaseModelImpl<OAuth2Authorizat
 
 	@Override
 	public void setRefreshTokenContent(String refreshTokenContent) {
-		_refreshTokenContent = refreshTokenContent;
+		_refreshTokenContent = normalize(refreshTokenContent);
 	}
 
 	@Override

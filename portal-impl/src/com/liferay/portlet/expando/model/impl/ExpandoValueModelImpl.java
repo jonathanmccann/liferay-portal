@@ -437,7 +437,7 @@ public class ExpandoValueModelImpl extends BaseModelImpl<ExpandoValue>
 			_originalData = _data;
 		}
 
-		_data = data;
+		_data = normalize(data);
 	}
 
 	public String getOriginalData() {

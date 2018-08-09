@@ -529,7 +529,7 @@ public class MBCategoryModelImpl extends BaseModelImpl<MBCategory>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -598,7 +598,7 @@ public class MBCategoryModelImpl extends BaseModelImpl<MBCategory>
 	public void setName(String name) {
 		_columnBitmask = -1L;
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -614,7 +614,7 @@ public class MBCategoryModelImpl extends BaseModelImpl<MBCategory>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -630,7 +630,7 @@ public class MBCategoryModelImpl extends BaseModelImpl<MBCategory>
 
 	@Override
 	public void setDisplayStyle(String displayStyle) {
-		_displayStyle = displayStyle;
+		_displayStyle = normalize(displayStyle);
 	}
 
 	@JSON
@@ -740,7 +740,7 @@ public class MBCategoryModelImpl extends BaseModelImpl<MBCategory>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

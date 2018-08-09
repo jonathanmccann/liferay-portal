@@ -257,7 +257,7 @@ public class PortalPreferencesModelImpl extends BaseModelImpl<PortalPreferences>
 
 	@Override
 	public void setPreferences(String preferences) {
-		_preferences = preferences;
+		_preferences = normalize(preferences);
 	}
 
 	public long getColumnBitmask() {

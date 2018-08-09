@@ -598,7 +598,7 @@ public class MBMessageModelImpl extends BaseModelImpl<MBMessage>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -790,7 +790,7 @@ public class MBMessageModelImpl extends BaseModelImpl<MBMessage>
 
 	@Override
 	public void setSubject(String subject) {
-		_subject = subject;
+		_subject = normalize(subject);
 	}
 
 	@JSON
@@ -806,7 +806,7 @@ public class MBMessageModelImpl extends BaseModelImpl<MBMessage>
 
 	@Override
 	public void setBody(String body) {
-		_body = body;
+		_body = normalize(body);
 	}
 
 	@JSON
@@ -822,7 +822,7 @@ public class MBMessageModelImpl extends BaseModelImpl<MBMessage>
 
 	@Override
 	public void setFormat(String format) {
-		_format = format;
+		_format = normalize(format);
 	}
 
 	@JSON
@@ -973,7 +973,7 @@ public class MBMessageModelImpl extends BaseModelImpl<MBMessage>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

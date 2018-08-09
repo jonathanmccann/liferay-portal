@@ -333,7 +333,7 @@ public class KaleoConditionModelImpl extends BaseModelImpl<KaleoCondition>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -418,7 +418,7 @@ public class KaleoConditionModelImpl extends BaseModelImpl<KaleoCondition>
 
 	@Override
 	public void setScript(String script) {
-		_script = script;
+		_script = normalize(script);
 	}
 
 	@Override
@@ -433,7 +433,7 @@ public class KaleoConditionModelImpl extends BaseModelImpl<KaleoCondition>
 
 	@Override
 	public void setScriptLanguage(String scriptLanguage) {
-		_scriptLanguage = scriptLanguage;
+		_scriptLanguage = normalize(scriptLanguage);
 	}
 
 	@Override
@@ -448,7 +448,7 @@ public class KaleoConditionModelImpl extends BaseModelImpl<KaleoCondition>
 
 	@Override
 	public void setScriptRequiredContexts(String scriptRequiredContexts) {
-		_scriptRequiredContexts = scriptRequiredContexts;
+		_scriptRequiredContexts = normalize(scriptRequiredContexts);
 	}
 
 	public long getColumnBitmask() {

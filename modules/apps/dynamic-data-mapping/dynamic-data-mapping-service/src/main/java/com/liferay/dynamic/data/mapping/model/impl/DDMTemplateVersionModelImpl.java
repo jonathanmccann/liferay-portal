@@ -448,7 +448,7 @@ public class DDMTemplateVersionModelImpl extends BaseModelImpl<DDMTemplateVersio
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -546,7 +546,7 @@ public class DDMTemplateVersionModelImpl extends BaseModelImpl<DDMTemplateVersio
 			_originalVersion = _version;
 		}
 
-		_version = version;
+		_version = normalize(version);
 	}
 
 	public String getOriginalVersion() {
@@ -609,7 +609,7 @@ public class DDMTemplateVersionModelImpl extends BaseModelImpl<DDMTemplateVersio
 
 	@Override
 	public void setName(String name) {
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@Override
@@ -708,7 +708,7 @@ public class DDMTemplateVersionModelImpl extends BaseModelImpl<DDMTemplateVersio
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@Override
@@ -768,7 +768,7 @@ public class DDMTemplateVersionModelImpl extends BaseModelImpl<DDMTemplateVersio
 
 	@Override
 	public void setLanguage(String language) {
-		_language = language;
+		_language = normalize(language);
 	}
 
 	@JSON
@@ -784,7 +784,7 @@ public class DDMTemplateVersionModelImpl extends BaseModelImpl<DDMTemplateVersio
 
 	@Override
 	public void setScript(String script) {
-		_script = script;
+		_script = normalize(script);
 	}
 
 	@JSON
@@ -850,7 +850,7 @@ public class DDMTemplateVersionModelImpl extends BaseModelImpl<DDMTemplateVersio
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

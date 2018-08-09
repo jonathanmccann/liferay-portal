@@ -443,7 +443,7 @@ public class EmailAddressModelImpl extends BaseModelImpl<EmailAddress>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -555,7 +555,7 @@ public class EmailAddressModelImpl extends BaseModelImpl<EmailAddress>
 
 	@Override
 	public void setAddress(String address) {
-		_address = address;
+		_address = normalize(address);
 	}
 
 	@JSON

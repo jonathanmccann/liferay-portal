@@ -500,7 +500,7 @@ public class BookmarksFolderModelImpl extends BaseModelImpl<BookmarksFolder>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -567,7 +567,7 @@ public class BookmarksFolderModelImpl extends BaseModelImpl<BookmarksFolder>
 
 	@Override
 	public void setTreePath(String treePath) {
-		_treePath = treePath;
+		_treePath = normalize(treePath);
 	}
 
 	@JSON
@@ -585,7 +585,7 @@ public class BookmarksFolderModelImpl extends BaseModelImpl<BookmarksFolder>
 	public void setName(String name) {
 		_columnBitmask = -1L;
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	@JSON
@@ -601,7 +601,7 @@ public class BookmarksFolderModelImpl extends BaseModelImpl<BookmarksFolder>
 
 	@Override
 	public void setDescription(String description) {
-		_description = description;
+		_description = normalize(description);
 	}
 
 	@JSON
@@ -678,7 +678,7 @@ public class BookmarksFolderModelImpl extends BaseModelImpl<BookmarksFolder>
 
 	@Override
 	public void setStatusByUserName(String statusByUserName) {
-		_statusByUserName = statusByUserName;
+		_statusByUserName = normalize(statusByUserName);
 	}
 
 	@JSON

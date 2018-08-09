@@ -291,7 +291,7 @@ public class LocalizedEntryModelImpl extends BaseModelImpl<LocalizedEntry>
 
 	@Override
 	public void setDefaultLanguageId(String defaultLanguageId) {
-		_defaultLanguageId = defaultLanguageId;
+		_defaultLanguageId = normalize(defaultLanguageId);
 	}
 
 	@Override

@@ -219,7 +219,7 @@ public class ResourceActionModelImpl extends BaseModelImpl<ResourceAction>
 			_originalName = _name;
 		}
 
-		_name = name;
+		_name = normalize(name);
 	}
 
 	public String getOriginalName() {
@@ -244,7 +244,7 @@ public class ResourceActionModelImpl extends BaseModelImpl<ResourceAction>
 			_originalActionId = _actionId;
 		}
 
-		_actionId = actionId;
+		_actionId = normalize(actionId);
 	}
 
 	public String getOriginalActionId() {

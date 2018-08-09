@@ -292,7 +292,7 @@ public class DLOpenerFileEntryReferenceModelImpl extends BaseModelImpl<DLOpenerF
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -333,7 +333,7 @@ public class DLOpenerFileEntryReferenceModelImpl extends BaseModelImpl<DLOpenerF
 
 	@Override
 	public void setReferenceKey(String referenceKey) {
-		_referenceKey = referenceKey;
+		_referenceKey = normalize(referenceKey);
 	}
 
 	@Override

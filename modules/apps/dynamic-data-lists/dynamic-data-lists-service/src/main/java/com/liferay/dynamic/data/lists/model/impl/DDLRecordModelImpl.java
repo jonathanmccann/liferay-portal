@@ -484,7 +484,7 @@ public class DDLRecordModelImpl extends BaseModelImpl<DDLRecord>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@JSON
@@ -527,7 +527,7 @@ public class DDLRecordModelImpl extends BaseModelImpl<DDLRecord>
 
 	@Override
 	public void setVersionUserName(String versionUserName) {
-		_versionUserName = versionUserName;
+		_versionUserName = normalize(versionUserName);
 	}
 
 	@JSON
@@ -611,7 +611,7 @@ public class DDLRecordModelImpl extends BaseModelImpl<DDLRecord>
 			_originalRecordSetVersion = _recordSetVersion;
 		}
 
-		_recordSetVersion = recordSetVersion;
+		_recordSetVersion = normalize(recordSetVersion);
 	}
 
 	public String getOriginalRecordSetVersion() {
@@ -631,7 +631,7 @@ public class DDLRecordModelImpl extends BaseModelImpl<DDLRecord>
 
 	@Override
 	public void setVersion(String version) {
-		_version = version;
+		_version = normalize(version);
 	}
 
 	@JSON

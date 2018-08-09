@@ -384,7 +384,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -469,7 +469,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 
 	@Override
 	public void setRecipientClassName(String recipientClassName) {
-		_recipientClassName = recipientClassName;
+		_recipientClassName = normalize(recipientClassName);
 	}
 
 	@Override
@@ -504,7 +504,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 
 	@Override
 	public void setRecipientScript(String recipientScript) {
-		_recipientScript = recipientScript;
+		_recipientScript = normalize(recipientScript);
 	}
 
 	@Override
@@ -519,7 +519,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 
 	@Override
 	public void setRecipientScriptLanguage(String recipientScriptLanguage) {
-		_recipientScriptLanguage = recipientScriptLanguage;
+		_recipientScriptLanguage = normalize(recipientScriptLanguage);
 	}
 
 	@Override
@@ -534,7 +534,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 
 	@Override
 	public void setRecipientScriptContexts(String recipientScriptContexts) {
-		_recipientScriptContexts = recipientScriptContexts;
+		_recipientScriptContexts = normalize(recipientScriptContexts);
 	}
 
 	@Override
@@ -549,7 +549,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 
 	@Override
 	public void setAddress(String address) {
-		_address = address;
+		_address = normalize(address);
 	}
 
 	@Override
@@ -564,7 +564,7 @@ public class KaleoNotificationRecipientModelImpl extends BaseModelImpl<KaleoNoti
 
 	@Override
 	public void setNotificationReceptionType(String notificationReceptionType) {
-		_notificationReceptionType = notificationReceptionType;
+		_notificationReceptionType = normalize(notificationReceptionType);
 	}
 
 	public long getColumnBitmask() {

@@ -310,7 +310,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -353,7 +353,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 	public void setFullName(String fullName) {
 		_columnBitmask = -1L;
 
-		_fullName = fullName;
+		_fullName = normalize(fullName);
 	}
 
 	@Override
@@ -374,7 +374,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 			_originalEmailAddress = _emailAddress;
 		}
 
-		_emailAddress = emailAddress;
+		_emailAddress = normalize(emailAddress);
 	}
 
 	public String getOriginalEmailAddress() {
@@ -393,7 +393,7 @@ public class EntryModelImpl extends BaseModelImpl<Entry> implements EntryModel {
 
 	@Override
 	public void setComments(String comments) {
-		_comments = comments;
+		_comments = normalize(comments);
 	}
 
 	public long getColumnBitmask() {

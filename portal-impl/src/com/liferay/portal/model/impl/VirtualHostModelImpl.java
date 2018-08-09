@@ -264,7 +264,7 @@ public class VirtualHostModelImpl extends BaseModelImpl<VirtualHost>
 			_originalHostname = _hostname;
 		}
 
-		_hostname = hostname;
+		_hostname = normalize(hostname);
 	}
 
 	public String getOriginalHostname() {

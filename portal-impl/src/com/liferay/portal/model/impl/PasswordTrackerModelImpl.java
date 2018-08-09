@@ -286,7 +286,7 @@ public class PasswordTrackerModelImpl extends BaseModelImpl<PasswordTracker>
 
 	@Override
 	public void setPassword(String password) {
-		_password = password;
+		_password = normalize(password);
 	}
 
 	public long getColumnBitmask() {

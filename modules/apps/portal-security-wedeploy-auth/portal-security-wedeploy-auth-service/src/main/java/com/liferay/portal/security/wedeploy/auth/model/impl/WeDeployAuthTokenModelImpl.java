@@ -280,7 +280,7 @@ public class WeDeployAuthTokenModelImpl extends BaseModelImpl<WeDeployAuthToken>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -327,7 +327,7 @@ public class WeDeployAuthTokenModelImpl extends BaseModelImpl<WeDeployAuthToken>
 			_originalClientId = _clientId;
 		}
 
-		_clientId = clientId;
+		_clientId = normalize(clientId);
 	}
 
 	public String getOriginalClientId() {
@@ -352,7 +352,7 @@ public class WeDeployAuthTokenModelImpl extends BaseModelImpl<WeDeployAuthToken>
 			_originalToken = _token;
 		}
 
-		_token = token;
+		_token = normalize(token);
 	}
 
 	public String getOriginalToken() {

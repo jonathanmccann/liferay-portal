@@ -227,7 +227,7 @@ public class ServiceComponentModelImpl extends BaseModelImpl<ServiceComponent>
 			_originalBuildNamespace = _buildNamespace;
 		}
 
-		_buildNamespace = buildNamespace;
+		_buildNamespace = normalize(buildNamespace);
 	}
 
 	public String getOriginalBuildNamespace() {
@@ -278,7 +278,7 @@ public class ServiceComponentModelImpl extends BaseModelImpl<ServiceComponent>
 
 	@Override
 	public void setData(String data) {
-		_data = data;
+		_data = normalize(data);
 	}
 
 	public long getColumnBitmask() {

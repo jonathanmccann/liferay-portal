@@ -340,7 +340,7 @@ public class OAuthTokenModelImpl extends BaseModelImpl<OAuthToken>
 
 	@Override
 	public void setUserName(String userName) {
-		_userName = userName;
+		_userName = normalize(userName);
 	}
 
 	@Override
@@ -387,7 +387,7 @@ public class OAuthTokenModelImpl extends BaseModelImpl<OAuthToken>
 			_originalGadgetKey = _gadgetKey;
 		}
 
-		_gadgetKey = gadgetKey;
+		_gadgetKey = normalize(gadgetKey);
 	}
 
 	public String getOriginalGadgetKey() {
@@ -412,7 +412,7 @@ public class OAuthTokenModelImpl extends BaseModelImpl<OAuthToken>
 			_originalServiceName = _serviceName;
 		}
 
-		_serviceName = serviceName;
+		_serviceName = normalize(serviceName);
 	}
 
 	public String getOriginalServiceName() {
@@ -453,7 +453,7 @@ public class OAuthTokenModelImpl extends BaseModelImpl<OAuthToken>
 
 	@Override
 	public void setAccessToken(String accessToken) {
-		_accessToken = accessToken;
+		_accessToken = normalize(accessToken);
 	}
 
 	@Override
@@ -474,7 +474,7 @@ public class OAuthTokenModelImpl extends BaseModelImpl<OAuthToken>
 			_originalTokenName = _tokenName;
 		}
 
-		_tokenName = tokenName;
+		_tokenName = normalize(tokenName);
 	}
 
 	public String getOriginalTokenName() {
@@ -493,7 +493,7 @@ public class OAuthTokenModelImpl extends BaseModelImpl<OAuthToken>
 
 	@Override
 	public void setTokenSecret(String tokenSecret) {
-		_tokenSecret = tokenSecret;
+		_tokenSecret = normalize(tokenSecret);
 	}
 
 	@Override
@@ -508,7 +508,7 @@ public class OAuthTokenModelImpl extends BaseModelImpl<OAuthToken>
 
 	@Override
 	public void setSessionHandle(String sessionHandle) {
-		_sessionHandle = sessionHandle;
+		_sessionHandle = normalize(sessionHandle);
 	}
 
 	@Override

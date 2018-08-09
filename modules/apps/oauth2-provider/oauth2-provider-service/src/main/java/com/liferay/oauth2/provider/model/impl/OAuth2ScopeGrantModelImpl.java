@@ -280,7 +280,7 @@ public class OAuth2ScopeGrantModelImpl extends BaseModelImpl<OAuth2ScopeGrant>
 			_originalApplicationName = _applicationName;
 		}
 
-		_applicationName = applicationName;
+		_applicationName = normalize(applicationName);
 	}
 
 	public String getOriginalApplicationName() {
@@ -305,7 +305,7 @@ public class OAuth2ScopeGrantModelImpl extends BaseModelImpl<OAuth2ScopeGrant>
 			_originalBundleSymbolicName = _bundleSymbolicName;
 		}
 
-		_bundleSymbolicName = bundleSymbolicName;
+		_bundleSymbolicName = normalize(bundleSymbolicName);
 	}
 
 	public String getOriginalBundleSymbolicName() {
@@ -330,7 +330,7 @@ public class OAuth2ScopeGrantModelImpl extends BaseModelImpl<OAuth2ScopeGrant>
 			_originalScope = _scope;
 		}
 
-		_scope = scope;
+		_scope = normalize(scope);
 	}
 
 	public String getOriginalScope() {
