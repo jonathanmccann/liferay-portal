@@ -268,7 +268,10 @@ public class ImageProcessorImpl
 		throws Exception {
 
 		try {
-			if (sourceFileVersion != null) {
+			if ((sourceFileVersion != null) &&
+				(sourceFileVersion.getSize() ==
+					destinationFileVersion.getSize())) {
+
 				copy(sourceFileVersion, destinationFileVersion);
 
 				return;
