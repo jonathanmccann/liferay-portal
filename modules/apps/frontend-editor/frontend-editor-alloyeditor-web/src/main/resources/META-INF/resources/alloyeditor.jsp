@@ -139,6 +139,18 @@ if (showSource) {
 name = HtmlUtil.escapeJS(name);
 %>
 
+<style>
+	span .cke_image_resizer {
+		background-clip: content-box;
+		bottom: -15px;
+		height: 40px;
+		outline-color: transparent;
+		padding: 20px 10px 10px 20px;
+		right: -15px;
+		width: 40px;
+	}
+</style>
+
 <aui:script use="<%= modules %>">
 
 	<%
