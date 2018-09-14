@@ -4984,6 +4984,11 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			boolean passwordReset, boolean silentUpdate)
 		throws PortalException {
 
+		// Password hashing takes long, encrypt the password before we get user
+		// to avoid org.hibernate.StaleObjectStateException
+
+		String newEncPwd = PasswordEncryptorUtil.encrypt(password1);
+
 		User user = userPersistence.findByPrimaryKey(userId);
 
 		if (!silentUpdate) {
@@ -4991,8 +4996,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 
 			trackPassword(user);
 		}
-
-		String newEncPwd = PasswordEncryptorUtil.encrypt(password1);
 
 		if (user.hasCompanyMx()) {
 			mailService.updatePassword(user.getCompanyId(), userId, password1);
