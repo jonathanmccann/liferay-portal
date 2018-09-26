@@ -50,9 +50,7 @@ public class LPKGInnerWarBundleUtil {
 		sb.append(StringPool.DASH);
 		sb.append(lpkgBundle.getVersion());
 		sb.append(StringPool.SLASH);
-
 		sb.append(servletContextName);
-
 		sb.append(".war");
 
 		if (Validator.isNotNull(portalProfileNames)) {
