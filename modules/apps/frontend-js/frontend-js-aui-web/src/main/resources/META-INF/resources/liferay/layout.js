@@ -456,6 +456,17 @@ AUI.add(
 						}
 					);
 
+					Layout.layoutHandler.delegate.dd.plug(
+						{
+							cfg: {
+								horizontal: false,
+								scrollDelay: 30,
+								vertical: true
+							},
+							fn: A.Plugin.DDWinScroll
+						}
+					);
+
 					Layout.INITIALIZED = true;
 				}
 			);
