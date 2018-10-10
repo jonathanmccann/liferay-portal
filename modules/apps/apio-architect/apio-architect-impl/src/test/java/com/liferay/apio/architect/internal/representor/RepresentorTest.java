@@ -58,7 +58,7 @@ public class RepresentorTest {
 		_relatedCollectionsClasses = new ArrayList<>();
 
 		Builder<Dummy, Integer> builder = new RepresentorImpl.BuilderImpl<>(
-			IntegerIdentifier.class,
+			IntegerIdentifier.class, __ -> "",
 			(clazz, relatedCollection) -> {
 				_classes.add(clazz);
 				_keys.add(relatedCollection.getKey());
@@ -225,7 +225,7 @@ public class RepresentorTest {
 
 	@Test
 	public void testRelatedCollections() {
-		Stream<RelatedCollection<?>> relatedCollections =
+		Stream<RelatedCollection<Dummy, ?>> relatedCollections =
 			_representor.getRelatedCollections();
 
 		List<?> list0 = relatedCollections.filter(

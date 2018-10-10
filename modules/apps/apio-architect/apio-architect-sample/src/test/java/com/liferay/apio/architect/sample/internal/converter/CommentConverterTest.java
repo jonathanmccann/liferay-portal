@@ -35,7 +35,7 @@ public class CommentConverterTest {
 	public void testToComment() {
 		Comment comment = toComment(BLOG_POSTING_COMMENT_MODEL);
 
-		assertThat(comment.getAuthorId(), is(1L));
+		assertThat(comment.getCreatorId(), is(1L));
 		assertThat(comment.getDateCreated(), isToday());
 		assertThat(comment.getDateModified(), isToday());
 		assertThat(comment.getId(), is(2L));

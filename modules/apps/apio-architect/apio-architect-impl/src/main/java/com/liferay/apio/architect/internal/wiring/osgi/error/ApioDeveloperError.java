@@ -26,6 +26,21 @@ import com.liferay.apio.architect.uri.Path;
 public class ApioDeveloperError extends Error {
 
 	/**
+	 * Represents the error apio throws when a name function doesn't find the
+	 * name of the identifier class
+	 *
+	 * @review
+	 */
+	public static class IdentifierNameNotFoundInPathFunction
+		extends ApioDeveloperError {
+
+		public IdentifierNameNotFoundInPathFunction(String name) {
+			super(name + " could not be found in the function");
+		}
+
+	}
+
+	/**
 	 * Represents the error the developer should throw when an identifier's path
 	 * mapper is missing.
 	 */

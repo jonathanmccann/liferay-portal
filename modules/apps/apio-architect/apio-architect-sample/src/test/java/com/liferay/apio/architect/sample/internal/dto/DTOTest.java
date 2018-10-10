@@ -70,6 +70,11 @@ public class DTOTest {
 	}
 
 	@Test
+	public void testContactPointModel() {
+		_validator.validate(getPojoClass(ContactPointModel.class));
+	}
+
+	@Test
 	public void testPersonModel() {
 		_validator.validate(getPojoClass(PersonModel.class));
 	}

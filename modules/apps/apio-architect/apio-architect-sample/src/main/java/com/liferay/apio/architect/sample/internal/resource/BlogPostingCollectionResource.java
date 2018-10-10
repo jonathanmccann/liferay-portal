@@ -26,6 +26,7 @@ import com.liferay.apio.architect.resource.CollectionResource;
 import com.liferay.apio.architect.routes.CollectionRoutes;
 import com.liferay.apio.architect.routes.ItemRoutes;
 import com.liferay.apio.architect.sample.internal.auth.PermissionChecker;
+import com.liferay.apio.architect.sample.internal.identifier.RatingIdentifier;
 import com.liferay.apio.architect.sample.internal.resource.BlogPostingCommentNestedCollectionResource.BlogPostingCommentIdentifier;
 import com.liferay.apio.architect.sample.internal.resource.BlogSubscriptionRepresentable.BlogSubscriptionIdentifier;
 import com.liferay.apio.architect.sample.internal.resource.PersonCollectionResource.PersonIdentifier;
@@ -66,7 +67,7 @@ public class BlogPostingCollectionResource
 
 	@Override
 	public String getName() {
-		return "blog-postings-dsl";
+		return "blog-postings";
 	}
 
 	@Override
@@ -95,7 +96,7 @@ public class BlogPostingCollectionResource
 		Representor.Builder<BlogPosting, Long> builder) {
 
 		return builder.types(
-			"BlogPostingDSL"
+			"BlogPosting"
 		).identifier(
 			BlogPosting::getId
 		).addDate(
@@ -107,15 +108,15 @@ public class BlogPostingCollectionResource
 		).addNestedList(
 			"review", BlogPosting::getReviews,
 			reviewBuilder -> reviewBuilder.types(
-				"ReviewDSL"
+				"Review"
 			).addString(
 				"reviewBody", Review::getReviewBody
 			).addNested(
 				"reviewRating", Review::getRating,
 				ratingBuilder -> ratingBuilder.types(
-					"RatingDSL"
+					"Rating"
 				).addLinkedModel(
-					"author", PersonIdentifier.class, Rating::getAuthorId
+					"creator", PersonIdentifier.class, Rating::getCreatorId
 				).addNumber(
 					"bestRating", Rating::getBestRating
 				).addNumber(
@@ -123,6 +124,14 @@ public class BlogPostingCollectionResource
 				).addNumber(
 					"worstRating", Rating::getWorstRating
 				).build()
+			).addRelatedCollection(
+				"similarItems", BlogPostingIdentifier.class,
+				review -> {
+					Rating rating = review.getRating();
+
+					return RatingIdentifier.create(
+						rating.getCreatorId(), rating.getRatingValue());
+				}
 			).build()
 		).addRelatedCollection(
 			"comment", BlogPostingCommentIdentifier.class
@@ -173,7 +182,7 @@ public class BlogPostingCollectionResource
 		).constructor(
 			RatingForm::new
 		).addRequiredLinkedModel(
-			"author", PersonIdentifier.class, RatingForm::_setAuthorId
+			"creator", PersonIdentifier.class, RatingForm::_setCreatorId
 		).addRequiredLong(
 			"ratingValue", RatingForm::_setRatingValue
 		).build();
@@ -292,8 +301,8 @@ public class BlogPostingCollectionResource
 	private static class RatingForm implements Rating {
 
 		@Override
-		public Long getAuthorId() {
-			return _authorId;
+		public Long getCreatorId() {
+			return _creatorId;
 		}
 
 		@Override
@@ -301,15 +310,15 @@ public class BlogPostingCollectionResource
 			return _ratingValue;
 		}
 
-		private void _setAuthorId(Long authorId) {
-			_authorId = authorId;
+		private void _setCreatorId(Long creatorId) {
+			_creatorId = creatorId;
 		}
 
 		private void _setRatingValue(Long ratingValue) {
 			_ratingValue = ratingValue;
 		}
 
-		private Long _authorId;
+		private Long _creatorId;
 		private Long _ratingValue;
 
 	}

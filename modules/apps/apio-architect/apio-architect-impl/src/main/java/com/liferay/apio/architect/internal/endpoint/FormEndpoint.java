@@ -17,8 +17,8 @@ package com.liferay.apio.architect.internal.endpoint;
 import static com.liferay.apio.architect.internal.endpoint.ExceptionSupplierUtil.notFound;
 
 import com.liferay.apio.architect.form.Form;
-import com.liferay.apio.architect.function.throwable.ThrowableBiFunction;
 import com.liferay.apio.architect.function.throwable.ThrowableFunction;
+import com.liferay.apio.architect.function.throwable.ThrowableTriFunction;
 import com.liferay.apio.architect.functional.Try;
 import com.liferay.apio.architect.routes.CollectionRoutes;
 import com.liferay.apio.architect.routes.ItemRoutes;
@@ -40,8 +40,9 @@ public class FormEndpoint {
 			collectionRoutesFunction,
 		ThrowableFunction<String, ItemRoutes<Object, Object>>
 			itemRoutesFunction,
-		ThrowableBiFunction
-			<String, String, NestedCollectionRoutes<Object, Object, Object>>
+		ThrowableTriFunction
+			<String, String, String,
+			 NestedCollectionRoutes<Object, Object, Object>>
 				nestedCollectionRoutesFunction) {
 
 		_collectionRoutesFunction = collectionRoutesFunction;
@@ -112,7 +113,7 @@ public class FormEndpoint {
 			() -> _nestedCollectionRoutesFunction.andThen(
 				NestedCollectionRoutes::getFormOptional
 			).apply(
-				name, nestedName
+				name, nestedName, null
 			),
 			notFound(name, nestedName));
 	}
@@ -140,8 +141,8 @@ public class FormEndpoint {
 		_collectionRoutesFunction;
 	private final ThrowableFunction<String, ItemRoutes<Object, Object>>
 		_itemRoutesFunction;
-	private final ThrowableBiFunction
-		<String, String, NestedCollectionRoutes<Object, Object, Object>>
+	private final ThrowableTriFunction
+		<String, String, String, NestedCollectionRoutes<Object, Object, Object>>
 			_nestedCollectionRoutesFunction;
 
 }

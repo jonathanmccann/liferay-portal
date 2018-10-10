@@ -2,8 +2,8 @@
     <a href="https://travis-ci.org/liferay/com-liferay-apio-architect">
         <img src="https://travis-ci.org/liferay/com-liferay-apio-architect.svg?branch=master" alt="Travis CI" />
     </a>
-    <a href='https://coveralls.io/github/liferay/com-liferay-apio-architect?branch=master'>
-        <img src='https://coveralls.io/repos/github/liferay/com-liferay-apio-architect/badge.svg?branch=master' alt='Coverage Status' />
+    <a href="https://codecov.io/gh/liferay/com-liferay-apio-architect">
+        <img src="https://codecov.io/gh/liferay/com-liferay-apio-architect/branch/master/graph/badge.svg" alt="Codecov"/>
     </a>
     <a href="https://codebeat.co/projects/github-com-liferay-com-liferay-apio-architect-master">
         <img alt="codebeat badge" src="https://codebeat.co/badges/bb871bcd-dd93-49f2-a8bc-6166169b0e44" />

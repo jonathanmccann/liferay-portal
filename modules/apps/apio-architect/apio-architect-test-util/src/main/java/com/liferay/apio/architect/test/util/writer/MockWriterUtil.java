@@ -53,6 +53,31 @@ import java.util.function.Function;
 public class MockWriterUtil {
 
 	/**
+	 * Returns a mock name from an identifier class.
+	 *
+	 * @param  identifierClass the identifier class
+	 * @return the mock identifier name from the identifier class
+	 * @review
+	 */
+	public static String getIdentifierName(
+		Class<? extends Identifier<?>> identifierClass) {
+
+		if (identifierClass.equals(FirstEmbeddedId.class)) {
+			return "first";
+		}
+
+		if (identifierClass.equals(SecondEmbeddedId.class)) {
+			return "second";
+		}
+
+		if (identifierClass.equals(ThirdEmbeddedId.class)) {
+			return "third";
+		}
+
+		return null;
+	}
+
+	/**
 	 * Returns a model class's {@link Representor}.
 	 *
 	 * @return the model class's {@code Representor}

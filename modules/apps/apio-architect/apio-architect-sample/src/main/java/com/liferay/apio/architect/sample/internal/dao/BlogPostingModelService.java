@@ -65,7 +65,7 @@ public class BlogPostingModelService {
 
 			RandomService randomService = faker.random();
 
-			long creatorId = randomService.nextInt(
+			long personId = randomService.nextInt(
 				_personModelService.getCount());
 
 			DateAndTime dateAndTime = faker.date();
@@ -79,8 +79,8 @@ public class BlogPostingModelService {
 			).mapToObj(
 				__ -> randomService.nextInt(_personModelService.getCount())
 			).map(
-				authorId -> new RatingModel(
-					(long)authorId, (long)randomService.nextInt(6))
+				creatorId -> new RatingModel(
+					(long)creatorId, (long)randomService.nextInt(6))
 			).map(
 				ratingModel -> new ReviewModel(lorem.sentence(), ratingModel)
 			).collect(
@@ -88,7 +88,7 @@ public class BlogPostingModelService {
 			);
 
 			BlogPostingModel blogPostingModel = new BlogPostingModel(
-				_count.get(), lorem.paragraph(), date, creatorId, date,
+				_count.get(), lorem.paragraph(), date, personId, date,
 				reviewModels, lorem.sentence(), book.title());
 
 			_blogPostingModels.put(_count.getAndIncrement(), blogPostingModel);

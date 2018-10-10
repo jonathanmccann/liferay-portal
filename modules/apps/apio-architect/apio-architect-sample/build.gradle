@@ -1,5 +1,45 @@
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+import aQute.bnd.gradle.Export
+import aQute.bnd.gradle.Resolve
+
+buildscript {
+	dependencies {
+		classpath group: "biz.aQute.bnd", name: "biz.aQute.bnd.gradle", version: "4.0.0"
+	}
+
+	repositories {
+		mavenCentral()
+	}
+}
+
+task export(type: Export) {
+	description 'Exports the sample.bndrun into a runnable jar.'
+
+	group 'sample'
+
+	bndrun 'sample.bndrun'
+
+	bundles configurations.compileOnly
+}
+
+task resolve(type: Resolve) {
+	description 'Updates the sample.bndrun "runBundles" section.'
+
+	group 'sample'
+
+	bndrun 'sample.bndrun'
+
+	bundles configurations.compileOnly
+}
+
+task run() {
+	dependsOn export
+
+	doLast {
+		javaexec {
+			main = "-jar"; args "build/distributions/executable/sample.jar"
+		}
+	}
+}
 
 dependencies {
 	compileInclude group: "com.github.javafaker", name: "javafaker", version: "0.13"
@@ -8,22 +48,40 @@ dependencies {
 	compileInclude group: "org.apache.commons", name: "commons-lang3", version: "3.5"
 
 	compileOnly group: "javax.servlet", name: "javax.servlet-api", version: "3.0.1"
-	compileOnly group: "javax.ws.rs", name: "javax.ws.rs-api", version: "2.1"
+	compileOnly group: "org.apache.aries.spec", name: "org.apache.aries.javax.jax.rs-api", version: "1.0.0"
+	compileOnly group: "org.apache.felix", name: "org.apache.felix.gogo.command", version: "1.0.2"
+	compileOnly group: "org.apache.felix", name: "org.apache.felix.gogo.runtime", version: "1.0.6"
+	compileOnly group: "org.apache.felix", name: "org.apache.felix.gogo.shell", version: "1.0.0"
+	compileOnly group: "org.apache.felix", name: "org.apache.felix.scr", version: "2.0.8"
+	compileOnly group: "org.apache.felix", name: "org.apache.felix.shell.remote", version: "1.2.0"
 	compileOnly group: "org.osgi", name: "org.osgi.core", version: "6.0.0"
+	compileOnly group: "org.osgi", name: "org.osgi.service.cm", version: "1.5.0"
 	compileOnly group: "org.osgi", name: "org.osgi.service.component.annotations", version: "1.3.0"
+	compileOnly group: "org.osgi", name: "org.osgi.service.jaxrs", version: "1.0.0"
+	compileOnly group: "org.osgi", name: "org.osgi.util.function", version: "1.1.0"
+	compileOnly group: "org.osgi", name: "org.osgi.util.promise", version: "1.1.0"
 	compileOnly project(":apps:apio-architect:apio-architect-api")
+	compileOnly project(":apps:apio-architect:apio-architect-exception-mapper-impl")
+	compileOnly project(":apps:apio-architect:apio-architect-impl")
+	compileOnly project(":apps:apio-architect:apio-architect-uri-mapper-impl")
+
+	runtime group: "ch.qos.logback", name: "logback-classic", version: "1.2.3"
+	runtime group: "org.apache.aries.jax.rs", name: "org.apache.aries.jax.rs.whiteboard", version: "1.0.0"
+	runtime group: "org.apache.felix", name: "org.apache.felix.configadmin", version: "1.8.14"
+	runtime group: "org.apache.felix", name: "org.apache.felix.eventadmin", version: "1.4.8"
+	runtime group: "org.apache.felix", name: "org.apache.felix.http.jetty", version: "3.4.0"
+	runtime group: "org.eclipse.platform", name: "org.eclipse.osgi", version: "3.13.0"
 
 	testCompile group: "com.github.stefanbirkner", name: "system-rules", version: "1.17.0"
 	testCompile group: "com.openpojo", name: "openpojo", version: "0.8.10"
 	testCompile group: "org.exparity", name: "hamcrest-date", version: "2.0.4"
 	testCompile group: "org.glassfish.jersey.core", name: "jersey-common", version: "2.26"
-	testCompile group: "org.hamcrest", name: "java-hamcrest", version: "2.0.0.0"
-	testCompile project(":apps:apio-architect:apio-architect-impl")
 	testCompile project(":apps:apio-architect:apio-architect-test-util")
 }
 
 deploy {
-	onlyIf {
-		project.hasProperty "sample-whiteboard"
-	}
+	enabled = false
 }
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"

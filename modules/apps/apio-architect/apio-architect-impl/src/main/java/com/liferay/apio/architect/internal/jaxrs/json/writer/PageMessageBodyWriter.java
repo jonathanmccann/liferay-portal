@@ -21,8 +21,10 @@ import com.liferay.apio.architect.functional.Try.Success;
 import com.liferay.apio.architect.internal.jaxrs.json.writer.base.BaseMessageBodyWriter;
 import com.liferay.apio.architect.internal.message.json.PageMessageMapper;
 import com.liferay.apio.architect.internal.request.RequestInfo;
+import com.liferay.apio.architect.internal.wiring.osgi.manager.base.ClassNameBaseManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.message.json.PageMessageMapperManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.representable.RepresentableManager;
+import com.liferay.apio.architect.internal.wiring.osgi.manager.router.ReusableNestedCollectionRouterManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.uri.mapper.PathIdentifierMapperManager;
 import com.liferay.apio.architect.internal.wiring.osgi.util.GenericUtil;
 import com.liferay.apio.architect.internal.writer.PageWriter;
@@ -87,7 +89,10 @@ public class PageMessageBodyWriter<T>
 			).pageMessageMapper(
 				pageMessageMapper
 			).pathFunction(
-				_pathIdentifierMapperManager::mapToPath
+				(name, identifier) -> _pathIdentifierMapperManager.mapToPath(
+					name, identifier,
+					(ClassNameBaseManager)
+						_reusableNestedCollectionRouterManager)
 			).resourceNameFunction(
 				nameManager::getNameOptional
 			).representorFunction(
@@ -110,5 +115,9 @@ public class PageMessageBodyWriter<T>
 
 	@Reference
 	private RepresentableManager _representableManager;
+
+	@Reference
+	private ReusableNestedCollectionRouterManager
+		_reusableNestedCollectionRouterManager;
 
 }

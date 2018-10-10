@@ -40,8 +40,8 @@ public class CommentConverter {
 		return new Comment() {
 
 			@Override
-			public Long getAuthorId() {
-				return blogPostingCommentModel.getAuthorId();
+			public Long getCreatorId() {
+				return blogPostingCommentModel.getCreatorId();
 			}
 
 			@Override

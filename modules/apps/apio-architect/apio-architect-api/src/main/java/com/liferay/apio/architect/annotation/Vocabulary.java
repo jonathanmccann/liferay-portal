@@ -32,6 +32,40 @@ import java.lang.annotation.Target;
 public @interface Vocabulary {
 
 	/**
+	 * Indicates that a type has a bidirectional link to another resource's
+	 * page.
+	 *
+	 * <p>
+	 * Annotation has an attribute to indicate the type of the resource being
+	 * linked to, and the property field that holds information about the
+	 * property that will be added to the linked type.
+	 * </p>
+	 *
+	 * @review
+	 */
+	@Retention(RUNTIME)
+	@Target(METHOD)
+	public @interface BidirectionalModel {
+
+		/**
+		 * Returns the field information.
+		 *
+		 * @return the field information
+		 * @review
+		 */
+		public Field field();
+
+		/**
+		 * Returns the class of the resource being linked to.
+		 *
+		 * @return the class of the resource being linked to
+		 * @review
+		 */
+		public Class<? extends Identifier<?>> modelClass();
+
+	}
+
+	/**
 	 * Provides information about a field. This annotation should always be used
 	 * on an interface method.
 	 *

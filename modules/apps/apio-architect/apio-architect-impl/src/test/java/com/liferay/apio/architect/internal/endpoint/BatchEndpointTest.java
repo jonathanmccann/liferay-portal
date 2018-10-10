@@ -214,7 +214,7 @@ public class BatchEndpointTest {
 
 	private static Representor<Object> _representor() {
 		Representor.Builder<Object, Object> builder =
-			new RepresentorImpl.BuilderImpl<>(null);
+			new RepresentorImpl.BuilderImpl<>(null, null);
 
 		return builder.types(
 			""

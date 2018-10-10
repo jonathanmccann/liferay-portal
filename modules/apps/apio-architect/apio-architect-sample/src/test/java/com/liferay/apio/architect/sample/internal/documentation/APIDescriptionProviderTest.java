@@ -16,7 +16,6 @@ package com.liferay.apio.architect.sample.internal.documentation;
 
 import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.emptyString;
 import static org.hamcrest.core.Is.is;
 
 import com.liferay.apio.architect.documentation.APIDescription;
@@ -35,7 +34,7 @@ public class APIDescriptionProviderTest {
 
 		APIDescription apiDescription = provider.createContext(null);
 
-		assertThat(apiDescription.get(), is(not(emptyString())));
+		assertThat(apiDescription.get(), is(not("")));
 	}
 
 }

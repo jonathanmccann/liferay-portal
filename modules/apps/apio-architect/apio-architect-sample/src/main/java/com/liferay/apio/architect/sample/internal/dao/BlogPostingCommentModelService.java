@@ -62,7 +62,7 @@ public class BlogPostingCommentModelService {
 			Random random = new Random();
 
 			for (int i = 0; i < random.nextInt(70); i++) {
-				long authorId = random.nextInt(_personModelService.getCount());
+				long creatorId = random.nextInt(_personModelService.getCount());
 
 				Faker faker = new Faker();
 
@@ -74,7 +74,7 @@ public class BlogPostingCommentModelService {
 
 				BlogPostingCommentModel blogPostingCommentModel =
 					new BlogPostingCommentModel(
-						authorId, _count.get(), index,
+						creatorId, _count.get(), index,
 						shakespeare.hamletQuote(), date, date);
 
 				blogPostingCommentModels.put(
@@ -88,18 +88,18 @@ public class BlogPostingCommentModelService {
 	/**
 	 * Adds a new blog posting comment.
 	 *
-	 * @param  authorId the ID of the blog posting comment's author
+	 * @param  creatorId the ID of the blog posting comment's creator
 	 * @param  blogPostingModelId the blog posting comment's ID
 	 * @param  content the blog posting comment's content
 	 * @return the new blog posting comment
 	 */
 	public BlogPostingCommentModel create(
-		long authorId, long blogPostingModelId, String content) {
+		long creatorId, long blogPostingModelId, String content) {
 
 		BlogPostingCommentModel blogPostingCommentModel =
 			new BlogPostingCommentModel(
-				authorId, _count.get(), blogPostingModelId, content, new Date(),
-				new Date());
+				creatorId, _count.get(), blogPostingModelId, content,
+				new Date(), new Date());
 
 		Map<Long, BlogPostingCommentModel> blogPostingCommentModels =
 			_blogPostingCommentModels.computeIfAbsent(
@@ -209,7 +209,7 @@ public class BlogPostingCommentModelService {
 
 		Optional<BlogPostingCommentModel> newOptional = oldOptional.map(
 			blogPostingCommentModel -> new BlogPostingCommentModel(
-				blogPostingCommentModel.getAuthorId(), id,
+				blogPostingCommentModel.getCreatorId(), id,
 				blogPostingCommentModel.getBlogPostingModelId(), content,
 				blogPostingCommentModel.getCreateDate(), new Date()));
 

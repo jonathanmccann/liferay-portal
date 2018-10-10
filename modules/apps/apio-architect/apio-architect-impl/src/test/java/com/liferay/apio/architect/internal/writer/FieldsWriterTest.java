@@ -30,6 +30,7 @@ import static org.hamcrest.collection.IsMapWithSize.aMapWithSize;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsEqual.equalTo;
 
+import com.liferay.apio.architect.internal.alias.PathFunction;
 import com.liferay.apio.architect.internal.list.FunctionalList;
 import com.liferay.apio.architect.internal.related.RelatedModelImpl;
 import com.liferay.apio.architect.internal.request.RequestInfo;
@@ -101,7 +102,7 @@ public class FieldsWriterTest {
 				() -> "first", "root", Collections.emptyList()),
 			_requestInfo, createRootModelRepresentor(true),
 			new Path("name", "id"), new FunctionalList<>(null, "first"),
-			MockWriterUtil::getSingleModel);
+			MockWriterUtil::getSingleModel, null);
 	}
 
 	@Test
@@ -110,7 +111,7 @@ public class FieldsWriterTest {
 			3, "", Collections.emptyList());
 
 		RelatedModel<Integer, String> relatedModel = new RelatedModelImpl<>(
-			"key", FirstEmbeddedId.class, String::valueOf);
+			"key", FirstEmbeddedId.class, String::valueOf, () -> null);
 
 		Optional<SingleModel<FirstEmbeddedModel>> optional =
 			FieldsWriter.getSingleModel(
@@ -247,8 +248,7 @@ public class FieldsWriterTest {
 			new ArrayList<>();
 		List<SingleModel> singleModels = new ArrayList<>();
 
-		Function<SingleModel<?>, Optional<Path>> pathFunction = Mockito.mock(
-			Function.class);
+		PathFunction pathFunction = Mockito.mock(PathFunction.class);
 
 		Mockito.when(
 			_requestInfo.getEmbedded()
@@ -257,7 +257,7 @@ public class FieldsWriterTest {
 		);
 
 		Mockito.when(
-			pathFunction.apply(Mockito.any())
+			pathFunction.apply(Mockito.any(), Mockito.any())
 		).thenReturn(
 			Optional.of(new Path("name1", "id1")),
 			Optional.of(new Path("name2", "id2")),
@@ -331,11 +331,10 @@ public class FieldsWriterTest {
 		List<String> linkedRelatedModelURLs = new ArrayList<>();
 		List<FunctionalList<String>> linkedPathElementsList = new ArrayList<>();
 
-		Function<SingleModel<?>, Optional<Path>> pathFunction = Mockito.mock(
-			Function.class);
+		PathFunction pathFunction = Mockito.mock(PathFunction.class);
 
 		Mockito.when(
-			pathFunction.apply(Mockito.any())
+			pathFunction.apply(Mockito.any(), Mockito.any())
 		).thenReturn(
 			Optional.of(new Path("name2", "id2"))
 		);
@@ -367,11 +366,10 @@ public class FieldsWriterTest {
 		List<FunctionalList<String>> embeddedPathElementsList =
 			new ArrayList<>();
 
-		Function<SingleModel<?>, Optional<Path>> pathFunction = Mockito.mock(
-			Function.class);
+		PathFunction pathFunction = Mockito.mock(PathFunction.class);
 
 		Mockito.when(
-			pathFunction.apply(Mockito.any())
+			pathFunction.apply(Mockito.any(), Mockito.any())
 		).thenReturn(
 			Optional.of(new Path("name1", "id1")),
 			Optional.of(new Path("name2", "id2")),
@@ -415,11 +413,10 @@ public class FieldsWriterTest {
 		List<FunctionalList<String>> embeddedPathElementsList =
 			new ArrayList<>();
 
-		Function<SingleModel<?>, Optional<Path>> pathFunction = Mockito.mock(
-			Function.class);
+		PathFunction pathFunction = Mockito.mock(PathFunction.class);
 
 		Mockito.when(
-			pathFunction.apply(Mockito.any())
+			pathFunction.apply(Mockito.any(), Mockito.any())
 		).thenReturn(
 			Optional.of(new Path("name1", "id1")),
 			Optional.of(new Path("name2", "id2")),
@@ -469,11 +466,10 @@ public class FieldsWriterTest {
 		List<FunctionalList<String>> embeddedPathElementsList =
 			new ArrayList<>();
 
-		Function<SingleModel<?>, Optional<Path>> pathFunction = Mockito.mock(
-			Function.class);
+		PathFunction pathFunction = Mockito.mock(PathFunction.class);
 
 		Mockito.when(
-			pathFunction.apply(Mockito.any())
+			pathFunction.apply(Mockito.any(), Mockito.any())
 		).thenReturn(
 			Optional.of(new Path("name2", "id2"))
 		);

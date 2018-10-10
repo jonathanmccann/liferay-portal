@@ -29,19 +29,19 @@ import java.util.Date;
  * @see    <a href="https://schema.org/Comment">Comment</a>
  * @review
  */
-@Type("Comment")
+@Type("CommentAnnotated")
 public interface Comment extends Identifier<Long> {
 
 	/**
-	 * Returns the comment's author.
+	 * Returns the comment's creator.
 	 *
-	 * @return the comment's author
-	 * @see    <a href="https://schema.org/author">author</a>
+	 * @return the comment's creator
+	 * @see    <a href="https://schema.org/creator">creator</a>
 	 * @review
 	 */
-	@Field("author")
+	@Field("creator")
 	@LinkedModel(Person.class)
-	public Long getAuthorId();
+	public Long getCreatorId();
 
 	/**
 	 * Returns the comment's creation date.

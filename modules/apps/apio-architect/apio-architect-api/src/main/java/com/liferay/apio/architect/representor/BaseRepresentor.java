@@ -23,6 +23,7 @@ import com.liferay.apio.architect.alias.representor.NestedListFieldFunction;
 import com.liferay.apio.architect.file.BinaryFile;
 import com.liferay.apio.architect.identifier.Identifier;
 import com.liferay.apio.architect.language.AcceptLanguage;
+import com.liferay.apio.architect.related.RelatedCollection;
 import com.liferay.apio.architect.related.RelatedModel;
 
 import java.util.Date;
@@ -31,6 +32,7 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 /**
  * Base class for {@code Representors}.
@@ -146,6 +148,14 @@ public interface BaseRepresentor<T> {
 	 * @return the primary type
 	 */
 	public String getPrimaryType();
+
+	/**
+	 * Returns the related collections.
+	 *
+	 * @return the related collections
+	 */
+	public Stream<RelatedCollection<T, ? extends Identifier>>
+		getRelatedCollections();
 
 	/**
 	 * Returns the related models.

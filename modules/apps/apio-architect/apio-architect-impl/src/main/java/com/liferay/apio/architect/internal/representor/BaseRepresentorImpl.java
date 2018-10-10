@@ -25,6 +25,7 @@ import com.liferay.apio.architect.identifier.Identifier;
 import com.liferay.apio.architect.internal.related.RelatedModelImpl;
 import com.liferay.apio.architect.internal.unsafe.Unsafe;
 import com.liferay.apio.architect.language.AcceptLanguage;
+import com.liferay.apio.architect.related.RelatedCollection;
 import com.liferay.apio.architect.related.RelatedModel;
 import com.liferay.apio.architect.representor.BaseRepresentor;
 import com.liferay.apio.architect.representor.NestedRepresentor;
@@ -39,6 +40,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * @author Alejandro Hernández
@@ -198,13 +200,18 @@ public abstract class BaseRepresentorImpl<T> implements BaseRepresentor<T> {
 		return types;
 	}
 
-	protected BaseRepresentorImpl() {
+	protected BaseRepresentorImpl(
+		Function<Class<? extends Identifier<?>>, String> nameFunction,
+		Supplier<List<RelatedCollection<T, ?>>> supplier) {
+
 		binaryFunctions = new LinkedHashMap<>();
 		fieldFunctions = new LinkedHashMap<>();
 		nestedFieldFunctions = new ArrayList<>();
 		nestedListFieldFunctions = new ArrayList<>();
 		relatedModels = new ArrayList<>();
 		types = new ArrayList<>();
+		_nameFunction = nameFunction;
+		this.supplier = supplier;
 	}
 
 	/**
@@ -318,7 +325,7 @@ public abstract class BaseRepresentorImpl<T> implements BaseRepresentor<T> {
 
 			}
 		).apply(
-			new NestedRepresentorImpl.BuilderImpl<>()
+			new NestedRepresentorImpl.BuilderImpl(_nameFunction, supplier)
 		);
 
 		nestedFieldFunctions.add(nestedFieldFunction);
@@ -358,7 +365,7 @@ public abstract class BaseRepresentorImpl<T> implements BaseRepresentor<T> {
 
 			}
 		).apply(
-			new NestedRepresentorImpl.BuilderImpl<>()
+			new NestedRepresentorImpl.BuilderImpl(_nameFunction, supplier)
 		);
 
 		nestedListFieldFunctions.add(nestedFieldFunction);
@@ -401,7 +408,8 @@ public abstract class BaseRepresentorImpl<T> implements BaseRepresentor<T> {
 		Function<T, S> modelToIdentifierFunction) {
 
 		RelatedModel<T, S> relatedModel = new RelatedModelImpl<>(
-			key, identifierClass, modelToIdentifierFunction);
+			key, identifierClass, modelToIdentifierFunction,
+			() -> _nameFunction.apply(identifierClass));
 
 		relatedModels.add(relatedModel);
 	}
@@ -464,6 +472,7 @@ public abstract class BaseRepresentorImpl<T> implements BaseRepresentor<T> {
 		nestedListFieldFunctions;
 	protected String primaryType;
 	protected final List<RelatedModel<T, ?>> relatedModels;
+	protected final Supplier<List<RelatedCollection<T, ?>>> supplier;
 	protected final List<String> types;
 
 	protected abstract static class BaseBuilderImpl
@@ -680,5 +689,8 @@ public abstract class BaseRepresentorImpl<T> implements BaseRepresentor<T> {
 
 		list.add(fieldFunction);
 	}
+
+	private final Function<Class<? extends Identifier<?>>, String>
+		_nameFunction;
 
 }

@@ -31,7 +31,7 @@ import java.util.List;
  * @see    <a href="https://schema.org/BlogPosting">BlogPosting</a>
  * @review
  */
-@Type("BlogPosting")
+@Type("BlogPostingAnnotated")
 public interface BlogPosting extends Identifier<Long> {
 
 	/**

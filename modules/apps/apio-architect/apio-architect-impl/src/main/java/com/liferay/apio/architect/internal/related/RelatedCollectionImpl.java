@@ -17,23 +17,33 @@ package com.liferay.apio.architect.internal.related;
 import com.liferay.apio.architect.identifier.Identifier;
 import com.liferay.apio.architect.related.RelatedCollection;
 
+import java.util.function.Function;
+
 /**
  * Represents the relation between a resource and a collection. The type of the
  * resource's identifier must be a subclass of {@code Identifier}.
  *
  * @author Alejandro Hernández
- * @param  <T> the type of the resource's identifier
+ * @param  <S> the type of the resource's identifier
  */
-public class RelatedCollectionImpl<T extends Identifier>
-	implements RelatedCollection<T> {
+public class RelatedCollectionImpl<T, S extends Identifier>
+	implements RelatedCollection<T, S> {
 
-	public RelatedCollectionImpl(String key, Class<T> identifierClass) {
+	public RelatedCollectionImpl(String key, Class<S> identifierClass) {
+		this(key, identifierClass, null);
+	}
+
+	public RelatedCollectionImpl(
+		String key, Class<S> identifierClass,
+		Function<T, ?> modelToIdentifierFunction) {
+
 		_key = key;
 		_identifierClass = identifierClass;
+		_modelToIdentifierFunction = modelToIdentifierFunction;
 	}
 
 	@Override
-	public Class<T> getIdentifierClass() {
+	public Class<S> getIdentifierClass() {
 		return _identifierClass;
 	}
 
@@ -42,7 +52,13 @@ public class RelatedCollectionImpl<T extends Identifier>
 		return _key;
 	}
 
-	private final Class<T> _identifierClass;
+	@Override
+	public Function<T, ?> getModelToIdentifierFunction() {
+		return _modelToIdentifierFunction;
+	}
+
+	private final Class<S> _identifierClass;
 	private final String _key;
+	private Function<T, ?> _modelToIdentifierFunction;
 
 }

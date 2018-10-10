@@ -60,7 +60,7 @@ public class BlogPostingCommentNestedCollectionResource
 
 	@Override
 	public String getName() {
-		return "comments-dsl";
+		return "comments";
 	}
 
 	@Override
@@ -84,7 +84,7 @@ public class BlogPostingCommentNestedCollectionResource
 		Representor.Builder<Comment, Long> builder) {
 
 		return builder.types(
-			"CommentDSL"
+			"Comment"
 		).identifier(
 			Comment::getId
 		).addDate(
@@ -92,7 +92,7 @@ public class BlogPostingCommentNestedCollectionResource
 		).addDate(
 			"dateModified", Comment::getDateModified
 		).addLinkedModel(
-			"author", PersonIdentifier.class, Comment::getAuthorId
+			"creator", PersonIdentifier.class, Comment::getCreatorId
 		).addString(
 			"text", Comment::getText
 		).build();
@@ -111,7 +111,7 @@ public class BlogPostingCommentNestedCollectionResource
 		).constructor(
 			CommentForm::new
 		).addRequiredLinkedModel(
-			"author", PersonIdentifier.class, CommentForm::_setAuthorId
+			"creator", PersonIdentifier.class, CommentForm::_setCreatorId
 		).addRequiredString(
 			"text", CommentForm::_setText
 		).build();
@@ -123,8 +123,8 @@ public class BlogPostingCommentNestedCollectionResource
 	private static class CommentForm implements Comment {
 
 		@Override
-		public Long getAuthorId() {
-			return _authorId;
+		public Long getCreatorId() {
+			return _creatorId;
 		}
 
 		@Override
@@ -147,15 +147,15 @@ public class BlogPostingCommentNestedCollectionResource
 			return _text;
 		}
 
-		private void _setAuthorId(Long authorId) {
-			_authorId = authorId;
+		private void _setCreatorId(Long creatorId) {
+			_creatorId = creatorId;
 		}
 
 		private void _setText(String text) {
 			_text = text;
 		}
 
-		private Long _authorId;
+		private Long _creatorId;
 		private String _text;
 
 	}

@@ -30,7 +30,7 @@ import java.util.List;
  * @see    <a href="https://schema.org/Person">Person</a>
  * @review
  */
-@Type("Person")
+@Type("PersonAnnotated")
 public interface Person extends Identifier<Long> {
 
 	/**

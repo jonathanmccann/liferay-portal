@@ -27,7 +27,10 @@ import com.liferay.apio.architect.identifier.Identifier;
  * @author Alejandro Hernández
  * @review
  */
-@Type(description = "A blog-person subscription", value = "BlogSubscription")
+@Type(
+	description = "A blog-person subscription",
+	value = "BlogSubscriptionAnnotated"
+)
 public interface BlogSubscription extends Identifier<Long> {
 
 	/**

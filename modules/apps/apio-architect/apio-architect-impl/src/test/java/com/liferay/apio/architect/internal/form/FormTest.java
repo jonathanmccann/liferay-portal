@@ -324,21 +324,30 @@ public class FormTest {
 			new ByteArrayInputStream("Input Stream 2".getBytes(UTF_8)), 0L,
 			"mimetype2", "fileName2");
 
-		Map<String, BinaryFile> files = new HashMap<String, BinaryFile>() {
-			{
-				put("file1", binaryFile1);
-				put("file2", binaryFile2);
+		Function<String, Optional<BinaryFile>> fileFunction = key -> {
+			if ("file1".equals(key)) {
+				return Optional.of(binaryFile1);
 			}
+
+			if ("file2".equals(key)) {
+				return Optional.of(binaryFile2);
+			}
+
+			return Optional.empty();
 		};
 
-		Map<String, List<BinaryFile>> fileLists = Collections.singletonMap(
-			"fileList", asList(binaryFile1, binaryFile2));
+		Function<String, Optional<List<BinaryFile>>> fileListFunction = key -> {
+			if ("fileList".equals(key)) {
+				return Optional.of(asList(binaryFile1, binaryFile2));
+			}
+
+			return Optional.empty();
+		};
 
 		return Body.create(
 			key -> Optional.ofNullable(values.get(key)),
-			key -> Optional.ofNullable(valueLists.get(key)),
-			key -> Optional.ofNullable(fileLists.get(key)),
-			key -> Optional.ofNullable(files.get(key)));
+			key -> Optional.ofNullable(valueLists.get(key)), fileListFunction,
+			fileFunction);
 	}
 
 	private static Form<Map<String, Object>> _mapForm(
