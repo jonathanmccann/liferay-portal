@@ -54,11 +54,10 @@ public class ErrorUtil {
 			exception);
 
 		if (!apiErrorOptional.isPresent()) {
-			Class<? extends Exception> clazz = exception.getClass();
+			_logger.warn(
+				"No exception mapper found for {}", exception.getClass());
 
-			_logger.warn("No exception mapper found for {}", clazz);
-
-			if (clazz.isAssignableFrom(WebApplicationException.class)) {
+			if (exception instanceof WebApplicationException) {
 				WebApplicationException webApplicationException =
 					(WebApplicationException)exception;
 

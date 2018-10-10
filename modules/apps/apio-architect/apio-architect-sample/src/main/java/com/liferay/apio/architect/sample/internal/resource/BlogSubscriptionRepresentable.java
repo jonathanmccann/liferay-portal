@@ -50,7 +50,7 @@ public class BlogSubscriptionRepresentable
 
 	@Override
 	public String getName() {
-		return "blog-subscription-dsl";
+		return "blog-subscription";
 	}
 
 	@Override
@@ -58,7 +58,7 @@ public class BlogSubscriptionRepresentable
 		Representor.Builder<BlogSubscription, Long> builder) {
 
 		return builder.types(
-			"BlogSubscriptionDSL"
+			"BlogSubscription"
 		).identifier(
 			BlogSubscription::getId
 		).addLinkedModel(

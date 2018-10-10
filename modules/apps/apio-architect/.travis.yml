@@ -2,40 +2,12 @@ jdk: oraclejdk8
 
 language: java
 
-services:
-    - docker
-
-sudo: required
-
-install: true
-
 before_script:
-
-    - ./gradlew checkSourceFormatting pmdMain pmdTest pmdTestIntegration test
-
-    - ./gradlew buildAppDockerImage
-
-    - ./gradlew deployDependencies
+    - chmod +x gradlew
 
 script:
-    - set pipefail
-
-    - travis_wait ./gradlew runDocker
-
-    - ./gradlew testIntegration
-
-before_cache:
-    - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
-    - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
-
-cache:
-    directories:
-        - $HOME/.gradle/caches/
-        - $HOME/.gradle/wrapper/
+    - ./gradlew check
+    - ./gradlew codeCoverageReport
 
 after_success:
-    - ./gradlew dumpJacoco
-    - ./gradlew coveralls
-
-after_script:
-    - docker logs apio
+    - bash <(curl -s https://codecov.io/bash)

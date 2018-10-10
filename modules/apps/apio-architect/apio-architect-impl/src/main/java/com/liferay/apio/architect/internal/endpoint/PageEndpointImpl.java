@@ -26,6 +26,7 @@ import com.liferay.apio.architect.alias.IdentifierFunction;
 import com.liferay.apio.architect.consumer.throwable.ThrowableConsumer;
 import com.liferay.apio.architect.form.Body;
 import com.liferay.apio.architect.function.throwable.ThrowableFunction;
+import com.liferay.apio.architect.function.throwable.ThrowableTriFunction;
 import com.liferay.apio.architect.functional.Try;
 import com.liferay.apio.architect.pagination.Page;
 import com.liferay.apio.architect.representor.Representor;
@@ -55,8 +56,9 @@ public class PageEndpointImpl<T, S> implements PageEndpoint<T> {
 		ThrowableSupplier<CollectionRoutes<T, S>> collectionRoutesSupplier,
 		ThrowableSupplier<Representor<T>> representorSupplier,
 		ThrowableSupplier<ItemRoutes<T, S>> itemRoutesSupplier,
-		ThrowableFunction<String, NestedCollectionRoutes<T, S, Object>>
-			nestedCollectionRoutesFunction,
+		ThrowableTriFunction
+			<String, String, String, NestedCollectionRoutes<T, S, Object>>
+				nestedCollectionRoutesFunction,
 		IdentifierFunction<S> pathToIdentifierFunction) {
 
 		_name = name;
@@ -88,7 +90,7 @@ public class PageEndpointImpl<T, S> implements PageEndpoint<T> {
 		String id, String nestedName, Body body) {
 
 		return Try.fromFallible(
-			() -> _nestedCollectionRoutesFunction.apply(nestedName)
+			() -> _nestedCollectionRoutesFunction.apply(_name, nestedName, id)
 		).mapOptional(
 			NestedCollectionRoutes::getNestedCreateItemFunctionOptional
 		).map(
@@ -147,7 +149,7 @@ public class PageEndpointImpl<T, S> implements PageEndpoint<T> {
 		String id, String nestedName) {
 
 		return Try.fromFallible(
-			() -> _nestedCollectionRoutesFunction.apply(nestedName)
+			() -> _nestedCollectionRoutesFunction.apply(_name, nestedName, id)
 		).map(
 			NestedCollectionRoutes::getNestedGetPageFunctionOptional
 		).map(
@@ -157,13 +159,7 @@ public class PageEndpointImpl<T, S> implements PageEndpoint<T> {
 		).map(
 			pathFunction -> pathFunction.apply(new Path(_name, id))
 		).flatMap(
-			identifierFunction -> _singleModelFunction.apply(
-				id
-			).map(
-				this::_getIdentifierFunction
-			).flatMap(
-				identifierFunction::apply
-			)
+			_getIdFunction(id, nestedName)
 		).mapFailMatching(
 			NoSuchElementException.class, notFound(id, nestedName)
 		);
@@ -196,13 +192,33 @@ public class PageEndpointImpl<T, S> implements PageEndpoint<T> {
 		return representor.getIdentifier(singleModel.getModel());
 	}
 
+	private ThrowableFunction
+		<Function<Object, Try<Page<T>>>, Try<Page<T>>> _getIdFunction(
+			String id, String nestedName) {
+
+		if (_name.equals("r")) {
+			return identifierFunction -> identifierFunction.apply(
+				_pathToIdentifierFunction.apply(new Path(id, nestedName))
+			);
+		}
+		else {
+			return identifierFunction -> _singleModelFunction.apply(
+				id
+			).map(
+				this::_getIdentifierFunction
+			).flatMap(
+				identifierFunction::apply
+			);
+		}
+	}
+
 	private final ThrowableSupplier<CollectionRoutes<T, S>>
 		_collectionRoutesSupplier;
 	private final HttpServletRequest _httpServletRequest;
 	private final ThrowableSupplier<ItemRoutes<T, S>> _itemRoutesSupplier;
 	private final String _name;
-	private final ThrowableFunction
-		<String, NestedCollectionRoutes<T, S, Object>>
+	private final ThrowableTriFunction
+		<String, String, String, NestedCollectionRoutes<T, S, Object>>
 			_nestedCollectionRoutesFunction;
 	private final IdentifierFunction<S> _pathToIdentifierFunction;
 	private final ThrowableSupplier<Representor<T>> _representorSupplier;

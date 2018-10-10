@@ -129,7 +129,7 @@ public class BinaryEndpointTest {
 	}
 
 	private static Representor<Object> _representor() {
-		Builder<Object, Object> builder = new BuilderImpl<>(null);
+		Builder<Object, Object> builder = new BuilderImpl<>(null, null);
 
 		return builder.types(
 			""

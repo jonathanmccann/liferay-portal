@@ -140,8 +140,7 @@ public final class URLCreator {
 	public static String createNestedCollectionURL(
 		ApplicationURL applicationURL, Path path, String name) {
 
-		return createAbsoluteURL(
-			applicationURL, join("/", "p", path.asURI(), name));
+		return createAbsoluteURL(applicationURL, _getReusablePath(path, name));
 	}
 
 	/**
@@ -251,6 +250,14 @@ public final class URLCreator {
 		sb.append(operation.getCustomRoute());
 
 		return sb.toString();
+	}
+
+	private static String _getReusablePath(Path path, String name) {
+		if (name.equals(path.getName())) {
+			return join("/", "p", "r", path.asURI());
+		}
+
+		return join("/", "p", path.asURI(), name);
 	}
 
 	private URLCreator() {

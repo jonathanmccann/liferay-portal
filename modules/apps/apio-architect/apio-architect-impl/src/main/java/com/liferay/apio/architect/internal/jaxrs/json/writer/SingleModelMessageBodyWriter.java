@@ -21,8 +21,10 @@ import com.liferay.apio.architect.functional.Try.Success;
 import com.liferay.apio.architect.internal.jaxrs.json.writer.base.BaseMessageBodyWriter;
 import com.liferay.apio.architect.internal.message.json.SingleModelMessageMapper;
 import com.liferay.apio.architect.internal.request.RequestInfo;
+import com.liferay.apio.architect.internal.wiring.osgi.manager.base.ClassNameBaseManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.message.json.SingleModelMessageMapperManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.representable.RepresentableManager;
+import com.liferay.apio.architect.internal.wiring.osgi.manager.router.ReusableNestedCollectionRouterManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.uri.mapper.PathIdentifierMapperManager;
 import com.liferay.apio.architect.internal.wiring.osgi.util.GenericUtil;
 import com.liferay.apio.architect.internal.writer.SingleModelWriter;
@@ -91,7 +93,10 @@ public class SingleModelMessageBodyWriter<T>
 			).modelMessageMapper(
 				singleModelMessageMapper
 			).pathFunction(
-				_pathIdentifierMapperManager::mapToPath
+				(name, identifier) -> _pathIdentifierMapperManager.mapToPath(
+					name, identifier,
+					(ClassNameBaseManager)
+						_reusableNestedCollectionRouterManager)
 			).resourceNameFunction(
 				nameManager::getNameOptional
 			).representorFunction(
@@ -113,6 +118,10 @@ public class SingleModelMessageBodyWriter<T>
 
 	@Reference
 	private RepresentableManager _representableManager;
+
+	@Reference
+	private ReusableNestedCollectionRouterManager
+		_reusableNestedCollectionRouterManager;
 
 	@Reference
 	private SingleModelMessageMapperManager _singleModelMessageMapperManager;

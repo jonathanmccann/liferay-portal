@@ -57,7 +57,7 @@ public class PersonCollectionResource
 
 	@Override
 	public String getName() {
-		return "people-dsl";
+		return "people";
 	}
 
 	@Override
@@ -81,7 +81,7 @@ public class PersonCollectionResource
 		Representor.Builder<Person, Long> builder) {
 
 		return builder.types(
-			"PersonDSL"
+			"Person"
 		).identifier(
 			Person::getId
 		).addDate(
@@ -89,7 +89,7 @@ public class PersonCollectionResource
 		).addNested(
 			"address", Person::getPostalAddress,
 			nestedBuilder -> nestedBuilder.types(
-				"PostalAddressDSL"
+				"PostalAddress"
 			).addString(
 				"addressCountry", PostalAddress::getAddressCountry
 			).addString(

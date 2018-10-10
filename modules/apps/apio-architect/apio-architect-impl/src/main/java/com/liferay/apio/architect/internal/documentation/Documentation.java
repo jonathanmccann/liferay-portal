@@ -43,6 +43,8 @@ public class Documentation {
 		Supplier<Map<String, ItemRoutes>> itemRoutesMapSupplier,
 		Supplier<Map<String, NestedCollectionRoutes>>
 			nestedCollectionRoutesMapSupplier,
+		Supplier<Map<String, NestedCollectionRoutes>>
+			reusableCollectionRoutesMapSupplier,
 		Supplier<CustomDocumentation> customDocumentationSupplier) {
 
 		_apiTitleSupplier = apiTitleSupplier;
@@ -52,6 +54,8 @@ public class Documentation {
 		_routesMapSupplier = collectionRoutesMapSupplier;
 		_itemRoutesMapSupplier = itemRoutesMapSupplier;
 		_nestedCollectionRoutesMapSupplier = nestedCollectionRoutesMapSupplier;
+		_reusableCollectionRoutesMapSupplier =
+			reusableCollectionRoutesMapSupplier;
 		_customDocumentationSupplier = customDocumentationSupplier;
 	}
 
@@ -138,6 +142,8 @@ public class Documentation {
 	private final Supplier<Map<String, NestedCollectionRoutes>>
 		_nestedCollectionRoutesMapSupplier;
 	private final Supplier<Map<String, Representor>> _representorMapSupplier;
+	private final Supplier<Map<String, NestedCollectionRoutes>>
+		_reusableCollectionRoutesMapSupplier;
 	private final Supplier<Map<String, CollectionRoutes>> _routesMapSupplier;
 
 }

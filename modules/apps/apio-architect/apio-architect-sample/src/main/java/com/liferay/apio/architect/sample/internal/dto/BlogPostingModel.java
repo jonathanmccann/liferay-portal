@@ -32,9 +32,9 @@ public class BlogPostingModel {
 
 		_id = id;
 		_content = content;
-		_createDate = createDate;
+		_createDate = new Date(createDate.getTime());
 		_creatorId = creatorId;
-		_modifiedDate = modifiedDate;
+		_modifiedDate = new Date(modifiedDate.getTime());
 		_reviewModels = reviewModels;
 		_subtitle = subtitle;
 		_title = title;

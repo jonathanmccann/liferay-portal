@@ -17,10 +17,8 @@ package com.liferay.apio.architect.representor;
 import aQute.bnd.annotation.ProviderType;
 
 import com.liferay.apio.architect.identifier.Identifier;
-import com.liferay.apio.architect.related.RelatedCollection;
 
 import java.util.function.Function;
-import java.util.stream.Stream;
 
 /**
  * Holds information about the metadata supported for a resource.
@@ -44,14 +42,6 @@ public interface Representor<T> extends BaseRepresentor<T> {
 	 * @return the model's identifier
 	 */
 	public Object getIdentifier(T model);
-
-	/**
-	 * Returns the related collections.
-	 *
-	 * @return the related collections
-	 */
-	public Stream<RelatedCollection<? extends Identifier>>
-		getRelatedCollections();
 
 	/**
 	 * Creates generic representations of your domain models that Apio

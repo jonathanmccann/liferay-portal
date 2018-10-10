@@ -41,7 +41,6 @@ import com.liferay.apio.architect.test.util.internal.writer.MockSingleModelWrite
 import com.liferay.apio.architect.test.util.model.RootModel;
 
 import java.io.File;
-import java.io.IOException;
 
 import java.net.URL;
 
@@ -93,123 +92,6 @@ public class MessageMapperTesterBuilder {
 
 	@SuppressWarnings("UnusedReturnValue")
 	public static class MessageMapperStep {
-
-		/**
-		 * Creates a {@code batch.json.auto} file inside the {@code
-		 * src/test/resources} directory in the provided path. The file contains
-		 * the representation created by the provided {@code
-		 * BatchResultMessageMapper}.
-		 *
-		 * @param  batchResultMessageMapper the {@code BatchResultMessageMapper}
-		 * @return the builder's next step
-		 */
-		public MessageMapperStep createBatchResultFile(
-			BatchResultMessageMapper<String> batchResultMessageMapper) {
-
-			String result = MockBatchResultWriter.write(
-				batchResultMessageMapper);
-
-			_createFile(result, "batch");
-
-			return this;
-		}
-
-		/**
-		 * Creates a {@code documentation.json.auto} file inside the {@code
-		 * src/test/resources} directory in the provided path. The file contains
-		 * the representation created by the provided {@code
-		 * DocumentationMessageMapper}.
-		 *
-		 * @param  documentationMessageMapper the {@code
-		 *         DocumentationMessageMapper}
-		 * @return the builder's next step
-		 */
-		public MessageMapperStep createDocumentationFile(
-			DocumentationMessageMapper documentationMessageMapper) {
-
-			String result = MockDocumentationWriter.write(
-				documentationMessageMapper);
-
-			_createFile(result, "documentation");
-
-			return this;
-		}
-
-		/**
-		 * Creates a {@code error.json.auto} file inside the {@code
-		 * src/test/resources} directory in the provided path. The file contains
-		 * the representation created by the provided {@code
-		 * ErrorMessageMapper}.
-		 *
-		 * @param  errorMessageMapper the {@code ErrorMessageMapper}
-		 * @return the builder's next step
-		 */
-		public MessageMapperStep createErrorFile(
-			ErrorMessageMapper errorMessageMapper) {
-
-			String actual = ErrorWriter.writeError(
-				errorMessageMapper, _MOCK_API_ERROR);
-
-			_createFile(actual, "error");
-
-			return this;
-		}
-
-		/**
-		 * Creates a {@code form.json.auto} file inside the {@code
-		 * src/test/resources} directory in the provided path. The file contains
-		 * the representation created by the provided {@code FormMessageMapper}.
-		 *
-		 * @param  formMessageMapper the {@code FormMessageMapper}
-		 * @return the builder's next step
-		 */
-		public MessageMapperStep createFormFile(
-			FormMessageMapper formMessageMapper) {
-
-			String result = MockFormWriter.write(formMessageMapper);
-
-			_createFile(result, "form");
-
-			return this;
-		}
-
-		/**
-		 * Creates a {@code page.json.auto} file inside the {@code
-		 * src/test/resources} directory in the provided path. The file contains
-		 * the representation created by the provided {@code PageMessageMapper}.
-		 *
-		 * @param  pageMessageMapper the {@code PageMessageMapper}
-		 * @return the builder's next step
-		 */
-		public MessageMapperStep createPageFile(
-			PageMessageMapper<RootModel> pageMessageMapper) {
-
-			String result = MockPageWriter.write(pageMessageMapper);
-
-			_createFile(result, "page");
-
-			return this;
-		}
-
-		/**
-		 * Creates a {@code single_model.json.auto} file inside the {@code
-		 * src/test/resources} directory in the provided path. The file contains
-		 * the representation created by the provided {@code
-		 * SingleModelMessageMapper}.
-		 *
-		 * @param  singleModelMessageMapper the {@code SingleModelMessageMapper}
-		 * @return the builder's next step
-		 */
-		public MessageMapperStep createSingleModelFile(
-			SingleModelMessageMapper<RootModel> singleModelMessageMapper) {
-
-			String result = MockSingleModelWriter.write(
-				singleModelMessageMapper);
-
-			_createFile(result, "single_model");
-
-			return this;
-		}
 
 		/**
 		 * Validates that the output of the provided {@code
@@ -345,20 +227,6 @@ public class MessageMapperTesterBuilder {
 		private MessageMapperStep(Path path, String mediaType) {
 			_path = path;
 			_mediaType = mediaType;
-		}
-
-		private void _createFile(String actual, String fileName) {
-			Path newPath = Paths.get(_path.toString(), fileName + ".json.auto");
-
-			try {
-				Files.write(newPath, actual.getBytes());
-			}
-			catch (IOException ioe) {
-				throw new AssertionError(
-					"Unable to create the file with path: " + newPath);
-			}
-
-			throw new AssertionError("File does not exist. Creating...");
 		}
 
 		private void _validateMessageMapper(

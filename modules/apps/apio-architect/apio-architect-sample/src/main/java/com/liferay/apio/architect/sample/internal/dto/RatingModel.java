@@ -21,18 +21,18 @@ package com.liferay.apio.architect.sample.internal.dto;
  */
 public class RatingModel {
 
-	public RatingModel(Long authorId, Long value) {
-		_authorId = authorId;
+	public RatingModel(Long creatorId, Long value) {
+		_creatorId = creatorId;
 		_value = value;
 	}
 
 	/**
-	 * Returns the ID of the rating's author.
+	 * Returns the ID of the rating's creator.
 	 *
-	 * @return the ID of the rating's author
+	 * @return the ID of the rating's creator
 	 */
-	public Long getAuthorId() {
-		return _authorId;
+	public Long getCreatorId() {
+		return _creatorId;
 	}
 
 	/**
@@ -44,7 +44,7 @@ public class RatingModel {
 		return _value;
 	}
 
-	private final Long _authorId;
+	private final Long _creatorId;
 	private final Long _value;
 
 }

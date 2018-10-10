@@ -18,6 +18,7 @@ import com.liferay.apio.architect.identifier.Identifier;
 import com.liferay.apio.architect.related.RelatedModel;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Represents the relation between two resources.
@@ -33,11 +34,13 @@ public class RelatedModelImpl<T, S> implements RelatedModel<T, S> {
 
 	public RelatedModelImpl(
 		String key, Class<? extends Identifier<S>> identifierClass,
-		Function<T, S> modelToIdentifierFunction) {
+		Function<T, S> modelToIdentifierFunction,
+		Supplier<String> identifierNameSupplier) {
 
 		_key = key;
 		_identifierClass = identifierClass;
 		_modelToIdentifierFunction = modelToIdentifierFunction;
+		_identifierNameSupplier = identifierNameSupplier;
 	}
 
 	@Override
@@ -51,6 +54,11 @@ public class RelatedModelImpl<T, S> implements RelatedModel<T, S> {
 	}
 
 	@Override
+	public String getIdentifierName() {
+		return _identifierNameSupplier.get();
+	}
+
+	@Override
 	public String getKey() {
 		return _key;
 	}
@@ -61,6 +69,7 @@ public class RelatedModelImpl<T, S> implements RelatedModel<T, S> {
 	}
 
 	private final Class<? extends Identifier<S>> _identifierClass;
+	private final Supplier<String> _identifierNameSupplier;
 	private final String _key;
 	private final Function<T, S> _modelToIdentifierFunction;
 

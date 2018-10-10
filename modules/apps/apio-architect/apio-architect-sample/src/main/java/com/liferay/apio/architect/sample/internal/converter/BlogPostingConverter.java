@@ -113,8 +113,8 @@ public class BlogPostingConverter {
 		return new Rating() {
 
 			@Override
-			public Long getAuthorId() {
-				return ratingModel.getAuthorId();
+			public Long getCreatorId() {
+				return ratingModel.getCreatorId();
 			}
 
 			@Override

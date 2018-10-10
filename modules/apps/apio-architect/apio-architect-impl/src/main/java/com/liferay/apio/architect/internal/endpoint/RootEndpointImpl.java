@@ -23,12 +23,14 @@ import com.liferay.apio.architect.internal.documentation.Documentation;
 import com.liferay.apio.architect.internal.entrypoint.CustomOperationsEndpoint;
 import com.liferay.apio.architect.internal.entrypoint.EntryPoint;
 import com.liferay.apio.architect.internal.url.ApplicationURL;
+import com.liferay.apio.architect.internal.wiring.osgi.manager.base.ClassNameBaseManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.documentation.contributor.CustomDocumentationManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.provider.ProviderManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.representable.RepresentableManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.router.CollectionRouterManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.router.ItemRouterManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.router.NestedCollectionRouterManager;
+import com.liferay.apio.architect.internal.wiring.osgi.manager.router.ReusableNestedCollectionRouterManager;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.uri.mapper.PathIdentifierMapperManager;
 import com.liferay.apio.architect.representor.Representor;
 import com.liferay.apio.architect.routes.CollectionRoutes;
@@ -65,6 +67,8 @@ public class RootEndpointImpl implements RootEndpoint {
 			() -> _collectionRouterManager.getCollectionRoutes(),
 			() -> _itemRouterManager.getItemRoutes(),
 			() -> _nestedCollectionRouterManager.getNestedCollectionRoutes(),
+			() -> _reusableNestedCollectionRouterManager.
+				getReusableCollectionRoutes(),
 			() -> _customDocumentationManager.getCustomDocumentation());
 	}
 
@@ -81,7 +85,8 @@ public class RootEndpointImpl implements RootEndpoint {
 		).collectionRoutesSupplier(
 			() -> _getCollectionRoutesOrFail(name)
 		).nestedCollectionRoutesFunction(
-			nestedName -> _getNestedCollectionRoutesOrFail(name, nestedName)
+			nestedName -> _getNestedCollectionRoutesOrFail(
+				name, nestedName, null)
 		).build();
 	}
 
@@ -123,8 +128,10 @@ public class RootEndpointImpl implements RootEndpoint {
 			name, _httpServletRequest, id -> _getSingleModelTry(name, id),
 			() -> _getCollectionRoutesOrFail(name),
 			() -> _getRepresentorOrFail(name), () -> _getItemRoutesOrFail(name),
-			nestedName -> _getNestedCollectionRoutesOrFail(name, nestedName),
-			_pathIdentifierMapperManager::mapToIdentifierOrFail);
+			this::_getNestedCollectionRoutesOrFail,
+			path -> _pathIdentifierMapperManager.mapToIdentifierOrFail(
+				path,
+				(ClassNameBaseManager)_reusableNestedCollectionRouterManager));
 	}
 
 	private CollectionRoutes<Object, Object> _getCollectionRoutesOrFail(
@@ -143,14 +150,28 @@ public class RootEndpointImpl implements RootEndpoint {
 		return optional.orElseThrow(notFound(name));
 	}
 
+	private NestedCollectionRoutes _getNestedCollectionRoutes(
+		String name, String nestedName, String id) {
+
+		Optional<NestedCollectionRoutes> reusableCollectionRoutesOptional =
+			_reusableNestedCollectionRouterManager.
+				getReusableCollectionRoutesOptional(id);
+
+		return reusableCollectionRoutesOptional.orElseThrow(
+			notFound(name, "{id}", nestedName)
+		);
+	}
+
 	private NestedCollectionRoutes<Object, Object, Object>
-		_getNestedCollectionRoutesOrFail(String name, String nestedName) {
+		_getNestedCollectionRoutesOrFail(
+			String name, String nestedName, String id) {
 
 		Optional<NestedCollectionRoutes<Object, Object, Object>> optional =
 			_nestedCollectionRouterManager.getNestedCollectionRoutesOptional(
 				name, nestedName);
 
-		return optional.orElseThrow(notFound(name, "{id}", nestedName));
+		return optional.orElseGet(
+			() -> _getNestedCollectionRoutes(name, nestedName, id));
 	}
 
 	private Representor<Object> _getRepresentorOrFail(String name) {
@@ -207,5 +228,9 @@ public class RootEndpointImpl implements RootEndpoint {
 
 	@Reference
 	private RepresentableManager _representableManager;
+
+	@Reference
+	private ReusableNestedCollectionRouterManager
+		_reusableNestedCollectionRouterManager;
 
 }

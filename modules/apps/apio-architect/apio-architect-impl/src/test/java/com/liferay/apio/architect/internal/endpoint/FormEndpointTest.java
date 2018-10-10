@@ -45,7 +45,7 @@ public class FormEndpointTest {
 	public void testEmptyFormsMethodsReturnsFailure() {
 		FormEndpoint formEndpoint = new FormEndpoint(
 			__ -> emptyCollectionRoutes(), __ -> emptyItemRoutes(),
-			(name, nestedName) -> emptyNestedCollectionRoutes());
+			(name, nestedName, id) -> emptyNestedCollectionRoutes());
 
 		Try<Form> creatorFormTry = formEndpoint.creatorForm("");
 		Try<Form> nestedCreatorFormTry = formEndpoint.nestedCreatorForm("", "");
@@ -65,7 +65,7 @@ public class FormEndpointTest {
 			__ -> {
 				throw new NoSuchElementException();
 			},
-			(name, nestedName) -> {
+			(name, nestedName, id) -> {
 				throw new NoSuchElementException();
 			});
 
@@ -93,7 +93,7 @@ public class FormEndpointTest {
 
 				return null;
 			},
-			(name, nestedName) -> {
+			(name, nestedName, id) -> {
 				names.add(name);
 				names.add(nestedName);
 
@@ -110,7 +110,8 @@ public class FormEndpointTest {
 	@Test
 	public void testValidCreatorFormMethodReturnsSuccess() {
 		FormEndpoint formEndpoint = new FormEndpoint(
-			__ -> collectionRoutes(), __ -> null, (name, nestedName) -> null);
+			__ -> collectionRoutes(), __ -> null,
+			(name, nestedName, id) -> null);
 
 		Try<Form> creatorFormTry = formEndpoint.creatorForm("");
 
@@ -125,7 +126,7 @@ public class FormEndpointTest {
 	public void testValidNestedCreatorFormMethodReturnsSuccess() {
 		FormEndpoint formEndpoint = new FormEndpoint(
 			__ -> null, __ -> null,
-			(name, nestedName) -> nestedCollectionRoutes());
+			(name, nestedName, id) -> nestedCollectionRoutes());
 
 		Try<Form> nestedCreatorFormTry = formEndpoint.nestedCreatorForm("", "");
 
@@ -139,7 +140,7 @@ public class FormEndpointTest {
 	@Test
 	public void testValidUpdaterFormMethodReturnsSuccess() {
 		FormEndpoint formEndpoint = new FormEndpoint(
-			__ -> null, __ -> itemRoutes(), (name, nestedName) -> null);
+			__ -> null, __ -> itemRoutes(), (name, nestedName, id) -> null);
 
 		Try<Form> updaterFormTry = formEndpoint.updaterForm("");
 

@@ -382,7 +382,8 @@ public class PageWriter<T> {
 
 		Optional<FieldsWriter<U>> fieldsWriterOptional = getFieldsWriter(
 			singleModel, embeddedPathElements, _requestInfo,
-			baseRepresentorFunction, _singleModelFunction, pathOptional.get());
+			baseRepresentorFunction, _singleModelFunction, pathOptional.get(),
+			_pathFunction);
 
 		if (!fieldsWriterOptional.isPresent()) {
 			return;
@@ -397,14 +398,12 @@ public class PageWriter<T> {
 		Optional<FieldsWriter<U>> relatedModelsFieldsWriterOptional =
 			getFieldsWriter(
 				singleModel, null, _requestInfo, baseRepresentorFunction,
-				_singleModelFunction, pathOptional.get());
+				_singleModelFunction, pathOptional.get(), _pathFunction);
 
 		relatedModelsFieldsWriterOptional.ifPresent(
-			relatedModelFieldsWriter ->
+			relatedModelFieldsWriter -> {
 				relatedModelFieldsWriter.writeRelatedModels(
-					embeddedSingleModel -> getPathOptional(
-						embeddedSingleModel, _pathFunction,
-						_representorFunction::apply),
+					_pathFunction,
 					(embeddedSingleModel, embeddedPathElements1) ->
 						_writeItemEmbeddedModelFields(
 							embeddedSingleModel, embeddedPathElements1,
@@ -417,7 +416,15 @@ public class PageWriter<T> {
 					(resourceURL, embeddedPathElements1) ->
 						_pageMessageMapper.mapItemEmbeddedResourceURL(
 							_jsonObjectBuilder, itemJsonObjectBuilder,
-							embeddedPathElements1, resourceURL)));
+							embeddedPathElements1, resourceURL));
+
+				relatedModelFieldsWriter.writeRelatedCollections(
+					_resourceNameFunction,
+					(url, embeddedPathElements1) ->
+						_pageMessageMapper.mapItemLinkedResourceURL(
+							_jsonObjectBuilder, itemJsonObjectBuilder,
+							embeddedPathElements1, url));
+			});
 
 		fieldsWriter.writeNestedResources(
 			baseRepresentorFunction, singleModel, null,
@@ -446,7 +453,7 @@ public class PageWriter<T> {
 
 		Optional<FieldsWriter<T>> optional = getFieldsWriter(
 			singleModel, null, _requestInfo, _representorFunction::apply,
-			_singleModelFunction, pathOptional.get());
+			_singleModelFunction, pathOptional.get(), _pathFunction);
 
 		if (!optional.isPresent()) {
 			return;
@@ -463,9 +470,7 @@ public class PageWriter<T> {
 				_jsonObjectBuilder, itemJsonObjectBuilder, url));
 
 		fieldsWriter.writeRelatedModels(
-			embeddedSingleModel -> getPathOptional(
-				embeddedSingleModel, _pathFunction,
-				_representorFunction::apply),
+			_pathFunction,
 			(embeddedSingleModel, embeddedPathElements1) ->
 				_writeItemEmbeddedModelFields(
 					embeddedSingleModel, embeddedPathElements1,
@@ -528,7 +533,8 @@ public class PageWriter<T> {
 
 		Optional<FieldsWriter<S>> fieldsWriterOptional = getFieldsWriter(
 			singleModel, embeddedPathElements, _requestInfo,
-			baseRepresentorFunction, _singleModelFunction, pathOptional.get());
+			baseRepresentorFunction, _singleModelFunction, pathOptional.get(),
+			_pathFunction);
 
 		if (!fieldsWriterOptional.isPresent()) {
 			return;
@@ -612,9 +618,7 @@ public class PageWriter<T> {
 				field, value));
 
 		fieldsWriter.writeRelatedModels(
-			embeddedSingleModel -> getPathOptional(
-				embeddedSingleModel, _pathFunction,
-				_representorFunction::apply),
+			_pathFunction,
 			(embeddedSingleModel, embeddedModelEmbeddedPathElements) ->
 				_writeItemEmbeddedModelFields(
 					embeddedSingleModel, embeddedModelEmbeddedPathElements,

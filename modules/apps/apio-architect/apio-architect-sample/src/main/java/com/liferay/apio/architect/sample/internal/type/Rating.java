@@ -25,19 +25,8 @@ import com.liferay.apio.architect.annotation.Vocabulary.Type;
  * @see    <a href="https://schema.org/Rating">Rating</a>
  * @review
  */
-@Type("Rating")
+@Type("RatingAnnotated")
 public interface Rating {
-
-	/**
-	 * Returns the rating's author.
-	 *
-	 * @return the rating's author
-	 * @see    <a href="https://schema.org/author">author</a>
-	 * @review
-	 */
-	@Field("author")
-	@LinkedModel(Person.class)
-	public Long getAuthorId();
 
 	/**
 	 * Returns the rating's best possible rating.
@@ -50,6 +39,17 @@ public interface Rating {
 	public default Number getBestRating() {
 		return 5;
 	}
+
+	/**
+	 * Returns the rating's creator.
+	 *
+	 * @return the rating's creator
+	 * @see    <a href="https://schema.org/creator">creator</a>
+	 * @review
+	 */
+	@Field("creator")
+	@LinkedModel(Person.class)
+	public Long getCreatorId();
 
 	/**
 	 * Returns the actual rating's value.

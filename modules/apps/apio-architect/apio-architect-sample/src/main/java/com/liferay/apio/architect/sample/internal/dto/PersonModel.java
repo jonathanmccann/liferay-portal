@@ -31,7 +31,7 @@ public class PersonModel {
 		PostalAddressModel postalAddressModel, Long id) {
 
 		_avatar = avatar;
-		_birthDate = birthDate;
+		_birthDate = new Date(birthDate.getTime());
 		_email = email;
 		_firstName = firstName;
 		_jobTitles = jobTitles;

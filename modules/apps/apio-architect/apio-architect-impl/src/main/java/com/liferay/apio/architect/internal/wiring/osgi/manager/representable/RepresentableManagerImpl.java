@@ -24,8 +24,10 @@ import static org.slf4j.LoggerFactory.getLogger;
 
 import com.liferay.apio.architect.functional.Try;
 import com.liferay.apio.architect.identifier.Identifier;
+import com.liferay.apio.architect.internal.annotation.ActionRouterRepresentorManager;
 import com.liferay.apio.architect.internal.representor.RepresentorImpl.BuilderImpl;
 import com.liferay.apio.architect.internal.unsafe.Unsafe;
+import com.liferay.apio.architect.internal.wiring.osgi.error.ApioDeveloperError;
 import com.liferay.apio.architect.internal.wiring.osgi.manager.base.BaseManager;
 import com.liferay.apio.architect.internal.wiring.osgi.validator.NameValidator;
 import com.liferay.apio.architect.related.RelatedCollection;
@@ -122,7 +124,7 @@ public class RepresentableManagerImpl
 	}
 
 	private void _computeRepresentables() {
-		Map<String, List<RelatedCollection<?>>> relatedCollections =
+		Map<String, List<RelatedCollection<?, ?>>> relatedCollections =
 			new HashMap<>();
 
 		forEachService(
@@ -166,24 +168,35 @@ public class RepresentableManagerImpl
 
 				Representor<Object> representor = _getRepresentor(
 					unsafeCast(representable), unsafeCast(clazz),
-					relatedCollections);
+					unsafeCast(relatedCollections));
 
 				INSTANCE.putName(clazz.getName(), name);
 				INSTANCE.putIdentifierClass(name, clazz);
 				INSTANCE.putRepresentor(name, representor);
 			});
+
+		_actionRouterRepresentorManager.computeRepresentors(
+			this::_getNameOrFail, relatedCollections);
+	}
+
+	private String _getNameOrFail(Class<? extends Identifier<?>> clazz) {
+		Optional<String> optional = getNameOptional(clazz.getName());
+
+		return optional.orElseThrow(
+			() -> new ApioDeveloperError.IdentifierNameNotFoundInPathFunction(
+				clazz.getName()));
 	}
 
 	private <T, S, U extends Identifier<S>> Representor<T> _getRepresentor(
 		Representable<T, S, U> representable, Class<U> clazz,
-		Map<String, List<RelatedCollection<?>>> relatedCollections) {
+		Map<String, List<RelatedCollection<T, ?>>> relatedCollections) {
 
-		Supplier<List<RelatedCollection<?>>> relatedCollectionSupplier =
+		Supplier<List<RelatedCollection<T, ?>>> relatedCollectionsSupplier =
 			() -> relatedCollections.get(clazz.getName());
 
-		BiConsumer<Class<?>, RelatedCollection<?>> biConsumer =
+		BiConsumer<Class<?>, RelatedCollection<T, ?>> biConsumer =
 			(identifierClass, relatedCollection) -> {
-				List<RelatedCollection<?>> list =
+				List<RelatedCollection<T, ?>> list =
 					relatedCollections.computeIfAbsent(
 						identifierClass.getName(), __ -> new ArrayList<>());
 
@@ -191,10 +204,14 @@ public class RepresentableManagerImpl
 			};
 
 		Builder<T, S> builder = new BuilderImpl<>(
-			clazz, biConsumer, relatedCollectionSupplier);
+			clazz, this::_getNameOrFail, biConsumer,
+			relatedCollectionsSupplier);
 
 		return representable.representor(builder);
 	}
+
+	@Reference
+	private ActionRouterRepresentorManager _actionRouterRepresentorManager;
 
 	private Logger _logger = getLogger(getClass());
 

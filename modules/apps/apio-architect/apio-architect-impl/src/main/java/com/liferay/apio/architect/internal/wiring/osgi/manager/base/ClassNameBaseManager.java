@@ -46,6 +46,18 @@ public abstract class ClassNameBaseManager<T> extends BaseManager<T, String> {
 		_principalTypeParamPosition = principalTypeParamPosition;
 	}
 
+	/**
+	 * Returns a service from the inner map based on the service's generic inner
+	 * class, if the service exists. Returns {@code Optional#empty()} otherwise.
+	 *
+	 * @param  clazz the generic inner class
+	 * @return the service, if present; {@code Optional#empty()} otherwise
+	 */
+	public <V> Optional<T> getServiceOptional(Class<V> clazz) {
+		return Optional.ofNullable(
+			serviceTrackerMap.getService(clazz.getName()));
+	}
+
 	protected void emit(
 		ServiceReference<T> serviceReference, Emitter<String> emitter) {
 
@@ -67,18 +79,6 @@ public abstract class ClassNameBaseManager<T> extends BaseManager<T, String> {
 				"Unable to get generic information from {}", t.getClass()),
 			emitter::emit
 		);
-	}
-
-	/**
-	 * Returns a service from the inner map based on the service's generic inner
-	 * class, if the service exists. Returns {@code Optional#empty()} otherwise.
-	 *
-	 * @param  clazz the generic inner class
-	 * @return the service, if present; {@code Optional#empty()} otherwise
-	 */
-	protected <V> Optional<T> getServiceOptional(Class<V> clazz) {
-		return Optional.ofNullable(
-			serviceTrackerMap.getService(clazz.getName()));
 	}
 
 	private Logger _logger = getLogger(getClass());

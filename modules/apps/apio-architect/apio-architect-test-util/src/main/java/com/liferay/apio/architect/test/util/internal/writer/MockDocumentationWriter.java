@@ -107,6 +107,7 @@ public class MockDocumentationWriter {
 			() -> Collections.singletonMap("root", collectionRoutes),
 			() -> Collections.singletonMap("root", itemRoutes),
 			() -> Collections.singletonMap("root", nestedCollectionRoutes),
+			() -> Collections.singletonMap("root", nestedCollectionRoutes),
 			() -> customDocumentation);
 
 		DocumentationWriter documentationWriter = DocumentationWriter.create(

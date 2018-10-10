@@ -25,7 +25,7 @@ import com.liferay.apio.architect.annotation.Vocabulary.Type;
  * @see    <a href="https://schema.org/PostalAddress">PostalAddress</a>
  * @review
  */
-@Type("PostalAddress")
+@Type("PostalAddressAnnotated")
 public interface PostalAddress {
 
 	/**

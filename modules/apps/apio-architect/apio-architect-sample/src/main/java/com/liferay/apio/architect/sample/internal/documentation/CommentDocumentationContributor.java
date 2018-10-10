@@ -31,13 +31,13 @@ public class CommentDocumentationContributor
 		CustomDocumentation.Builder builder) {
 
 		builder.addDescription(
-			"author", "The author of this content."
-		).addDescription(
 			"comments/delete", "Delete an existing comment."
 		).addDescription(
 			"comments/retrieve", "Return the list of comments."
 		).addDescription(
 			"comments/update", "Update an existing comment."
+		).addDescription(
+			"creator", "The creator of this content."
 		).addDescription(
 			"dateCreated",
 			"The date on which the Comment was created or the" +

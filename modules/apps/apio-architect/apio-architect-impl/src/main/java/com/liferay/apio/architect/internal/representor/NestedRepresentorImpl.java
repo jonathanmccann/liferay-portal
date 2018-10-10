@@ -14,13 +14,37 @@
 
 package com.liferay.apio.architect.internal.representor;
 
+import com.liferay.apio.architect.identifier.Identifier;
+import com.liferay.apio.architect.internal.related.RelatedCollectionImpl;
+import com.liferay.apio.architect.related.RelatedCollection;
 import com.liferay.apio.architect.representor.NestedRepresentor;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Stream;
 
 /**
  * @author Alejandro Hernández
  */
 public class NestedRepresentorImpl<T>
 	extends BaseRepresentorImpl<T> implements NestedRepresentor<T> {
+
+	@Override
+	public Stream<RelatedCollection<T, ? extends Identifier>>
+		getRelatedCollections() {
+
+		return Stream.of(
+			_relatedCollections, supplier.get()
+		).filter(
+			Objects::nonNull
+		).flatMap(
+			Collection::stream
+		);
+	}
 
 	@Override
 	public boolean isNested() {
@@ -37,8 +61,11 @@ public class NestedRepresentorImpl<T>
 		extends BaseBuilderImpl<T, NestedRepresentorImpl<T>>
 		implements Builder<T> {
 
-		public BuilderImpl() {
-			super(new NestedRepresentorImpl<>());
+		public BuilderImpl(
+			Function<Class<? extends Identifier<?>>, String> nameFunction,
+			Supplier<List<RelatedCollection<T, ?>>> supplier) {
+
+			super(new NestedRepresentorImpl<>(nameFunction, supplier));
 		}
 
 		@Override
@@ -53,6 +80,18 @@ public class NestedRepresentorImpl<T>
 			implements FirstStep<T> {
 
 			@Override
+			public <V, S extends Identifier<?>> NestedRepresentor.FirstStep<T>
+				addRelatedCollection(
+					String key, Class<S> itemIdentifierClass,
+					Function<T, V> modelToIdentifierFunction) {
+
+				baseRepresentor._addRelatedCollection(
+					key, itemIdentifierClass, modelToIdentifierFunction);
+
+				return this;
+			}
+
+			@Override
 			public FirstStepImpl getThis() {
 				return this;
 			}
@@ -61,7 +100,25 @@ public class NestedRepresentorImpl<T>
 
 	}
 
-	private NestedRepresentorImpl() {
+	private NestedRepresentorImpl(
+		Function<Class<? extends Identifier<?>>, String> nameFunction,
+		Supplier<List<RelatedCollection<T, ?>>> supplier) {
+
+		super(nameFunction, supplier);
+
+		_relatedCollections = new ArrayList<>();
 	}
+
+	private <S extends Identifier<?>> void _addRelatedCollection(
+		String key, Class<S> itemIdentifierClass,
+		Function<T, ?> modelToIdentifierFunction) {
+
+		RelatedCollection<T, ?> relatedCollection = new RelatedCollectionImpl(
+			key, itemIdentifierClass, modelToIdentifierFunction);
+
+		_relatedCollections.add(relatedCollection);
+	}
+
+	private final List<RelatedCollection<T, ?>> _relatedCollections;
 
 }
