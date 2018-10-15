@@ -842,6 +842,16 @@ public class Entity implements Comparable<Entity> {
 		return _localService;
 	}
 
+	public boolean hasManyToManyMappingColumn() {
+		for (EntityColumn entityColumn : _entityColumns) {
+			if (entityColumn.isMappingManyToMany()) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public boolean hasPrimitivePK() {
 		return hasPrimitivePK(true);
 	}
@@ -896,6 +906,14 @@ public class Entity implements Comparable<Entity> {
 			hasEntityColumn("modifiedDate", "Date") &&
 			hasEntityColumn("userId") && hasEntityColumn("userName")) {
 
+			return true;
+		}
+
+		return false;
+	}
+
+	public boolean isBulkRemoveAvailable() {
+		if (!hasCompoundPK() && !isHierarchicalTree()) {
 			return true;
 		}
 
