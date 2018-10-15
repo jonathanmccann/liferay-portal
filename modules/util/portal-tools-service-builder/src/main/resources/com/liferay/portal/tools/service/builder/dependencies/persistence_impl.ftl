@@ -57,6 +57,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.model.MVCCModel;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.sanitizer.Sanitizer;
 import com.liferay.portal.kernel.sanitizer.SanitizerException;
 import com.liferay.portal.kernel.sanitizer.SanitizerUtil;
@@ -1180,10 +1181,64 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 	 */
 	@Override
 	public void removeAll() {
+		<#if entity.isBulkRemoveAvailable()>
+			if (_isBulkRemovePossible()) {
+				bulkRemoveAll();
+
+				return;
+			}
+		</#if>
+
 		for (${entity.name} ${entity.varName} : findAll()) {
 			remove(${entity.varName});
 		}
 	}
+
+	<#if entity.isBulkRemoveAvailable()>
+		protected void bulkRemoveAll() {
+			Session session = null;
+
+			try {
+				session = openSession();
+
+				Query q = null;
+
+				<#if entity.hasManyToManyMappingColumn()>
+					q = session.createQuery(_SQL_SELECT_${entity.alias?upper_case}_PKS);
+
+					<#assign pkObjClassName = entity.getPKClassName() />
+
+					<#if entity.hasPrimitivePK()>
+						<#assign pkObjClassName = serviceBuilder.getPrimitiveObj(entity.getPKClassName()) />
+					</#if>
+
+					List<${pkObjClassName}> pks = (List<${pkObjClassName}>)QueryUtil.list(q, getDialect(), QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+					for (${pkObjClassName} pk : pks) {
+						<#list entity.entityColumns as entityColumn>
+							<#if entityColumn.isCollection() && entityColumn.isMappingManyToMany()>
+								<#assign referenceEntity = serviceBuilder.getEntity(entityColumn.entityName) />
+
+								${entity.varName}To${referenceEntity.name}TableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+							</#if>
+						</#list>
+					}
+				</#if>
+
+				q = session.createQuery(_SQL_DELETE_${entity.alias?upper_case});
+
+				q.executeUpdate();
+			}
+			catch (Exception e) {
+				throw processException(e);
+			}
+			finally {
+				closeSession(session);
+
+				clearCache();
+			}
+		}
+	</#if>
 
 	/**
 	 * Returns the number of ${entity.humanNames}.
@@ -1845,7 +1900,25 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 		}
 	</#if>
 
+	<#if entity.isBulkRemoveAvailable()>
+		private boolean _isBulkRemovePossible() {
+			ModelListener[] modelListeners = getListeners();
+
+			if (modelListeners.length != 0) {
+				return false;
+			}
+
+			return Objects.equals(
+				PropsUtil.get("hibernate.query.factory_class"),
+				"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+		}
+	</#if>
+
 	private static final String _SQL_SELECT_${entity.alias?upper_case} = "SELECT ${entity.alias} FROM ${entity.name} ${entity.alias}";
+
+	<#if entity.isBulkRemoveAvailable()>
+		private static final String _SQL_SELECT_${entity.alias?upper_case}_PKS = "SELECT ${entity.PKDBName} FROM ${entity.name} ${entity.alias}";
+	</#if>
 
 	<#if !entity.hasCompoundPK()>
 		private static final String _SQL_SELECT_${entity.alias?upper_case}_WHERE_PKS_IN = "SELECT ${entity.alias} FROM ${entity.name} ${entity.alias} WHERE ${entity.PKDBName} IN (";
@@ -1855,10 +1928,22 @@ public class ${entity.name}PersistenceImpl extends BasePersistenceImpl<${entity.
 		private static final String _SQL_SELECT_${entity.alias?upper_case}_WHERE = "SELECT ${entity.alias} FROM ${entity.name} ${entity.alias} WHERE ";
 	</#if>
 
+	<#if !entity.hasCompoundPK()>
+		private static final String _SQL_SELECT_${entity.alias?upper_case}_PKS_WHERE = "SELECT ${entity.PKDBName} FROM ${entity.name} ${entity.alias} WHERE ";
+	</#if>
+
 	private static final String _SQL_COUNT_${entity.alias?upper_case} = "SELECT COUNT(${entity.alias}) FROM ${entity.name} ${entity.alias}";
 
 	<#if entity.entityFinders?size != 0>
 		private static final String _SQL_COUNT_${entity.alias?upper_case}_WHERE = "SELECT COUNT(${entity.alias}) FROM ${entity.name} ${entity.alias} WHERE ";
+	</#if>
+
+	<#if entity.isBulkRemoveAvailable()>
+		private static final String _SQL_DELETE_${entity.alias?upper_case} = "DELETE ${entity.name} ${entity.alias}";
+
+		<#if entity.entityFinders?size != 0>
+			private static final String _SQL_DELETE_${entity.alias?upper_case}_WHERE = "DELETE ${entity.name} ${entity.alias} WHERE ";
+		</#if>
 	</#if>
 
 	<#if entity.isPermissionCheckEnabled()>
