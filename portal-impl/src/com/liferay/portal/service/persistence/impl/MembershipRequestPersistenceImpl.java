@@ -30,11 +30,13 @@ import com.liferay.portal.kernel.exception.NoSuchMembershipRequestException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.MembershipRequest;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.MembershipRequestPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.model.impl.MembershipRequestImpl;
 import com.liferay.portal.model.impl.MembershipRequestModelImpl;
@@ -49,6 +51,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -537,9 +540,50 @@ public class MembershipRequestPersistenceImpl extends BasePersistenceImpl<Member
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (MembershipRequest membershipRequest : findByGroupId(groupId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(membershipRequest);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_MEMBERSHIPREQUEST_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1045,9 +1089,50 @@ public class MembershipRequestPersistenceImpl extends BasePersistenceImpl<Member
 	 */
 	@Override
 	public void removeByUserId(long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUserId(userId);
+
+			return;
+		}
+
 		for (MembershipRequest membershipRequest : findByUserId(userId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(membershipRequest);
+		}
+	}
+
+	protected void bulkRemoveByUserId(long userId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_MEMBERSHIPREQUEST_WHERE);
+
+		query.append(_FINDER_COLUMN_USERID_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1586,9 +1671,54 @@ public class MembershipRequestPersistenceImpl extends BasePersistenceImpl<Member
 	 */
 	@Override
 	public void removeByG_S(long groupId, long statusId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_S(groupId, statusId);
+
+			return;
+		}
+
 		for (MembershipRequest membershipRequest : findByG_S(groupId, statusId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(membershipRequest);
+		}
+	}
+
+	protected void bulkRemoveByG_S(long groupId, long statusId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_MEMBERSHIPREQUEST_WHERE);
+
+		query.append(_FINDER_COLUMN_G_S_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_S_STATUSID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(statusId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2166,9 +2296,58 @@ public class MembershipRequestPersistenceImpl extends BasePersistenceImpl<Member
 	 */
 	@Override
 	public void removeByG_U_S(long groupId, long userId, long statusId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_U_S(groupId, userId, statusId);
+
+			return;
+		}
+
 		for (MembershipRequest membershipRequest : findByG_U_S(groupId, userId,
 				statusId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(membershipRequest);
+		}
+	}
+
+	protected void bulkRemoveByG_U_S(long groupId, long userId, long statusId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_MEMBERSHIPREQUEST_WHERE);
+
+		query.append(_FINDER_COLUMN_G_U_S_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_U_S_USERID_2);
+
+		query.append(_FINDER_COLUMN_G_U_S_STATUSID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(userId);
+
+			qPos.add(statusId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2935,8 +3114,36 @@ public class MembershipRequestPersistenceImpl extends BasePersistenceImpl<Member
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (MembershipRequest membershipRequest : findAll()) {
 			remove(membershipRequest);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_MEMBERSHIPREQUEST);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2997,11 +3204,27 @@ public class MembershipRequestPersistenceImpl extends BasePersistenceImpl<Member
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_MEMBERSHIPREQUEST = "SELECT membershipRequest FROM MembershipRequest membershipRequest";
+	private static final String _SQL_SELECT_MEMBERSHIPREQUEST_PKS = "SELECT membershipRequestId FROM MembershipRequest membershipRequest";
 	private static final String _SQL_SELECT_MEMBERSHIPREQUEST_WHERE_PKS_IN = "SELECT membershipRequest FROM MembershipRequest membershipRequest WHERE membershipRequestId IN (";
 	private static final String _SQL_SELECT_MEMBERSHIPREQUEST_WHERE = "SELECT membershipRequest FROM MembershipRequest membershipRequest WHERE ";
+	private static final String _SQL_SELECT_MEMBERSHIPREQUEST_PKS_WHERE = "SELECT membershipRequestId FROM MembershipRequest membershipRequest WHERE ";
 	private static final String _SQL_COUNT_MEMBERSHIPREQUEST = "SELECT COUNT(membershipRequest) FROM MembershipRequest membershipRequest";
 	private static final String _SQL_COUNT_MEMBERSHIPREQUEST_WHERE = "SELECT COUNT(membershipRequest) FROM MembershipRequest membershipRequest WHERE ";
+	private static final String _SQL_DELETE_MEMBERSHIPREQUEST = "DELETE MembershipRequest membershipRequest";
+	private static final String _SQL_DELETE_MEMBERSHIPREQUEST_WHERE = "DELETE MembershipRequest membershipRequest WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "membershipRequest.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No MembershipRequest exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No MembershipRequest exists with the key {";

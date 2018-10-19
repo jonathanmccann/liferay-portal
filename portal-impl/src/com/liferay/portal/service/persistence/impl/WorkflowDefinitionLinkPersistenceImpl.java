@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchWorkflowDefinitionLinkException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.WorkflowDefinitionLink;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.WorkflowDefinitionLinkPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.impl.WorkflowDefinitionLinkImpl;
@@ -548,9 +550,50 @@ public class WorkflowDefinitionLinkPersistenceImpl extends BasePersistenceImpl<W
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (WorkflowDefinitionLink workflowDefinitionLink : findByCompanyId(
 				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(workflowDefinitionLink);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_WORKFLOWDEFINITIONLINK_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1128,10 +1171,60 @@ public class WorkflowDefinitionLinkPersistenceImpl extends BasePersistenceImpl<W
 	 */
 	@Override
 	public void removeByG_C_C(long groupId, long companyId, long classNameId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_C_C(groupId, companyId, classNameId);
+
+			return;
+		}
+
 		for (WorkflowDefinitionLink workflowDefinitionLink : findByG_C_C(
 				groupId, companyId, classNameId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(workflowDefinitionLink);
+		}
+	}
+
+	protected void bulkRemoveByG_C_C(long groupId, long companyId,
+		long classNameId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_WORKFLOWDEFINITIONLINK_WHERE);
+
+		query.append(_FINDER_COLUMN_G_C_C_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_C_C_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_G_C_C_CLASSNAMEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1767,10 +1860,75 @@ public class WorkflowDefinitionLinkPersistenceImpl extends BasePersistenceImpl<W
 	@Override
 	public void removeByC_W_W(long companyId, String workflowDefinitionName,
 		int workflowDefinitionVersion) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_W_W(companyId, workflowDefinitionName,
+				workflowDefinitionVersion);
+
+			return;
+		}
+
 		for (WorkflowDefinitionLink workflowDefinitionLink : findByC_W_W(
 				companyId, workflowDefinitionName, workflowDefinitionVersion,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(workflowDefinitionLink);
+		}
+	}
+
+	protected void bulkRemoveByC_W_W(long companyId,
+		String workflowDefinitionName, int workflowDefinitionVersion) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_WORKFLOWDEFINITIONLINK_WHERE);
+
+		query.append(_FINDER_COLUMN_C_W_W_COMPANYID_2);
+
+		boolean bindWorkflowDefinitionName = false;
+
+		if (workflowDefinitionName == null) {
+			query.append(_FINDER_COLUMN_C_W_W_WORKFLOWDEFINITIONNAME_1);
+		}
+		else if (workflowDefinitionName.equals("")) {
+			query.append(_FINDER_COLUMN_C_W_W_WORKFLOWDEFINITIONNAME_3);
+		}
+		else {
+			bindWorkflowDefinitionName = true;
+
+			query.append(_FINDER_COLUMN_C_W_W_WORKFLOWDEFINITIONNAME_2);
+		}
+
+		query.append(_FINDER_COLUMN_C_W_W_WORKFLOWDEFINITIONVERSION_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindWorkflowDefinitionName) {
+				qPos.add(workflowDefinitionName);
+			}
+
+			qPos.add(workflowDefinitionVersion);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2947,8 +3105,36 @@ public class WorkflowDefinitionLinkPersistenceImpl extends BasePersistenceImpl<W
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (WorkflowDefinitionLink workflowDefinitionLink : findAll()) {
 			remove(workflowDefinitionLink);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_WORKFLOWDEFINITIONLINK);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3009,11 +3195,27 @@ public class WorkflowDefinitionLinkPersistenceImpl extends BasePersistenceImpl<W
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_WORKFLOWDEFINITIONLINK = "SELECT workflowDefinitionLink FROM WorkflowDefinitionLink workflowDefinitionLink";
+	private static final String _SQL_SELECT_WORKFLOWDEFINITIONLINK_PKS = "SELECT workflowDefinitionLinkId FROM WorkflowDefinitionLink workflowDefinitionLink";
 	private static final String _SQL_SELECT_WORKFLOWDEFINITIONLINK_WHERE_PKS_IN = "SELECT workflowDefinitionLink FROM WorkflowDefinitionLink workflowDefinitionLink WHERE workflowDefinitionLinkId IN (";
 	private static final String _SQL_SELECT_WORKFLOWDEFINITIONLINK_WHERE = "SELECT workflowDefinitionLink FROM WorkflowDefinitionLink workflowDefinitionLink WHERE ";
+	private static final String _SQL_SELECT_WORKFLOWDEFINITIONLINK_PKS_WHERE = "SELECT workflowDefinitionLinkId FROM WorkflowDefinitionLink workflowDefinitionLink WHERE ";
 	private static final String _SQL_COUNT_WORKFLOWDEFINITIONLINK = "SELECT COUNT(workflowDefinitionLink) FROM WorkflowDefinitionLink workflowDefinitionLink";
 	private static final String _SQL_COUNT_WORKFLOWDEFINITIONLINK_WHERE = "SELECT COUNT(workflowDefinitionLink) FROM WorkflowDefinitionLink workflowDefinitionLink WHERE ";
+	private static final String _SQL_DELETE_WORKFLOWDEFINITIONLINK = "DELETE WorkflowDefinitionLink workflowDefinitionLink";
+	private static final String _SQL_DELETE_WORKFLOWDEFINITIONLINK_WHERE = "DELETE WorkflowDefinitionLink workflowDefinitionLink WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "workflowDefinitionLink.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No WorkflowDefinitionLink exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No WorkflowDefinitionLink exists with the key {";

@@ -32,12 +32,14 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 
@@ -56,6 +58,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -550,9 +553,50 @@ public class ExportImportConfigurationPersistenceImpl
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (ExportImportConfiguration exportImportConfiguration : findByGroupId(
 				groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(exportImportConfiguration);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_EXPORTIMPORTCONFIGURATION_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1067,9 +1111,50 @@ public class ExportImportConfigurationPersistenceImpl
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (ExportImportConfiguration exportImportConfiguration : findByCompanyId(
 				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(exportImportConfiguration);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_EXPORTIMPORTCONFIGURATION_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1611,9 +1696,54 @@ public class ExportImportConfigurationPersistenceImpl
 	 */
 	@Override
 	public void removeByG_T(long groupId, int type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_T(groupId, type);
+
+			return;
+		}
+
 		for (ExportImportConfiguration exportImportConfiguration : findByG_T(
 				groupId, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(exportImportConfiguration);
+		}
+	}
+
+	protected void bulkRemoveByG_T(long groupId, int type) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_EXPORTIMPORTCONFIGURATION_WHERE);
+
+		query.append(_FINDER_COLUMN_G_T_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_T_TYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(type);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2161,9 +2291,54 @@ public class ExportImportConfigurationPersistenceImpl
 	 */
 	@Override
 	public void removeByG_S(long groupId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_S(groupId, status);
+
+			return;
+		}
+
 		for (ExportImportConfiguration exportImportConfiguration : findByG_S(
 				groupId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(exportImportConfiguration);
+		}
+	}
+
+	protected void bulkRemoveByG_S(long groupId, int status) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_EXPORTIMPORTCONFIGURATION_WHERE);
+
+		query.append(_FINDER_COLUMN_G_S_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2752,10 +2927,59 @@ public class ExportImportConfigurationPersistenceImpl
 	 */
 	@Override
 	public void removeByG_T_S(long groupId, int type, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_T_S(groupId, type, status);
+
+			return;
+		}
+
 		for (ExportImportConfiguration exportImportConfiguration : findByG_T_S(
 				groupId, type, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null)) {
 			remove(exportImportConfiguration);
+		}
+	}
+
+	protected void bulkRemoveByG_T_S(long groupId, int type, int status) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_EXPORTIMPORTCONFIGURATION_WHERE);
+
+		query.append(_FINDER_COLUMN_G_T_S_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_T_S_TYPE_2);
+
+		query.append(_FINDER_COLUMN_G_T_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(type);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3615,8 +3839,36 @@ public class ExportImportConfigurationPersistenceImpl
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (ExportImportConfiguration exportImportConfiguration : findAll()) {
 			remove(exportImportConfiguration);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_EXPORTIMPORTCONFIGURATION);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3682,12 +3934,28 @@ public class ExportImportConfigurationPersistenceImpl
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_EXPORTIMPORTCONFIGURATION = "SELECT exportImportConfiguration FROM ExportImportConfiguration exportImportConfiguration";
+	private static final String _SQL_SELECT_EXPORTIMPORTCONFIGURATION_PKS = "SELECT exportImportConfigurationId FROM ExportImportConfiguration exportImportConfiguration";
 	private static final String _SQL_SELECT_EXPORTIMPORTCONFIGURATION_WHERE_PKS_IN =
 		"SELECT exportImportConfiguration FROM ExportImportConfiguration exportImportConfiguration WHERE exportImportConfigurationId IN (";
 	private static final String _SQL_SELECT_EXPORTIMPORTCONFIGURATION_WHERE = "SELECT exportImportConfiguration FROM ExportImportConfiguration exportImportConfiguration WHERE ";
+	private static final String _SQL_SELECT_EXPORTIMPORTCONFIGURATION_PKS_WHERE = "SELECT exportImportConfigurationId FROM ExportImportConfiguration exportImportConfiguration WHERE ";
 	private static final String _SQL_COUNT_EXPORTIMPORTCONFIGURATION = "SELECT COUNT(exportImportConfiguration) FROM ExportImportConfiguration exportImportConfiguration";
 	private static final String _SQL_COUNT_EXPORTIMPORTCONFIGURATION_WHERE = "SELECT COUNT(exportImportConfiguration) FROM ExportImportConfiguration exportImportConfiguration WHERE ";
+	private static final String _SQL_DELETE_EXPORTIMPORTCONFIGURATION = "DELETE ExportImportConfiguration exportImportConfiguration";
+	private static final String _SQL_DELETE_EXPORTIMPORTCONFIGURATION_WHERE = "DELETE ExportImportConfiguration exportImportConfiguration WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "exportImportConfiguration.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No ExportImportConfiguration exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No ExportImportConfiguration exists with the key {";

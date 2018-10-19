@@ -31,6 +31,7 @@ import com.liferay.portal.kernel.exception.NoSuchLayoutException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -40,6 +41,7 @@ import com.liferay.portal.kernel.service.persistence.LayoutPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -568,9 +570,64 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid(uuid);
+
+			return;
+		}
+
 		for (Layout layout : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByUuid(String uuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1423,9 +1480,68 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid_C(uuid, companyId);
+
+			return;
+		}
+
 		for (Layout layout : findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByUuid_C(String uuid, long companyId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
+		}
+
+		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2255,9 +2371,50 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (Layout layout : findByGroupId(groupId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2807,9 +2964,50 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (Layout layout : findByCompanyId(companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3563,9 +3761,64 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	 */
 	@Override
 	public void removeByLayoutPrototypeUuid(String layoutPrototypeUuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByLayoutPrototypeUuid(layoutPrototypeUuid);
+
+			return;
+		}
+
 		for (Layout layout : findByLayoutPrototypeUuid(layoutPrototypeUuid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByLayoutPrototypeUuid(String layoutPrototypeUuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		boolean bindLayoutPrototypeUuid = false;
+
+		if (layoutPrototypeUuid == null) {
+			query.append(_FINDER_COLUMN_LAYOUTPROTOTYPEUUID_LAYOUTPROTOTYPEUUID_1);
+		}
+		else if (layoutPrototypeUuid.equals("")) {
+			query.append(_FINDER_COLUMN_LAYOUTPROTOTYPEUUID_LAYOUTPROTOTYPEUUID_3);
+		}
+		else {
+			bindLayoutPrototypeUuid = true;
+
+			query.append(_FINDER_COLUMN_LAYOUTPROTOTYPEUUID_LAYOUTPROTOTYPEUUID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindLayoutPrototypeUuid) {
+				qPos.add(layoutPrototypeUuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4138,10 +4391,66 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	@Override
 	public void removeBySourcePrototypeLayoutUuid(
 		String sourcePrototypeLayoutUuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveBySourcePrototypeLayoutUuid(sourcePrototypeLayoutUuid);
+
+			return;
+		}
+
 		for (Layout layout : findBySourcePrototypeLayoutUuid(
 				sourcePrototypeLayoutUuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveBySourcePrototypeLayoutUuid(
+		String sourcePrototypeLayoutUuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		boolean bindSourcePrototypeLayoutUuid = false;
+
+		if (sourcePrototypeLayoutUuid == null) {
+			query.append(_FINDER_COLUMN_SOURCEPROTOTYPELAYOUTUUID_SOURCEPROTOTYPELAYOUTUUID_1);
+		}
+		else if (sourcePrototypeLayoutUuid.equals("")) {
+			query.append(_FINDER_COLUMN_SOURCEPROTOTYPELAYOUTUUID_SOURCEPROTOTYPELAYOUTUUID_3);
+		}
+		else {
+			bindSourcePrototypeLayoutUuid = true;
+
+			query.append(_FINDER_COLUMN_SOURCEPROTOTYPELAYOUTUUID_SOURCEPROTOTYPELAYOUTUUID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindSourcePrototypeLayoutUuid) {
+				qPos.add(sourcePrototypeLayoutUuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5020,9 +5329,54 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	 */
 	@Override
 	public void removeByG_P(long groupId, boolean privateLayout) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_P(groupId, privateLayout);
+
+			return;
+		}
+
 		for (Layout layout : findByG_P(groupId, privateLayout,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByG_P(long groupId, boolean privateLayout) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		query.append(_FINDER_COLUMN_G_P_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_P_PRIVATELAYOUT_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(privateLayout);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5989,9 +6343,68 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	 */
 	@Override
 	public void removeByG_T(long groupId, String type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_T(groupId, type);
+
+			return;
+		}
+
 		for (Layout layout : findByG_T(groupId, type, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByG_T(long groupId, String type) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		query.append(_FINDER_COLUMN_G_T_GROUPID_2);
+
+		boolean bindType = false;
+
+		if (type == null) {
+			query.append(_FINDER_COLUMN_G_T_TYPE_1);
+		}
+		else if (type.equals("")) {
+			query.append(_FINDER_COLUMN_G_T_TYPE_3);
+		}
+		else {
+			bindType = true;
+
+			query.append(_FINDER_COLUMN_G_T_TYPE_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			if (bindType) {
+				qPos.add(type);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6648,9 +7061,68 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	 */
 	@Override
 	public void removeByC_L(long companyId, String layoutPrototypeUuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_L(companyId, layoutPrototypeUuid);
+
+			return;
+		}
+
 		for (Layout layout : findByC_L(companyId, layoutPrototypeUuid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByC_L(long companyId, String layoutPrototypeUuid) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		query.append(_FINDER_COLUMN_C_L_COMPANYID_2);
+
+		boolean bindLayoutPrototypeUuid = false;
+
+		if (layoutPrototypeUuid == null) {
+			query.append(_FINDER_COLUMN_C_L_LAYOUTPROTOTYPEUUID_1);
+		}
+		else if (layoutPrototypeUuid.equals("")) {
+			query.append(_FINDER_COLUMN_C_L_LAYOUTPROTOTYPEUUID_3);
+		}
+		else {
+			bindLayoutPrototypeUuid = true;
+
+			query.append(_FINDER_COLUMN_C_L_LAYOUTPROTOTYPEUUID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindLayoutPrototypeUuid) {
+				qPos.add(layoutPrototypeUuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -8472,9 +8944,59 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	@Override
 	public void removeByG_P_P(long groupId, boolean privateLayout,
 		long parentLayoutId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_P_P(groupId, privateLayout, parentLayoutId);
+
+			return;
+		}
+
 		for (Layout layout : findByG_P_P(groupId, privateLayout,
 				parentLayoutId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByG_P_P(long groupId, boolean privateLayout,
+		long parentLayoutId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		query.append(_FINDER_COLUMN_G_P_P_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_P_P_PRIVATELAYOUT_2);
+
+		query.append(_FINDER_COLUMN_G_P_P_PARENTLAYOUTID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(privateLayout);
+
+			qPos.add(parentLayoutId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9708,9 +10230,73 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	 */
 	@Override
 	public void removeByG_P_T(long groupId, boolean privateLayout, String type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_P_T(groupId, privateLayout, type);
+
+			return;
+		}
+
 		for (Layout layout : findByG_P_T(groupId, privateLayout, type,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByG_P_T(long groupId, boolean privateLayout,
+		String type) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		query.append(_FINDER_COLUMN_G_P_T_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_P_T_PRIVATELAYOUT_2);
+
+		boolean bindType = false;
+
+		if (type == null) {
+			query.append(_FINDER_COLUMN_G_P_T_TYPE_1);
+		}
+		else if (type.equals("")) {
+			query.append(_FINDER_COLUMN_G_P_T_TYPE_3);
+		}
+		else {
+			bindType = true;
+
+			query.append(_FINDER_COLUMN_G_P_T_TYPE_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(privateLayout);
+
+			if (bindType) {
+				qPos.add(type);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -11331,10 +11917,65 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	@Override
 	public void removeByG_P_P_LtP(long groupId, boolean privateLayout,
 		long parentLayoutId, int priority) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_P_P_LtP(groupId, privateLayout, parentLayoutId,
+				priority);
+
+			return;
+		}
+
 		for (Layout layout : findByG_P_P_LtP(groupId, privateLayout,
 				parentLayoutId, priority, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null)) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveByG_P_P_LtP(long groupId, boolean privateLayout,
+		long parentLayoutId, int priority) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_DELETE_LAYOUT_WHERE);
+
+		query.append(_FINDER_COLUMN_G_P_P_LTP_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_P_P_LTP_PRIVATELAYOUT_2);
+
+		query.append(_FINDER_COLUMN_G_P_P_LTP_PARENTLAYOUTID_2);
+
+		query.append(_FINDER_COLUMN_G_P_P_LTP_PRIORITY_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(privateLayout);
+
+			qPos.add(parentLayoutId);
+
+			qPos.add(priority);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -12642,8 +13283,36 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (Layout layout : findAll()) {
 			remove(layout);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_LAYOUT);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -12709,11 +13378,27 @@ public class LayoutPersistenceImpl extends BasePersistenceImpl<Layout>
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_LAYOUT = "SELECT layout FROM Layout layout";
+	private static final String _SQL_SELECT_LAYOUT_PKS = "SELECT plid FROM Layout layout";
 	private static final String _SQL_SELECT_LAYOUT_WHERE_PKS_IN = "SELECT layout FROM Layout layout WHERE plid IN (";
 	private static final String _SQL_SELECT_LAYOUT_WHERE = "SELECT layout FROM Layout layout WHERE ";
+	private static final String _SQL_SELECT_LAYOUT_PKS_WHERE = "SELECT plid FROM Layout layout WHERE ";
 	private static final String _SQL_COUNT_LAYOUT = "SELECT COUNT(layout) FROM Layout layout";
 	private static final String _SQL_COUNT_LAYOUT_WHERE = "SELECT COUNT(layout) FROM Layout layout WHERE ";
+	private static final String _SQL_DELETE_LAYOUT = "DELETE Layout layout";
+	private static final String _SQL_DELETE_LAYOUT_WHERE = "DELETE Layout layout WHERE ";
 	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "layout.plid";
 	private static final String _FILTER_SQL_SELECT_LAYOUT_WHERE = "SELECT DISTINCT {layout.*} FROM Layout layout WHERE ";
 	private static final String _FILTER_SQL_SELECT_LAYOUT_NO_INLINE_DISTINCT_WHERE_1 =

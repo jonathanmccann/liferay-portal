@@ -33,8 +33,10 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 
 import java.io.Serializable;
 
@@ -44,6 +46,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -641,8 +644,36 @@ public class CounterPersistenceImpl extends BasePersistenceImpl<Counter>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (Counter counter : findAll()) {
 			remove(counter);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_COUNTER);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -701,9 +732,23 @@ public class CounterPersistenceImpl extends BasePersistenceImpl<Counter>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_COUNTER = "SELECT counter FROM Counter counter";
+	private static final String _SQL_SELECT_COUNTER_PKS = "SELECT name FROM Counter counter";
 	private static final String _SQL_SELECT_COUNTER_WHERE_PKS_IN = "SELECT counter FROM Counter counter WHERE name IN (";
+	private static final String _SQL_SELECT_COUNTER_PKS_WHERE = "SELECT name FROM Counter counter WHERE ";
 	private static final String _SQL_COUNT_COUNTER = "SELECT COUNT(counter) FROM Counter counter";
+	private static final String _SQL_DELETE_COUNTER = "DELETE Counter counter";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "counter.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Counter exists with the primary key ";
 	private static final Log _log = LogFactoryUtil.getLog(CounterPersistenceImpl.class);

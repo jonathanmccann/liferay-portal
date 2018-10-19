@@ -32,10 +32,12 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 
@@ -536,9 +538,50 @@ public class ExpandoValuePersistenceImpl extends BasePersistenceImpl<ExpandoValu
 	 */
 	@Override
 	public void removeByTableId(long tableId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByTableId(tableId);
+
+			return;
+		}
+
 		for (ExpandoValue expandoValue : findByTableId(tableId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(expandoValue);
+		}
+	}
+
+	protected void bulkRemoveByTableId(long tableId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_EXPANDOVALUE_WHERE);
+
+		query.append(_FINDER_COLUMN_TABLEID_TABLEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(tableId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1043,9 +1086,50 @@ public class ExpandoValuePersistenceImpl extends BasePersistenceImpl<ExpandoValu
 	 */
 	@Override
 	public void removeByColumnId(long columnId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByColumnId(columnId);
+
+			return;
+		}
+
 		for (ExpandoValue expandoValue : findByColumnId(columnId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(expandoValue);
+		}
+	}
+
+	protected void bulkRemoveByColumnId(long columnId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_EXPANDOVALUE_WHERE);
+
+		query.append(_FINDER_COLUMN_COLUMNID_COLUMNID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(columnId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1545,9 +1629,50 @@ public class ExpandoValuePersistenceImpl extends BasePersistenceImpl<ExpandoValu
 	 */
 	@Override
 	public void removeByRowId(long rowId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByRowId(rowId);
+
+			return;
+		}
+
 		for (ExpandoValue expandoValue : findByRowId(rowId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(expandoValue);
+		}
+	}
+
+	protected void bulkRemoveByRowId(long rowId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_EXPANDOVALUE_WHERE);
+
+		query.append(_FINDER_COLUMN_ROWID_ROWID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(rowId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2081,9 +2206,54 @@ public class ExpandoValuePersistenceImpl extends BasePersistenceImpl<ExpandoValu
 	 */
 	@Override
 	public void removeByT_C(long tableId, long columnId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByT_C(tableId, columnId);
+
+			return;
+		}
+
 		for (ExpandoValue expandoValue : findByT_C(tableId, columnId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(expandoValue);
+		}
+	}
+
+	protected void bulkRemoveByT_C(long tableId, long columnId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_EXPANDOVALUE_WHERE);
+
+		query.append(_FINDER_COLUMN_T_C_TABLEID_2);
+
+		query.append(_FINDER_COLUMN_T_C_COLUMNID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(tableId);
+
+			qPos.add(columnId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2623,9 +2793,54 @@ public class ExpandoValuePersistenceImpl extends BasePersistenceImpl<ExpandoValu
 	 */
 	@Override
 	public void removeByT_R(long tableId, long rowId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByT_R(tableId, rowId);
+
+			return;
+		}
+
 		for (ExpandoValue expandoValue : findByT_R(tableId, rowId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(expandoValue);
+		}
+	}
+
+	protected void bulkRemoveByT_R(long tableId, long rowId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_EXPANDOVALUE_WHERE);
+
+		query.append(_FINDER_COLUMN_T_R_TABLEID_2);
+
+		query.append(_FINDER_COLUMN_T_R_ROWID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(tableId);
+
+			qPos.add(rowId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3166,9 +3381,54 @@ public class ExpandoValuePersistenceImpl extends BasePersistenceImpl<ExpandoValu
 	 */
 	@Override
 	public void removeByT_CPK(long tableId, long classPK) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByT_CPK(tableId, classPK);
+
+			return;
+		}
+
 		for (ExpandoValue expandoValue : findByT_CPK(tableId, classPK,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(expandoValue);
+		}
+	}
+
+	protected void bulkRemoveByT_CPK(long tableId, long classPK) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_EXPANDOVALUE_WHERE);
+
+		query.append(_FINDER_COLUMN_T_CPK_TABLEID_2);
+
+		query.append(_FINDER_COLUMN_T_CPK_CLASSPK_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(tableId);
+
+			qPos.add(classPK);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3930,9 +4190,54 @@ public class ExpandoValuePersistenceImpl extends BasePersistenceImpl<ExpandoValu
 	 */
 	@Override
 	public void removeByC_C(long classNameId, long classPK) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_C(classNameId, classPK);
+
+			return;
+		}
+
 		for (ExpandoValue expandoValue : findByC_C(classNameId, classPK,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(expandoValue);
+		}
+	}
+
+	protected void bulkRemoveByC_C(long classNameId, long classPK) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_EXPANDOVALUE_WHERE);
+
+		query.append(_FINDER_COLUMN_C_C_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_C_C_CLASSPK_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4780,9 +5085,72 @@ public class ExpandoValuePersistenceImpl extends BasePersistenceImpl<ExpandoValu
 	 */
 	@Override
 	public void removeByT_C_D(long tableId, long columnId, String data) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByT_C_D(tableId, columnId, data);
+
+			return;
+		}
+
 		for (ExpandoValue expandoValue : findByT_C_D(tableId, columnId, data,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(expandoValue);
+		}
+	}
+
+	protected void bulkRemoveByT_C_D(long tableId, long columnId, String data) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_EXPANDOVALUE_WHERE);
+
+		query.append(_FINDER_COLUMN_T_C_D_TABLEID_2);
+
+		query.append(_FINDER_COLUMN_T_C_D_COLUMNID_2);
+
+		boolean bindData = false;
+
+		if (data == null) {
+			query.append(_FINDER_COLUMN_T_C_D_DATA_1);
+		}
+		else if (data.equals("")) {
+			query.append(_FINDER_COLUMN_T_C_D_DATA_3);
+		}
+		else {
+			bindData = true;
+
+			query.append(_FINDER_COLUMN_T_C_D_DATA_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(tableId);
+
+			qPos.add(columnId);
+
+			if (bindData) {
+				qPos.add(data);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5782,8 +6150,36 @@ public class ExpandoValuePersistenceImpl extends BasePersistenceImpl<ExpandoValu
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (ExpandoValue expandoValue : findAll()) {
 			remove(expandoValue);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_EXPANDOVALUE);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5849,11 +6245,27 @@ public class ExpandoValuePersistenceImpl extends BasePersistenceImpl<ExpandoValu
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_EXPANDOVALUE = "SELECT expandoValue FROM ExpandoValue expandoValue";
+	private static final String _SQL_SELECT_EXPANDOVALUE_PKS = "SELECT valueId FROM ExpandoValue expandoValue";
 	private static final String _SQL_SELECT_EXPANDOVALUE_WHERE_PKS_IN = "SELECT expandoValue FROM ExpandoValue expandoValue WHERE valueId IN (";
 	private static final String _SQL_SELECT_EXPANDOVALUE_WHERE = "SELECT expandoValue FROM ExpandoValue expandoValue WHERE ";
+	private static final String _SQL_SELECT_EXPANDOVALUE_PKS_WHERE = "SELECT valueId FROM ExpandoValue expandoValue WHERE ";
 	private static final String _SQL_COUNT_EXPANDOVALUE = "SELECT COUNT(expandoValue) FROM ExpandoValue expandoValue";
 	private static final String _SQL_COUNT_EXPANDOVALUE_WHERE = "SELECT COUNT(expandoValue) FROM ExpandoValue expandoValue WHERE ";
+	private static final String _SQL_DELETE_EXPANDOVALUE = "DELETE ExpandoValue expandoValue";
+	private static final String _SQL_DELETE_EXPANDOVALUE_WHERE = "DELETE ExpandoValue expandoValue WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "expandoValue.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No ExpandoValue exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No ExpandoValue exists with the key {";

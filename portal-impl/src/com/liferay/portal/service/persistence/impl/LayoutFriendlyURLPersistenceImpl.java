@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.exception.NoSuchLayoutFriendlyURLException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.LayoutFriendlyURL;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -38,6 +39,7 @@ import com.liferay.portal.kernel.service.persistence.LayoutFriendlyURLPersistenc
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -573,9 +575,64 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid(uuid);
+
+			return;
+		}
+
 		for (LayoutFriendlyURL layoutFriendlyURL : findByUuid(uuid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutFriendlyURL);
+		}
+	}
+
+	protected void bulkRemoveByUuid(String uuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUTFRIENDLYURL_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1408,9 +1465,68 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid_C(uuid, companyId);
+
+			return;
+		}
+
 		for (LayoutFriendlyURL layoutFriendlyURL : findByUuid_C(uuid,
 				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutFriendlyURL);
+		}
+	}
+
+	protected void bulkRemoveByUuid_C(String uuid, long companyId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUTFRIENDLYURL_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
+		}
+
+		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1938,9 +2054,50 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (LayoutFriendlyURL layoutFriendlyURL : findByGroupId(groupId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutFriendlyURL);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUTFRIENDLYURL_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2448,9 +2605,50 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (LayoutFriendlyURL layoutFriendlyURL : findByCompanyId(companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutFriendlyURL);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUTFRIENDLYURL_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2953,9 +3151,50 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 	 */
 	@Override
 	public void removeByPlid(long plid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByPlid(plid);
+
+			return;
+		}
+
 		for (LayoutFriendlyURL layoutFriendlyURL : findByPlid(plid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutFriendlyURL);
+		}
+	}
+
+	protected void bulkRemoveByPlid(long plid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUTFRIENDLYURL_WHERE);
+
+		query.append(_FINDER_COLUMN_PLID_PLID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(plid);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3522,9 +3761,68 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 	 */
 	@Override
 	public void removeByP_F(long plid, String friendlyURL) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByP_F(plid, friendlyURL);
+
+			return;
+		}
+
 		for (LayoutFriendlyURL layoutFriendlyURL : findByP_F(plid, friendlyURL,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutFriendlyURL);
+		}
+	}
+
+	protected void bulkRemoveByP_F(long plid, String friendlyURL) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUTFRIENDLYURL_WHERE);
+
+		query.append(_FINDER_COLUMN_P_F_PLID_2);
+
+		boolean bindFriendlyURL = false;
+
+		if (friendlyURL == null) {
+			query.append(_FINDER_COLUMN_P_F_FRIENDLYURL_1);
+		}
+		else if (friendlyURL.equals("")) {
+			query.append(_FINDER_COLUMN_P_F_FRIENDLYURL_3);
+		}
+		else {
+			bindFriendlyURL = true;
+
+			query.append(_FINDER_COLUMN_P_F_FRIENDLYURL_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(plid);
+
+			if (bindFriendlyURL) {
+				qPos.add(friendlyURL);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4809,10 +5107,74 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 	@Override
 	public void removeByG_P_F(long groupId, boolean privateLayout,
 		String friendlyURL) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_P_F(groupId, privateLayout, friendlyURL);
+
+			return;
+		}
+
 		for (LayoutFriendlyURL layoutFriendlyURL : findByG_P_F(groupId,
 				privateLayout, friendlyURL, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(layoutFriendlyURL);
+		}
+	}
+
+	protected void bulkRemoveByG_P_F(long groupId, boolean privateLayout,
+		String friendlyURL) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_LAYOUTFRIENDLYURL_WHERE);
+
+		query.append(_FINDER_COLUMN_G_P_F_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_P_F_PRIVATELAYOUT_2);
+
+		boolean bindFriendlyURL = false;
+
+		if (friendlyURL == null) {
+			query.append(_FINDER_COLUMN_G_P_F_FRIENDLYURL_1);
+		}
+		else if (friendlyURL.equals("")) {
+			query.append(_FINDER_COLUMN_G_P_F_FRIENDLYURL_3);
+		}
+		else {
+			bindFriendlyURL = true;
+
+			query.append(_FINDER_COLUMN_G_P_F_FRIENDLYURL_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(privateLayout);
+
+			if (bindFriendlyURL) {
+				qPos.add(friendlyURL);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6227,8 +6589,36 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (LayoutFriendlyURL layoutFriendlyURL : findAll()) {
 			remove(layoutFriendlyURL);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_LAYOUTFRIENDLYURL);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6294,11 +6684,27 @@ public class LayoutFriendlyURLPersistenceImpl extends BasePersistenceImpl<Layout
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_LAYOUTFRIENDLYURL = "SELECT layoutFriendlyURL FROM LayoutFriendlyURL layoutFriendlyURL";
+	private static final String _SQL_SELECT_LAYOUTFRIENDLYURL_PKS = "SELECT layoutFriendlyURLId FROM LayoutFriendlyURL layoutFriendlyURL";
 	private static final String _SQL_SELECT_LAYOUTFRIENDLYURL_WHERE_PKS_IN = "SELECT layoutFriendlyURL FROM LayoutFriendlyURL layoutFriendlyURL WHERE layoutFriendlyURLId IN (";
 	private static final String _SQL_SELECT_LAYOUTFRIENDLYURL_WHERE = "SELECT layoutFriendlyURL FROM LayoutFriendlyURL layoutFriendlyURL WHERE ";
+	private static final String _SQL_SELECT_LAYOUTFRIENDLYURL_PKS_WHERE = "SELECT layoutFriendlyURLId FROM LayoutFriendlyURL layoutFriendlyURL WHERE ";
 	private static final String _SQL_COUNT_LAYOUTFRIENDLYURL = "SELECT COUNT(layoutFriendlyURL) FROM LayoutFriendlyURL layoutFriendlyURL";
 	private static final String _SQL_COUNT_LAYOUTFRIENDLYURL_WHERE = "SELECT COUNT(layoutFriendlyURL) FROM LayoutFriendlyURL layoutFriendlyURL WHERE ";
+	private static final String _SQL_DELETE_LAYOUTFRIENDLYURL = "DELETE LayoutFriendlyURL layoutFriendlyURL";
+	private static final String _SQL_DELETE_LAYOUTFRIENDLYURL_WHERE = "DELETE LayoutFriendlyURL layoutFriendlyURL WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "layoutFriendlyURL.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No LayoutFriendlyURL exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No LayoutFriendlyURL exists with the key {";

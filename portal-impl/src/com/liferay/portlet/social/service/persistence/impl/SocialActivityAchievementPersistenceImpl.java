@@ -28,10 +28,12 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 
 import com.liferay.portlet.social.model.impl.SocialActivityAchievementImpl;
@@ -545,9 +547,50 @@ public class SocialActivityAchievementPersistenceImpl
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (SocialActivityAchievement socialActivityAchievement : findByGroupId(
 				groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivityAchievement);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITYACHIEVEMENT_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1089,9 +1132,54 @@ public class SocialActivityAchievementPersistenceImpl
 	 */
 	@Override
 	public void removeByG_U(long groupId, long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_U(groupId, userId);
+
+			return;
+		}
+
 		for (SocialActivityAchievement socialActivityAchievement : findByG_U(
 				groupId, userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivityAchievement);
+		}
+	}
+
+	protected void bulkRemoveByG_U(long groupId, long userId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITYACHIEVEMENT_WHERE);
+
+		query.append(_FINDER_COLUMN_G_U_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_U_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1668,9 +1756,68 @@ public class SocialActivityAchievementPersistenceImpl
 	 */
 	@Override
 	public void removeByG_N(long groupId, String name) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_N(groupId, name);
+
+			return;
+		}
+
 		for (SocialActivityAchievement socialActivityAchievement : findByG_N(
 				groupId, name, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivityAchievement);
+		}
+	}
+
+	protected void bulkRemoveByG_N(long groupId, String name) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITYACHIEVEMENT_WHERE);
+
+		query.append(_FINDER_COLUMN_G_N_GROUPID_2);
+
+		boolean bindName = false;
+
+		if (name == null) {
+			query.append(_FINDER_COLUMN_G_N_NAME_1);
+		}
+		else if (name.equals("")) {
+			query.append(_FINDER_COLUMN_G_N_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			query.append(_FINDER_COLUMN_G_N_NAME_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			if (bindName) {
+				qPos.add(name);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2239,10 +2386,55 @@ public class SocialActivityAchievementPersistenceImpl
 	 */
 	@Override
 	public void removeByG_F(long groupId, boolean firstInGroup) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_F(groupId, firstInGroup);
+
+			return;
+		}
+
 		for (SocialActivityAchievement socialActivityAchievement : findByG_F(
 				groupId, firstInGroup, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null)) {
 			remove(socialActivityAchievement);
+		}
+	}
+
+	protected void bulkRemoveByG_F(long groupId, boolean firstInGroup) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITYACHIEVEMENT_WHERE);
+
+		query.append(_FINDER_COLUMN_G_F_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_F_FIRSTINGROUP_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(firstInGroup);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3110,10 +3302,60 @@ public class SocialActivityAchievementPersistenceImpl
 	 */
 	@Override
 	public void removeByG_U_F(long groupId, long userId, boolean firstInGroup) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_U_F(groupId, userId, firstInGroup);
+
+			return;
+		}
+
 		for (SocialActivityAchievement socialActivityAchievement : findByG_U_F(
 				groupId, userId, firstInGroup, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(socialActivityAchievement);
+		}
+	}
+
+	protected void bulkRemoveByG_U_F(long groupId, long userId,
+		boolean firstInGroup) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITYACHIEVEMENT_WHERE);
+
+		query.append(_FINDER_COLUMN_G_U_F_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_U_F_USERID_2);
+
+		query.append(_FINDER_COLUMN_G_U_F_FIRSTINGROUP_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(userId);
+
+			qPos.add(firstInGroup);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3988,8 +4230,36 @@ public class SocialActivityAchievementPersistenceImpl
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (SocialActivityAchievement socialActivityAchievement : findAll()) {
 			remove(socialActivityAchievement);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_SOCIALACTIVITYACHIEVEMENT);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4050,12 +4320,28 @@ public class SocialActivityAchievementPersistenceImpl
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_SOCIALACTIVITYACHIEVEMENT = "SELECT socialActivityAchievement FROM SocialActivityAchievement socialActivityAchievement";
+	private static final String _SQL_SELECT_SOCIALACTIVITYACHIEVEMENT_PKS = "SELECT activityAchievementId FROM SocialActivityAchievement socialActivityAchievement";
 	private static final String _SQL_SELECT_SOCIALACTIVITYACHIEVEMENT_WHERE_PKS_IN =
 		"SELECT socialActivityAchievement FROM SocialActivityAchievement socialActivityAchievement WHERE activityAchievementId IN (";
 	private static final String _SQL_SELECT_SOCIALACTIVITYACHIEVEMENT_WHERE = "SELECT socialActivityAchievement FROM SocialActivityAchievement socialActivityAchievement WHERE ";
+	private static final String _SQL_SELECT_SOCIALACTIVITYACHIEVEMENT_PKS_WHERE = "SELECT activityAchievementId FROM SocialActivityAchievement socialActivityAchievement WHERE ";
 	private static final String _SQL_COUNT_SOCIALACTIVITYACHIEVEMENT = "SELECT COUNT(socialActivityAchievement) FROM SocialActivityAchievement socialActivityAchievement";
 	private static final String _SQL_COUNT_SOCIALACTIVITYACHIEVEMENT_WHERE = "SELECT COUNT(socialActivityAchievement) FROM SocialActivityAchievement socialActivityAchievement WHERE ";
+	private static final String _SQL_DELETE_SOCIALACTIVITYACHIEVEMENT = "DELETE SocialActivityAchievement socialActivityAchievement";
+	private static final String _SQL_DELETE_SOCIALACTIVITYACHIEVEMENT_WHERE = "DELETE SocialActivityAchievement socialActivityAchievement WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "socialActivityAchievement.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No SocialActivityAchievement exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No SocialActivityAchievement exists with the key {";

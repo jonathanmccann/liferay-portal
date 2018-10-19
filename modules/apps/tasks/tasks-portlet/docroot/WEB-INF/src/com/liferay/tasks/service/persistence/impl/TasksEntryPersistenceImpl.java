@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -58,6 +60,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -848,9 +851,50 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByGroupId(groupId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1400,9 +1444,50 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByUserId(long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUserId(userId);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByUserId(userId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByUserId(long userId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_USERID_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1915,9 +2000,50 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByAssigneeUserId(long assigneeUserId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByAssigneeUserId(assigneeUserId);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByAssigneeUserId(assigneeUserId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByAssigneeUserId(long assigneeUserId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_ASSIGNEEUSERID_ASSIGNEEUSERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(assigneeUserId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2430,9 +2556,50 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByResolverUserId(long resolverUserId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByResolverUserId(resolverUserId);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByResolverUserId(resolverUserId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByResolverUserId(long resolverUserId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_RESOLVERUSERID_RESOLVERUSERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(resolverUserId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3291,9 +3458,54 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByG_U(long groupId, long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_U(groupId, userId);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByG_U(groupId, userId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_U(long groupId, long userId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_G_U_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_U_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4213,9 +4425,54 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByG_A(long groupId, long assigneeUserId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_A(groupId, assigneeUserId);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByG_A(groupId, assigneeUserId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_A(long groupId, long assigneeUserId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_G_A_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_A_ASSIGNEEUSERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(assigneeUserId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5135,9 +5392,54 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByG_R(long groupId, long resolverUserId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_R(groupId, resolverUserId);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByG_R(groupId, resolverUserId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_R(long groupId, long resolverUserId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_G_R_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_R_RESOLVERUSERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(resolverUserId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5934,9 +6236,54 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByU_S(long userId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_S(userId, status);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByU_S(userId, status,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByU_S(long userId, int status) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_U_S_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6762,9 +7109,54 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByA_S(long assigneeUserId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByA_S(assigneeUserId, status);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByA_S(assigneeUserId, status,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByA_S(long assigneeUserId, int status) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_A_S_ASSIGNEEUSERID_2);
+
+		query.append(_FINDER_COLUMN_A_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(assigneeUserId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -8133,9 +8525,58 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByG_U_S(long groupId, long userId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_U_S(groupId, userId, status);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByG_U_S(groupId, userId, status,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_U_S(long groupId, long userId, int status) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_G_U_S_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_U_S_USERID_2);
+
+		query.append(_FINDER_COLUMN_G_U_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(userId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9656,9 +10097,59 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeByG_A_S(long groupId, long assigneeUserId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_A_S(groupId, assigneeUserId, status);
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findByG_A_S(groupId, assigneeUserId,
 				status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_A_S(long groupId, long assigneeUserId,
+		int status) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_TASKSENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_G_A_S_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_A_S_ASSIGNEEUSERID_2);
+
+		query.append(_FINDER_COLUMN_G_A_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(assigneeUserId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -10871,8 +11362,36 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (TasksEntry tasksEntry : findAll()) {
 			remove(tasksEntry);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_TASKSENTRY);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -10933,11 +11452,27 @@ public class TasksEntryPersistenceImpl extends BasePersistenceImpl<TasksEntry>
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_TASKSENTRY = "SELECT tasksEntry FROM TasksEntry tasksEntry";
+	private static final String _SQL_SELECT_TASKSENTRY_PKS = "SELECT tasksEntryId FROM TasksEntry tasksEntry";
 	private static final String _SQL_SELECT_TASKSENTRY_WHERE_PKS_IN = "SELECT tasksEntry FROM TasksEntry tasksEntry WHERE tasksEntryId IN (";
 	private static final String _SQL_SELECT_TASKSENTRY_WHERE = "SELECT tasksEntry FROM TasksEntry tasksEntry WHERE ";
+	private static final String _SQL_SELECT_TASKSENTRY_PKS_WHERE = "SELECT tasksEntryId FROM TasksEntry tasksEntry WHERE ";
 	private static final String _SQL_COUNT_TASKSENTRY = "SELECT COUNT(tasksEntry) FROM TasksEntry tasksEntry";
 	private static final String _SQL_COUNT_TASKSENTRY_WHERE = "SELECT COUNT(tasksEntry) FROM TasksEntry tasksEntry WHERE ";
+	private static final String _SQL_DELETE_TASKSENTRY = "DELETE TasksEntry tasksEntry";
+	private static final String _SQL_DELETE_TASKSENTRY_WHERE = "DELETE TasksEntry tasksEntry WHERE ";
 	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "tasksEntry.tasksEntryId";
 	private static final String _FILTER_SQL_SELECT_TASKSENTRY_WHERE = "SELECT DISTINCT {tasksEntry.*} FROM TMS_TasksEntry tasksEntry WHERE ";
 	private static final String _FILTER_SQL_SELECT_TASKSENTRY_NO_INLINE_DISTINCT_WHERE_1 =

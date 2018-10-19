@@ -28,10 +28,12 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -566,9 +568,64 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid(uuid);
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findByUuid(uuid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveByUuid(String uuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALRELATION_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1150,9 +1207,68 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid_C(uuid, companyId);
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findByUuid_C(uuid, companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveByUuid_C(String uuid, long companyId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALRELATION_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
+		}
+
+		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1681,9 +1797,50 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findByCompanyId(companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALRELATION_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2187,9 +2344,50 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeByUserId1(long userId1) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUserId1(userId1);
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findByUserId1(userId1,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveByUserId1(long userId1) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALRELATION_WHERE);
+
+		query.append(_FINDER_COLUMN_USERID1_USERID1_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId1);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2693,9 +2891,50 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeByUserId2(long userId2) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUserId2(userId2);
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findByUserId2(userId2,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveByUserId2(long userId2) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALRELATION_WHERE);
+
+		query.append(_FINDER_COLUMN_USERID2_USERID2_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId2);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3196,9 +3435,50 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeByType(int type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByType(type);
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findByType(type,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveByType(int type) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALRELATION_WHERE);
+
+		query.append(_FINDER_COLUMN_TYPE_TYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(type);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3734,9 +4014,54 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeByC_T(long companyId, int type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_T(companyId, type);
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findByC_T(companyId, type,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveByC_T(long companyId, int type) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALRELATION_WHERE);
+
+		query.append(_FINDER_COLUMN_C_T_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_T_TYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(type);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4279,9 +4604,54 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeByU1_U2(long userId1, long userId2) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU1_U2(userId1, userId2);
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findByU1_U2(userId1, userId2,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveByU1_U2(long userId1, long userId2) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALRELATION_WHERE);
+
+		query.append(_FINDER_COLUMN_U1_U2_USERID1_2);
+
+		query.append(_FINDER_COLUMN_U1_U2_USERID2_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId1);
+
+			qPos.add(userId2);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4823,9 +5193,54 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeByU1_T(long userId1, int type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU1_T(userId1, type);
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findByU1_T(userId1, type,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveByU1_T(long userId1, int type) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALRELATION_WHERE);
+
+		query.append(_FINDER_COLUMN_U1_T_USERID1_2);
+
+		query.append(_FINDER_COLUMN_U1_T_TYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId1);
+
+			qPos.add(type);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5367,9 +5782,54 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeByU2_T(long userId2, int type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU2_T(userId2, type);
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findByU2_T(userId2, type,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveByU2_T(long userId2, int type) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALRELATION_WHERE);
+
+		query.append(_FINDER_COLUMN_U2_T_USERID2_2);
+
+		query.append(_FINDER_COLUMN_U2_T_TYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId2);
+
+			qPos.add(type);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6615,8 +7075,36 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (SocialRelation socialRelation : findAll()) {
 			remove(socialRelation);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_SOCIALRELATION);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6682,11 +7170,27 @@ public class SocialRelationPersistenceImpl extends BasePersistenceImpl<SocialRel
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_SOCIALRELATION = "SELECT socialRelation FROM SocialRelation socialRelation";
+	private static final String _SQL_SELECT_SOCIALRELATION_PKS = "SELECT relationId FROM SocialRelation socialRelation";
 	private static final String _SQL_SELECT_SOCIALRELATION_WHERE_PKS_IN = "SELECT socialRelation FROM SocialRelation socialRelation WHERE relationId IN (";
 	private static final String _SQL_SELECT_SOCIALRELATION_WHERE = "SELECT socialRelation FROM SocialRelation socialRelation WHERE ";
+	private static final String _SQL_SELECT_SOCIALRELATION_PKS_WHERE = "SELECT relationId FROM SocialRelation socialRelation WHERE ";
 	private static final String _SQL_COUNT_SOCIALRELATION = "SELECT COUNT(socialRelation) FROM SocialRelation socialRelation";
 	private static final String _SQL_COUNT_SOCIALRELATION_WHERE = "SELECT COUNT(socialRelation) FROM SocialRelation socialRelation WHERE ";
+	private static final String _SQL_DELETE_SOCIALRELATION = "DELETE SocialRelation socialRelation";
+	private static final String _SQL_DELETE_SOCIALRELATION_WHERE = "DELETE SocialRelation socialRelation WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "socialRelation.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No SocialRelation exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No SocialRelation exists with the key {";

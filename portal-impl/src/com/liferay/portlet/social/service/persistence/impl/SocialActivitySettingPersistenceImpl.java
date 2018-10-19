@@ -28,10 +28,12 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -541,9 +543,50 @@ public class SocialActivitySettingPersistenceImpl extends BasePersistenceImpl<So
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (SocialActivitySetting socialActivitySetting : findByGroupId(
 				groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivitySetting);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITYSETTING_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1087,9 +1130,54 @@ public class SocialActivitySettingPersistenceImpl extends BasePersistenceImpl<So
 	 */
 	@Override
 	public void removeByG_C(long groupId, long classNameId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_C(groupId, classNameId);
+
+			return;
+		}
+
 		for (SocialActivitySetting socialActivitySetting : findByG_C(groupId,
 				classNameId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivitySetting);
+		}
+	}
+
+	protected void bulkRemoveByG_C(long groupId, long classNameId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITYSETTING_WHERE);
+
+		query.append(_FINDER_COLUMN_G_C_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_C_CLASSNAMEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(classNameId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1639,9 +1727,54 @@ public class SocialActivitySettingPersistenceImpl extends BasePersistenceImpl<So
 	 */
 	@Override
 	public void removeByG_A(long groupId, int activityType) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_A(groupId, activityType);
+
+			return;
+		}
+
 		for (SocialActivitySetting socialActivitySetting : findByG_A(groupId,
 				activityType, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivitySetting);
+		}
+	}
+
+	protected void bulkRemoveByG_A(long groupId, int activityType) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITYSETTING_WHERE);
+
+		query.append(_FINDER_COLUMN_G_A_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_A_ACTIVITYTYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(activityType);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2227,10 +2360,60 @@ public class SocialActivitySettingPersistenceImpl extends BasePersistenceImpl<So
 	 */
 	@Override
 	public void removeByG_C_A(long groupId, long classNameId, int activityType) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_C_A(groupId, classNameId, activityType);
+
+			return;
+		}
+
 		for (SocialActivitySetting socialActivitySetting : findByG_C_A(
 				groupId, classNameId, activityType, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(socialActivitySetting);
+		}
+	}
+
+	protected void bulkRemoveByG_C_A(long groupId, long classNameId,
+		int activityType) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITYSETTING_WHERE);
+
+		query.append(_FINDER_COLUMN_G_C_A_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_C_A_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_G_C_A_ACTIVITYTYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(classNameId);
+
+			qPos.add(activityType);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3386,8 +3569,36 @@ public class SocialActivitySettingPersistenceImpl extends BasePersistenceImpl<So
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (SocialActivitySetting socialActivitySetting : findAll()) {
 			remove(socialActivitySetting);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_SOCIALACTIVITYSETTING);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3448,11 +3659,27 @@ public class SocialActivitySettingPersistenceImpl extends BasePersistenceImpl<So
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_SOCIALACTIVITYSETTING = "SELECT socialActivitySetting FROM SocialActivitySetting socialActivitySetting";
+	private static final String _SQL_SELECT_SOCIALACTIVITYSETTING_PKS = "SELECT activitySettingId FROM SocialActivitySetting socialActivitySetting";
 	private static final String _SQL_SELECT_SOCIALACTIVITYSETTING_WHERE_PKS_IN = "SELECT socialActivitySetting FROM SocialActivitySetting socialActivitySetting WHERE activitySettingId IN (";
 	private static final String _SQL_SELECT_SOCIALACTIVITYSETTING_WHERE = "SELECT socialActivitySetting FROM SocialActivitySetting socialActivitySetting WHERE ";
+	private static final String _SQL_SELECT_SOCIALACTIVITYSETTING_PKS_WHERE = "SELECT activitySettingId FROM SocialActivitySetting socialActivitySetting WHERE ";
 	private static final String _SQL_COUNT_SOCIALACTIVITYSETTING = "SELECT COUNT(socialActivitySetting) FROM SocialActivitySetting socialActivitySetting";
 	private static final String _SQL_COUNT_SOCIALACTIVITYSETTING_WHERE = "SELECT COUNT(socialActivitySetting) FROM SocialActivitySetting socialActivitySetting WHERE ";
+	private static final String _SQL_DELETE_SOCIALACTIVITYSETTING = "DELETE SocialActivitySetting socialActivitySetting";
+	private static final String _SQL_DELETE_SOCIALACTIVITYSETTING_WHERE = "DELETE SocialActivitySetting socialActivitySetting WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "socialActivitySetting.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No SocialActivitySetting exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No SocialActivitySetting exists with the key {";

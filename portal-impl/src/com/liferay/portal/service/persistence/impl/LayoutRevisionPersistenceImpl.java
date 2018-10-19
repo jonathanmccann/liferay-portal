@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.exception.NoSuchLayoutRevisionException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.LayoutRevision;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.LayoutRevisionPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.impl.LayoutRevisionImpl;
@@ -53,6 +55,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -553,9 +556,50 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeByLayoutSetBranchId(long layoutSetBranchId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByLayoutSetBranchId(layoutSetBranchId);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByLayoutSetBranchId(
 				layoutSetBranchId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByLayoutSetBranchId(long layoutSetBranchId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_LAYOUTSETBRANCHID_LAYOUTSETBRANCHID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutSetBranchId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1058,9 +1102,50 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeByPlid(long plid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByPlid(plid);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByPlid(plid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByPlid(long plid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_PLID_PLID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(plid);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1564,9 +1649,50 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeByStatus(int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByStatus(status);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByStatus(status,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByStatus(int status) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_STATUS_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2105,9 +2231,54 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeByL_H(long layoutSetBranchId, boolean head) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByL_H(layoutSetBranchId, head);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByL_H(layoutSetBranchId, head,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByL_H(long layoutSetBranchId, boolean head) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_L_H_LAYOUTSETBRANCHID_2);
+
+		query.append(_FINDER_COLUMN_L_H_HEAD_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutSetBranchId);
+
+			qPos.add(head);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2652,9 +2823,54 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeByL_P(long layoutSetBranchId, long plid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByL_P(layoutSetBranchId, plid);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByL_P(layoutSetBranchId, plid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByL_P(long layoutSetBranchId, long plid) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_L_P_LAYOUTSETBRANCHID_2);
+
+		query.append(_FINDER_COLUMN_L_P_PLID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutSetBranchId);
+
+			qPos.add(plid);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3199,9 +3415,54 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeByL_S(long layoutSetBranchId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByL_S(layoutSetBranchId, status);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByL_S(layoutSetBranchId,
 				status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByL_S(long layoutSetBranchId, int status) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_L_S_LAYOUTSETBRANCHID_2);
+
+		query.append(_FINDER_COLUMN_L_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutSetBranchId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3739,9 +4000,54 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeByH_P(boolean head, long plid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByH_P(head, plid);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByH_P(head, plid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByH_P(boolean head, long plid) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_H_P_HEAD_2);
+
+		query.append(_FINDER_COLUMN_H_P_PLID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(head);
+
+			qPos.add(plid);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4264,9 +4570,54 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeByP_NotS(long plid, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByP_NotS(plid, status);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByP_NotS(plid, status,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByP_NotS(long plid, int status) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_P_NOTS_PLID_2);
+
+		query.append(_FINDER_COLUMN_P_NOTS_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(plid);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4852,9 +5203,59 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	@Override
 	public void removeByL_L_P(long layoutSetBranchId, long layoutBranchId,
 		long plid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByL_L_P(layoutSetBranchId, layoutBranchId, plid);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByL_L_P(layoutSetBranchId,
 				layoutBranchId, plid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByL_L_P(long layoutSetBranchId,
+		long layoutBranchId, long plid) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_L_L_P_LAYOUTSETBRANCHID_2);
+
+		query.append(_FINDER_COLUMN_L_L_P_LAYOUTBRANCHID_2);
+
+		query.append(_FINDER_COLUMN_L_L_P_PLID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutSetBranchId);
+
+			qPos.add(layoutBranchId);
+
+			qPos.add(plid);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5452,10 +5853,60 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	@Override
 	public void removeByL_P_P(long layoutSetBranchId,
 		long parentLayoutRevisionId, long plid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByL_P_P(layoutSetBranchId, parentLayoutRevisionId, plid);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByL_P_P(layoutSetBranchId,
 				parentLayoutRevisionId, plid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByL_P_P(long layoutSetBranchId,
+		long parentLayoutRevisionId, long plid) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_L_P_P_LAYOUTSETBRANCHID_2);
+
+		query.append(_FINDER_COLUMN_L_P_P_PARENTLAYOUTREVISIONID_2);
+
+		query.append(_FINDER_COLUMN_L_P_P_PLID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutSetBranchId);
+
+			qPos.add(parentLayoutRevisionId);
+
+			qPos.add(plid);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6315,10 +6766,60 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	@Override
 	public void removeByL_H_P_Collection(long layoutSetBranchId, boolean head,
 		long plid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByL_H_P_Collection(layoutSetBranchId, head, plid);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByL_H_P_Collection(
 				layoutSetBranchId, head, plid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByL_H_P_Collection(long layoutSetBranchId,
+		boolean head, long plid) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_L_H_P_COLLECTION_LAYOUTSETBRANCHID_2);
+
+		query.append(_FINDER_COLUMN_L_H_P_COLLECTION_HEAD_2);
+
+		query.append(_FINDER_COLUMN_L_H_P_COLLECTION_PLID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutSetBranchId);
+
+			qPos.add(head);
+
+			qPos.add(plid);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6911,9 +7412,59 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeByL_H_S(long layoutSetBranchId, boolean head, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByL_H_S(layoutSetBranchId, head, status);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByL_H_S(layoutSetBranchId,
 				head, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByL_H_S(long layoutSetBranchId, boolean head,
+		int status) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_L_H_S_LAYOUTSETBRANCHID_2);
+
+		query.append(_FINDER_COLUMN_L_H_S_HEAD_2);
+
+		query.append(_FINDER_COLUMN_L_H_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutSetBranchId);
+
+			qPos.add(head);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7500,9 +8051,59 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeByL_P_S(long layoutSetBranchId, long plid, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByL_P_S(layoutSetBranchId, plid, status);
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findByL_P_S(layoutSetBranchId,
 				plid, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByL_P_S(long layoutSetBranchId, long plid,
+		int status) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_LAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_L_P_S_LAYOUTSETBRANCHID_2);
+
+		query.append(_FINDER_COLUMN_L_P_S_PLID_2);
+
+		query.append(_FINDER_COLUMN_L_P_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutSetBranchId);
+
+			qPos.add(plid);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -8930,8 +9531,36 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (LayoutRevision layoutRevision : findAll()) {
 			remove(layoutRevision);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_LAYOUTREVISION);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -8992,11 +9621,27 @@ public class LayoutRevisionPersistenceImpl extends BasePersistenceImpl<LayoutRev
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_LAYOUTREVISION = "SELECT layoutRevision FROM LayoutRevision layoutRevision";
+	private static final String _SQL_SELECT_LAYOUTREVISION_PKS = "SELECT layoutRevisionId FROM LayoutRevision layoutRevision";
 	private static final String _SQL_SELECT_LAYOUTREVISION_WHERE_PKS_IN = "SELECT layoutRevision FROM LayoutRevision layoutRevision WHERE layoutRevisionId IN (";
 	private static final String _SQL_SELECT_LAYOUTREVISION_WHERE = "SELECT layoutRevision FROM LayoutRevision layoutRevision WHERE ";
+	private static final String _SQL_SELECT_LAYOUTREVISION_PKS_WHERE = "SELECT layoutRevisionId FROM LayoutRevision layoutRevision WHERE ";
 	private static final String _SQL_COUNT_LAYOUTREVISION = "SELECT COUNT(layoutRevision) FROM LayoutRevision layoutRevision";
 	private static final String _SQL_COUNT_LAYOUTREVISION_WHERE = "SELECT COUNT(layoutRevision) FROM LayoutRevision layoutRevision WHERE ";
+	private static final String _SQL_DELETE_LAYOUTREVISION = "DELETE LayoutRevision layoutRevision";
+	private static final String _SQL_DELETE_LAYOUTREVISION_WHERE = "DELETE LayoutRevision layoutRevision WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "layoutRevision.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No LayoutRevision exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No LayoutRevision exists with the key {";

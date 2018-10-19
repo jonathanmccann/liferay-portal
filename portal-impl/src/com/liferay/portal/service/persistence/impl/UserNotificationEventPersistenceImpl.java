@@ -29,12 +29,14 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchUserNotificationEventException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.UserNotificationEvent;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.UserNotificationEventPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -570,9 +572,64 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid(uuid);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByUuid(uuid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByUuid(String uuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1161,9 +1218,68 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid_C(uuid, companyId);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByUuid_C(uuid,
 				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByUuid_C(String uuid, long companyId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
+		}
+
+		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1693,9 +1809,50 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	 */
 	@Override
 	public void removeByUserId(long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUserId(userId);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByUserId(
 				userId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByUserId(long userId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_USERID_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2230,9 +2387,64 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	 */
 	@Override
 	public void removeByType(String type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByType(type);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByType(type,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByType(String type) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		boolean bindType = false;
+
+		if (type == null) {
+			query.append(_FINDER_COLUMN_TYPE_TYPE_1);
+		}
+		else if (type.equals("")) {
+			query.append(_FINDER_COLUMN_TYPE_TYPE_3);
+		}
+		else {
+			bindType = true;
+
+			query.append(_FINDER_COLUMN_TYPE_TYPE_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindType) {
+				qPos.add(type);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2793,9 +3005,54 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	 */
 	@Override
 	public void removeByU_DT(long userId, int deliveryType) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_DT(userId, deliveryType);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByU_DT(userId,
 				deliveryType, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByU_DT(long userId, int deliveryType) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_U_DT_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_DT_DELIVERYTYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(deliveryType);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3345,9 +3602,54 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	 */
 	@Override
 	public void removeByU_D(long userId, boolean delivered) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_D(userId, delivered);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByU_D(userId,
 				delivered, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByU_D(long userId, boolean delivered) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_U_D_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_D_DELIVERED_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(delivered);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3895,9 +4197,54 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	 */
 	@Override
 	public void removeByU_A(long userId, boolean archived) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_A(userId, archived);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByU_A(userId,
 				archived, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByU_A(long userId, boolean archived) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_U_A_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_A_ARCHIVED_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(archived);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4485,10 +4832,60 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	 */
 	@Override
 	public void removeByU_DT_D(long userId, int deliveryType, boolean delivered) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_DT_D(userId, deliveryType, delivered);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByU_DT_D(
 				userId, deliveryType, delivered, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByU_DT_D(long userId, int deliveryType,
+		boolean delivered) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_U_DT_D_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_DT_D_DELIVERYTYPE_2);
+
+		query.append(_FINDER_COLUMN_U_DT_D_DELIVERED_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(deliveryType);
+
+			qPos.add(delivered);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5082,10 +5479,60 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	 */
 	@Override
 	public void removeByU_DT_A(long userId, int deliveryType, boolean archived) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_DT_A(userId, deliveryType, archived);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByU_DT_A(
 				userId, deliveryType, archived, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByU_DT_A(long userId, int deliveryType,
+		boolean archived) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_U_DT_A_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_DT_A_DELIVERYTYPE_2);
+
+		query.append(_FINDER_COLUMN_U_DT_A_ARCHIVED_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(deliveryType);
+
+			qPos.add(archived);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5679,10 +6126,60 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	@Override
 	public void removeByU_D_A(long userId, boolean delivered,
 		boolean actionRequired) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_D_A(userId, delivered, actionRequired);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByU_D_A(userId,
 				delivered, actionRequired, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByU_D_A(long userId, boolean delivered,
+		boolean actionRequired) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_U_D_A_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_D_A_DELIVERED_2);
+
+		query.append(_FINDER_COLUMN_U_D_A_ACTIONREQUIRED_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(delivered);
+
+			qPos.add(actionRequired);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6277,10 +6774,60 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	@Override
 	public void removeByU_A_A(long userId, boolean actionRequired,
 		boolean archived) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_A_A(userId, actionRequired, archived);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByU_A_A(userId,
 				actionRequired, archived, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByU_A_A(long userId, boolean actionRequired,
+		boolean archived) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_U_A_A_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_A_A_ACTIONREQUIRED_2);
+
+		query.append(_FINDER_COLUMN_U_A_A_ARCHIVED_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(actionRequired);
+
+			qPos.add(archived);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6934,10 +7481,78 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	@Override
 	public void removeByU_T_DT_D(long userId, String type, int deliveryType,
 		boolean delivered) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_T_DT_D(userId, type, deliveryType, delivered);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByU_T_DT_D(
 				userId, type, deliveryType, delivered, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByU_T_DT_D(long userId, String type,
+		int deliveryType, boolean delivered) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_U_T_DT_D_USERID_2);
+
+		boolean bindType = false;
+
+		if (type == null) {
+			query.append(_FINDER_COLUMN_U_T_DT_D_TYPE_1);
+		}
+		else if (type.equals("")) {
+			query.append(_FINDER_COLUMN_U_T_DT_D_TYPE_3);
+		}
+		else {
+			bindType = true;
+
+			query.append(_FINDER_COLUMN_U_T_DT_D_TYPE_2);
+		}
+
+		query.append(_FINDER_COLUMN_U_T_DT_D_DELIVERYTYPE_2);
+
+		query.append(_FINDER_COLUMN_U_T_DT_D_DELIVERED_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			if (bindType) {
+				qPos.add(type);
+			}
+
+			qPos.add(deliveryType);
+
+			qPos.add(delivered);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7588,10 +8203,64 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	@Override
 	public void removeByU_DT_D_A(long userId, int deliveryType,
 		boolean delivered, boolean actionRequired) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_DT_D_A(userId, deliveryType, delivered, actionRequired);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByU_DT_D_A(
 				userId, deliveryType, delivered, actionRequired,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByU_DT_D_A(long userId, int deliveryType,
+		boolean delivered, boolean actionRequired) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_U_DT_D_A_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_DT_D_A_DELIVERYTYPE_2);
+
+		query.append(_FINDER_COLUMN_U_DT_D_A_DELIVERED_2);
+
+		query.append(_FINDER_COLUMN_U_DT_D_A_ACTIONREQUIRED_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(deliveryType);
+
+			qPos.add(delivered);
+
+			qPos.add(actionRequired);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -8228,10 +8897,64 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	@Override
 	public void removeByU_DT_A_A(long userId, int deliveryType,
 		boolean actionRequired, boolean archived) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_DT_A_A(userId, deliveryType, actionRequired, archived);
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findByU_DT_A_A(
 				userId, deliveryType, actionRequired, archived,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveByU_DT_A_A(long userId, int deliveryType,
+		boolean actionRequired, boolean archived) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_DELETE_USERNOTIFICATIONEVENT_WHERE);
+
+		query.append(_FINDER_COLUMN_U_DT_A_A_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_DT_A_A_DELIVERYTYPE_2);
+
+		query.append(_FINDER_COLUMN_U_DT_A_A_ACTIONREQUIRED_2);
+
+		query.append(_FINDER_COLUMN_U_DT_A_A_ARCHIVED_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(deliveryType);
+
+			qPos.add(actionRequired);
+
+			qPos.add(archived);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9363,8 +10086,36 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (UserNotificationEvent userNotificationEvent : findAll()) {
 			remove(userNotificationEvent);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_USERNOTIFICATIONEVENT);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9430,11 +10181,27 @@ public class UserNotificationEventPersistenceImpl extends BasePersistenceImpl<Us
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_USERNOTIFICATIONEVENT = "SELECT userNotificationEvent FROM UserNotificationEvent userNotificationEvent";
+	private static final String _SQL_SELECT_USERNOTIFICATIONEVENT_PKS = "SELECT userNotificationEventId FROM UserNotificationEvent userNotificationEvent";
 	private static final String _SQL_SELECT_USERNOTIFICATIONEVENT_WHERE_PKS_IN = "SELECT userNotificationEvent FROM UserNotificationEvent userNotificationEvent WHERE userNotificationEventId IN (";
 	private static final String _SQL_SELECT_USERNOTIFICATIONEVENT_WHERE = "SELECT userNotificationEvent FROM UserNotificationEvent userNotificationEvent WHERE ";
+	private static final String _SQL_SELECT_USERNOTIFICATIONEVENT_PKS_WHERE = "SELECT userNotificationEventId FROM UserNotificationEvent userNotificationEvent WHERE ";
 	private static final String _SQL_COUNT_USERNOTIFICATIONEVENT = "SELECT COUNT(userNotificationEvent) FROM UserNotificationEvent userNotificationEvent";
 	private static final String _SQL_COUNT_USERNOTIFICATIONEVENT_WHERE = "SELECT COUNT(userNotificationEvent) FROM UserNotificationEvent userNotificationEvent WHERE ";
+	private static final String _SQL_DELETE_USERNOTIFICATIONEVENT = "DELETE UserNotificationEvent userNotificationEvent";
+	private static final String _SQL_DELETE_USERNOTIFICATIONEVENT_WHERE = "DELETE UserNotificationEvent userNotificationEvent WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "userNotificationEvent.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No UserNotificationEvent exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No UserNotificationEvent exists with the key {";

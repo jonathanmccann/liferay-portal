@@ -29,12 +29,14 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchPortletPreferencesException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.PortletPreferences;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.PortletPreferencesPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.impl.PortletPreferencesImpl;
@@ -536,9 +538,50 @@ public class PortletPreferencesPersistenceImpl extends BasePersistenceImpl<Portl
 	 */
 	@Override
 	public void removeByPlid(long plid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByPlid(plid);
+
+			return;
+		}
+
 		for (PortletPreferences portletPreferences : findByPlid(plid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(portletPreferences);
+		}
+	}
+
+	protected void bulkRemoveByPlid(long plid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_PORTLETPREFERENCES_WHERE);
+
+		query.append(_FINDER_COLUMN_PLID_PLID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(plid);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1078,9 +1121,64 @@ public class PortletPreferencesPersistenceImpl extends BasePersistenceImpl<Portl
 	 */
 	@Override
 	public void removeByPortletId(String portletId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByPortletId(portletId);
+
+			return;
+		}
+
 		for (PortletPreferences portletPreferences : findByPortletId(
 				portletId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(portletPreferences);
+		}
+	}
+
+	protected void bulkRemoveByPortletId(String portletId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_PORTLETPREFERENCES_WHERE);
+
+		boolean bindPortletId = false;
+
+		if (portletId == null) {
+			query.append(_FINDER_COLUMN_PORTLETID_PORTLETID_1);
+		}
+		else if (portletId.equals("")) {
+			query.append(_FINDER_COLUMN_PORTLETID_PORTLETID_3);
+		}
+		else {
+			bindPortletId = true;
+
+			query.append(_FINDER_COLUMN_PORTLETID_PORTLETID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindPortletId) {
+				qPos.add(portletId);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1665,9 +1763,68 @@ public class PortletPreferencesPersistenceImpl extends BasePersistenceImpl<Portl
 	 */
 	@Override
 	public void removeByO_P(int ownerType, String portletId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByO_P(ownerType, portletId);
+
+			return;
+		}
+
 		for (PortletPreferences portletPreferences : findByO_P(ownerType,
 				portletId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(portletPreferences);
+		}
+	}
+
+	protected void bulkRemoveByO_P(int ownerType, String portletId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_PORTLETPREFERENCES_WHERE);
+
+		query.append(_FINDER_COLUMN_O_P_OWNERTYPE_2);
+
+		boolean bindPortletId = false;
+
+		if (portletId == null) {
+			query.append(_FINDER_COLUMN_O_P_PORTLETID_1);
+		}
+		else if (portletId.equals("")) {
+			query.append(_FINDER_COLUMN_O_P_PORTLETID_3);
+		}
+		else {
+			bindPortletId = true;
+
+			query.append(_FINDER_COLUMN_O_P_PORTLETID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(ownerType);
+
+			if (bindPortletId) {
+				qPos.add(portletId);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2257,9 +2414,68 @@ public class PortletPreferencesPersistenceImpl extends BasePersistenceImpl<Portl
 	 */
 	@Override
 	public void removeByP_P(long plid, String portletId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByP_P(plid, portletId);
+
+			return;
+		}
+
 		for (PortletPreferences portletPreferences : findByP_P(plid, portletId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(portletPreferences);
+		}
+	}
+
+	protected void bulkRemoveByP_P(long plid, String portletId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_PORTLETPREFERENCES_WHERE);
+
+		query.append(_FINDER_COLUMN_P_P_PLID_2);
+
+		boolean bindPortletId = false;
+
+		if (portletId == null) {
+			query.append(_FINDER_COLUMN_P_P_PORTLETID_1);
+		}
+		else if (portletId.equals("")) {
+			query.append(_FINDER_COLUMN_P_P_PORTLETID_3);
+		}
+		else {
+			bindPortletId = true;
+
+			query.append(_FINDER_COLUMN_P_P_PORTLETID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(plid);
+
+			if (bindPortletId) {
+				qPos.add(portletId);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2855,9 +3071,58 @@ public class PortletPreferencesPersistenceImpl extends BasePersistenceImpl<Portl
 	 */
 	@Override
 	public void removeByO_O_P(long ownerId, int ownerType, long plid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByO_O_P(ownerId, ownerType, plid);
+
+			return;
+		}
+
 		for (PortletPreferences portletPreferences : findByO_O_P(ownerId,
 				ownerType, plid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(portletPreferences);
+		}
+	}
+
+	protected void bulkRemoveByO_O_P(long ownerId, int ownerType, long plid) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_PORTLETPREFERENCES_WHERE);
+
+		query.append(_FINDER_COLUMN_O_O_P_OWNERID_2);
+
+		query.append(_FINDER_COLUMN_O_O_P_OWNERTYPE_2);
+
+		query.append(_FINDER_COLUMN_O_O_P_PLID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(ownerId);
+
+			qPos.add(ownerType);
+
+			qPos.add(plid);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3479,9 +3744,73 @@ public class PortletPreferencesPersistenceImpl extends BasePersistenceImpl<Portl
 	 */
 	@Override
 	public void removeByO_O_PI(long ownerId, int ownerType, String portletId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByO_O_PI(ownerId, ownerType, portletId);
+
+			return;
+		}
+
 		for (PortletPreferences portletPreferences : findByO_O_PI(ownerId,
 				ownerType, portletId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(portletPreferences);
+		}
+	}
+
+	protected void bulkRemoveByO_O_PI(long ownerId, int ownerType,
+		String portletId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_PORTLETPREFERENCES_WHERE);
+
+		query.append(_FINDER_COLUMN_O_O_PI_OWNERID_2);
+
+		query.append(_FINDER_COLUMN_O_O_PI_OWNERTYPE_2);
+
+		boolean bindPortletId = false;
+
+		if (portletId == null) {
+			query.append(_FINDER_COLUMN_O_O_PI_PORTLETID_1);
+		}
+		else if (portletId.equals("")) {
+			query.append(_FINDER_COLUMN_O_O_PI_PORTLETID_3);
+		}
+		else {
+			bindPortletId = true;
+
+			query.append(_FINDER_COLUMN_O_O_PI_PORTLETID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(ownerId);
+
+			qPos.add(ownerType);
+
+			if (bindPortletId) {
+				qPos.add(portletId);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4117,9 +4446,72 @@ public class PortletPreferencesPersistenceImpl extends BasePersistenceImpl<Portl
 	 */
 	@Override
 	public void removeByO_P_P(int ownerType, long plid, String portletId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByO_P_P(ownerType, plid, portletId);
+
+			return;
+		}
+
 		for (PortletPreferences portletPreferences : findByO_P_P(ownerType,
 				plid, portletId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(portletPreferences);
+		}
+	}
+
+	protected void bulkRemoveByO_P_P(int ownerType, long plid, String portletId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_PORTLETPREFERENCES_WHERE);
+
+		query.append(_FINDER_COLUMN_O_P_P_OWNERTYPE_2);
+
+		query.append(_FINDER_COLUMN_O_P_P_PLID_2);
+
+		boolean bindPortletId = false;
+
+		if (portletId == null) {
+			query.append(_FINDER_COLUMN_O_P_P_PORTLETID_1);
+		}
+		else if (portletId.equals("")) {
+			query.append(_FINDER_COLUMN_O_P_P_PORTLETID_3);
+		}
+		else {
+			bindPortletId = true;
+
+			query.append(_FINDER_COLUMN_O_P_P_PORTLETID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(ownerType);
+
+			qPos.add(plid);
+
+			if (bindPortletId) {
+				qPos.add(portletId);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4769,10 +5161,78 @@ public class PortletPreferencesPersistenceImpl extends BasePersistenceImpl<Portl
 	@Override
 	public void removeByC_O_O_LikeP(long companyId, long ownerId,
 		int ownerType, String portletId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_O_O_LikeP(companyId, ownerId, ownerType, portletId);
+
+			return;
+		}
+
 		for (PortletPreferences portletPreferences : findByC_O_O_LikeP(
 				companyId, ownerId, ownerType, portletId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(portletPreferences);
+		}
+	}
+
+	protected void bulkRemoveByC_O_O_LikeP(long companyId, long ownerId,
+		int ownerType, String portletId) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_DELETE_PORTLETPREFERENCES_WHERE);
+
+		query.append(_FINDER_COLUMN_C_O_O_LIKEP_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_O_O_LIKEP_OWNERID_2);
+
+		query.append(_FINDER_COLUMN_C_O_O_LIKEP_OWNERTYPE_2);
+
+		boolean bindPortletId = false;
+
+		if (portletId == null) {
+			query.append(_FINDER_COLUMN_C_O_O_LIKEP_PORTLETID_1);
+		}
+		else if (portletId.equals("")) {
+			query.append(_FINDER_COLUMN_C_O_O_LIKEP_PORTLETID_3);
+		}
+		else {
+			bindPortletId = true;
+
+			query.append(_FINDER_COLUMN_C_O_O_LIKEP_PORTLETID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(ownerId);
+
+			qPos.add(ownerType);
+
+			if (bindPortletId) {
+				qPos.add(portletId);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6022,8 +6482,36 @@ public class PortletPreferencesPersistenceImpl extends BasePersistenceImpl<Portl
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (PortletPreferences portletPreferences : findAll()) {
 			remove(portletPreferences);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_PORTLETPREFERENCES);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6084,11 +6572,27 @@ public class PortletPreferencesPersistenceImpl extends BasePersistenceImpl<Portl
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_PORTLETPREFERENCES = "SELECT portletPreferences FROM PortletPreferences portletPreferences";
+	private static final String _SQL_SELECT_PORTLETPREFERENCES_PKS = "SELECT portletPreferencesId FROM PortletPreferences portletPreferences";
 	private static final String _SQL_SELECT_PORTLETPREFERENCES_WHERE_PKS_IN = "SELECT portletPreferences FROM PortletPreferences portletPreferences WHERE portletPreferencesId IN (";
 	private static final String _SQL_SELECT_PORTLETPREFERENCES_WHERE = "SELECT portletPreferences FROM PortletPreferences portletPreferences WHERE ";
+	private static final String _SQL_SELECT_PORTLETPREFERENCES_PKS_WHERE = "SELECT portletPreferencesId FROM PortletPreferences portletPreferences WHERE ";
 	private static final String _SQL_COUNT_PORTLETPREFERENCES = "SELECT COUNT(portletPreferences) FROM PortletPreferences portletPreferences";
 	private static final String _SQL_COUNT_PORTLETPREFERENCES_WHERE = "SELECT COUNT(portletPreferences) FROM PortletPreferences portletPreferences WHERE ";
+	private static final String _SQL_DELETE_PORTLETPREFERENCES = "DELETE PortletPreferences portletPreferences";
+	private static final String _SQL_DELETE_PORTLETPREFERENCES_WHERE = "DELETE PortletPreferences portletPreferences WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "portletPreferences.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No PortletPreferences exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No PortletPreferences exists with the key {";

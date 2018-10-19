@@ -32,12 +32,14 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 
@@ -553,9 +555,50 @@ public class AssetCategoryPropertyPersistenceImpl extends BasePersistenceImpl<As
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (AssetCategoryProperty assetCategoryProperty : findByCompanyId(
 				companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetCategoryProperty);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_ASSETCATEGORYPROPERTY_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1068,9 +1111,50 @@ public class AssetCategoryPropertyPersistenceImpl extends BasePersistenceImpl<As
 	 */
 	@Override
 	public void removeByCategoryId(long categoryId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCategoryId(categoryId);
+
+			return;
+		}
+
 		for (AssetCategoryProperty assetCategoryProperty : findByCategoryId(
 				categoryId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetCategoryProperty);
+		}
+	}
+
+	protected void bulkRemoveByCategoryId(long categoryId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_ASSETCATEGORYPROPERTY_WHERE);
+
+		query.append(_FINDER_COLUMN_CATEGORYID_CATEGORYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(categoryId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1637,9 +1721,68 @@ public class AssetCategoryPropertyPersistenceImpl extends BasePersistenceImpl<As
 	 */
 	@Override
 	public void removeByC_K(long companyId, String key) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_K(companyId, key);
+
+			return;
+		}
+
 		for (AssetCategoryProperty assetCategoryProperty : findByC_K(
 				companyId, key, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetCategoryProperty);
+		}
+	}
+
+	protected void bulkRemoveByC_K(long companyId, String key) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_ASSETCATEGORYPROPERTY_WHERE);
+
+		query.append(_FINDER_COLUMN_C_K_COMPANYID_2);
+
+		boolean bindKey = false;
+
+		if (key == null) {
+			query.append(_FINDER_COLUMN_C_K_KEY_1);
+		}
+		else if (key.equals("")) {
+			query.append(_FINDER_COLUMN_C_K_KEY_3);
+		}
+		else {
+			bindKey = true;
+
+			query.append(_FINDER_COLUMN_C_K_KEY_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindKey) {
+				qPos.add(key);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2744,8 +2887,36 @@ public class AssetCategoryPropertyPersistenceImpl extends BasePersistenceImpl<As
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (AssetCategoryProperty assetCategoryProperty : findAll()) {
 			remove(assetCategoryProperty);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_ASSETCATEGORYPROPERTY);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2811,11 +2982,27 @@ public class AssetCategoryPropertyPersistenceImpl extends BasePersistenceImpl<As
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_ASSETCATEGORYPROPERTY = "SELECT assetCategoryProperty FROM AssetCategoryProperty assetCategoryProperty";
+	private static final String _SQL_SELECT_ASSETCATEGORYPROPERTY_PKS = "SELECT categoryPropertyId FROM AssetCategoryProperty assetCategoryProperty";
 	private static final String _SQL_SELECT_ASSETCATEGORYPROPERTY_WHERE_PKS_IN = "SELECT assetCategoryProperty FROM AssetCategoryProperty assetCategoryProperty WHERE categoryPropertyId IN (";
 	private static final String _SQL_SELECT_ASSETCATEGORYPROPERTY_WHERE = "SELECT assetCategoryProperty FROM AssetCategoryProperty assetCategoryProperty WHERE ";
+	private static final String _SQL_SELECT_ASSETCATEGORYPROPERTY_PKS_WHERE = "SELECT categoryPropertyId FROM AssetCategoryProperty assetCategoryProperty WHERE ";
 	private static final String _SQL_COUNT_ASSETCATEGORYPROPERTY = "SELECT COUNT(assetCategoryProperty) FROM AssetCategoryProperty assetCategoryProperty";
 	private static final String _SQL_COUNT_ASSETCATEGORYPROPERTY_WHERE = "SELECT COUNT(assetCategoryProperty) FROM AssetCategoryProperty assetCategoryProperty WHERE ";
+	private static final String _SQL_DELETE_ASSETCATEGORYPROPERTY = "DELETE AssetCategoryProperty assetCategoryProperty";
+	private static final String _SQL_DELETE_ASSETCATEGORYPROPERTY_WHERE = "DELETE AssetCategoryProperty assetCategoryProperty WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "assetCategoryProperty.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No AssetCategoryProperty exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No AssetCategoryProperty exists with the key {";

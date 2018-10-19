@@ -32,10 +32,12 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 
@@ -53,6 +55,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -531,9 +534,50 @@ public class AssetLinkPersistenceImpl extends BasePersistenceImpl<AssetLink>
 	 */
 	@Override
 	public void removeByE1(long entryId1) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByE1(entryId1);
+
+			return;
+		}
+
 		for (AssetLink assetLink : findByE1(entryId1, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(assetLink);
+		}
+	}
+
+	protected void bulkRemoveByE1(long entryId1) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_ASSETLINK_WHERE);
+
+		query.append(_FINDER_COLUMN_E1_ENTRYID1_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(entryId1);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1032,9 +1076,50 @@ public class AssetLinkPersistenceImpl extends BasePersistenceImpl<AssetLink>
 	 */
 	@Override
 	public void removeByE2(long entryId2) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByE2(entryId2);
+
+			return;
+		}
+
 		for (AssetLink assetLink : findByE2(entryId2, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(assetLink);
+		}
+	}
+
+	protected void bulkRemoveByE2(long entryId2) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_ASSETLINK_WHERE);
+
+		query.append(_FINDER_COLUMN_E2_ENTRYID2_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(entryId2);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1568,9 +1653,54 @@ public class AssetLinkPersistenceImpl extends BasePersistenceImpl<AssetLink>
 	 */
 	@Override
 	public void removeByE_E(long entryId1, long entryId2) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByE_E(entryId1, entryId2);
+
+			return;
+		}
+
 		for (AssetLink assetLink : findByE_E(entryId1, entryId2,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetLink);
+		}
+	}
+
+	protected void bulkRemoveByE_E(long entryId1, long entryId2) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_ASSETLINK_WHERE);
+
+		query.append(_FINDER_COLUMN_E_E_ENTRYID1_2);
+
+		query.append(_FINDER_COLUMN_E_E_ENTRYID2_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(entryId1);
+
+			qPos.add(entryId2);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2109,9 +2239,54 @@ public class AssetLinkPersistenceImpl extends BasePersistenceImpl<AssetLink>
 	 */
 	@Override
 	public void removeByE1_T(long entryId1, int type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByE1_T(entryId1, type);
+
+			return;
+		}
+
 		for (AssetLink assetLink : findByE1_T(entryId1, type,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetLink);
+		}
+	}
+
+	protected void bulkRemoveByE1_T(long entryId1, int type) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_ASSETLINK_WHERE);
+
+		query.append(_FINDER_COLUMN_E1_T_ENTRYID1_2);
+
+		query.append(_FINDER_COLUMN_E1_T_TYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(entryId1);
+
+			qPos.add(type);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2650,9 +2825,54 @@ public class AssetLinkPersistenceImpl extends BasePersistenceImpl<AssetLink>
 	 */
 	@Override
 	public void removeByE2_T(long entryId2, int type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByE2_T(entryId2, type);
+
+			return;
+		}
+
 		for (AssetLink assetLink : findByE2_T(entryId2, type,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetLink);
+		}
+	}
+
+	protected void bulkRemoveByE2_T(long entryId2, int type) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_ASSETLINK_WHERE);
+
+		query.append(_FINDER_COLUMN_E2_T_ENTRYID2_2);
+
+		query.append(_FINDER_COLUMN_E2_T_TYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(entryId2);
+
+			qPos.add(type);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3748,8 +3968,36 @@ public class AssetLinkPersistenceImpl extends BasePersistenceImpl<AssetLink>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (AssetLink assetLink : findAll()) {
 			remove(assetLink);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_ASSETLINK);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3815,11 +4063,27 @@ public class AssetLinkPersistenceImpl extends BasePersistenceImpl<AssetLink>
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_ASSETLINK = "SELECT assetLink FROM AssetLink assetLink";
+	private static final String _SQL_SELECT_ASSETLINK_PKS = "SELECT linkId FROM AssetLink assetLink";
 	private static final String _SQL_SELECT_ASSETLINK_WHERE_PKS_IN = "SELECT assetLink FROM AssetLink assetLink WHERE linkId IN (";
 	private static final String _SQL_SELECT_ASSETLINK_WHERE = "SELECT assetLink FROM AssetLink assetLink WHERE ";
+	private static final String _SQL_SELECT_ASSETLINK_PKS_WHERE = "SELECT linkId FROM AssetLink assetLink WHERE ";
 	private static final String _SQL_COUNT_ASSETLINK = "SELECT COUNT(assetLink) FROM AssetLink assetLink";
 	private static final String _SQL_COUNT_ASSETLINK_WHERE = "SELECT COUNT(assetLink) FROM AssetLink assetLink WHERE ";
+	private static final String _SQL_DELETE_ASSETLINK = "DELETE AssetLink assetLink";
+	private static final String _SQL_DELETE_ASSETLINK_WHERE = "DELETE AssetLink assetLink WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "assetLink.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No AssetLink exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No AssetLink exists with the key {";

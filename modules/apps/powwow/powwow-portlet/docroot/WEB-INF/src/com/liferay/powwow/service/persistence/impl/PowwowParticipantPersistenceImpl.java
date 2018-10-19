@@ -28,12 +28,14 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -555,9 +557,50 @@ public class PowwowParticipantPersistenceImpl extends BasePersistenceImpl<Powwow
 	 */
 	@Override
 	public void removeByPowwowMeetingId(long powwowMeetingId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByPowwowMeetingId(powwowMeetingId);
+
+			return;
+		}
+
 		for (PowwowParticipant powwowParticipant : findByPowwowMeetingId(
 				powwowMeetingId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(powwowParticipant);
+		}
+	}
+
+	protected void bulkRemoveByPowwowMeetingId(long powwowMeetingId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_POWWOWPARTICIPANT_WHERE);
+
+		query.append(_FINDER_COLUMN_POWWOWMEETINGID_POWWOWMEETINGID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(powwowMeetingId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1585,10 +1628,55 @@ public class PowwowParticipantPersistenceImpl extends BasePersistenceImpl<Powwow
 	 */
 	@Override
 	public void removeByPMI_T(long powwowMeetingId, int type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByPMI_T(powwowMeetingId, type);
+
+			return;
+		}
+
 		for (PowwowParticipant powwowParticipant : findByPMI_T(
 				powwowMeetingId, type, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null)) {
 			remove(powwowParticipant);
+		}
+	}
+
+	protected void bulkRemoveByPMI_T(long powwowMeetingId, int type) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_POWWOWPARTICIPANT_WHERE);
+
+		query.append(_FINDER_COLUMN_PMI_T_POWWOWMEETINGID_2);
+
+		query.append(_FINDER_COLUMN_PMI_T_TYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(powwowMeetingId);
+
+			qPos.add(type);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2432,8 +2520,36 @@ public class PowwowParticipantPersistenceImpl extends BasePersistenceImpl<Powwow
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (PowwowParticipant powwowParticipant : findAll()) {
 			remove(powwowParticipant);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_POWWOWPARTICIPANT);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2499,11 +2615,27 @@ public class PowwowParticipantPersistenceImpl extends BasePersistenceImpl<Powwow
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_POWWOWPARTICIPANT = "SELECT powwowParticipant FROM PowwowParticipant powwowParticipant";
+	private static final String _SQL_SELECT_POWWOWPARTICIPANT_PKS = "SELECT powwowParticipantId FROM PowwowParticipant powwowParticipant";
 	private static final String _SQL_SELECT_POWWOWPARTICIPANT_WHERE_PKS_IN = "SELECT powwowParticipant FROM PowwowParticipant powwowParticipant WHERE powwowParticipantId IN (";
 	private static final String _SQL_SELECT_POWWOWPARTICIPANT_WHERE = "SELECT powwowParticipant FROM PowwowParticipant powwowParticipant WHERE ";
+	private static final String _SQL_SELECT_POWWOWPARTICIPANT_PKS_WHERE = "SELECT powwowParticipantId FROM PowwowParticipant powwowParticipant WHERE ";
 	private static final String _SQL_COUNT_POWWOWPARTICIPANT = "SELECT COUNT(powwowParticipant) FROM PowwowParticipant powwowParticipant";
 	private static final String _SQL_COUNT_POWWOWPARTICIPANT_WHERE = "SELECT COUNT(powwowParticipant) FROM PowwowParticipant powwowParticipant WHERE ";
+	private static final String _SQL_DELETE_POWWOWPARTICIPANT = "DELETE PowwowParticipant powwowParticipant";
+	private static final String _SQL_DELETE_POWWOWPARTICIPANT_WHERE = "DELETE PowwowParticipant powwowParticipant WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "powwowParticipant.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No PowwowParticipant exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No PowwowParticipant exists with the key {";

@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.GroupPersistence;
@@ -43,6 +44,7 @@ import com.liferay.portal.kernel.service.persistence.impl.TableMapperFactory;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -564,9 +566,89 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid(uuid);
+
+			return;
+		}
+
 		for (Group group : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByUuid(String uuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
+		}
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1389,9 +1471,95 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid_C(uuid, companyId);
+
+			return;
+		}
+
 		for (Group group : findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByUuid_C(String uuid, long companyId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
+		}
+
+		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1911,9 +2079,73 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (Group group : findByCompanyId(companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2654,9 +2886,79 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByC_C(long companyId, long classNameId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_C(companyId, classNameId);
+
+			return;
+		}
+
 		for (Group group : findByC_C(companyId, classNameId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_C(long companyId, long classNameId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_C_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_C_CLASSNAMEID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3195,9 +3497,79 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByC_P(long companyId, long parentGroupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_P(companyId, parentGroupId);
+
+			return;
+		}
+
 		for (Group group : findByC_P(companyId, parentGroupId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_P(long companyId, long parentGroupId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_P_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_P_PARENTGROUPID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4230,9 +4602,79 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByC_S(long companyId, boolean site) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_S(companyId, site);
+
+			return;
+		}
+
 		for (Group group : findByC_S(companyId, site, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_S(long companyId, boolean site) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_S_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_S_SITE_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(site);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(site);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4767,9 +5209,79 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByC_A(long companyId, boolean active) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_A(companyId, active);
+
+			return;
+		}
+
 		for (Group group : findByC_A(companyId, active, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_A(long companyId, boolean active) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_A_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_A_ACTIVE_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(active);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(active);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5306,9 +5818,79 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByC_CPK(long classNameId, long classPK) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_CPK(classNameId, classPK);
+
+			return;
+		}
+
 		for (Group group : findByC_CPK(classNameId, classPK, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_CPK(long classNameId, long classPK) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_CPK_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_C_CPK_CLASSPK_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5841,9 +6423,79 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByT_A(int type, boolean active) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByT_A(type, active);
+
+			return;
+		}
+
 		for (Group group : findByT_A(type, active, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByT_A(int type, boolean active) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_T_A_TYPE_2);
+
+		query.append(_FINDER_COLUMN_T_A_ACTIVE_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(type);
+
+			qPos.add(active);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(type);
+
+			qPos.add(active);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6242,9 +6894,86 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByG_C_P(long groupId, long companyId, long parentGroupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_C_P(groupId, companyId, parentGroupId);
+
+			return;
+		}
+
 		for (Group group : findByG_C_P(groupId, companyId, parentGroupId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByG_C_P(long groupId, long companyId,
+		long parentGroupId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_C_P_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_C_P_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_G_C_P_PARENTGROUPID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7067,9 +7796,86 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	@Override
 	public void removeByC_C_P(long companyId, long classNameId,
 		long parentGroupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_C_P(companyId, classNameId, parentGroupId);
+
+			return;
+		}
+
 		for (Group group : findByC_C_P(companyId, classNameId, parentGroupId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_C_P(long companyId, long classNameId,
+		long parentGroupId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_C_P_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_C_P_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_C_C_P_PARENTGROUPID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			qPos.add(parentGroupId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			qPos.add(parentGroupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7651,9 +8457,86 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByC_P_S(long companyId, long parentGroupId, boolean site) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_P_S(companyId, parentGroupId, site);
+
+			return;
+		}
+
 		for (Group group : findByC_P_S(companyId, parentGroupId, site,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_P_S(long companyId, long parentGroupId,
+		boolean site) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_P_S_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_P_S_PARENTGROUPID_2);
+
+		query.append(_FINDER_COLUMN_C_P_S_SITE_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			qPos.add(site);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			qPos.add(site);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -8518,9 +9401,102 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByC_T_S(long companyId, String treePath, boolean site) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_T_S(companyId, treePath, site);
+
+			return;
+		}
+
 		for (Group group : findByC_T_S(companyId, treePath, site,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_T_S(long companyId, String treePath,
+		boolean site) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_T_S_COMPANYID_2);
+
+		boolean bindTreePath = false;
+
+		if (treePath == null) {
+			query.append(_FINDER_COLUMN_C_T_S_TREEPATH_1);
+		}
+		else if (treePath.equals("")) {
+			query.append(_FINDER_COLUMN_C_T_S_TREEPATH_3);
+		}
+		else {
+			bindTreePath = true;
+
+			query.append(_FINDER_COLUMN_C_T_S_TREEPATH_2);
+		}
+
+		query.append(_FINDER_COLUMN_C_T_S_SITE_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindTreePath) {
+				qPos.add(treePath);
+			}
+
+			qPos.add(site);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindTreePath) {
+				qPos.add(treePath);
+			}
+
+			qPos.add(site);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9116,9 +10092,86 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeByC_S_A(long companyId, boolean site, boolean active) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_S_A(companyId, site, active);
+
+			return;
+		}
+
 		for (Group group : findByC_S_A(companyId, site, active,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_S_A(long companyId, boolean site,
+		boolean active) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_S_A_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_S_A_SITE_2);
+
+		query.append(_FINDER_COLUMN_C_S_A_ACTIVE_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(site);
+
+			qPos.add(active);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(site);
+
+			qPos.add(active);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9550,9 +10603,92 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	@Override
 	public void removeByG_C_C_P(long groupId, long companyId, long classNameId,
 		long parentGroupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_C_C_P(groupId, companyId, classNameId, parentGroupId);
+
+			return;
+		}
+
 		for (Group group : findByG_C_C_P(groupId, companyId, classNameId,
 				parentGroupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByG_C_C_P(long groupId, long companyId,
+		long classNameId, long parentGroupId) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_C_C_P_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_C_C_P_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_G_C_C_P_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_G_C_C_P_PARENTGROUPID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			qPos.add(parentGroupId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			qPos.add(parentGroupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9992,9 +11128,92 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	@Override
 	public void removeByG_C_P_S(long groupId, long companyId,
 		long parentGroupId, boolean site) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_C_P_S(groupId, companyId, parentGroupId, site);
+
+			return;
+		}
+
 		for (Group group : findByG_C_P_S(groupId, companyId, parentGroupId,
 				site, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByG_C_P_S(long groupId, long companyId,
+		long parentGroupId, boolean site) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_C_P_S_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_C_P_S_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_G_C_P_S_PARENTGROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_C_P_S_SITE_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			qPos.add(site);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			qPos.add(site);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -10926,9 +12145,108 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	@Override
 	public void removeByC_P_LikeN_S(long companyId, long parentGroupId,
 		String name, boolean site) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_P_LikeN_S(companyId, parentGroupId, name, site);
+
+			return;
+		}
+
 		for (Group group : findByC_P_LikeN_S(companyId, parentGroupId, name,
 				site, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_P_LikeN_S(long companyId, long parentGroupId,
+		String name, boolean site) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_P_LIKEN_S_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_P_LIKEN_S_PARENTGROUPID_2);
+
+		boolean bindName = false;
+
+		if (name == null) {
+			query.append(_FINDER_COLUMN_C_P_LIKEN_S_NAME_1);
+		}
+		else if (name.equals("")) {
+			query.append(_FINDER_COLUMN_C_P_LIKEN_S_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			query.append(_FINDER_COLUMN_C_P_LIKEN_S_NAME_2);
+		}
+
+		query.append(_FINDER_COLUMN_C_P_LIKEN_S_SITE_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			if (bindName) {
+				qPos.add(StringUtil.toLowerCase(name));
+			}
+
+			qPos.add(site);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			if (bindName) {
+				qPos.add(StringUtil.toLowerCase(name));
+			}
+
+			qPos.add(site);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -11569,9 +12887,92 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	@Override
 	public void removeByC_P_S_I(long companyId, long parentGroupId,
 		boolean site, boolean inheritContent) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_P_S_I(companyId, parentGroupId, site, inheritContent);
+
+			return;
+		}
+
 		for (Group group : findByC_P_S_I(companyId, parentGroupId, site,
 				inheritContent, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveByC_P_S_I(long companyId, long parentGroupId,
+		boolean site, boolean inheritContent) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_SELECT_GROUP__PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_P_S_I_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_P_S_I_PARENTGROUPID_2);
+
+		query.append(_FINDER_COLUMN_C_P_S_I_SITE_2);
+
+		query.append(_FINDER_COLUMN_C_P_S_I_INHERITCONTENT_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_GROUP__WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			qPos.add(site);
+
+			qPos.add(inheritContent);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentGroupId);
+
+			qPos.add(site);
+
+			qPos.add(inheritContent);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -12895,8 +14296,51 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (Group group : findAll()) {
 			remove(group);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_SELECT_GROUP__PKS);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				groupToOrganizationTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToRoleTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				groupToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(_SQL_DELETE_GROUP_);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -14194,11 +15638,27 @@ public class GroupPersistenceImpl extends BasePersistenceImpl<Group>
 	@BeanReference(type = UserPersistence.class)
 	protected UserPersistence userPersistence;
 	protected TableMapper<Group, com.liferay.portal.kernel.model.User> groupToUserTableMapper;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_GROUP_ = "SELECT group_ FROM Group group_";
+	private static final String _SQL_SELECT_GROUP__PKS = "SELECT groupId FROM Group group_";
 	private static final String _SQL_SELECT_GROUP__WHERE_PKS_IN = "SELECT group_ FROM Group group_ WHERE groupId IN (";
 	private static final String _SQL_SELECT_GROUP__WHERE = "SELECT group_ FROM Group group_ WHERE ";
+	private static final String _SQL_SELECT_GROUP__PKS_WHERE = "SELECT groupId FROM Group group_ WHERE ";
 	private static final String _SQL_COUNT_GROUP_ = "SELECT COUNT(group_) FROM Group group_";
 	private static final String _SQL_COUNT_GROUP__WHERE = "SELECT COUNT(group_) FROM Group group_ WHERE ";
+	private static final String _SQL_DELETE_GROUP_ = "DELETE Group group_";
+	private static final String _SQL_DELETE_GROUP__WHERE = "DELETE Group group_ WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "group_.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Group exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Group exists with the key {";
