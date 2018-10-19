@@ -29,12 +29,14 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchRecentLayoutRevisionException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.RecentLayoutRevision;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.RecentLayoutRevisionPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.model.impl.RecentLayoutRevisionImpl;
 import com.liferay.portal.model.impl.RecentLayoutRevisionModelImpl;
@@ -49,6 +51,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -537,9 +540,50 @@ public class RecentLayoutRevisionPersistenceImpl extends BasePersistenceImpl<Rec
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (RecentLayoutRevision recentLayoutRevision : findByGroupId(
 				groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(recentLayoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_RECENTLAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1046,9 +1090,50 @@ public class RecentLayoutRevisionPersistenceImpl extends BasePersistenceImpl<Rec
 	 */
 	@Override
 	public void removeByUserId(long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUserId(userId);
+
+			return;
+		}
+
 		for (RecentLayoutRevision recentLayoutRevision : findByUserId(userId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(recentLayoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByUserId(long userId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_RECENTLAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_USERID_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1572,9 +1657,50 @@ public class RecentLayoutRevisionPersistenceImpl extends BasePersistenceImpl<Rec
 	 */
 	@Override
 	public void removeByLayoutRevisionId(long layoutRevisionId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByLayoutRevisionId(layoutRevisionId);
+
+			return;
+		}
+
 		for (RecentLayoutRevision recentLayoutRevision : findByLayoutRevisionId(
 				layoutRevisionId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(recentLayoutRevision);
+		}
+	}
+
+	protected void bulkRemoveByLayoutRevisionId(long layoutRevisionId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_RECENTLAYOUTREVISION_WHERE);
+
+		query.append(_FINDER_COLUMN_LAYOUTREVISIONID_LAYOUTREVISIONID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutRevisionId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2608,8 +2734,36 @@ public class RecentLayoutRevisionPersistenceImpl extends BasePersistenceImpl<Rec
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (RecentLayoutRevision recentLayoutRevision : findAll()) {
 			remove(recentLayoutRevision);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_RECENTLAYOUTREVISION);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2670,11 +2824,27 @@ public class RecentLayoutRevisionPersistenceImpl extends BasePersistenceImpl<Rec
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_RECENTLAYOUTREVISION = "SELECT recentLayoutRevision FROM RecentLayoutRevision recentLayoutRevision";
+	private static final String _SQL_SELECT_RECENTLAYOUTREVISION_PKS = "SELECT recentLayoutRevisionId FROM RecentLayoutRevision recentLayoutRevision";
 	private static final String _SQL_SELECT_RECENTLAYOUTREVISION_WHERE_PKS_IN = "SELECT recentLayoutRevision FROM RecentLayoutRevision recentLayoutRevision WHERE recentLayoutRevisionId IN (";
 	private static final String _SQL_SELECT_RECENTLAYOUTREVISION_WHERE = "SELECT recentLayoutRevision FROM RecentLayoutRevision recentLayoutRevision WHERE ";
+	private static final String _SQL_SELECT_RECENTLAYOUTREVISION_PKS_WHERE = "SELECT recentLayoutRevisionId FROM RecentLayoutRevision recentLayoutRevision WHERE ";
 	private static final String _SQL_COUNT_RECENTLAYOUTREVISION = "SELECT COUNT(recentLayoutRevision) FROM RecentLayoutRevision recentLayoutRevision";
 	private static final String _SQL_COUNT_RECENTLAYOUTREVISION_WHERE = "SELECT COUNT(recentLayoutRevision) FROM RecentLayoutRevision recentLayoutRevision WHERE ";
+	private static final String _SQL_DELETE_RECENTLAYOUTREVISION = "DELETE RecentLayoutRevision recentLayoutRevision";
+	private static final String _SQL_DELETE_RECENTLAYOUTREVISION_WHERE = "DELETE RecentLayoutRevision recentLayoutRevision WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "recentLayoutRevision.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No RecentLayoutRevision exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No RecentLayoutRevision exists with the key {";

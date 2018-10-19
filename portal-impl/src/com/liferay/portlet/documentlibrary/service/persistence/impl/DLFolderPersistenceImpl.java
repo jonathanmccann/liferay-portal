@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -45,6 +46,7 @@ import com.liferay.portal.kernel.service.persistence.impl.TableMapperFactory;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -573,9 +575,83 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid(uuid);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByUuid(String uuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
+		}
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1404,9 +1480,89 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid_C(uuid, companyId);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByUuid_C(uuid, companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByUuid_C(String uuid, long companyId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
+		}
+
+		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2237,9 +2393,67 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByGroupId(groupId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2789,9 +3003,67 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByCompanyId(companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3303,9 +3575,67 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	 */
 	@Override
 	public void removeByRepositoryId(long repositoryId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByRepositoryId(repositoryId);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByRepositoryId(repositoryId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByRepositoryId(long repositoryId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_REPOSITORYID_REPOSITORYID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(repositoryId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(repositoryId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4163,9 +4493,73 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	 */
 	@Override
 	public void removeByG_P(long groupId, long parentFolderId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_P(groupId, parentFolderId);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByG_P(groupId, parentFolderId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByG_P(long groupId, long parentFolderId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_P_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_P_PARENTFOLDERID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(parentFolderId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(parentFolderId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4744,9 +5138,73 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	 */
 	@Override
 	public void removeByC_NotS(long companyId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_NotS(companyId, status);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByC_NotS(companyId, status,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByC_NotS(long companyId, int status) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_NOTS_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_NOTS_STATUS_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(status);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5517,9 +5975,73 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	 */
 	@Override
 	public void removeByR_P(long repositoryId, long parentFolderId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByR_P(repositoryId, parentFolderId);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByR_P(repositoryId, parentFolderId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByR_P(long repositoryId, long parentFolderId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_R_P_REPOSITORYID_2);
+
+		query.append(_FINDER_COLUMN_R_P_PARENTFOLDERID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(repositoryId);
+
+			qPos.add(parentFolderId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(repositoryId);
+
+			qPos.add(parentFolderId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6087,9 +6609,89 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	 */
 	@Override
 	public void removeByP_N(long parentFolderId, String name) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByP_N(parentFolderId, name);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByP_N(parentFolderId, name,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByP_N(long parentFolderId, String name) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_P_N_PARENTFOLDERID_2);
+
+		boolean bindName = false;
+
+		if (name == null) {
+			query.append(_FINDER_COLUMN_P_N_NAME_1);
+		}
+		else if (name.equals("")) {
+			query.append(_FINDER_COLUMN_P_N_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			query.append(_FINDER_COLUMN_P_N_NAME_2);
+		}
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(parentFolderId);
+
+			if (bindName) {
+				qPos.add(name);
+			}
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(parentFolderId);
+
+			if (bindName) {
+				qPos.add(name);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7024,9 +7626,80 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	@Override
 	public void removeByG_M_P(long groupId, boolean mountPoint,
 		long parentFolderId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_M_P(groupId, mountPoint, parentFolderId);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByG_M_P(groupId, mountPoint,
 				parentFolderId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByG_M_P(long groupId, boolean mountPoint,
+		long parentFolderId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_M_P_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_M_P_MOUNTPOINT_2);
+
+		query.append(_FINDER_COLUMN_G_M_P_PARENTFOLDERID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(mountPoint);
+
+			qPos.add(parentFolderId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(mountPoint);
+
+			qPos.add(parentFolderId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7796,10 +8469,87 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	@Override
 	public void removeByF_C_P_NotS(long folderId, long companyId,
 		long parentFolderId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByF_C_P_NotS(folderId, companyId, parentFolderId, status);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByF_C_P_NotS(folderId, companyId,
 				parentFolderId, status, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByF_C_P_NotS(long folderId, long companyId,
+		long parentFolderId, int status) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_F_C_P_NOTS_FOLDERID_2);
+
+		query.append(_FINDER_COLUMN_F_C_P_NOTS_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_F_C_P_NOTS_PARENTFOLDERID_2);
+
+		query.append(_FINDER_COLUMN_F_C_P_NOTS_STATUS_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(folderId);
+
+			qPos.add(companyId);
+
+			qPos.add(parentFolderId);
+
+			qPos.add(status);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(folderId);
+
+			qPos.add(companyId);
+
+			qPos.add(parentFolderId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -8781,10 +9531,87 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	@Override
 	public void removeByG_M_P_H(long groupId, boolean mountPoint,
 		long parentFolderId, boolean hidden) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_M_P_H(groupId, mountPoint, parentFolderId, hidden);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByG_M_P_H(groupId, mountPoint,
 				parentFolderId, hidden, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByG_M_P_H(long groupId, boolean mountPoint,
+		long parentFolderId, boolean hidden) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_M_P_H_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_M_P_H_MOUNTPOINT_2);
+
+		query.append(_FINDER_COLUMN_G_M_P_H_PARENTFOLDERID_2);
+
+		query.append(_FINDER_COLUMN_G_M_P_H_HIDDEN_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(mountPoint);
+
+			qPos.add(parentFolderId);
+
+			qPos.add(hidden);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(mountPoint);
+
+			qPos.add(parentFolderId);
+
+			qPos.add(hidden);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9865,9 +10692,102 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	@Override
 	public void removeByG_M_T_H(long groupId, boolean mountPoint,
 		String treePath, boolean hidden) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_M_T_H(groupId, mountPoint, treePath, hidden);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByG_M_T_H(groupId, mountPoint, treePath,
 				hidden, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByG_M_T_H(long groupId, boolean mountPoint,
+		String treePath, boolean hidden) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_M_T_H_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_M_T_H_MOUNTPOINT_2);
+
+		boolean bindTreePath = false;
+
+		if (treePath == null) {
+			query.append(_FINDER_COLUMN_G_M_T_H_TREEPATH_1);
+		}
+		else if (treePath.equals("")) {
+			query.append(_FINDER_COLUMN_G_M_T_H_TREEPATH_3);
+		}
+		else {
+			bindTreePath = true;
+
+			query.append(_FINDER_COLUMN_G_M_T_H_TREEPATH_2);
+		}
+
+		query.append(_FINDER_COLUMN_G_M_T_H_HIDDEN_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(mountPoint);
+
+			if (bindTreePath) {
+				qPos.add(treePath);
+			}
+
+			qPos.add(hidden);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(mountPoint);
+
+			if (bindTreePath) {
+				qPos.add(treePath);
+			}
+
+			qPos.add(hidden);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -10940,9 +11860,86 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	@Override
 	public void removeByG_P_H_S(long groupId, long parentFolderId,
 		boolean hidden, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_P_H_S(groupId, parentFolderId, hidden, status);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByG_P_H_S(groupId, parentFolderId, hidden,
 				status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByG_P_H_S(long groupId, long parentFolderId,
+		boolean hidden, int status) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_P_H_S_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_P_H_S_PARENTFOLDERID_2);
+
+		query.append(_FINDER_COLUMN_G_P_H_S_HIDDEN_2);
+
+		query.append(_FINDER_COLUMN_G_P_H_S_STATUS_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(parentFolderId);
+
+			qPos.add(hidden);
+
+			qPos.add(status);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(parentFolderId);
+
+			qPos.add(hidden);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -12036,10 +13033,94 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	@Override
 	public void removeByG_M_P_H_S(long groupId, boolean mountPoint,
 		long parentFolderId, boolean hidden, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_M_P_H_S(groupId, mountPoint, parentFolderId, hidden,
+				status);
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findByG_M_P_H_S(groupId, mountPoint,
 				parentFolderId, hidden, status, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveByG_M_P_H_S(long groupId, boolean mountPoint,
+		long parentFolderId, boolean hidden, int status) {
+		StringBundler query = new StringBundler(6);
+
+		query.append(_SQL_SELECT_DLFOLDER_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_M_P_H_S_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_M_P_H_S_MOUNTPOINT_2);
+
+		query.append(_FINDER_COLUMN_G_M_P_H_S_PARENTFOLDERID_2);
+
+		query.append(_FINDER_COLUMN_G_M_P_H_S_HIDDEN_2);
+
+		query.append(_FINDER_COLUMN_G_M_P_H_S_STATUS_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_DLFOLDER_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(mountPoint);
+
+			qPos.add(parentFolderId);
+
+			qPos.add(hidden);
+
+			qPos.add(status);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(mountPoint);
+
+			qPos.add(parentFolderId);
+
+			qPos.add(hidden);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -13307,8 +14388,45 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (DLFolder dlFolder : findAll()) {
 			remove(dlFolder);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_SELECT_DLFOLDER_PKS);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				dlFolderToDLFileEntryTypeTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(_SQL_DELETE_DLFOLDER);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -13689,11 +14807,27 @@ public class DLFolderPersistenceImpl extends BasePersistenceImpl<DLFolder>
 	@BeanReference(type = DLFileEntryTypePersistence.class)
 	protected DLFileEntryTypePersistence dlFileEntryTypePersistence;
 	protected TableMapper<DLFolder, com.liferay.document.library.kernel.model.DLFileEntryType> dlFolderToDLFileEntryTypeTableMapper;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_DLFOLDER = "SELECT dlFolder FROM DLFolder dlFolder";
+	private static final String _SQL_SELECT_DLFOLDER_PKS = "SELECT folderId FROM DLFolder dlFolder";
 	private static final String _SQL_SELECT_DLFOLDER_WHERE_PKS_IN = "SELECT dlFolder FROM DLFolder dlFolder WHERE folderId IN (";
 	private static final String _SQL_SELECT_DLFOLDER_WHERE = "SELECT dlFolder FROM DLFolder dlFolder WHERE ";
+	private static final String _SQL_SELECT_DLFOLDER_PKS_WHERE = "SELECT folderId FROM DLFolder dlFolder WHERE ";
 	private static final String _SQL_COUNT_DLFOLDER = "SELECT COUNT(dlFolder) FROM DLFolder dlFolder";
 	private static final String _SQL_COUNT_DLFOLDER_WHERE = "SELECT COUNT(dlFolder) FROM DLFolder dlFolder WHERE ";
+	private static final String _SQL_DELETE_DLFOLDER = "DELETE DLFolder dlFolder";
+	private static final String _SQL_DELETE_DLFOLDER_WHERE = "DELETE DLFolder dlFolder WHERE ";
 	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "dlFolder.folderId";
 	private static final String _FILTER_SQL_SELECT_DLFOLDER_WHERE = "SELECT DISTINCT {dlFolder.*} FROM DLFolder dlFolder WHERE ";
 	private static final String _FILTER_SQL_SELECT_DLFOLDER_NO_INLINE_DISTINCT_WHERE_1 =

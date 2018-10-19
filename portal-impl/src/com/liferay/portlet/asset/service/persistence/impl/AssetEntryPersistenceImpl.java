@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -44,6 +45,7 @@ import com.liferay.portal.kernel.service.persistence.impl.TableMapperFactory;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -543,9 +545,69 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (AssetEntry assetEntry : findByGroupId(groupId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(assetEntry);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_ASSETENTRY_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ASSETENTRY_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				assetEntryToAssetCategoryTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				assetEntryToAssetTagTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1049,9 +1111,69 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (AssetEntry assetEntry : findByCompanyId(companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetEntry);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_ASSETENTRY_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ASSETENTRY_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				assetEntryToAssetCategoryTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				assetEntryToAssetTagTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1550,9 +1672,69 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	 */
 	@Override
 	public void removeByVisible(boolean visible) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByVisible(visible);
+
+			return;
+		}
+
 		for (AssetEntry assetEntry : findByVisible(visible, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(assetEntry);
+		}
+	}
+
+	protected void bulkRemoveByVisible(boolean visible) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_ASSETENTRY_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_VISIBLE_VISIBLE_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ASSETENTRY_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(visible);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				assetEntryToAssetCategoryTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				assetEntryToAssetTagTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(visible);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2084,9 +2266,82 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	 */
 	@Override
 	public void removeByPublishDate(Date publishDate) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByPublishDate(publishDate);
+
+			return;
+		}
+
 		for (AssetEntry assetEntry : findByPublishDate(publishDate,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetEntry);
+		}
+	}
+
+	protected void bulkRemoveByPublishDate(Date publishDate) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_ASSETENTRY_PKS_WHERE);
+
+		boolean bindPublishDate = false;
+
+		if (publishDate == null) {
+			query.append(_FINDER_COLUMN_PUBLISHDATE_PUBLISHDATE_1);
+		}
+		else {
+			bindPublishDate = true;
+
+			query.append(_FINDER_COLUMN_PUBLISHDATE_PUBLISHDATE_2);
+		}
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ASSETENTRY_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindPublishDate) {
+				qPos.add(new Timestamp(publishDate.getTime()));
+			}
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				assetEntryToAssetCategoryTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				assetEntryToAssetTagTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindPublishDate) {
+				qPos.add(new Timestamp(publishDate.getTime()));
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2631,9 +2886,82 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	 */
 	@Override
 	public void removeByExpirationDate(Date expirationDate) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByExpirationDate(expirationDate);
+
+			return;
+		}
+
 		for (AssetEntry assetEntry : findByExpirationDate(expirationDate,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetEntry);
+		}
+	}
+
+	protected void bulkRemoveByExpirationDate(Date expirationDate) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_ASSETENTRY_PKS_WHERE);
+
+		boolean bindExpirationDate = false;
+
+		if (expirationDate == null) {
+			query.append(_FINDER_COLUMN_EXPIRATIONDATE_EXPIRATIONDATE_1);
+		}
+		else {
+			bindExpirationDate = true;
+
+			query.append(_FINDER_COLUMN_EXPIRATIONDATE_EXPIRATIONDATE_2);
+		}
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ASSETENTRY_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindExpirationDate) {
+				qPos.add(new Timestamp(expirationDate.getTime()));
+			}
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				assetEntryToAssetCategoryTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				assetEntryToAssetTagTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindExpirationDate) {
+				qPos.add(new Timestamp(expirationDate.getTime()));
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3178,9 +3506,85 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	 */
 	@Override
 	public void removeByLayoutUuid(String layoutUuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByLayoutUuid(layoutUuid);
+
+			return;
+		}
+
 		for (AssetEntry assetEntry : findByLayoutUuid(layoutUuid,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetEntry);
+		}
+	}
+
+	protected void bulkRemoveByLayoutUuid(String layoutUuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_ASSETENTRY_PKS_WHERE);
+
+		boolean bindLayoutUuid = false;
+
+		if (layoutUuid == null) {
+			query.append(_FINDER_COLUMN_LAYOUTUUID_LAYOUTUUID_1);
+		}
+		else if (layoutUuid.equals("")) {
+			query.append(_FINDER_COLUMN_LAYOUTUUID_LAYOUTUUID_3);
+		}
+		else {
+			bindLayoutUuid = true;
+
+			query.append(_FINDER_COLUMN_LAYOUTUUID_LAYOUTUUID_2);
+		}
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ASSETENTRY_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindLayoutUuid) {
+				qPos.add(layoutUuid);
+			}
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				assetEntryToAssetCategoryTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				assetEntryToAssetTagTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindLayoutUuid) {
+				qPos.add(layoutUuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4246,9 +4650,82 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	 */
 	@Override
 	public void removeByG_C_V(long groupId, long classNameId, boolean visible) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_C_V(groupId, classNameId, visible);
+
+			return;
+		}
+
 		for (AssetEntry assetEntry : findByG_C_V(groupId, classNameId, visible,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(assetEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_C_V(long groupId, long classNameId,
+		boolean visible) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_SELECT_ASSETENTRY_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_C_V_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_C_V_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_G_C_V_VISIBLE_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ASSETENTRY_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(classNameId);
+
+			qPos.add(visible);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				assetEntryToAssetCategoryTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				assetEntryToAssetTagTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(classNameId);
+
+			qPos.add(visible);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4918,10 +5395,116 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	@Override
 	public void removeByG_C_P_E(long groupId, long classNameId,
 		Date publishDate, Date expirationDate) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_C_P_E(groupId, classNameId, publishDate,
+				expirationDate);
+
+			return;
+		}
+
 		for (AssetEntry assetEntry : findByG_C_P_E(groupId, classNameId,
 				publishDate, expirationDate, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(assetEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_C_P_E(long groupId, long classNameId,
+		Date publishDate, Date expirationDate) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_SELECT_ASSETENTRY_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_G_C_P_E_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_C_P_E_CLASSNAMEID_2);
+
+		boolean bindPublishDate = false;
+
+		if (publishDate == null) {
+			query.append(_FINDER_COLUMN_G_C_P_E_PUBLISHDATE_1);
+		}
+		else {
+			bindPublishDate = true;
+
+			query.append(_FINDER_COLUMN_G_C_P_E_PUBLISHDATE_2);
+		}
+
+		boolean bindExpirationDate = false;
+
+		if (expirationDate == null) {
+			query.append(_FINDER_COLUMN_G_C_P_E_EXPIRATIONDATE_1);
+		}
+		else {
+			bindExpirationDate = true;
+
+			query.append(_FINDER_COLUMN_G_C_P_E_EXPIRATIONDATE_2);
+		}
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ASSETENTRY_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(classNameId);
+
+			if (bindPublishDate) {
+				qPos.add(new Timestamp(publishDate.getTime()));
+			}
+
+			if (bindExpirationDate) {
+				qPos.add(new Timestamp(expirationDate.getTime()));
+			}
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				assetEntryToAssetCategoryTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				assetEntryToAssetTagTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(classNameId);
+
+			if (bindPublishDate) {
+				qPos.add(new Timestamp(publishDate.getTime()));
+			}
+
+			if (bindExpirationDate) {
+				qPos.add(new Timestamp(expirationDate.getTime()));
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5934,8 +6517,47 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (AssetEntry assetEntry : findAll()) {
 			remove(assetEntry);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_SELECT_ASSETENTRY_PKS);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				assetEntryToAssetCategoryTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				assetEntryToAssetTagTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(_SQL_DELETE_ASSETENTRY);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6629,11 +7251,26 @@ public class AssetEntryPersistenceImpl extends BasePersistenceImpl<AssetEntry>
 		return date.getTime();
 	}
 
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_ASSETENTRY = "SELECT assetEntry FROM AssetEntry assetEntry";
+	private static final String _SQL_SELECT_ASSETENTRY_PKS = "SELECT entryId FROM AssetEntry assetEntry";
 	private static final String _SQL_SELECT_ASSETENTRY_WHERE_PKS_IN = "SELECT assetEntry FROM AssetEntry assetEntry WHERE entryId IN (";
 	private static final String _SQL_SELECT_ASSETENTRY_WHERE = "SELECT assetEntry FROM AssetEntry assetEntry WHERE ";
+	private static final String _SQL_SELECT_ASSETENTRY_PKS_WHERE = "SELECT entryId FROM AssetEntry assetEntry WHERE ";
 	private static final String _SQL_COUNT_ASSETENTRY = "SELECT COUNT(assetEntry) FROM AssetEntry assetEntry";
 	private static final String _SQL_COUNT_ASSETENTRY_WHERE = "SELECT COUNT(assetEntry) FROM AssetEntry assetEntry WHERE ";
+	private static final String _SQL_DELETE_ASSETENTRY = "DELETE AssetEntry assetEntry";
+	private static final String _SQL_DELETE_ASSETENTRY_WHERE = "DELETE AssetEntry assetEntry WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "assetEntry.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No AssetEntry exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No AssetEntry exists with the key {";

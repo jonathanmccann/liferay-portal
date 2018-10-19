@@ -28,10 +28,12 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchServiceComponentException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.ServiceComponent;
 import com.liferay.portal.kernel.service.persistence.ServiceComponentPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.model.impl.ServiceComponentImpl;
@@ -576,9 +578,64 @@ public class ServiceComponentPersistenceImpl extends BasePersistenceImpl<Service
 	 */
 	@Override
 	public void removeByBuildNamespace(String buildNamespace) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByBuildNamespace(buildNamespace);
+
+			return;
+		}
+
 		for (ServiceComponent serviceComponent : findByBuildNamespace(
 				buildNamespace, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(serviceComponent);
+		}
+	}
+
+	protected void bulkRemoveByBuildNamespace(String buildNamespace) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SERVICECOMPONENT_WHERE);
+
+		boolean bindBuildNamespace = false;
+
+		if (buildNamespace == null) {
+			query.append(_FINDER_COLUMN_BUILDNAMESPACE_BUILDNAMESPACE_1);
+		}
+		else if (buildNamespace.equals("")) {
+			query.append(_FINDER_COLUMN_BUILDNAMESPACE_BUILDNAMESPACE_3);
+		}
+		else {
+			bindBuildNamespace = true;
+
+			query.append(_FINDER_COLUMN_BUILDNAMESPACE_BUILDNAMESPACE_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindBuildNamespace) {
+				qPos.add(buildNamespace);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1593,8 +1650,36 @@ public class ServiceComponentPersistenceImpl extends BasePersistenceImpl<Service
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (ServiceComponent serviceComponent : findAll()) {
 			remove(serviceComponent);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_SERVICECOMPONENT);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1658,11 +1743,26 @@ public class ServiceComponentPersistenceImpl extends BasePersistenceImpl<Service
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_SERVICECOMPONENT = "SELECT serviceComponent FROM ServiceComponent serviceComponent";
+	private static final String _SQL_SELECT_SERVICECOMPONENT_PKS = "SELECT serviceComponentId FROM ServiceComponent serviceComponent";
 	private static final String _SQL_SELECT_SERVICECOMPONENT_WHERE_PKS_IN = "SELECT serviceComponent FROM ServiceComponent serviceComponent WHERE serviceComponentId IN (";
 	private static final String _SQL_SELECT_SERVICECOMPONENT_WHERE = "SELECT serviceComponent FROM ServiceComponent serviceComponent WHERE ";
+	private static final String _SQL_SELECT_SERVICECOMPONENT_PKS_WHERE = "SELECT serviceComponentId FROM ServiceComponent serviceComponent WHERE ";
 	private static final String _SQL_COUNT_SERVICECOMPONENT = "SELECT COUNT(serviceComponent) FROM ServiceComponent serviceComponent";
 	private static final String _SQL_COUNT_SERVICECOMPONENT_WHERE = "SELECT COUNT(serviceComponent) FROM ServiceComponent serviceComponent WHERE ";
+	private static final String _SQL_DELETE_SERVICECOMPONENT = "DELETE ServiceComponent serviceComponent";
+	private static final String _SQL_DELETE_SERVICECOMPONENT_WHERE = "DELETE ServiceComponent serviceComponent WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "serviceComponent.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No ServiceComponent exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No ServiceComponent exists with the key {";

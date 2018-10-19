@@ -29,9 +29,11 @@ import com.liferay.portal.kernel.exception.NoSuchCompanyException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Company;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CompanyPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -1199,9 +1201,50 @@ public class CompanyPersistenceImpl extends BasePersistenceImpl<Company>
 	 */
 	@Override
 	public void removeBySystem(boolean system) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveBySystem(system);
+
+			return;
+		}
+
 		for (Company company : findBySystem(system, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(company);
+		}
+	}
+
+	protected void bulkRemoveBySystem(boolean system) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_COMPANY_WHERE);
+
+		query.append(_FINDER_COLUMN_SYSTEM_SYSTEM_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(system);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1967,8 +2010,36 @@ public class CompanyPersistenceImpl extends BasePersistenceImpl<Company>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (Company company : findAll()) {
 			remove(company);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_COMPANY);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2032,11 +2103,26 @@ public class CompanyPersistenceImpl extends BasePersistenceImpl<Company>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_COMPANY = "SELECT company FROM Company company";
+	private static final String _SQL_SELECT_COMPANY_PKS = "SELECT companyId FROM Company company";
 	private static final String _SQL_SELECT_COMPANY_WHERE_PKS_IN = "SELECT company FROM Company company WHERE companyId IN (";
 	private static final String _SQL_SELECT_COMPANY_WHERE = "SELECT company FROM Company company WHERE ";
+	private static final String _SQL_SELECT_COMPANY_PKS_WHERE = "SELECT companyId FROM Company company WHERE ";
 	private static final String _SQL_COUNT_COMPANY = "SELECT COUNT(company) FROM Company company";
 	private static final String _SQL_COUNT_COMPANY_WHERE = "SELECT COUNT(company) FROM Company company WHERE ";
+	private static final String _SQL_DELETE_COMPANY = "DELETE Company company";
+	private static final String _SQL_DELETE_COMPANY_WHERE = "DELETE Company company WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "company.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Company exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Company exists with the key {";

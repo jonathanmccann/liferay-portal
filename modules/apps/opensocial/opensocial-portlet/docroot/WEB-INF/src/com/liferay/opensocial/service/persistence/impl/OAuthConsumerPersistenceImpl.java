@@ -34,12 +34,14 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 
@@ -571,9 +573,64 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 */
 	@Override
 	public void removeByGadgetKey(String gadgetKey) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGadgetKey(gadgetKey);
+
+			return;
+		}
+
 		for (OAuthConsumer oAuthConsumer : findByGadgetKey(gadgetKey,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(oAuthConsumer);
+		}
+	}
+
+	protected void bulkRemoveByGadgetKey(String gadgetKey) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_OAUTHCONSUMER_WHERE);
+
+		boolean bindGadgetKey = false;
+
+		if (gadgetKey == null) {
+			query.append(_FINDER_COLUMN_GADGETKEY_GADGETKEY_1);
+		}
+		else if (gadgetKey.equals("")) {
+			query.append(_FINDER_COLUMN_GADGETKEY_GADGETKEY_3);
+		}
+		else {
+			bindGadgetKey = true;
+
+			query.append(_FINDER_COLUMN_GADGETKEY_GADGETKEY_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindGadgetKey) {
+				qPos.add(gadgetKey);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1621,8 +1678,36 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (OAuthConsumer oAuthConsumer : findAll()) {
 			remove(oAuthConsumer);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_OAUTHCONSUMER);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1683,11 +1768,27 @@ public class OAuthConsumerPersistenceImpl extends BasePersistenceImpl<OAuthConsu
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_OAUTHCONSUMER = "SELECT oAuthConsumer FROM OAuthConsumer oAuthConsumer";
+	private static final String _SQL_SELECT_OAUTHCONSUMER_PKS = "SELECT oAuthConsumerId FROM OAuthConsumer oAuthConsumer";
 	private static final String _SQL_SELECT_OAUTHCONSUMER_WHERE_PKS_IN = "SELECT oAuthConsumer FROM OAuthConsumer oAuthConsumer WHERE oAuthConsumerId IN (";
 	private static final String _SQL_SELECT_OAUTHCONSUMER_WHERE = "SELECT oAuthConsumer FROM OAuthConsumer oAuthConsumer WHERE ";
+	private static final String _SQL_SELECT_OAUTHCONSUMER_PKS_WHERE = "SELECT oAuthConsumerId FROM OAuthConsumer oAuthConsumer WHERE ";
 	private static final String _SQL_COUNT_OAUTHCONSUMER = "SELECT COUNT(oAuthConsumer) FROM OAuthConsumer oAuthConsumer";
 	private static final String _SQL_COUNT_OAUTHCONSUMER_WHERE = "SELECT COUNT(oAuthConsumer) FROM OAuthConsumer oAuthConsumer WHERE ";
+	private static final String _SQL_DELETE_OAUTHCONSUMER = "DELETE OAuthConsumer oAuthConsumer";
+	private static final String _SQL_DELETE_OAUTHCONSUMER_WHERE = "DELETE OAuthConsumer oAuthConsumer WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "oAuthConsumer.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No OAuthConsumer exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No OAuthConsumer exists with the key {";

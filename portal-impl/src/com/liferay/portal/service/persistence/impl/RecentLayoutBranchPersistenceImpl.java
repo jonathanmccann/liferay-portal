@@ -29,12 +29,14 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchRecentLayoutBranchException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.RecentLayoutBranch;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.RecentLayoutBranchPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.model.impl.RecentLayoutBranchImpl;
 import com.liferay.portal.model.impl.RecentLayoutBranchModelImpl;
@@ -49,6 +51,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -537,9 +540,50 @@ public class RecentLayoutBranchPersistenceImpl extends BasePersistenceImpl<Recen
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (RecentLayoutBranch recentLayoutBranch : findByGroupId(groupId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(recentLayoutBranch);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_RECENTLAYOUTBRANCH_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1045,9 +1089,50 @@ public class RecentLayoutBranchPersistenceImpl extends BasePersistenceImpl<Recen
 	 */
 	@Override
 	public void removeByUserId(long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUserId(userId);
+
+			return;
+		}
+
 		for (RecentLayoutBranch recentLayoutBranch : findByUserId(userId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(recentLayoutBranch);
+		}
+	}
+
+	protected void bulkRemoveByUserId(long userId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_RECENTLAYOUTBRANCH_WHERE);
+
+		query.append(_FINDER_COLUMN_USERID_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1564,9 +1649,50 @@ public class RecentLayoutBranchPersistenceImpl extends BasePersistenceImpl<Recen
 	 */
 	@Override
 	public void removeByLayoutBranchId(long layoutBranchId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByLayoutBranchId(layoutBranchId);
+
+			return;
+		}
+
 		for (RecentLayoutBranch recentLayoutBranch : findByLayoutBranchId(
 				layoutBranchId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(recentLayoutBranch);
+		}
+	}
+
+	protected void bulkRemoveByLayoutBranchId(long layoutBranchId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_RECENTLAYOUTBRANCH_WHERE);
+
+		query.append(_FINDER_COLUMN_LAYOUTBRANCHID_LAYOUTBRANCHID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(layoutBranchId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2594,8 +2720,36 @@ public class RecentLayoutBranchPersistenceImpl extends BasePersistenceImpl<Recen
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (RecentLayoutBranch recentLayoutBranch : findAll()) {
 			remove(recentLayoutBranch);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_RECENTLAYOUTBRANCH);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2656,11 +2810,27 @@ public class RecentLayoutBranchPersistenceImpl extends BasePersistenceImpl<Recen
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_RECENTLAYOUTBRANCH = "SELECT recentLayoutBranch FROM RecentLayoutBranch recentLayoutBranch";
+	private static final String _SQL_SELECT_RECENTLAYOUTBRANCH_PKS = "SELECT recentLayoutBranchId FROM RecentLayoutBranch recentLayoutBranch";
 	private static final String _SQL_SELECT_RECENTLAYOUTBRANCH_WHERE_PKS_IN = "SELECT recentLayoutBranch FROM RecentLayoutBranch recentLayoutBranch WHERE recentLayoutBranchId IN (";
 	private static final String _SQL_SELECT_RECENTLAYOUTBRANCH_WHERE = "SELECT recentLayoutBranch FROM RecentLayoutBranch recentLayoutBranch WHERE ";
+	private static final String _SQL_SELECT_RECENTLAYOUTBRANCH_PKS_WHERE = "SELECT recentLayoutBranchId FROM RecentLayoutBranch recentLayoutBranch WHERE ";
 	private static final String _SQL_COUNT_RECENTLAYOUTBRANCH = "SELECT COUNT(recentLayoutBranch) FROM RecentLayoutBranch recentLayoutBranch";
 	private static final String _SQL_COUNT_RECENTLAYOUTBRANCH_WHERE = "SELECT COUNT(recentLayoutBranch) FROM RecentLayoutBranch recentLayoutBranch WHERE ";
+	private static final String _SQL_DELETE_RECENTLAYOUTBRANCH = "DELETE RecentLayoutBranch recentLayoutBranch";
+	private static final String _SQL_DELETE_RECENTLAYOUTBRANCH_WHERE = "DELETE RecentLayoutBranch recentLayoutBranch WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "recentLayoutBranch.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No RecentLayoutBranch exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No RecentLayoutBranch exists with the key {";

@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.exception.NoSuchContactException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Contact;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.ContactPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.model.impl.ContactImpl;
 import com.liferay.portal.model.impl.ContactModelImpl;
@@ -52,6 +54,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -531,9 +534,50 @@ public class ContactPersistenceImpl extends BasePersistenceImpl<Contact>
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (Contact contact : findByCompanyId(companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(contact);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_CONTACT_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1033,9 +1077,50 @@ public class ContactPersistenceImpl extends BasePersistenceImpl<Contact>
 	 */
 	@Override
 	public void removeByAccountId(long accountId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByAccountId(accountId);
+
+			return;
+		}
+
 		for (Contact contact : findByAccountId(accountId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(contact);
+		}
+	}
+
+	protected void bulkRemoveByAccountId(long accountId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_CONTACT_WHERE);
+
+		query.append(_FINDER_COLUMN_ACCOUNTID_ACCOUNTID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(accountId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1569,9 +1654,54 @@ public class ContactPersistenceImpl extends BasePersistenceImpl<Contact>
 	 */
 	@Override
 	public void removeByC_C(long classNameId, long classPK) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_C(classNameId, classPK);
+
+			return;
+		}
+
 		for (Contact contact : findByC_C(classNameId, classPK,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(contact);
+		}
+	}
+
+	protected void bulkRemoveByC_C(long classNameId, long classPK) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_CONTACT_WHERE);
+
+		query.append(_FINDER_COLUMN_C_C_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_C_C_CLASSPK_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2318,8 +2448,36 @@ public class ContactPersistenceImpl extends BasePersistenceImpl<Contact>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (Contact contact : findAll()) {
 			remove(contact);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_CONTACT);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2380,11 +2538,27 @@ public class ContactPersistenceImpl extends BasePersistenceImpl<Contact>
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_CONTACT = "SELECT contact FROM Contact contact";
+	private static final String _SQL_SELECT_CONTACT_PKS = "SELECT contactId FROM Contact contact";
 	private static final String _SQL_SELECT_CONTACT_WHERE_PKS_IN = "SELECT contact FROM Contact contact WHERE contactId IN (";
 	private static final String _SQL_SELECT_CONTACT_WHERE = "SELECT contact FROM Contact contact WHERE ";
+	private static final String _SQL_SELECT_CONTACT_PKS_WHERE = "SELECT contactId FROM Contact contact WHERE ";
 	private static final String _SQL_COUNT_CONTACT = "SELECT COUNT(contact) FROM Contact contact";
 	private static final String _SQL_COUNT_CONTACT_WHERE = "SELECT COUNT(contact) FROM Contact contact WHERE ";
+	private static final String _SQL_DELETE_CONTACT = "DELETE Contact contact";
+	private static final String _SQL_DELETE_CONTACT_WHERE = "DELETE Contact contact WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "contact.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Contact exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Contact exists with the key {";

@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchWebsiteException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.Website;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.WebsitePersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -562,9 +564,64 @@ public class WebsitePersistenceImpl extends BasePersistenceImpl<Website>
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid(uuid);
+
+			return;
+		}
+
 		for (Website website : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(website);
+		}
+	}
+
+	protected void bulkRemoveByUuid(String uuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_WEBSITE_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1141,9 +1198,68 @@ public class WebsitePersistenceImpl extends BasePersistenceImpl<Website>
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid_C(uuid, companyId);
+
+			return;
+		}
+
 		for (Website website : findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(website);
+		}
+	}
+
+	protected void bulkRemoveByUuid_C(String uuid, long companyId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_WEBSITE_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
+		}
+
+		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1666,9 +1782,50 @@ public class WebsitePersistenceImpl extends BasePersistenceImpl<Website>
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (Website website : findByCompanyId(companyId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(website);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_WEBSITE_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2167,9 +2324,50 @@ public class WebsitePersistenceImpl extends BasePersistenceImpl<Website>
 	 */
 	@Override
 	public void removeByUserId(long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUserId(userId);
+
+			return;
+		}
+
 		for (Website website : findByUserId(userId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(website);
+		}
+	}
+
+	protected void bulkRemoveByUserId(long userId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_WEBSITE_WHERE);
+
+		query.append(_FINDER_COLUMN_USERID_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2704,9 +2902,54 @@ public class WebsitePersistenceImpl extends BasePersistenceImpl<Website>
 	 */
 	@Override
 	public void removeByC_C(long companyId, long classNameId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_C(companyId, classNameId);
+
+			return;
+		}
+
 		for (Website website : findByC_C(companyId, classNameId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(website);
+		}
+	}
+
+	protected void bulkRemoveByC_C(long companyId, long classNameId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_WEBSITE_WHERE);
+
+		query.append(_FINDER_COLUMN_C_C_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_C_CLASSNAMEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3280,9 +3523,59 @@ public class WebsitePersistenceImpl extends BasePersistenceImpl<Website>
 	 */
 	@Override
 	public void removeByC_C_C(long companyId, long classNameId, long classPK) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_C_C(companyId, classNameId, classPK);
+
+			return;
+		}
+
 		for (Website website : findByC_C_C(companyId, classNameId, classPK,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(website);
+		}
+	}
+
+	protected void bulkRemoveByC_C_C(long companyId, long classNameId,
+		long classPK) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_WEBSITE_WHERE);
+
+		query.append(_FINDER_COLUMN_C_C_C_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_C_C_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_C_C_C_CLASSPK_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3899,9 +4192,63 @@ public class WebsitePersistenceImpl extends BasePersistenceImpl<Website>
 	@Override
 	public void removeByC_C_C_P(long companyId, long classNameId, long classPK,
 		boolean primary) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_C_C_P(companyId, classNameId, classPK, primary);
+
+			return;
+		}
+
 		for (Website website : findByC_C_C_P(companyId, classNameId, classPK,
 				primary, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(website);
+		}
+	}
+
+	protected void bulkRemoveByC_C_C_P(long companyId, long classNameId,
+		long classPK, boolean primary) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_DELETE_WEBSITE_WHERE);
+
+		query.append(_FINDER_COLUMN_C_C_C_P_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_C_C_P_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_C_C_C_P_CLASSPK_2);
+
+		query.append(_FINDER_COLUMN_C_C_C_P_PRIMARY_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			qPos.add(primary);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4808,8 +5155,36 @@ public class WebsitePersistenceImpl extends BasePersistenceImpl<Website>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (Website website : findAll()) {
 			remove(website);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_WEBSITE);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4875,11 +5250,27 @@ public class WebsitePersistenceImpl extends BasePersistenceImpl<Website>
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_WEBSITE = "SELECT website FROM Website website";
+	private static final String _SQL_SELECT_WEBSITE_PKS = "SELECT websiteId FROM Website website";
 	private static final String _SQL_SELECT_WEBSITE_WHERE_PKS_IN = "SELECT website FROM Website website WHERE websiteId IN (";
 	private static final String _SQL_SELECT_WEBSITE_WHERE = "SELECT website FROM Website website WHERE ";
+	private static final String _SQL_SELECT_WEBSITE_PKS_WHERE = "SELECT websiteId FROM Website website WHERE ";
 	private static final String _SQL_COUNT_WEBSITE = "SELECT COUNT(website) FROM Website website";
 	private static final String _SQL_COUNT_WEBSITE_WHERE = "SELECT COUNT(website) FROM Website website WHERE ";
+	private static final String _SQL_DELETE_WEBSITE = "DELETE Website website";
+	private static final String _SQL_DELETE_WEBSITE_WHERE = "DELETE Website website WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "website.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Website exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Website exists with the key {";

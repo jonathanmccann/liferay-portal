@@ -29,9 +29,11 @@ import com.liferay.portal.kernel.exception.NoSuchCountryException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Country;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CountryPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.model.impl.CountryImpl;
@@ -1206,9 +1208,50 @@ public class CountryPersistenceImpl extends BasePersistenceImpl<Country>
 	 */
 	@Override
 	public void removeByActive(boolean active) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByActive(active);
+
+			return;
+		}
+
 		for (Country country : findByActive(active, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(country);
+		}
+	}
+
+	protected void bulkRemoveByActive(boolean active) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_COUNTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_ACTIVE_ACTIVE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(active);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1975,8 +2018,36 @@ public class CountryPersistenceImpl extends BasePersistenceImpl<Country>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (Country country : findAll()) {
 			remove(country);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_COUNTRY);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2040,11 +2111,26 @@ public class CountryPersistenceImpl extends BasePersistenceImpl<Country>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_COUNTRY = "SELECT country FROM Country country";
+	private static final String _SQL_SELECT_COUNTRY_PKS = "SELECT countryId FROM Country country";
 	private static final String _SQL_SELECT_COUNTRY_WHERE_PKS_IN = "SELECT country FROM Country country WHERE countryId IN (";
 	private static final String _SQL_SELECT_COUNTRY_WHERE = "SELECT country FROM Country country WHERE ";
+	private static final String _SQL_SELECT_COUNTRY_PKS_WHERE = "SELECT countryId FROM Country country WHERE ";
 	private static final String _SQL_COUNT_COUNTRY = "SELECT COUNT(country) FROM Country country";
 	private static final String _SQL_COUNT_COUNTRY_WHERE = "SELECT COUNT(country) FROM Country country WHERE ";
+	private static final String _SQL_DELETE_COUNTRY = "DELETE Country country";
+	private static final String _SQL_DELETE_COUNTRY_WHERE = "DELETE Country country WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "country.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Country exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Country exists with the key {";

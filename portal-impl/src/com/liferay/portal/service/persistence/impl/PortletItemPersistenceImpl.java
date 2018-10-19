@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchPortletItemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.PortletItem;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -37,6 +38,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.PortletItemPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.impl.PortletItemImpl;
@@ -568,9 +570,54 @@ public class PortletItemPersistenceImpl extends BasePersistenceImpl<PortletItem>
 	 */
 	@Override
 	public void removeByG_C(long groupId, long classNameId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_C(groupId, classNameId);
+
+			return;
+		}
+
 		for (PortletItem portletItem : findByG_C(groupId, classNameId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(portletItem);
+		}
+	}
+
+	protected void bulkRemoveByG_C(long groupId, long classNameId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_PORTLETITEM_WHERE);
+
+		query.append(_FINDER_COLUMN_G_C_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_C_CLASSNAMEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(classNameId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1177,9 +1224,73 @@ public class PortletItemPersistenceImpl extends BasePersistenceImpl<PortletItem>
 	 */
 	@Override
 	public void removeByG_P_C(long groupId, String portletId, long classNameId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_P_C(groupId, portletId, classNameId);
+
+			return;
+		}
+
 		for (PortletItem portletItem : findByG_P_C(groupId, portletId,
 				classNameId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(portletItem);
+		}
+	}
+
+	protected void bulkRemoveByG_P_C(long groupId, String portletId,
+		long classNameId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_PORTLETITEM_WHERE);
+
+		query.append(_FINDER_COLUMN_G_P_C_GROUPID_2);
+
+		boolean bindPortletId = false;
+
+		if (portletId == null) {
+			query.append(_FINDER_COLUMN_G_P_C_PORTLETID_1);
+		}
+		else if (portletId.equals("")) {
+			query.append(_FINDER_COLUMN_G_P_C_PORTLETID_3);
+		}
+		else {
+			bindPortletId = true;
+
+			query.append(_FINDER_COLUMN_G_P_C_PORTLETID_2);
+		}
+
+		query.append(_FINDER_COLUMN_G_P_C_CLASSNAMEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			if (bindPortletId) {
+				qPos.add(portletId);
+			}
+
+			qPos.add(classNameId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2330,8 +2441,36 @@ public class PortletItemPersistenceImpl extends BasePersistenceImpl<PortletItem>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (PortletItem portletItem : findAll()) {
 			remove(portletItem);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_PORTLETITEM);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2392,11 +2531,27 @@ public class PortletItemPersistenceImpl extends BasePersistenceImpl<PortletItem>
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_PORTLETITEM = "SELECT portletItem FROM PortletItem portletItem";
+	private static final String _SQL_SELECT_PORTLETITEM_PKS = "SELECT portletItemId FROM PortletItem portletItem";
 	private static final String _SQL_SELECT_PORTLETITEM_WHERE_PKS_IN = "SELECT portletItem FROM PortletItem portletItem WHERE portletItemId IN (";
 	private static final String _SQL_SELECT_PORTLETITEM_WHERE = "SELECT portletItem FROM PortletItem portletItem WHERE ";
+	private static final String _SQL_SELECT_PORTLETITEM_PKS_WHERE = "SELECT portletItemId FROM PortletItem portletItem WHERE ";
 	private static final String _SQL_COUNT_PORTLETITEM = "SELECT COUNT(portletItem) FROM PortletItem portletItem";
 	private static final String _SQL_COUNT_PORTLETITEM_WHERE = "SELECT COUNT(portletItem) FROM PortletItem portletItem WHERE ";
+	private static final String _SQL_DELETE_PORTLETITEM = "DELETE PortletItem portletItem";
+	private static final String _SQL_DELETE_PORTLETITEM_WHERE = "DELETE PortletItem portletItem WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "portletItem.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No PortletItem exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No PortletItem exists with the key {";

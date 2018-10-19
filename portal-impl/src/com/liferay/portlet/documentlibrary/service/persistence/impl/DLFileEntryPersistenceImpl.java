@@ -33,6 +33,7 @@ import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -41,6 +42,7 @@ import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -571,9 +573,64 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid(uuid);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByUuid(String uuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1403,9 +1460,68 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid_C(uuid, companyId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByUuid_C(uuid, companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByUuid_C(String uuid, long companyId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
+		}
+
+		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2239,9 +2355,50 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByGroupId(groupId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2795,9 +2952,50 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByCompanyId(companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3309,9 +3507,50 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByRepositoryId(long repositoryId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByRepositoryId(repositoryId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByRepositoryId(repositoryId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByRepositoryId(long repositoryId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_REPOSITORYID_REPOSITORYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(repositoryId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3844,9 +4083,64 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByMimeType(String mimeType) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByMimeType(mimeType);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByMimeType(mimeType,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByMimeType(String mimeType) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		boolean bindMimeType = false;
+
+		if (mimeType == null) {
+			query.append(_FINDER_COLUMN_MIMETYPE_MIMETYPE_1);
+		}
+		else if (mimeType.equals("")) {
+			query.append(_FINDER_COLUMN_MIMETYPE_MIMETYPE_3);
+		}
+		else {
+			bindMimeType = true;
+
+			query.append(_FINDER_COLUMN_MIMETYPE_MIMETYPE_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindMimeType) {
+				qPos.add(mimeType);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4374,9 +4668,50 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByFileEntryTypeId(long fileEntryTypeId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByFileEntryTypeId(fileEntryTypeId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByFileEntryTypeId(fileEntryTypeId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByFileEntryTypeId(long fileEntryTypeId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_FILEENTRYTYPEID_FILEENTRYTYPEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(fileEntryTypeId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4889,9 +5224,50 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeBySmallImageId(long smallImageId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveBySmallImageId(smallImageId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findBySmallImageId(smallImageId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveBySmallImageId(long smallImageId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_SMALLIMAGEID_SMALLIMAGEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(smallImageId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5403,9 +5779,50 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByLargeImageId(long largeImageId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByLargeImageId(largeImageId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByLargeImageId(largeImageId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByLargeImageId(long largeImageId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_LARGEIMAGEID_LARGEIMAGEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(largeImageId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5917,9 +6334,50 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByCustom1ImageId(long custom1ImageId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCustom1ImageId(custom1ImageId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByCustom1ImageId(custom1ImageId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByCustom1ImageId(long custom1ImageId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_CUSTOM1IMAGEID_CUSTOM1IMAGEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(custom1ImageId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6431,9 +6889,50 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByCustom2ImageId(long custom2ImageId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCustom2ImageId(custom2ImageId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByCustom2ImageId(custom2ImageId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByCustom2ImageId(long custom2ImageId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_CUSTOM2IMAGEID_CUSTOM2IMAGEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(custom2ImageId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7291,9 +7790,54 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByG_U(long groupId, long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_U(groupId, userId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByG_U(groupId, userId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_U(long groupId, long userId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_G_U_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_U_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -8556,9 +9100,54 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByG_F(long groupId, long folderId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_F(groupId, folderId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByG_F(groupId, folderId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_F(long groupId, long folderId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_G_F_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_F_FOLDERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(folderId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9304,9 +9893,54 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByR_F(long repositoryId, long folderId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByR_F(repositoryId, folderId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByR_F(repositoryId, folderId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByR_F(long repositoryId, long folderId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_R_F_REPOSITORYID_2);
+
+		query.append(_FINDER_COLUMN_R_F_FOLDERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(repositoryId);
+
+			qPos.add(folderId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9873,9 +10507,68 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByF_N(long folderId, String name) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByF_N(folderId, name);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByF_N(folderId, name,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByF_N(long folderId, String name) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_F_N_FOLDERID_2);
+
+		boolean bindName = false;
+
+		if (name == null) {
+			query.append(_FINDER_COLUMN_F_N_NAME_1);
+		}
+		else if (name.equals("")) {
+			query.append(_FINDER_COLUMN_F_N_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			query.append(_FINDER_COLUMN_F_N_NAME_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(folderId);
+
+			if (bindName) {
+				qPos.add(name);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -11178,9 +11871,58 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByG_U_F(long groupId, long userId, long folderId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_U_F(groupId, userId, folderId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByG_U_F(groupId, userId, folderId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_U_F(long groupId, long userId, long folderId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_G_U_F_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_U_F_USERID_2);
+
+		query.append(_FINDER_COLUMN_G_U_F_FOLDERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(userId);
+
+			qPos.add(folderId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -13525,9 +14267,59 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeByG_F_F(long groupId, long folderId, long fileEntryTypeId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_F_F(groupId, folderId, fileEntryTypeId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByG_F_F(groupId, folderId,
 				fileEntryTypeId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByG_F_F(long groupId, long folderId,
+		long fileEntryTypeId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_G_F_F_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_F_F_FOLDERID_2);
+
+		query.append(_FINDER_COLUMN_G_F_F_FILEENTRYTYPEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(folderId);
+
+			qPos.add(fileEntryTypeId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -14381,10 +15173,65 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	@Override
 	public void removeByS_L_C1_C2(long smallImageId, long largeImageId,
 		long custom1ImageId, long custom2ImageId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByS_L_C1_C2(smallImageId, largeImageId, custom1ImageId,
+				custom2ImageId);
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findByS_L_C1_C2(smallImageId,
 				largeImageId, custom1ImageId, custom2ImageId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveByS_L_C1_C2(long smallImageId, long largeImageId,
+		long custom1ImageId, long custom2ImageId) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_DELETE_DLFILEENTRY_WHERE);
+
+		query.append(_FINDER_COLUMN_S_L_C1_C2_SMALLIMAGEID_2);
+
+		query.append(_FINDER_COLUMN_S_L_C1_C2_LARGEIMAGEID_2);
+
+		query.append(_FINDER_COLUMN_S_L_C1_C2_CUSTOM1IMAGEID_2);
+
+		query.append(_FINDER_COLUMN_S_L_C1_C2_CUSTOM2IMAGEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(smallImageId);
+
+			qPos.add(largeImageId);
+
+			qPos.add(custom1ImageId);
+
+			qPos.add(custom2ImageId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -15768,8 +16615,36 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (DLFileEntry dlFileEntry : findAll()) {
 			remove(dlFileEntry);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_DLFILEENTRY);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -15835,11 +16710,27 @@ public class DLFileEntryPersistenceImpl extends BasePersistenceImpl<DLFileEntry>
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_DLFILEENTRY = "SELECT dlFileEntry FROM DLFileEntry dlFileEntry";
+	private static final String _SQL_SELECT_DLFILEENTRY_PKS = "SELECT fileEntryId FROM DLFileEntry dlFileEntry";
 	private static final String _SQL_SELECT_DLFILEENTRY_WHERE_PKS_IN = "SELECT dlFileEntry FROM DLFileEntry dlFileEntry WHERE fileEntryId IN (";
 	private static final String _SQL_SELECT_DLFILEENTRY_WHERE = "SELECT dlFileEntry FROM DLFileEntry dlFileEntry WHERE ";
+	private static final String _SQL_SELECT_DLFILEENTRY_PKS_WHERE = "SELECT fileEntryId FROM DLFileEntry dlFileEntry WHERE ";
 	private static final String _SQL_COUNT_DLFILEENTRY = "SELECT COUNT(dlFileEntry) FROM DLFileEntry dlFileEntry";
 	private static final String _SQL_COUNT_DLFILEENTRY_WHERE = "SELECT COUNT(dlFileEntry) FROM DLFileEntry dlFileEntry WHERE ";
+	private static final String _SQL_DELETE_DLFILEENTRY = "DELETE DLFileEntry dlFileEntry";
+	private static final String _SQL_DELETE_DLFILEENTRY_WHERE = "DELETE DLFileEntry dlFileEntry WHERE ";
 	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "dlFileEntry.fileEntryId";
 	private static final String _FILTER_SQL_SELECT_DLFILEENTRY_WHERE = "SELECT DISTINCT {dlFileEntry.*} FROM DLFileEntry dlFileEntry WHERE ";
 	private static final String _FILTER_SQL_SELECT_DLFILEENTRY_NO_INLINE_DISTINCT_WHERE_1 =

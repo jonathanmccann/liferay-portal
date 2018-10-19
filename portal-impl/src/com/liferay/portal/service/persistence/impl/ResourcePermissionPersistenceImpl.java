@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchResourcePermissionException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
@@ -36,6 +37,7 @@ import com.liferay.portal.kernel.service.persistence.ResourcePermissionPersisten
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.impl.ResourcePermissionImpl;
@@ -567,9 +569,64 @@ public class ResourcePermissionPersistenceImpl extends BasePersistenceImpl<Resou
 	 */
 	@Override
 	public void removeByName(String name) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByName(name);
+
+			return;
+		}
+
 		for (ResourcePermission resourcePermission : findByName(name,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(resourcePermission);
+		}
+	}
+
+	protected void bulkRemoveByName(String name) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_RESOURCEPERMISSION_WHERE);
+
+		boolean bindName = false;
+
+		if (name == null) {
+			query.append(_FINDER_COLUMN_NAME_NAME_1);
+		}
+		else if (name.equals("")) {
+			query.append(_FINDER_COLUMN_NAME_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			query.append(_FINDER_COLUMN_NAME_NAME_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindName) {
+				qPos.add(name);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1280,9 +1337,50 @@ public class ResourcePermissionPersistenceImpl extends BasePersistenceImpl<Resou
 	 */
 	@Override
 	public void removeByScope(int scope) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByScope(scope);
+
+			return;
+		}
+
 		for (ResourcePermission resourcePermission : findByScope(scope,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(resourcePermission);
+		}
+	}
+
+	protected void bulkRemoveByScope(int scope) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_RESOURCEPERMISSION_WHERE);
+
+		query.append(_FINDER_COLUMN_SCOPE_SCOPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(scope);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1859,9 +1957,50 @@ public class ResourcePermissionPersistenceImpl extends BasePersistenceImpl<Resou
 	 */
 	@Override
 	public void removeByRoleId(long roleId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByRoleId(roleId);
+
+			return;
+		}
+
 		for (ResourcePermission resourcePermission : findByRoleId(roleId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(resourcePermission);
+		}
+	}
+
+	protected void bulkRemoveByRoleId(long roleId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_RESOURCEPERMISSION_WHERE);
+
+		query.append(_FINDER_COLUMN_ROLEID_ROLEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(roleId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2416,9 +2555,68 @@ public class ResourcePermissionPersistenceImpl extends BasePersistenceImpl<Resou
 	 */
 	@Override
 	public void removeByC_LikeP(long companyId, String primKey) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_LikeP(companyId, primKey);
+
+			return;
+		}
+
 		for (ResourcePermission resourcePermission : findByC_LikeP(companyId,
 				primKey, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(resourcePermission);
+		}
+	}
+
+	protected void bulkRemoveByC_LikeP(long companyId, String primKey) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_RESOURCEPERMISSION_WHERE);
+
+		query.append(_FINDER_COLUMN_C_LIKEP_COMPANYID_2);
+
+		boolean bindPrimKey = false;
+
+		if (primKey == null) {
+			query.append(_FINDER_COLUMN_C_LIKEP_PRIMKEY_1);
+		}
+		else if (primKey.equals("")) {
+			query.append(_FINDER_COLUMN_C_LIKEP_PRIMKEY_3);
+		}
+		else {
+			bindPrimKey = true;
+
+			query.append(_FINDER_COLUMN_C_LIKEP_PRIMKEY_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindPrimKey) {
+				qPos.add(primKey);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3042,9 +3240,72 @@ public class ResourcePermissionPersistenceImpl extends BasePersistenceImpl<Resou
 	 */
 	@Override
 	public void removeByC_N_S(long companyId, String name, int scope) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_N_S(companyId, name, scope);
+
+			return;
+		}
+
 		for (ResourcePermission resourcePermission : findByC_N_S(companyId,
 				name, scope, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(resourcePermission);
+		}
+	}
+
+	protected void bulkRemoveByC_N_S(long companyId, String name, int scope) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_RESOURCEPERMISSION_WHERE);
+
+		query.append(_FINDER_COLUMN_C_N_S_COMPANYID_2);
+
+		boolean bindName = false;
+
+		if (name == null) {
+			query.append(_FINDER_COLUMN_C_N_S_NAME_1);
+		}
+		else if (name.equals("")) {
+			query.append(_FINDER_COLUMN_C_N_S_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			query.append(_FINDER_COLUMN_C_N_S_NAME_2);
+		}
+
+		query.append(_FINDER_COLUMN_C_N_S_SCOPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindName) {
+				qPos.add(name);
+			}
+
+			qPos.add(scope);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3676,9 +3937,72 @@ public class ResourcePermissionPersistenceImpl extends BasePersistenceImpl<Resou
 	 */
 	@Override
 	public void removeByC_S_P(long companyId, int scope, String primKey) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_S_P(companyId, scope, primKey);
+
+			return;
+		}
+
 		for (ResourcePermission resourcePermission : findByC_S_P(companyId,
 				scope, primKey, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(resourcePermission);
+		}
+	}
+
+	protected void bulkRemoveByC_S_P(long companyId, int scope, String primKey) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_RESOURCEPERMISSION_WHERE);
+
+		query.append(_FINDER_COLUMN_C_S_P_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_S_P_SCOPE_2);
+
+		boolean bindPrimKey = false;
+
+		if (primKey == null) {
+			query.append(_FINDER_COLUMN_C_S_P_PRIMKEY_1);
+		}
+		else if (primKey.equals("")) {
+			query.append(_FINDER_COLUMN_C_S_P_PRIMKEY_3);
+		}
+		else {
+			bindPrimKey = true;
+
+			query.append(_FINDER_COLUMN_C_S_P_PRIMKEY_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(scope);
+
+			if (bindPrimKey) {
+				qPos.add(primKey);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4370,9 +4694,91 @@ public class ResourcePermissionPersistenceImpl extends BasePersistenceImpl<Resou
 	@Override
 	public void removeByC_N_S_P(long companyId, String name, int scope,
 		String primKey) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_N_S_P(companyId, name, scope, primKey);
+
+			return;
+		}
+
 		for (ResourcePermission resourcePermission : findByC_N_S_P(companyId,
 				name, scope, primKey, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(resourcePermission);
+		}
+	}
+
+	protected void bulkRemoveByC_N_S_P(long companyId, String name, int scope,
+		String primKey) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_DELETE_RESOURCEPERMISSION_WHERE);
+
+		query.append(_FINDER_COLUMN_C_N_S_P_COMPANYID_2);
+
+		boolean bindName = false;
+
+		if (name == null) {
+			query.append(_FINDER_COLUMN_C_N_S_P_NAME_1);
+		}
+		else if (name.equals("")) {
+			query.append(_FINDER_COLUMN_C_N_S_P_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			query.append(_FINDER_COLUMN_C_N_S_P_NAME_2);
+		}
+
+		query.append(_FINDER_COLUMN_C_N_S_P_SCOPE_2);
+
+		boolean bindPrimKey = false;
+
+		if (primKey == null) {
+			query.append(_FINDER_COLUMN_C_N_S_P_PRIMKEY_1);
+		}
+		else if (primKey.equals("")) {
+			query.append(_FINDER_COLUMN_C_N_S_P_PRIMKEY_3);
+		}
+		else {
+			bindPrimKey = true;
+
+			query.append(_FINDER_COLUMN_C_N_S_P_PRIMKEY_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindName) {
+				qPos.add(name);
+			}
+
+			qPos.add(scope);
+
+			if (bindPrimKey) {
+				qPos.add(primKey);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6296,10 +6702,87 @@ public class ResourcePermissionPersistenceImpl extends BasePersistenceImpl<Resou
 	@Override
 	public void removeByC_N_S_P_R_V(long companyId, String name, int scope,
 		long primKeyId, long roleId, boolean viewActionId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_N_S_P_R_V(companyId, name, scope, primKeyId, roleId,
+				viewActionId);
+
+			return;
+		}
+
 		for (ResourcePermission resourcePermission : findByC_N_S_P_R_V(
 				companyId, name, scope, primKeyId, roleId, viewActionId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(resourcePermission);
+		}
+	}
+
+	protected void bulkRemoveByC_N_S_P_R_V(long companyId, String name,
+		int scope, long primKeyId, long roleId, boolean viewActionId) {
+		StringBundler query = new StringBundler(7);
+
+		query.append(_SQL_DELETE_RESOURCEPERMISSION_WHERE);
+
+		query.append(_FINDER_COLUMN_C_N_S_P_R_V_COMPANYID_2);
+
+		boolean bindName = false;
+
+		if (name == null) {
+			query.append(_FINDER_COLUMN_C_N_S_P_R_V_NAME_1);
+		}
+		else if (name.equals("")) {
+			query.append(_FINDER_COLUMN_C_N_S_P_R_V_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			query.append(_FINDER_COLUMN_C_N_S_P_R_V_NAME_2);
+		}
+
+		query.append(_FINDER_COLUMN_C_N_S_P_R_V_SCOPE_2);
+
+		query.append(_FINDER_COLUMN_C_N_S_P_R_V_PRIMKEYID_2);
+
+		query.append(_FINDER_COLUMN_C_N_S_P_R_V_ROLEID_2);
+
+		query.append(_FINDER_COLUMN_C_N_S_P_R_V_VIEWACTIONID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindName) {
+				qPos.add(name);
+			}
+
+			qPos.add(scope);
+
+			qPos.add(primKeyId);
+
+			qPos.add(roleId);
+
+			qPos.add(viewActionId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7463,8 +7946,36 @@ public class ResourcePermissionPersistenceImpl extends BasePersistenceImpl<Resou
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (ResourcePermission resourcePermission : findAll()) {
 			remove(resourcePermission);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_RESOURCEPERMISSION);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7525,11 +8036,27 @@ public class ResourcePermissionPersistenceImpl extends BasePersistenceImpl<Resou
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_RESOURCEPERMISSION = "SELECT resourcePermission FROM ResourcePermission resourcePermission";
+	private static final String _SQL_SELECT_RESOURCEPERMISSION_PKS = "SELECT resourcePermissionId FROM ResourcePermission resourcePermission";
 	private static final String _SQL_SELECT_RESOURCEPERMISSION_WHERE_PKS_IN = "SELECT resourcePermission FROM ResourcePermission resourcePermission WHERE resourcePermissionId IN (";
 	private static final String _SQL_SELECT_RESOURCEPERMISSION_WHERE = "SELECT resourcePermission FROM ResourcePermission resourcePermission WHERE ";
+	private static final String _SQL_SELECT_RESOURCEPERMISSION_PKS_WHERE = "SELECT resourcePermissionId FROM ResourcePermission resourcePermission WHERE ";
 	private static final String _SQL_COUNT_RESOURCEPERMISSION = "SELECT COUNT(resourcePermission) FROM ResourcePermission resourcePermission";
 	private static final String _SQL_COUNT_RESOURCEPERMISSION_WHERE = "SELECT COUNT(resourcePermission) FROM ResourcePermission resourcePermission WHERE ";
+	private static final String _SQL_DELETE_RESOURCEPERMISSION = "DELETE ResourcePermission resourcePermission";
+	private static final String _SQL_DELETE_RESOURCEPERMISSION_WHERE = "DELETE ResourcePermission resourcePermission WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "resourcePermission.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No ResourcePermission exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No ResourcePermission exists with the key {";

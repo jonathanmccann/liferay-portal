@@ -28,10 +28,12 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -54,6 +56,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -540,9 +543,50 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	 */
 	@Override
 	public void removeByGroupId(long groupId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByGroupId(groupId);
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findByGroupId(groupId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveByGroupId(long groupId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITY_WHERE);
+
+		query.append(_FINDER_COLUMN_GROUPID_GROUPID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1050,9 +1094,50 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findByCompanyId(companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITY_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1556,9 +1641,50 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	 */
 	@Override
 	public void removeByUserId(long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUserId(userId);
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findByUserId(userId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveByUserId(long userId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITY_WHERE);
+
+		query.append(_FINDER_COLUMN_USERID_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2072,9 +2198,50 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	 */
 	@Override
 	public void removeByActivitySetId(long activitySetId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByActivitySetId(activitySetId);
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findByActivitySetId(
 				activitySetId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveByActivitySetId(long activitySetId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITY_WHERE);
+
+		query.append(_FINDER_COLUMN_ACTIVITYSETID_ACTIVITYSETID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(activitySetId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2795,9 +2962,50 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	 */
 	@Override
 	public void removeByClassNameId(long classNameId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByClassNameId(classNameId);
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findByClassNameId(classNameId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveByClassNameId(long classNameId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITY_WHERE);
+
+		query.append(_FINDER_COLUMN_CLASSNAMEID_CLASSNAMEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(classNameId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3311,9 +3519,50 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	 */
 	@Override
 	public void removeByReceiverUserId(long receiverUserId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByReceiverUserId(receiverUserId);
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findByReceiverUserId(
 				receiverUserId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveByReceiverUserId(long receiverUserId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITY_WHERE);
+
+		query.append(_FINDER_COLUMN_RECEIVERUSERID_RECEIVERUSERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(receiverUserId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3852,9 +4101,54 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	 */
 	@Override
 	public void removeByC_C(long classNameId, long classPK) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_C(classNameId, classPK);
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findByC_C(classNameId, classPK,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveByC_C(long classNameId, long classPK) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITY_WHERE);
+
+		query.append(_FINDER_COLUMN_C_C_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_C_C_CLASSPK_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4440,9 +4734,59 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	@Override
 	public void removeByM_C_C(long mirrorActivityId, long classNameId,
 		long classPK) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByM_C_C(mirrorActivityId, classNameId, classPK);
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findByM_C_C(mirrorActivityId,
 				classNameId, classPK, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveByM_C_C(long mirrorActivityId, long classNameId,
+		long classPK) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITY_WHERE);
+
+		query.append(_FINDER_COLUMN_M_C_C_MIRRORACTIVITYID_2);
+
+		query.append(_FINDER_COLUMN_M_C_C_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_M_C_C_CLASSPK_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(mirrorActivityId);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5032,9 +5376,58 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	 */
 	@Override
 	public void removeByC_C_T(long classNameId, long classPK, int type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_C_T(classNameId, classPK, type);
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findByC_C_T(classNameId, classPK,
 				type, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveByC_C_T(long classNameId, long classPK, int type) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITY_WHERE);
+
+		query.append(_FINDER_COLUMN_C_C_T_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_C_C_T_CLASSPK_2);
+
+		query.append(_FINDER_COLUMN_C_C_T_TYPE_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			qPos.add(type);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5721,10 +6114,73 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	@Override
 	public void removeByG_U_C_C_T_R(long groupId, long userId,
 		long classNameId, long classPK, int type, long receiverUserId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_U_C_C_T_R(groupId, userId, classNameId, classPK,
+				type, receiverUserId);
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findByG_U_C_C_T_R(groupId, userId,
 				classNameId, classPK, type, receiverUserId, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveByG_U_C_C_T_R(long groupId, long userId,
+		long classNameId, long classPK, int type, long receiverUserId) {
+		StringBundler query = new StringBundler(7);
+
+		query.append(_SQL_DELETE_SOCIALACTIVITY_WHERE);
+
+		query.append(_FINDER_COLUMN_G_U_C_C_T_R_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_U_C_C_T_R_USERID_2);
+
+		query.append(_FINDER_COLUMN_G_U_C_C_T_R_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_G_U_C_C_T_R_CLASSPK_2);
+
+		query.append(_FINDER_COLUMN_G_U_C_C_T_R_TYPE_2);
+
+		query.append(_FINDER_COLUMN_G_U_C_C_T_R_RECEIVERUSERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(userId);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			qPos.add(type);
+
+			qPos.add(receiverUserId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7155,8 +7611,36 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (SocialActivity socialActivity : findAll()) {
 			remove(socialActivity);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_SOCIALACTIVITY);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7222,11 +7706,27 @@ public class SocialActivityPersistenceImpl extends BasePersistenceImpl<SocialAct
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_SOCIALACTIVITY = "SELECT socialActivity FROM SocialActivity socialActivity";
+	private static final String _SQL_SELECT_SOCIALACTIVITY_PKS = "SELECT activityId FROM SocialActivity socialActivity";
 	private static final String _SQL_SELECT_SOCIALACTIVITY_WHERE_PKS_IN = "SELECT socialActivity FROM SocialActivity socialActivity WHERE activityId IN (";
 	private static final String _SQL_SELECT_SOCIALACTIVITY_WHERE = "SELECT socialActivity FROM SocialActivity socialActivity WHERE ";
+	private static final String _SQL_SELECT_SOCIALACTIVITY_PKS_WHERE = "SELECT activityId FROM SocialActivity socialActivity WHERE ";
 	private static final String _SQL_COUNT_SOCIALACTIVITY = "SELECT COUNT(socialActivity) FROM SocialActivity socialActivity";
 	private static final String _SQL_COUNT_SOCIALACTIVITY_WHERE = "SELECT COUNT(socialActivity) FROM SocialActivity socialActivity WHERE ";
+	private static final String _SQL_DELETE_SOCIALACTIVITY = "DELETE SocialActivity socialActivity";
+	private static final String _SQL_DELETE_SOCIALACTIVITY_WHERE = "DELETE SocialActivity socialActivity WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "socialActivity.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No SocialActivity exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No SocialActivity exists with the key {";

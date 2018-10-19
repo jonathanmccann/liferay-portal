@@ -32,12 +32,14 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -569,9 +571,64 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid(uuid);
+
+			return;
+		}
+
 		for (DLFileVersion dlFileVersion : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(dlFileVersion);
+		}
+	}
+
+	protected void bulkRemoveByUuid(String uuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEVERSION_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1403,9 +1460,68 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid_C(uuid, companyId);
+
+			return;
+		}
+
 		for (DLFileVersion dlFileVersion : findByUuid_C(uuid, companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileVersion);
+		}
+	}
+
+	protected void bulkRemoveByUuid_C(String uuid, long companyId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_DLFILEVERSION_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
+		}
+
+		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1935,9 +2051,50 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (DLFileVersion dlFileVersion : findByCompanyId(companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileVersion);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEVERSION_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2445,9 +2602,50 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	 */
 	@Override
 	public void removeByFileEntryId(long fileEntryId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByFileEntryId(fileEntryId);
+
+			return;
+		}
+
 		for (DLFileVersion dlFileVersion : findByFileEntryId(fileEntryId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileVersion);
+		}
+	}
+
+	protected void bulkRemoveByFileEntryId(long fileEntryId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEVERSION_WHERE);
+
+		query.append(_FINDER_COLUMN_FILEENTRYID_FILEENTRYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(fileEntryId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2982,9 +3180,64 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	 */
 	@Override
 	public void removeByMimeType(String mimeType) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByMimeType(mimeType);
+
+			return;
+		}
+
 		for (DLFileVersion dlFileVersion : findByMimeType(mimeType,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileVersion);
+		}
+	}
+
+	protected void bulkRemoveByMimeType(String mimeType) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_DLFILEVERSION_WHERE);
+
+		boolean bindMimeType = false;
+
+		if (mimeType == null) {
+			query.append(_FINDER_COLUMN_MIMETYPE_MIMETYPE_1);
+		}
+		else if (mimeType.equals("")) {
+			query.append(_FINDER_COLUMN_MIMETYPE_MIMETYPE_3);
+		}
+		else {
+			bindMimeType = true;
+
+			query.append(_FINDER_COLUMN_MIMETYPE_MIMETYPE_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindMimeType) {
+				qPos.add(mimeType);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3522,9 +3775,54 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	 */
 	@Override
 	public void removeByC_NotS(long companyId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_NotS(companyId, status);
+
+			return;
+		}
+
 		for (DLFileVersion dlFileVersion : findByC_NotS(companyId, status,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileVersion);
+		}
+	}
+
+	protected void bulkRemoveByC_NotS(long companyId, int status) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_DLFILEVERSION_WHERE);
+
+		query.append(_FINDER_COLUMN_C_NOTS_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_NOTS_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4317,9 +4615,54 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	 */
 	@Override
 	public void removeByF_S(long fileEntryId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByF_S(fileEntryId, status);
+
+			return;
+		}
+
 		for (DLFileVersion dlFileVersion : findByF_S(fileEntryId, status,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileVersion);
+		}
+	}
+
+	protected void bulkRemoveByF_S(long fileEntryId, int status) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_DLFILEVERSION_WHERE);
+
+		query.append(_FINDER_COLUMN_F_S_FILEENTRYID_2);
+
+		query.append(_FINDER_COLUMN_F_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(fileEntryId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4900,9 +5243,58 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	 */
 	@Override
 	public void removeByG_F_S(long groupId, long folderId, int status) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_F_S(groupId, folderId, status);
+
+			return;
+		}
+
 		for (DLFileVersion dlFileVersion : findByG_F_S(groupId, folderId,
 				status, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileVersion);
+		}
+	}
+
+	protected void bulkRemoveByG_F_S(long groupId, long folderId, int status) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_DLFILEVERSION_WHERE);
+
+		query.append(_FINDER_COLUMN_G_F_S_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_F_S_FOLDERID_2);
+
+		query.append(_FINDER_COLUMN_G_F_S_STATUS_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(folderId);
+
+			qPos.add(status);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5578,9 +5970,91 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	@Override
 	public void removeByG_F_T_V(long groupId, long folderId, String title,
 		String version) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_F_T_V(groupId, folderId, title, version);
+
+			return;
+		}
+
 		for (DLFileVersion dlFileVersion : findByG_F_T_V(groupId, folderId,
 				title, version, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(dlFileVersion);
+		}
+	}
+
+	protected void bulkRemoveByG_F_T_V(long groupId, long folderId,
+		String title, String version) {
+		StringBundler query = new StringBundler(5);
+
+		query.append(_SQL_DELETE_DLFILEVERSION_WHERE);
+
+		query.append(_FINDER_COLUMN_G_F_T_V_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_F_T_V_FOLDERID_2);
+
+		boolean bindTitle = false;
+
+		if (title == null) {
+			query.append(_FINDER_COLUMN_G_F_T_V_TITLE_1);
+		}
+		else if (title.equals("")) {
+			query.append(_FINDER_COLUMN_G_F_T_V_TITLE_3);
+		}
+		else {
+			bindTitle = true;
+
+			query.append(_FINDER_COLUMN_G_F_T_V_TITLE_2);
+		}
+
+		boolean bindVersion = false;
+
+		if (version == null) {
+			query.append(_FINDER_COLUMN_G_F_T_V_VERSION_1);
+		}
+		else if (version.equals("")) {
+			query.append(_FINDER_COLUMN_G_F_T_V_VERSION_3);
+		}
+		else {
+			bindVersion = true;
+
+			query.append(_FINDER_COLUMN_G_F_T_V_VERSION_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(folderId);
+
+			if (bindTitle) {
+				qPos.add(title);
+			}
+
+			if (bindVersion) {
+				qPos.add(version);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6637,8 +7111,36 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (DLFileVersion dlFileVersion : findAll()) {
 			remove(dlFileVersion);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_DLFILEVERSION);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6704,11 +7206,27 @@ public class DLFileVersionPersistenceImpl extends BasePersistenceImpl<DLFileVers
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_DLFILEVERSION = "SELECT dlFileVersion FROM DLFileVersion dlFileVersion";
+	private static final String _SQL_SELECT_DLFILEVERSION_PKS = "SELECT fileVersionId FROM DLFileVersion dlFileVersion";
 	private static final String _SQL_SELECT_DLFILEVERSION_WHERE_PKS_IN = "SELECT dlFileVersion FROM DLFileVersion dlFileVersion WHERE fileVersionId IN (";
 	private static final String _SQL_SELECT_DLFILEVERSION_WHERE = "SELECT dlFileVersion FROM DLFileVersion dlFileVersion WHERE ";
+	private static final String _SQL_SELECT_DLFILEVERSION_PKS_WHERE = "SELECT fileVersionId FROM DLFileVersion dlFileVersion WHERE ";
 	private static final String _SQL_COUNT_DLFILEVERSION = "SELECT COUNT(dlFileVersion) FROM DLFileVersion dlFileVersion";
 	private static final String _SQL_COUNT_DLFILEVERSION_WHERE = "SELECT COUNT(dlFileVersion) FROM DLFileVersion dlFileVersion WHERE ";
+	private static final String _SQL_DELETE_DLFILEVERSION = "DELETE DLFileVersion dlFileVersion";
+	private static final String _SQL_DELETE_DLFILEVERSION_WHERE = "DELETE DLFileVersion dlFileVersion WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "dlFileVersion.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No DLFileVersion exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No DLFileVersion exists with the key {";

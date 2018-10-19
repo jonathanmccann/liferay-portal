@@ -29,6 +29,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchSubscriptionException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.Subscription;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -38,6 +39,7 @@ import com.liferay.portal.kernel.service.persistence.SubscriptionPersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.model.impl.SubscriptionImpl;
@@ -56,6 +58,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -537,9 +540,50 @@ public class SubscriptionPersistenceImpl extends BasePersistenceImpl<Subscriptio
 	 */
 	@Override
 	public void removeByUserId(long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUserId(userId);
+
+			return;
+		}
+
 		for (Subscription subscription : findByUserId(userId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(subscription);
+		}
+	}
+
+	protected void bulkRemoveByUserId(long userId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_SUBSCRIPTION_WHERE);
+
+		query.append(_FINDER_COLUMN_USERID_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1073,9 +1117,54 @@ public class SubscriptionPersistenceImpl extends BasePersistenceImpl<Subscriptio
 	 */
 	@Override
 	public void removeByG_U(long groupId, long userId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByG_U(groupId, userId);
+
+			return;
+		}
+
 		for (Subscription subscription : findByG_U(groupId, userId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(subscription);
+		}
+	}
+
+	protected void bulkRemoveByG_U(long groupId, long userId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SUBSCRIPTION_WHERE);
+
+		query.append(_FINDER_COLUMN_G_U_GROUPID_2);
+
+		query.append(_FINDER_COLUMN_G_U_USERID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(groupId);
+
+			qPos.add(userId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1616,9 +1705,54 @@ public class SubscriptionPersistenceImpl extends BasePersistenceImpl<Subscriptio
 	 */
 	@Override
 	public void removeByU_C(long userId, long classNameId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByU_C(userId, classNameId);
+
+			return;
+		}
+
 		for (Subscription subscription : findByU_C(userId, classNameId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(subscription);
+		}
+	}
+
+	protected void bulkRemoveByU_C(long userId, long classNameId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_DELETE_SUBSCRIPTION_WHERE);
+
+		query.append(_FINDER_COLUMN_U_C_USERID_2);
+
+		query.append(_FINDER_COLUMN_U_C_CLASSNAMEID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(userId);
+
+			qPos.add(classNameId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2193,9 +2327,59 @@ public class SubscriptionPersistenceImpl extends BasePersistenceImpl<Subscriptio
 	 */
 	@Override
 	public void removeByC_C_C(long companyId, long classNameId, long classPK) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_C_C(companyId, classNameId, classPK);
+
+			return;
+		}
+
 		for (Subscription subscription : findByC_C_C(companyId, classNameId,
 				classPK, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(subscription);
+		}
+	}
+
+	protected void bulkRemoveByC_C_C(long companyId, long classNameId,
+		long classPK) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_DELETE_SUBSCRIPTION_WHERE);
+
+		query.append(_FINDER_COLUMN_C_C_C_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_C_C_CLASSNAMEID_2);
+
+		query.append(_FINDER_COLUMN_C_C_C_CLASSPK_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(classNameId);
+
+			qPos.add(classPK);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3708,8 +3892,36 @@ public class SubscriptionPersistenceImpl extends BasePersistenceImpl<Subscriptio
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (Subscription subscription : findAll()) {
 			remove(subscription);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_SUBSCRIPTION);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3770,11 +3982,27 @@ public class SubscriptionPersistenceImpl extends BasePersistenceImpl<Subscriptio
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_SUBSCRIPTION = "SELECT subscription FROM Subscription subscription";
+	private static final String _SQL_SELECT_SUBSCRIPTION_PKS = "SELECT subscriptionId FROM Subscription subscription";
 	private static final String _SQL_SELECT_SUBSCRIPTION_WHERE_PKS_IN = "SELECT subscription FROM Subscription subscription WHERE subscriptionId IN (";
 	private static final String _SQL_SELECT_SUBSCRIPTION_WHERE = "SELECT subscription FROM Subscription subscription WHERE ";
+	private static final String _SQL_SELECT_SUBSCRIPTION_PKS_WHERE = "SELECT subscriptionId FROM Subscription subscription WHERE ";
 	private static final String _SQL_COUNT_SUBSCRIPTION = "SELECT COUNT(subscription) FROM Subscription subscription";
 	private static final String _SQL_COUNT_SUBSCRIPTION_WHERE = "SELECT COUNT(subscription) FROM Subscription subscription WHERE ";
+	private static final String _SQL_DELETE_SUBSCRIPTION = "DELETE Subscription subscription";
+	private static final String _SQL_DELETE_SUBSCRIPTION_WHERE = "DELETE Subscription subscription WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "subscription.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Subscription exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Subscription exists with the key {";

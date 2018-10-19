@@ -29,9 +29,11 @@ import com.liferay.portal.kernel.exception.NoSuchListTypeException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ListType;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.ListTypePersistence;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -555,9 +557,64 @@ public class ListTypePersistenceImpl extends BasePersistenceImpl<ListType>
 	 */
 	@Override
 	public void removeByType(String type) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByType(type);
+
+			return;
+		}
+
 		for (ListType listType : findByType(type, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(listType);
+		}
+	}
+
+	protected void bulkRemoveByType(String type) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_LISTTYPE_WHERE);
+
+		boolean bindType = false;
+
+		if (type == null) {
+			query.append(_FINDER_COLUMN_TYPE_TYPE_1);
+		}
+		else if (type.equals("")) {
+			query.append(_FINDER_COLUMN_TYPE_TYPE_3);
+		}
+		else {
+			bindType = true;
+
+			query.append(_FINDER_COLUMN_TYPE_TYPE_2);
+		}
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindType) {
+				qPos.add(type);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1584,8 +1641,36 @@ public class ListTypePersistenceImpl extends BasePersistenceImpl<ListType>
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (ListType listType : findAll()) {
 			remove(listType);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_LISTTYPE);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1649,11 +1734,26 @@ public class ListTypePersistenceImpl extends BasePersistenceImpl<ListType>
 		FinderCacheUtil.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_LISTTYPE = "SELECT listType FROM ListType listType";
+	private static final String _SQL_SELECT_LISTTYPE_PKS = "SELECT listTypeId FROM ListType listType";
 	private static final String _SQL_SELECT_LISTTYPE_WHERE_PKS_IN = "SELECT listType FROM ListType listType WHERE listTypeId IN (";
 	private static final String _SQL_SELECT_LISTTYPE_WHERE = "SELECT listType FROM ListType listType WHERE ";
+	private static final String _SQL_SELECT_LISTTYPE_PKS_WHERE = "SELECT listTypeId FROM ListType listType WHERE ";
 	private static final String _SQL_COUNT_LISTTYPE = "SELECT COUNT(listType) FROM ListType listType";
 	private static final String _SQL_COUNT_LISTTYPE_WHERE = "SELECT COUNT(listType) FROM ListType listType WHERE ";
+	private static final String _SQL_DELETE_LISTTYPE = "DELETE ListType listType";
+	private static final String _SQL_DELETE_LISTTYPE_WHERE = "DELETE ListType listType WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "listType.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No ListType exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No ListType exists with the key {";

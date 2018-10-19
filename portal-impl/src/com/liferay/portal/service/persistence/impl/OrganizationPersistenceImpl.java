@@ -30,6 +30,7 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.exception.NoSuchOrganizationException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.model.Organization;
 import com.liferay.portal.kernel.security.permission.InlineSQLHelperUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -45,6 +46,7 @@ import com.liferay.portal.kernel.service.persistence.impl.TableMapperFactory;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 import com.liferay.portal.kernel.util.SetUtil;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -909,9 +911,85 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid(uuid);
+
+			return;
+		}
+
 		for (Organization organization : findByUuid(uuid, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(organization);
+		}
+	}
+
+	protected void bulkRemoveByUuid(String uuid) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_ORGANIZATION_PKS_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_UUID_2);
+		}
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ORGANIZATION_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				organizationToGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				organizationToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1908,9 +1986,91 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByUuid_C(uuid, companyId);
+
+			return;
+		}
+
 		for (Organization organization : findByUuid_C(uuid, companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(organization);
+		}
+	}
+
+	protected void bulkRemoveByUuid_C(String uuid, long companyId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_ORGANIZATION_PKS_WHERE);
+
+		boolean bindUuid = false;
+
+		if (uuid == null) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_1);
+		}
+		else if (uuid.equals("")) {
+			query.append(_FINDER_COLUMN_UUID_C_UUID_3);
+		}
+		else {
+			bindUuid = true;
+
+			query.append(_FINDER_COLUMN_UUID_C_UUID_2);
+		}
+
+		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ORGANIZATION_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				organizationToGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				organizationToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			if (bindUuid) {
+				qPos.add(uuid);
+			}
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -2819,9 +2979,69 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	 */
 	@Override
 	public void removeByCompanyId(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByCompanyId(companyId);
+
+			return;
+		}
+
 		for (Organization organization : findByCompanyId(companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(organization);
+		}
+	}
+
+	protected void bulkRemoveByCompanyId(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_ORGANIZATION_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_COMPANYID_COMPANYID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ORGANIZATION_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				organizationToGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				organizationToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -3686,9 +3906,69 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	 */
 	@Override
 	public void removeByLocations(long companyId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByLocations(companyId);
+
+			return;
+		}
+
 		for (Organization organization : findByLocations(companyId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(organization);
+		}
+	}
+
+	protected void bulkRemoveByLocations(long companyId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_SELECT_ORGANIZATION_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_LOCATIONS_COMPANYID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ORGANIZATION_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				organizationToGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				organizationToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -4606,9 +4886,75 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	 */
 	@Override
 	public void removeByC_P(long companyId, long parentOrganizationId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_P(companyId, parentOrganizationId);
+
+			return;
+		}
+
 		for (Organization organization : findByC_P(companyId,
 				parentOrganizationId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(organization);
+		}
+	}
+
+	protected void bulkRemoveByC_P(long companyId, long parentOrganizationId) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_ORGANIZATION_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_P_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_P_PARENTORGANIZATIONID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ORGANIZATION_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentOrganizationId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				organizationToGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				organizationToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentOrganizationId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -5570,9 +5916,91 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	 */
 	@Override
 	public void removeByC_T(long companyId, String treePath) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_T(companyId, treePath);
+
+			return;
+		}
+
 		for (Organization organization : findByC_T(companyId, treePath,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(organization);
+		}
+	}
+
+	protected void bulkRemoveByC_T(long companyId, String treePath) {
+		StringBundler query = new StringBundler(3);
+
+		query.append(_SQL_SELECT_ORGANIZATION_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_T_COMPANYID_2);
+
+		boolean bindTreePath = false;
+
+		if (treePath == null) {
+			query.append(_FINDER_COLUMN_C_T_TREEPATH_1);
+		}
+		else if (treePath.equals("")) {
+			query.append(_FINDER_COLUMN_C_T_TREEPATH_3);
+		}
+		else {
+			bindTreePath = true;
+
+			query.append(_FINDER_COLUMN_C_T_TREEPATH_2);
+		}
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ORGANIZATION_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindTreePath) {
+				qPos.add(treePath);
+			}
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				organizationToGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				organizationToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			if (bindTreePath) {
+				qPos.add(treePath);
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -6453,9 +6881,82 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	@Override
 	public void removeByO_C_P(long organizationId, long companyId,
 		long parentOrganizationId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByO_C_P(organizationId, companyId, parentOrganizationId);
+
+			return;
+		}
+
 		for (Organization organization : findByO_C_P(organizationId, companyId,
 				parentOrganizationId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(organization);
+		}
+	}
+
+	protected void bulkRemoveByO_C_P(long organizationId, long companyId,
+		long parentOrganizationId) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_SELECT_ORGANIZATION_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_O_C_P_ORGANIZATIONID_2);
+
+		query.append(_FINDER_COLUMN_O_C_P_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_O_C_P_PARENTORGANIZATIONID_2);
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ORGANIZATION_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(organizationId);
+
+			qPos.add(companyId);
+
+			qPos.add(parentOrganizationId);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				organizationToGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				organizationToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(organizationId);
+
+			qPos.add(companyId);
+
+			qPos.add(parentOrganizationId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -7494,10 +7995,99 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	@Override
 	public void removeByC_P_LikeN(long companyId, long parentOrganizationId,
 		String name) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByC_P_LikeN(companyId, parentOrganizationId, name);
+
+			return;
+		}
+
 		for (Organization organization : findByC_P_LikeN(companyId,
 				parentOrganizationId, name, QueryUtil.ALL_POS,
 				QueryUtil.ALL_POS, null)) {
 			remove(organization);
+		}
+	}
+
+	protected void bulkRemoveByC_P_LikeN(long companyId,
+		long parentOrganizationId, String name) {
+		StringBundler query = new StringBundler(4);
+
+		query.append(_SQL_SELECT_ORGANIZATION_PKS_WHERE);
+
+		query.append(_FINDER_COLUMN_C_P_LIKEN_COMPANYID_2);
+
+		query.append(_FINDER_COLUMN_C_P_LIKEN_PARENTORGANIZATIONID_2);
+
+		boolean bindName = false;
+
+		if (name == null) {
+			query.append(_FINDER_COLUMN_C_P_LIKEN_NAME_1);
+		}
+		else if (name.equals("")) {
+			query.append(_FINDER_COLUMN_C_P_LIKEN_NAME_3);
+		}
+		else {
+			bindName = true;
+
+			query.append(_FINDER_COLUMN_C_P_LIKEN_NAME_2);
+		}
+
+		String sql1 = query.toString();
+
+		query.setStringAt(_SQL_DELETE_ORGANIZATION_WHERE, 0);
+
+		String sql2 = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql1);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentOrganizationId);
+
+			if (bindName) {
+				qPos.add(StringUtil.toLowerCase(name));
+			}
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				organizationToGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				organizationToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(sql2);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(companyId);
+
+			qPos.add(parentOrganizationId);
+
+			if (bindName) {
+				qPos.add(StringUtil.toLowerCase(name));
+			}
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -8779,8 +9369,47 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (Organization organization : findAll()) {
 			remove(organization);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_SELECT_ORGANIZATION_PKS);
+
+			List<Long> pks = (List<Long>)QueryUtil.list(q, getDialect(),
+					QueryUtil.ALL_POS, QueryUtil.ALL_POS, false);
+
+			for (Long pk : pks) {
+				organizationToGroupTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+
+				organizationToUserTableMapper.deleteLeftPrimaryKeyTableMappings(pk);
+			}
+
+			q = session.createQuery(_SQL_DELETE_ORGANIZATION);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -9458,11 +10087,27 @@ public class OrganizationPersistenceImpl extends BasePersistenceImpl<Organizatio
 	@BeanReference(type = UserPersistence.class)
 	protected UserPersistence userPersistence;
 	protected TableMapper<Organization, com.liferay.portal.kernel.model.User> organizationToUserTableMapper;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_ORGANIZATION = "SELECT organization FROM Organization organization";
+	private static final String _SQL_SELECT_ORGANIZATION_PKS = "SELECT organizationId FROM Organization organization";
 	private static final String _SQL_SELECT_ORGANIZATION_WHERE_PKS_IN = "SELECT organization FROM Organization organization WHERE organizationId IN (";
 	private static final String _SQL_SELECT_ORGANIZATION_WHERE = "SELECT organization FROM Organization organization WHERE ";
+	private static final String _SQL_SELECT_ORGANIZATION_PKS_WHERE = "SELECT organizationId FROM Organization organization WHERE ";
 	private static final String _SQL_COUNT_ORGANIZATION = "SELECT COUNT(organization) FROM Organization organization";
 	private static final String _SQL_COUNT_ORGANIZATION_WHERE = "SELECT COUNT(organization) FROM Organization organization WHERE ";
+	private static final String _SQL_DELETE_ORGANIZATION = "DELETE Organization organization";
+	private static final String _SQL_DELETE_ORGANIZATION_WHERE = "DELETE Organization organization WHERE ";
 	private static final String _FILTER_ENTITY_TABLE_FILTER_PK_COLUMN = "organization.organizationId";
 	private static final String _FILTER_SQL_SELECT_ORGANIZATION_WHERE = "SELECT DISTINCT {organization.*} FROM Organization_ organization WHERE ";
 	private static final String _FILTER_SQL_SELECT_ORGANIZATION_NO_INLINE_DISTINCT_WHERE_1 =

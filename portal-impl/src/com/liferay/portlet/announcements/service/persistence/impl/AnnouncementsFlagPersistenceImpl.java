@@ -32,10 +32,12 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ModelListener;
 import com.liferay.portal.kernel.service.persistence.CompanyProvider;
 import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.PropsUtil;
 import com.liferay.portal.kernel.util.ProxyUtil;
 
 import com.liferay.portlet.announcements.model.impl.AnnouncementsFlagImpl;
@@ -51,6 +53,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -539,9 +542,50 @@ public class AnnouncementsFlagPersistenceImpl extends BasePersistenceImpl<Announ
 	 */
 	@Override
 	public void removeByEntryId(long entryId) {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveByEntryId(entryId);
+
+			return;
+		}
+
 		for (AnnouncementsFlag announcementsFlag : findByEntryId(entryId,
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(announcementsFlag);
+		}
+	}
+
+	protected void bulkRemoveByEntryId(long entryId) {
+		StringBundler query = new StringBundler(2);
+
+		query.append(_SQL_DELETE_ANNOUNCEMENTSFLAG_WHERE);
+
+		query.append(_FINDER_COLUMN_ENTRYID_ENTRYID_2);
+
+		String sql = query.toString();
+
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+			QueryPos qPos = null;
+
+			q = session.createQuery(sql);
+
+			qPos = QueryPos.getInstance(q);
+
+			qPos.add(entryId);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1511,8 +1555,36 @@ public class AnnouncementsFlagPersistenceImpl extends BasePersistenceImpl<Announ
 	 */
 	@Override
 	public void removeAll() {
+		if (_isBulkRemovePossible()) {
+			bulkRemoveAll();
+
+			return;
+		}
+
 		for (AnnouncementsFlag announcementsFlag : findAll()) {
 			remove(announcementsFlag);
+		}
+	}
+
+	protected void bulkRemoveAll() {
+		Session session = null;
+
+		try {
+			session = openSession();
+
+			Query q = null;
+
+			q = session.createQuery(_SQL_DELETE_ANNOUNCEMENTSFLAG);
+
+			q.executeUpdate();
+		}
+		catch (Exception e) {
+			throw processException(e);
+		}
+		finally {
+			closeSession(session);
+
+			clearCache();
 		}
 	}
 
@@ -1573,11 +1645,27 @@ public class AnnouncementsFlagPersistenceImpl extends BasePersistenceImpl<Announ
 
 	@BeanReference(type = CompanyProviderWrapper.class)
 	protected CompanyProvider companyProvider;
+
+	private boolean _isBulkRemovePossible() {
+		ModelListener[] modelListeners = getListeners();
+
+		if (modelListeners.length != 0) {
+			return false;
+		}
+
+		return Objects.equals(PropsUtil.get("hibernate.query.factory_class"),
+			"org.hibernate.hql.ast.ASTQueryTranslatorFactory");
+	}
+
 	private static final String _SQL_SELECT_ANNOUNCEMENTSFLAG = "SELECT announcementsFlag FROM AnnouncementsFlag announcementsFlag";
+	private static final String _SQL_SELECT_ANNOUNCEMENTSFLAG_PKS = "SELECT flagId FROM AnnouncementsFlag announcementsFlag";
 	private static final String _SQL_SELECT_ANNOUNCEMENTSFLAG_WHERE_PKS_IN = "SELECT announcementsFlag FROM AnnouncementsFlag announcementsFlag WHERE flagId IN (";
 	private static final String _SQL_SELECT_ANNOUNCEMENTSFLAG_WHERE = "SELECT announcementsFlag FROM AnnouncementsFlag announcementsFlag WHERE ";
+	private static final String _SQL_SELECT_ANNOUNCEMENTSFLAG_PKS_WHERE = "SELECT flagId FROM AnnouncementsFlag announcementsFlag WHERE ";
 	private static final String _SQL_COUNT_ANNOUNCEMENTSFLAG = "SELECT COUNT(announcementsFlag) FROM AnnouncementsFlag announcementsFlag";
 	private static final String _SQL_COUNT_ANNOUNCEMENTSFLAG_WHERE = "SELECT COUNT(announcementsFlag) FROM AnnouncementsFlag announcementsFlag WHERE ";
+	private static final String _SQL_DELETE_ANNOUNCEMENTSFLAG = "DELETE AnnouncementsFlag announcementsFlag";
+	private static final String _SQL_DELETE_ANNOUNCEMENTSFLAG_WHERE = "DELETE AnnouncementsFlag announcementsFlag WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "announcementsFlag.";
 	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No AnnouncementsFlag exists with the primary key ";
 	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No AnnouncementsFlag exists with the key {";
