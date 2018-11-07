@@ -88,7 +88,9 @@ public class HeaderTag extends IncludeTag {
 			request.setAttribute("liferay-ui:header:backURL", redirect);
 		}
 		else {
-			request.setAttribute("liferay-ui:header:backURL", _backURL);
+			request.setAttribute(
+				"liferay-ui:header:backURL",
+				PortalUtil.escapeRedirect(_backURL));
 		}
 
 		request.setAttribute("liferay-ui:header:cssClass", _cssClass);
