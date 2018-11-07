@@ -177,8 +177,8 @@ public class OpenIdConnectServiceHandlerImpl
 			OpenIdConnectFlowState.AUTH_COMPLETE);
 
 		httpServletRequest.setAttribute(
-			"remoteUser", String.valueOf(
-				openIdConnectSessionImpl.getLoginUserId()));
+			"remoteUser",
+			String.valueOf(openIdConnectSessionImpl.getLoginUserId()));
 	}
 
 	@Override
