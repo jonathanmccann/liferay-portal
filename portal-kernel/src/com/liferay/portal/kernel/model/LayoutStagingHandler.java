@@ -144,7 +144,9 @@ public class LayoutStagingHandler implements InvocationHandler, Serializable {
 		return ProxyUtil.newProxyInstance(
 			PortalClassLoaderUtil.getClassLoader(),
 			new Class<?>[] {Layout.class},
-			new LayoutStagingHandler(_layout, _layoutRevision));
+			new LayoutStagingHandler(
+				(Layout)_layout.clone(),
+				(LayoutRevision)_layoutRevision.clone()));
 	}
 
 	private LayoutRevision _getLayoutRevision(

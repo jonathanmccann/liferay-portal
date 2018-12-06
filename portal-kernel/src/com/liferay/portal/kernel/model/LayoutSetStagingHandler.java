@@ -120,7 +120,7 @@ public class LayoutSetStagingHandler
 		return ProxyUtil.newProxyInstance(
 			PortalClassLoaderUtil.getClassLoader(),
 			new Class<?>[] {LayoutSet.class, ModelWrapper.class},
-			new LayoutSetStagingHandler(_layoutSet));
+			new LayoutSetStagingHandler((LayoutSet)_layoutSet.clone()));
 	}
 
 	private LayoutSetBranch _getLayoutSetBranch(LayoutSet layoutSet)
