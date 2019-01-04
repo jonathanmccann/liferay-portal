@@ -593,7 +593,9 @@ public class DLAppHelperLocalServiceImpl
 
 	@Async
 	@Override
-	public void reindex(List<Long> dlFileEntryIds) throws PortalException {
+	public void reindex(long companyId, List<Long> dlFileEntryIds)
+		throws PortalException {
+
 		IntervalActionProcessor<Void> intervalActionProcessor =
 			new IntervalActionProcessor<>(dlFileEntryIds.size());
 
@@ -622,6 +624,7 @@ public class DLAppHelperLocalServiceImpl
 
 						indexableActionableDynamicQuery.addDocuments(document);
 					});
+				indexableActionableDynamicQuery.setCompanyId(companyId);
 				indexableActionableDynamicQuery.setSearchEngineId(
 					indexer.getSearchEngineId());
 
@@ -1873,7 +1876,8 @@ public class DLAppHelperLocalServiceImpl
 		}
 
 		if (!dlFileEntryIds.isEmpty()) {
-			dlAppHelperLocalService.reindex(dlFileEntryIds);
+			dlAppHelperLocalService.reindex(
+				dlFolder.getCompanyId(), dlFileEntryIds);
 		}
 
 		List<DLFileShortcut> dlFileShortcuts =
