@@ -31,7 +31,7 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 		<aui:input helpMessage="application-description-help" label="application-description" name="description" />
 	</c:if>
 
-	<aui:input helpMessage="redirect-uris-help" label="redirect-uris" name="redirectURIs" />
+	<aui:input helpMessage="redirect-uris-help" label="redirect-uris" name="redirectURIs" required="<%= true %>" />
 
 	<c:if test="<%= oAuth2Application != null %>">
 		<aui:input helpMessage="privacy-policy-url-help" name="privacyPolicyURL" />
@@ -98,7 +98,28 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 						<aui:input checked="<%= checked %>" data="<%= data %>" label="<%= grantType.name() %>" name="<%= name %>" type="checkbox" />
 					</div>
 
-				<%
+					<%
+					if (grantType.isRequiresRedirectURI()) {
+					%>
+
+						<aui:script use="aui-base">
+							$('#<portlet:namespace /><%= name %>').on(
+								'click',
+								function(event) {
+									var redirectURIsLabel = $('#<portlet:namespace />redirectURIs').parent().children()[0];
+									var lexiconIconParent = redirectURIsLabel.children[0];
+
+									if (this.checked) {
+										lexiconIconParent.style="visibility:visible;";
+									} else{
+										lexiconIconParent.style="visibility:hidden;";
+									}
+								}
+							);
+						</aui:script>
+
+					<%
+					}
 				}
 				%>
 
