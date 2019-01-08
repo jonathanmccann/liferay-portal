@@ -31,7 +31,7 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 		<aui:input helpMessage="application-description-help" label="application-description" name="description" />
 	</c:if>
 
-	<aui:input helpMessage="redirect-uris-help" label="redirect-uris" name="redirectURIs" />
+	<aui:input helpMessage="redirect-uris-help" label="redirect-uris" name="redirectURIs" required="<%= true %>" />
 
 	<c:if test="<%= oAuth2Application != null %>">
 		<aui:input helpMessage="privacy-policy-url-help" name="privacyPolicyURL" />
