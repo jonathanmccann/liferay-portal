@@ -40,18 +40,24 @@ else {
 String navigation = ParamUtil.getString(request, "navigation");
 String toolbarItem = ParamUtil.getString(request, "toolbarItem", "view-all-users");
 
-ViewUsersManagementToolbarDisplayContext viewUsersManagementToolbarDisplayContext = new ViewUsersManagementToolbarDisplayContext(request, renderRequest, renderResponse, displayStyle, navigation, status);
-
-SearchContainer searchContainer = viewUsersManagementToolbarDisplayContext.getSearchContainer();
-
 if (navigation.equals("active")) {
 	status = WorkflowConstants.STATUS_APPROVED;
 }
 else if (navigation.equals("inactive")) {
 	status = WorkflowConstants.STATUS_INACTIVE;
 }
+else if (status == WorkflowConstants.STATUS_INACTIVE) {
+	navigation = "inactive";
+}
+else {
+	navigation = "active";
+}
 
 request.setAttribute(UsersAdminWebKeys.STATUS, status);
+
+ViewUsersManagementToolbarDisplayContext viewUsersManagementToolbarDisplayContext = new ViewUsersManagementToolbarDisplayContext(request, renderRequest, renderResponse, displayStyle, navigation, status);
+
+SearchContainer searchContainer = viewUsersManagementToolbarDisplayContext.getSearchContainer();
 
 PortletURL portletURL = viewUsersManagementToolbarDisplayContext.getPortletURL();
 
