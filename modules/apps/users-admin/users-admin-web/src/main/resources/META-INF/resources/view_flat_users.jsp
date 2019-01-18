@@ -37,7 +37,7 @@ else {
 	request.setAttribute(WebKeys.SINGLE_PAGE_APPLICATION_CLEAR_CACHE, Boolean.TRUE);
 }
 
-String navigation = ParamUtil.getString(request, "navigation", "active");
+String navigation = ParamUtil.getString(request, "navigation");
 String toolbarItem = ParamUtil.getString(request, "toolbarItem", "view-all-users");
 
 ViewUsersManagementToolbarDisplayContext viewUsersManagementToolbarDisplayContext = new ViewUsersManagementToolbarDisplayContext(request, renderRequest, renderResponse, displayStyle, navigation, status);
