@@ -101,7 +101,6 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 					<%
 					if (grantType.isRequiresRedirectURI()) {
 					%>
-
 						<aui:script use="aui-base">
 							$('#<portlet:namespace /><%= name %>').on(
 								'click',
@@ -117,12 +116,8 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 								}
 							);
 						</aui:script>
-
-					<%
-					}
-					%>
-
 				<%
+					}
 				}
 				%>
 
