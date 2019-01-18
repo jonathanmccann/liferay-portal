@@ -118,11 +118,8 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 							);
 						</aui:script>
 
-					<%
-					}
-					%>
-
 				<%
+					}
 				}
 				%>
 
