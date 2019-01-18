@@ -17,7 +17,6 @@ package com.liferay.portlet.usersadmin.search;
 import com.liferay.portal.kernel.dao.search.DisplayTerms;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 
 import javax.portlet.PortletRequest;
@@ -48,11 +47,9 @@ public class UserDisplayTerms extends DisplayTerms {
 	public UserDisplayTerms(PortletRequest portletRequest) {
 		super(portletRequest);
 
-		String statusString = ParamUtil.getString(portletRequest, STATUS);
-
-		if (Validator.isNotNull(statusString)) {
-			status = GetterUtil.getInteger(statusString);
-		}
+		status = GetterUtil.getInteger(
+			portletRequest.getAttribute(STATUS),
+			WorkflowConstants.STATUS_APPROVED);
 
 		emailAddress = ParamUtil.getString(portletRequest, EMAIL_ADDRESS);
 		firstName = ParamUtil.getString(portletRequest, FIRST_NAME);

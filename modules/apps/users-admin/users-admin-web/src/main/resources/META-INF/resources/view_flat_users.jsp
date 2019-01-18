@@ -57,11 +57,11 @@ request.setAttribute(UsersAdminWebKeys.STATUS, status);
 
 ViewUsersManagementToolbarDisplayContext viewUsersManagementToolbarDisplayContext = new ViewUsersManagementToolbarDisplayContext(request, renderRequest, renderResponse, displayStyle, navigation, status);
 
-SearchContainer searchContainer = viewUsersManagementToolbarDisplayContext.getSearchContainer();
-
 PortletURL portletURL = viewUsersManagementToolbarDisplayContext.getPortletURL();
 
 portletURL.setParameter("status", String.valueOf(status));
+
+SearchContainer searchContainer = viewUsersManagementToolbarDisplayContext.getSearchContainer();
 
 boolean showDeleteButton = viewUsersManagementToolbarDisplayContext.isShowDeleteButton();
 boolean showRestoreButton = viewUsersManagementToolbarDisplayContext.isShowRestoreButton();
