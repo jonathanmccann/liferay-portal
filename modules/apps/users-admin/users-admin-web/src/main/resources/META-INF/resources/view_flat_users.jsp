@@ -22,10 +22,6 @@ int status = GetterUtil.getInteger(request.getAttribute("view.jsp-status"));
 String usersListView = GetterUtil.getString(request.getAttribute("view.jsp-usersListView"));
 String viewUsersRedirect = GetterUtil.getString(request.getAttribute("view.jsp-viewUsersRedirect"));
 
-if (!ParamUtil.getBoolean(renderRequest, "advancedSearch")) {
-	currentURLObj.setParameter("status", String.valueOf(status));
-}
-
 String displayStyle = ParamUtil.getString(request, "displayStyle");
 
 if (Validator.isNull(displayStyle)) {
@@ -51,6 +47,10 @@ else if (status == WorkflowConstants.STATUS_INACTIVE) {
 }
 else {
 	navigation = "active";
+}
+
+if (!ParamUtil.getBoolean(renderRequest, "advancedSearch")) {
+	currentURLObj.setParameter("status", String.valueOf(status));
 }
 
 request.setAttribute(UsersAdminWebKeys.STATUS, status);
