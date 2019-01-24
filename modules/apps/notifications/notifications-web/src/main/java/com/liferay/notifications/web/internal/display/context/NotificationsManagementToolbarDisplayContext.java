@@ -84,7 +84,7 @@ public class NotificationsManagementToolbarDisplayContext {
 						dropdownItem -> {
 							dropdownItem.putData(
 								"action", "deleteNotifications");
-							dropdownItem.setIcon("times");
+							dropdownItem.setIcon("times-circle");
 							dropdownItem.setLabel(
 								LanguageUtil.get(_request, "delete"));
 							dropdownItem.setQuickAction(true);
