@@ -106,19 +106,12 @@ OAuth2Application oAuth2Application = oAuth2AdminPortletDisplayContext.getOAuth2
 							$('#<portlet:namespace /><%= name %>').on(
 								'click',
 								function(event) {
-									var redirectURIsLabel = $('#<portlet:namespace />redirectURIs').parent().children()[0];
-									var lexiconIconParent = redirectURIsLabel.children[0];
-
-									if (this.checked) {
-										lexiconIconParent.style="visibility:visible;";
-									} else{
-										lexiconIconParent.style="visibility:hidden;";
-									}
+									<portlet:namespace />requiredRedirectURIs();
 								}
 							);
 						</aui:script>
 
-					<%
+				<%
 					}
 				}
 				%>

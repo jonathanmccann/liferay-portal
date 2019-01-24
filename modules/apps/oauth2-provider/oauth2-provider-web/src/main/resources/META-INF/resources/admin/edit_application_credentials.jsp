@@ -243,6 +243,36 @@ String clientSecret = (oAuth2Application == null) ? "" : oAuth2Application.getCl
 		return A.all('#<portlet:namespace />allowedGrantTypes .client-profile-' + selectedClientProfile.val() + ' input:checked[data-isredirect="true"]').size() > 0;
 	}
 
+	<portlet:namespace />requiredRedirectURIs = function() {
+		var grantTypesNodeList = A.all('#<portlet:namespace />allowedGrantTypes .allowedGrantType')._nodes;
+
+		var grantTypeNode = null;
+		var grantTypeToggleElement = null;
+
+		var redirectURIs = false;
+
+		for (var i = 0; i < grantTypesNodeList.length; i++) {
+			grantTypeNode = grantTypesNodeList[i];
+
+			if (grantTypeNode.hasAttribute('hidden')) {
+				continue;
+
+			}
+			else {
+				grantTypeToggleElement = grantTypeNode.children[0].children[0];
+
+				if ((grantTypeToggleElement.getAttribute('data-isredirect') === 'true') && grantTypeToggleElement.checked) {
+					redirectURIs = true;
+
+					break;
+				}
+
+			}
+		}
+
+		<portlet:namespace />updateRedirectURIs(redirectURIs);
+	}
+
 	<portlet:namespace />setControlEqualTo = function(targetControlId, srcControlId) {
 		var targetControl = A.one('#<portlet:namespace />' + targetControlId);
 		var srcControl = A.one('#<portlet:namespace />' + srcControlId);
@@ -312,6 +342,8 @@ String clientSecret = (oAuth2Application == null) ? "" : oAuth2Application.getCl
 	<portlet:namespace />updateAllowedGrantTypes = function(clientProfile) {
 		A.all('#<portlet:namespace />allowedGrantTypes .allowedGrantType').hide();
 		A.all('#<portlet:namespace />allowedGrantTypes .allowedGrantType.client-profile-' + clientProfile).show();
+
+		<portlet:namespace />requiredRedirectURIs();
 	}
 
 	<portlet:namespace />updateComponent = function(component, newValue) {
@@ -329,6 +361,18 @@ String clientSecret = (oAuth2Application == null) ? "" : oAuth2Application.getCl
 		else {
 			padlock.one('div.open').hide();
 			padlock.one('div.closed').show();
+		}
+	}
+
+	<portlet:namespace />updateRedirectURIs = function(required) {
+		var redirectURIsLabel = $('#<portlet:namespace />redirectURIs').parent().children()[0];
+		var lexiconIconParent = redirectURIsLabel.children[0];
+
+		if (required) {
+			lexiconIconParent.style="visibility:visible;";
+		}
+		else {
+			lexiconIconParent.style="visibility:hidden;";
 		}
 	}
 
