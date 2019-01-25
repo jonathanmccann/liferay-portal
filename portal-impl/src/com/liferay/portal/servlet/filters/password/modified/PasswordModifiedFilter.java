@@ -69,6 +69,10 @@ public class PasswordModifiedFilter extends BasePortalFilter {
 			return false;
 		}
 
+		if (request.getParameter("doAsUserId") != null) {
+			return false;
+		}
+
 		try {
 			User user = PortalUtil.getUser(request);
 
