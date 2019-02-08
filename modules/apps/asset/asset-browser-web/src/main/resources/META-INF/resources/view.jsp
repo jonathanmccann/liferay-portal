@@ -133,7 +133,7 @@
 					<liferay-ui:search-container-column-text
 						name="description"
 						truncate="<%= true %>"
-						value="<%= HtmlUtil.escape(assetRenderer.getSummary(renderRequest, renderResponse)) %>"
+						value="<%= assetRenderer.getSummary(renderRequest, renderResponse) %>"
 					/>
 
 					<liferay-ui:search-container-column-text
