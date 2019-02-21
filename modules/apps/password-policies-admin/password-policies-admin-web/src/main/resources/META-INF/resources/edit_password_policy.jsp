@@ -36,10 +36,14 @@ portletDisplay.setURLBack(String.valueOf(renderResponse.createRenderURL()));
 
 renderResponse.setTitle(passwordPolicy.isNew() ? LanguageUtil.get(request, "new-password-policy") : passwordPolicy.getName());
 
-Map<String, Long> durations = new LinkedHashMap<>();
+StringBuilder sb = new StringBuilder(PropsValues.PASSWORDS_POLICY_DURATIONS.length * 5);
 
 for (long duration : PropsValues.PASSWORDS_POLICY_DURATIONS) {
-	durations.put(LanguageUtil.getTimeDescription(request, duration * 1000), duration);
+	sb.append("<option value=\"");
+	sb.append(duration);
+	sb.append("\">");
+	sb.append(LanguageUtil.getTimeDescription(request, duration * 1000));
+	sb.append("</option>");
 }
 %>
 
@@ -85,32 +89,14 @@ for (long duration : PropsValues.PASSWORDS_POLICY_DURATIONS) {
 						<aui:select helpMessage="minimum-age-help" label="minimum-age" name="minAge">
 							<aui:option label="none" value="0" />
 
-							<%
-							for (Map.Entry<String, Long> entry : durations.entrySet()) {
-							%>
-
-								<aui:option label="<%= entry.getKey() %>" value="<%= entry.getValue() %>" />
-
-							<%
-							}
-							%>
-
+							<%= sb.toString() %>
 						</aui:select>
 					</div>
 
 					<aui:select helpMessage="reset-ticket-max-age-help" name="resetTicketMaxAge">
 						<aui:option label="eternal" value="0" />
 
-						<%
-						for (Map.Entry<String, Long> entry : durations.entrySet()) {
-						%>
-
-							<aui:option label="<%= entry.getKey() %>" value="<%= entry.getValue() %>" />
-
-						<%
-						}
-						%>
-
+						<%= sb.toString() %>
 					</aui:select>
 				</aui:fieldset>
 			</liferay-ui:panel>
@@ -192,30 +178,11 @@ for (long duration : PropsValues.PASSWORDS_POLICY_DURATIONS) {
 
 					<div class="password-policy-options" id="<portlet:namespace />expirationSettings">
 						<aui:select helpMessage="maximum-age-help" label="maximum-age" name="maxAge">
-
-							<%
-							for (Map.Entry<String, Long> entry : durations.entrySet()) {
-							%>
-
-								<aui:option label="<%= entry.getKey() %>" value="<%= entry.getValue() %>" />
-
-							<%
-							}
-							%>
-
+							<%= sb.toString() %>
 						</aui:select>
 
 						<aui:select helpMessage="warning-time-help" name="warningTime">
-
-							<%
-							for (Map.Entry<String, Long> entry : durations.entrySet()) {
-							%>
-
-								<aui:option label="<%= entry.getKey() %>" value="<%= entry.getValue() %>" />
-
-							<%
-							}
-							%>
+							<%= sb.toString() %>
 
 							<aui:option label="do-not-warn" value="<%= 0 %>" />
 						</aui:select>
@@ -240,32 +207,13 @@ for (long duration : PropsValues.PASSWORDS_POLICY_DURATIONS) {
 						<aui:input helpMessage="maximum-failure-help" label="maximum-failure" name="maxFailure" />
 
 						<aui:select helpMessage="reset-failure-count-help" name="resetFailureCount">
-
-							<%
-							for (Map.Entry<String, Long> entry : durations.entrySet()) {
-							%>
-
-								<aui:option label="<%= entry.getKey() %>" value="<%= entry.getValue() %>" />
-
-							<%
-							}
-							%>
-
+							<%= sb.toString() %>
 						</aui:select>
 
 						<aui:select helpMessage="lockout-duration-help" name="lockoutDuration">
 							<aui:option label="until-unlocked-by-an-administrator" value="0" />
 
-							<%
-							for (Map.Entry<String, Long> entry : durations.entrySet()) {
-							%>
-
-								<aui:option label="<%= entry.getKey() %>" value="<%= entry.getValue() %>" />
-
-							<%
-							}
-							%>
-
+							<%= sb.toString() %>
 						</aui:select>
 					</div>
 				</aui:fieldset>
