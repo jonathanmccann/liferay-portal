@@ -58,6 +58,9 @@ page import="com.liferay.portal.model.impl.PasswordPolicyImpl" %><%@
 page import="com.liferay.taglib.search.ResultRow" %><%@
 page import="com.liferay.users.admin.kernel.util.UsersAdmin" %>
 
+<%@ page import="java.util.LinkedHashMap" %><%@
+page import="java.util.Map" %>
+
 <%@ page import="javax.portlet.PortletURL" %><%@
 page import="javax.portlet.WindowState" %>
 
