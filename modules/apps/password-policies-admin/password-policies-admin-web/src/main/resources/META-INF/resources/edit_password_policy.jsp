@@ -39,7 +39,7 @@ renderResponse.setTitle(passwordPolicy.isNew() ? LanguageUtil.get(request, "new-
 
 <liferay-util:include page="/edit_password_policy_tabs.jsp" servletContext="<%= application %>" />
 
-<portlet:actionURL name="editPasswordPolicy" var="editPasswordPolicyURL" />
+<portlet:actionURL name="/password_policies_admin/edit_password_policy" var="editPasswordPolicyURL" />
 
 <aui:form action="<%= editPasswordPolicyURL %>" cssClass="container-fluid-1280" method="post" name="fm">
 	<aui:input name="redirect" type="hidden" value="<%= (passwordPolicyId > 0) ? currentURL : String.valueOf(renderResponse.createRenderURL()) %>" />
