@@ -40,6 +40,7 @@ import com.liferay.portal.kernel.service.BaseLocalServiceImpl;
 import com.liferay.portal.kernel.service.PersistedModelLocalServiceRegistry;
 import com.liferay.portal.kernel.service.persistence.GroupPersistence;
 import com.liferay.portal.kernel.service.persistence.LayoutPersistence;
+import com.liferay.portal.kernel.service.persistence.PortletPersistence;
 import com.liferay.portal.kernel.service.persistence.PortletPreferencesPersistence;
 import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -500,6 +501,47 @@ public abstract class JournalContentSearchLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the portlet local service.
+	 *
+	 * @return the portlet local service
+	 */
+	public com.liferay.portal.kernel.service.PortletLocalService
+		getPortletLocalService() {
+
+		return portletLocalService;
+	}
+
+	/**
+	 * Sets the portlet local service.
+	 *
+	 * @param portletLocalService the portlet local service
+	 */
+	public void setPortletLocalService(
+		com.liferay.portal.kernel.service.PortletLocalService
+			portletLocalService) {
+
+		this.portletLocalService = portletLocalService;
+	}
+
+	/**
+	 * Returns the portlet persistence.
+	 *
+	 * @return the portlet persistence
+	 */
+	public PortletPersistence getPortletPersistence() {
+		return portletPersistence;
+	}
+
+	/**
+	 * Sets the portlet persistence.
+	 *
+	 * @param portletPersistence the portlet persistence
+	 */
+	public void setPortletPersistence(PortletPersistence portletPersistence) {
+		this.portletPersistence = portletPersistence;
+	}
+
+	/**
 	 * Returns the portlet preferences local service.
 	 *
 	 * @return the portlet preferences local service
@@ -625,6 +667,15 @@ public abstract class JournalContentSearchLocalServiceBaseImpl
 
 	@ServiceReference(type = LayoutPersistence.class)
 	protected LayoutPersistence layoutPersistence;
+
+	@ServiceReference(
+		type = com.liferay.portal.kernel.service.PortletLocalService.class
+	)
+	protected com.liferay.portal.kernel.service.PortletLocalService
+		portletLocalService;
+
+	@ServiceReference(type = PortletPersistence.class)
+	protected PortletPersistence portletPersistence;
 
 	@ServiceReference(
 		type = com.liferay.portal.kernel.service.PortletPreferencesLocalService.class
