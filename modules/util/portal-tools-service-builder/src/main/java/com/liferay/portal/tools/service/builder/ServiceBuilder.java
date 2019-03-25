@@ -2097,9 +2097,18 @@ public class ServiceBuilder {
 
 	private void _addIndexMetadata(
 		Map<String, List<IndexMetadata>> indexMetadatasMap, String tableName,
-		IndexMetadata indexMetadata) {
+		IndexMetadata entityPKIndexMetadata, IndexMetadata indexMetadata) {
 
-		List<IndexMetadata> indexMetadatas = indexMetadatasMap.get(tableName);
+		if (entityPKIndexMetadata != null) {
+			Boolean redundant = indexMetadata.redundantToPKIndex(
+				entityPKIndexMetadata);
+
+			if (redundant) {
+				return;
+			}
+		}
+
+		List<IndexMetadata> indexMetadatas = indexMetadatasMap.get(tableName); // This is the current list of indexes to be add to indexes.sql
 
 		if (indexMetadatas == null) {
 			indexMetadatas = new ArrayList<>();
@@ -2109,7 +2118,7 @@ public class ServiceBuilder {
 
 		Iterator<IndexMetadata> iterator = indexMetadatas.iterator();
 
-		while (iterator.hasNext()) {
+		while (iterator.hasNext()) { // Iterate the current list of indexes and check them all against the one we wish to add (indexMetadata)
 			IndexMetadata currentIndexMetadata = iterator.next();
 
 			Boolean redundant = currentIndexMetadata.redundantTo(indexMetadata);
@@ -2119,7 +2128,7 @@ public class ServiceBuilder {
 			}
 
 			if (redundant) {
-				iterator.remove();
+				iterator.remove(); // Remove the shorter of the two indexes
 			}
 			else {
 				indexMetadata = null;
@@ -3565,16 +3574,34 @@ public class ServiceBuilder {
 				Entity entity = _getEntityByTableName(
 					indexMetadata.getTableName());
 
+				IndexMetadata entityPKIndexMetadata = null;
+
 				if (entity != null) {
 					indexMetadata = new IndexMetadata(
 						indexMetadata.getIndexName(),
 						indexMetadata.getTableName(), indexMetadata.isUnique(),
 						indexMetadata.getColumnNames());
+
+					List<EntityColumn> pkEntityColumns = entity.getPKEntityColumns();
+
+					if (pkEntityColumns.size() > 1) {
+						String[] pkEntityColumnNames =
+							new String[pkEntityColumns.size()];
+
+						for (int i = 0; i < pkEntityColumns.size(); i++) {
+							pkEntityColumnNames[i] =
+								pkEntityColumns.get(i).getName();
+						}
+
+						entityPKIndexMetadata =
+							new IndexMetadata(
+								null, null, false, pkEntityColumnNames);
+					}
 				}
 
 				_addIndexMetadata(
 					indexMetadatasMap, indexMetadata.getTableName(),
-					indexMetadata);
+					entityPKIndexMetadata, indexMetadata);
 			}
 		}
 
@@ -3626,9 +3653,27 @@ public class ServiceBuilder {
 						entityFinder.isUnique(), entity.getTable(),
 						dbNames.toArray(new String[dbNames.size()]));
 
+				List<EntityColumn> pkEntityColumns = entity.getPKEntityColumns();
+
+				IndexMetadata entityPKIndexMetadata = null;
+
+				if (pkEntityColumns.size() > 1) {
+					String[] pkEntityColumnNames =
+						new String[pkEntityColumns.size()];
+
+					for (int i = 0; i < pkEntityColumns.size(); i++) {
+						pkEntityColumnNames[i] =
+							pkEntityColumns.get(i).getName();
+					}
+
+					entityPKIndexMetadata =
+						new IndexMetadata(
+							null, null, false, pkEntityColumnNames);
+				}
+
 				_addIndexMetadata(
 					indexMetadatasMap, indexMetadata.getTableName(),
-					indexMetadata);
+					entityPKIndexMetadata, indexMetadata);
 			}
 		}
 
@@ -4353,7 +4398,7 @@ public class ServiceBuilder {
 
 		String tableName = entityMapping.getTableName();
 
-		for (Entity entity : entities) {
+		/*for (Entity entity : entities) {
 			List<EntityColumn> pkEntityColumns = entity.getPKEntityColumns();
 
 			for (EntityColumn entityColumn : pkEntityColumns) {
@@ -4361,7 +4406,28 @@ public class ServiceBuilder {
 					IndexMetadataFactoryUtil.createIndexMetadata(
 						false, tableName, entityColumn.getDBName());
 
-				_addIndexMetadata(indexMetadatasMap, tableName, indexMetadata);
+				_addIndexMetadata(indexMetadatasMap, tableName, null, indexMetadata);
+			}
+		}*/
+
+		for (int i = 0; i < entities.length; i++) {
+			Entity entity = entities[i];
+
+			List<EntityColumn> pkEntityColumns = entity.getPKEntityColumns();
+
+			for (int j = 0; j < pkEntityColumns.size(); j++) {
+				if ((i == 1) && (j == 0)) {
+					continue;
+				}
+
+				EntityColumn entityColumn = pkEntityColumns.get(j);
+
+				IndexMetadata indexMetadata =
+					IndexMetadataFactoryUtil.createIndexMetadata(
+						false, tableName, entityColumn.getDBName());
+
+				_addIndexMetadata(
+					indexMetadatasMap, tableName, null, indexMetadata);
 			}
 		}
 	}
