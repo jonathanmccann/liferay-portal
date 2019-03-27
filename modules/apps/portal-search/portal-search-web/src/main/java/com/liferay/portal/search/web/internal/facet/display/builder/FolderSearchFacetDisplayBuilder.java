@@ -111,7 +111,10 @@ public class FolderSearchFacetDisplayBuilder {
 			folderSearchFacetTermDisplayContext =
 				new FolderSearchFacetTermDisplayContext();
 
-		folderSearchFacetTermDisplayContext.setDisplayName(displayName);
+		if (!displayName.equals(StringPool.BLANK)) {
+			folderSearchFacetTermDisplayContext.setDisplayName(displayName);
+		}
+
 		folderSearchFacetTermDisplayContext.setFolderId(folderId);
 		folderSearchFacetTermDisplayContext.setFrequency(frequency);
 		folderSearchFacetTermDisplayContext.setFrequencyVisible(
@@ -126,12 +129,14 @@ public class FolderSearchFacetDisplayBuilder {
 
 		long folderId = GetterUtil.getLong(termCollector.getTerm());
 
-		if (folderId == 0) {
+		String displayName = getDisplayName(folderId);
+
+		if ((folderId == 0) || (displayName == null)) {
 			return null;
 		}
 
 		return buildFolderSearchFacetTermDisplayContext(
-			folderId, getDisplayName(folderId), termCollector.getFrequency(),
+			folderId, displayName, termCollector.getFrequency(),
 			isSelected(folderId));
 	}
 
@@ -181,7 +186,7 @@ public class FolderSearchFacetDisplayBuilder {
 			return title;
 		}
 
-		return StringPool.OPEN_BRACKET + folderId + StringPool.CLOSE_BRACKET;
+		return null;
 	}
 
 	protected FolderSearchFacetTermDisplayContext
