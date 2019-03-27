@@ -91,6 +91,20 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 	}
 
 	@Override
+	public JournalFolder fetchFolder(long folderId, String actionId)
+		throws PortalException {
+
+		JournalFolder folder = journalFolderLocalService.fetchFolder(folderId);
+
+		if (folder != null) {
+			_journalFolderModelResourcePermission.check(
+				getPermissionChecker(), folder, actionId);
+		}
+
+		return folder;
+	}
+
+	@Override
 	public List<DDMStructure> getDDMStructures(
 			long[] groupIds, long folderId, int restrictionType)
 		throws PortalException {

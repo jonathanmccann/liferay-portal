@@ -404,6 +404,31 @@ public class ActionUtil {
 		return folder;
 	}
 
+	public static JournalFolder getFolder(
+			HttpServletRequest request, String actionId)
+		throws PortalException {
+
+		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
+			WebKeys.THEME_DISPLAY);
+
+		long folderId = ParamUtil.getLong(request, "folderId");
+
+		JournalFolder folder = null;
+
+		if ((folderId > 0) &&
+			(folderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID)) {
+
+			folder = JournalFolderServiceUtil.fetchFolder(folderId, actionId);
+		}
+		else {
+			JournalPermission.check(
+				themeDisplay.getPermissionChecker(),
+				themeDisplay.getScopeGroup(), ActionKeys.VIEW);
+		}
+
+		return folder;
+	}
+
 	public static JournalFolder getFolder(PortletRequest portletRequest)
 		throws PortalException {
 
@@ -411,6 +436,16 @@ public class ActionUtil {
 			portletRequest);
 
 		return getFolder(request);
+	}
+
+	public static JournalFolder getFolder(
+			PortletRequest portletRequest, String actionId)
+		throws PortalException {
+
+		HttpServletRequest request = PortalUtil.getHttpServletRequest(
+			portletRequest);
+
+		return getFolder(request, actionId);
 	}
 
 	public static List<JournalFolder> getFolders(ResourceRequest request)
