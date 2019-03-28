@@ -383,25 +383,7 @@ public class ActionUtil {
 	public static JournalFolder getFolder(HttpServletRequest request)
 		throws PortalException {
 
-		ThemeDisplay themeDisplay = (ThemeDisplay)request.getAttribute(
-			WebKeys.THEME_DISPLAY);
-
-		long folderId = ParamUtil.getLong(request, "folderId");
-
-		JournalFolder folder = null;
-
-		if ((folderId > 0) &&
-			(folderId != JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID)) {
-
-			folder = JournalFolderServiceUtil.fetchFolder(folderId);
-		}
-		else {
-			JournalPermission.check(
-				themeDisplay.getPermissionChecker(),
-				themeDisplay.getScopeGroup(), ActionKeys.VIEW);
-		}
-
-		return folder;
+		return getFolder(request, ActionKeys.VIEW);
 	}
 
 	public static JournalFolder getFolder(

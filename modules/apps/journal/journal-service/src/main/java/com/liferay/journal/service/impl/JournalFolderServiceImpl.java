@@ -80,14 +80,7 @@ public class JournalFolderServiceImpl extends JournalFolderServiceBaseImpl {
 
 	@Override
 	public JournalFolder fetchFolder(long folderId) throws PortalException {
-		JournalFolder folder = journalFolderLocalService.fetchFolder(folderId);
-
-		if (folder != null) {
-			_journalFolderModelResourcePermission.check(
-				getPermissionChecker(), folder, ActionKeys.VIEW);
-		}
-
-		return folder;
+		return fetchFolder(folderId, ActionKeys.VIEW);
 	}
 
 	@Override
