@@ -111,10 +111,7 @@ public class FolderSearchFacetDisplayBuilder {
 			folderSearchFacetTermDisplayContext =
 				new FolderSearchFacetTermDisplayContext();
 
-		if (!displayName.equals(StringPool.BLANK)) {
-			folderSearchFacetTermDisplayContext.setDisplayName(displayName);
-		}
-
+		folderSearchFacetTermDisplayContext.setDisplayName(displayName);
 		folderSearchFacetTermDisplayContext.setFolderId(folderId);
 		folderSearchFacetTermDisplayContext.setFrequency(frequency);
 		folderSearchFacetTermDisplayContext.setFrequencyVisible(
@@ -131,7 +128,7 @@ public class FolderSearchFacetDisplayBuilder {
 
 		String displayName = getDisplayName(folderId);
 
-		if ((folderId == 0) || (displayName == null)) {
+		if ((folderId == 0) || displayName.equals(StringPool.BLANK)) {
 			return null;
 		}
 
@@ -186,7 +183,7 @@ public class FolderSearchFacetDisplayBuilder {
 			return title;
 		}
 
-		return null;
+		return StringPool.BLANK;
 	}
 
 	protected FolderSearchFacetTermDisplayContext
