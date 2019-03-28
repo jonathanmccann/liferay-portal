@@ -128,7 +128,7 @@ String referringPortletResource = ParamUtil.getString(request, "referringPortlet
 								</aui:a>
 							</h2>
 
-							<c:if test="<%= (journalDisplayContext.isSearch()) && (curArticleFolder != null) %>">
+							<c:if test="<%= journalDisplayContext.isSearch() && (curArticleFolder != null) %>">
 								<h5>
 									<%= JournalHelperUtil.getAbsolutePath(liferayPortletRequest, curArticleFolder.getFolderId()) %>
 								</h5>
