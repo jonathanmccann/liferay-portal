@@ -122,6 +122,13 @@ public class SelectRoleManagementToolbarDisplayContext {
 	public SearchContainer getRoleSearchContainer(boolean filterManageableRoles)
 		throws Exception {
 
+		return getRoleSearchContainer(filterManageableRoles, 0);
+	}
+
+	public SearchContainer getRoleSearchContainer(
+			boolean filterManageableRoles, long groupId)
+		throws Exception {
+
 		if (_roleSearch != null) {
 			return _roleSearch;
 		}
@@ -143,8 +150,14 @@ public class SelectRoleManagementToolbarDisplayContext {
 				new Integer[] {_roleType}, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 				roleSearch.getOrderByComparator());
 
-			results = UsersAdminUtil.filterRoles(
-				themeDisplay.getPermissionChecker(), results);
+			if (groupId == 0) {
+				results = UsersAdminUtil.filterRoles(
+					themeDisplay.getPermissionChecker(), results);
+			}
+			else {
+				results = UsersAdminUtil.filterGroupRoles(
+					themeDisplay.getPermissionChecker(), groupId, results);
+			}
 
 			total = results.size();
 
