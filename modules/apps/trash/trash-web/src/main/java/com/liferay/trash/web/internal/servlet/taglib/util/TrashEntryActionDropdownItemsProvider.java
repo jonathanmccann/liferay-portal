@@ -197,7 +197,7 @@ public class TrashEntryActionDropdownItemsProvider {
 		return moveURL.toString();
 	}
 
-	private boolean _isDeletable() {
+	private boolean _isDeletable() throws PortalException {
 		if (_trashEntry.getRootEntry() == null) {
 			return true;
 		}
@@ -205,7 +205,7 @@ public class TrashEntryActionDropdownItemsProvider {
 		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
 			_trashRenderer.getClassName());
 
-		return trashHandler.isDeletable();
+		return trashHandler.isDeletable(_trashEntry.getClassPK());
 	}
 
 	private boolean _isRestorable() throws PortalException {

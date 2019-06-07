@@ -67,7 +67,7 @@ public class TrashContainerActionDropdownItemsProvider {
 					TrashHandlerRegistryUtil.getTrashHandler(
 						_trashRenderer.getClassName());
 
-				if (trashHandler.isDeletable()) {
+				if (trashHandler.isDeletable(_trashRenderer.getClassPK())) {
 					add(_getDeleteActionDropdownItem());
 				}
 
