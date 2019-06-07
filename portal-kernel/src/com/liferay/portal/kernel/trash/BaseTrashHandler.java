@@ -32,6 +32,7 @@ import com.liferay.portal.kernel.search.SearchContext;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.SystemEventLocalServiceUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
@@ -317,6 +318,15 @@ public abstract class BaseTrashHandler implements TrashHandler {
 	@Override
 	public boolean isDeletable() {
 		return true;
+	}
+
+	@Override
+	public boolean isDeletable(long classPK) throws PortalException {
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		return hasTrashPermission(
+			permissionChecker, 0, classPK, ActionKeys.DELETE);
 	}
 
 	@Override
