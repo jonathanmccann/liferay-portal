@@ -212,15 +212,16 @@ public class TrashEntryActionDropdownItemsProvider {
 		if (_trashEntry.getRootEntry() == null) {
 			boolean movable = false;
 
-			if (!_trashHandler.isRestorable(_trashEntry.getClassPK()) &&
-				_trashHandler.isMovable()) {
+			boolean isRestorable = _trashHandler.isRestorable(
+				_trashEntry.getClassPK());
 
+			if (!isRestorable && _trashHandler.isMovable()) {
 				movable = true;
 			}
 
 			boolean restorable = false;
 
-			if (_trashHandler.isRestorable(_trashEntry.getClassPK()) &&
+			if (isRestorable &&
 				!_trashHandler.isInTrashContainer(_trashEntry.getClassPK())) {
 
 				restorable = true;

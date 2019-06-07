@@ -68,11 +68,11 @@ public class TrashContainerActionDropdownItemsProvider {
 						_trashRenderer.getClassName());
 
 				if (trashHandler.isDeletable()) {
-					add(_getRestoreActionDropdownItem());
+					add(_getDeleteActionDropdownItem());
 				}
 
 				if (trashHandler.isMovable()) {
-					add(_getDeleteActionDropdownItem());
+					add(_getRestoreActionDropdownItem());
 				}
 			}
 		};
