@@ -325,6 +325,11 @@ public abstract class BaseTrashHandler implements TrashHandler {
 	}
 
 	@Override
+	public boolean isMovable(long classPK) throws PortalException {
+		return false;
+	}
+
+	@Override
 	public boolean isRestorable(long classPK) throws PortalException {
 		return true;
 	}
