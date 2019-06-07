@@ -198,10 +198,6 @@ public class TrashEntryActionDropdownItemsProvider {
 	}
 
 	private boolean _isDeletable() throws PortalException {
-		if (_trashEntry.getRootEntry() == null) {
-			return true;
-		}
-
 		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
 			_trashRenderer.getClassName());
 
