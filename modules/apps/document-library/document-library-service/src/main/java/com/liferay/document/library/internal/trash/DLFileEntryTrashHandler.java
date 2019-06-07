@@ -45,6 +45,7 @@ import com.liferay.portal.kernel.search.filter.BooleanFilter;
 import com.liferay.portal.kernel.search.filter.Filter;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionHelper;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -217,6 +218,18 @@ public class DLFileEntryTrashHandler extends DLBaseTrashHandler {
 	}
 
 	@Override
+	public boolean isMovable(long classPK) throws PortalException {
+		DLFileEntry dlFileEntry = fetchDLFileEntry(classPK);
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		return hasTrashPermission(
+			permissionChecker, dlFileEntry.getGroupId(),
+			dlFileEntry.getFolderId(), TrashActionKeys.MOVE);
+	}
+
+	@Override
 	public boolean isRestorable(long classPK) throws PortalException {
 		DLFileEntry dlFileEntry = fetchDLFileEntry(classPK);
 
@@ -224,6 +237,16 @@ public class DLFileEntryTrashHandler extends DLBaseTrashHandler {
 			((dlFileEntry.getFolderId() > 0) &&
 			 (_dlFolderLocalService.fetchFolder(dlFileEntry.getFolderId()) ==
 				 null))) {
+
+			return false;
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (!hasTrashPermission(
+				permissionChecker, dlFileEntry.getGroupId(), classPK,
+				TrashActionKeys.RESTORE)) {
 
 			return false;
 		}

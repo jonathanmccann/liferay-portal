@@ -36,6 +36,7 @@ import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionHelper;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -162,6 +163,18 @@ public class DLFileShortcutTrashHandler extends DLBaseTrashHandler {
 	}
 
 	@Override
+	public boolean isMovable(long classPK) throws PortalException {
+		DLFileShortcut dlFileShortcut = getDLFileShortcut(classPK);
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		return hasTrashPermission(
+			permissionChecker, dlFileShortcut.getGroupId(),
+			dlFileShortcut.getFolderId(), TrashActionKeys.MOVE);
+	}
+
+	@Override
 	public boolean isRestorable(long classPK) throws PortalException {
 		DLFileShortcut dlFileShortcut = getDLFileShortcut(classPK);
 
@@ -172,6 +185,16 @@ public class DLFileShortcutTrashHandler extends DLBaseTrashHandler {
 			if (_log.isDebugEnabled()) {
 				_log.debug(nsfe, nsfe);
 			}
+
+			return false;
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (!hasTrashPermission(
+				permissionChecker, dlFileShortcut.getGroupId(), classPK,
+				TrashActionKeys.RESTORE)) {
 
 			return false;
 		}

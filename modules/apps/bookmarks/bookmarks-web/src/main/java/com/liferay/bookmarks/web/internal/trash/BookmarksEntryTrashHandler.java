@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.model.ContainerModel;
 import com.liferay.portal.kernel.model.TrashedModel;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermissionHelper;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -124,12 +125,34 @@ public class BookmarksEntryTrashHandler extends BookmarksBaseTrashHandler {
 	}
 
 	@Override
+	public boolean isMovable(long classPK) throws PortalException {
+		BookmarksEntry entry = _bookmarksEntryLocalService.getEntry(classPK);
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		return hasTrashPermission(
+			permissionChecker, entry.getGroupId(), entry.getFolderId(),
+			TrashActionKeys.MOVE);
+	}
+
+	@Override
 	public boolean isRestorable(long classPK) throws PortalException {
 		BookmarksEntry entry = _bookmarksEntryLocalService.getEntry(classPK);
 
 		if ((entry.getFolderId() > 0) &&
 			(_bookmarksFolderLocalService.fetchBookmarksFolder(
 				entry.getFolderId()) == null)) {
+
+			return false;
+		}
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (!hasTrashPermission(
+				permissionChecker, entry.getGroupId(), classPK,
+				TrashActionKeys.RESTORE)) {
 
 			return false;
 		}

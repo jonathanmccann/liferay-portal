@@ -25,6 +25,7 @@ import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
 import com.liferay.portal.kernel.trash.TrashActionKeys;
 import com.liferay.portal.kernel.trash.TrashHandler;
@@ -302,6 +303,37 @@ public class WikiPageTrashHandler extends BaseWikiTrashHandler {
 	@Override
 	public boolean isMovable() {
 		return false;
+	}
+
+	@Override
+	public boolean isMovable(long classPK) throws PortalException {
+		WikiPage page = _wikiPageLocalService.getLatestPage(
+			classPK, WorkflowConstants.STATUS_ANY, false);
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		return hasTrashPermission(
+			permissionChecker, page.getGroupId(), page.getNodeId(),
+			TrashActionKeys.MOVE);
+	}
+
+	@Override
+	public boolean isRestorable(long classPK) throws PortalException {
+		WikiPage page = _wikiPageLocalService.getLatestPage(
+			classPK, WorkflowConstants.STATUS_ANY, false);
+
+		PermissionChecker permissionChecker =
+			PermissionThreadLocal.getPermissionChecker();
+
+		if (!hasTrashPermission(
+				permissionChecker, page.getGroupId(), classPK,
+				TrashActionKeys.RESTORE)) {
+
+			return false;
+		}
+
+		return !page.isInTrashContainer();
 	}
 
 	@Override
