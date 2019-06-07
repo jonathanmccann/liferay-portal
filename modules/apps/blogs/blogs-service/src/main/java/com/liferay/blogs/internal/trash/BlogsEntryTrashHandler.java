@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.portlet.PortletProvider;
 import com.liferay.portal.kernel.portlet.PortletProviderUtil;
 import com.liferay.portal.kernel.portlet.PortletURLFactoryUtil;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.resource.ModelResourcePermission;
@@ -91,6 +92,21 @@ public class BlogsEntryTrashHandler extends BaseTrashHandler {
 			WebKeys.THEME_DISPLAY);
 
 		return themeDisplay.translate("blogs");
+	}
+
+	@Override
+	public boolean hasTrashPermission(
+			PermissionChecker permissionChecker, long groupId, long classPK,
+			String trashActionId)
+		throws PortalException {
+
+		if (trashActionId.equals(TrashActionKeys.MOVE)) {
+			return _blogsEntryModelResourcePermission.contains(
+				permissionChecker, classPK, ActionKeys.ADD_ENTRY);
+		}
+
+		return super.hasTrashPermission(
+			permissionChecker, groupId, classPK, trashActionId);
 	}
 
 	@Override

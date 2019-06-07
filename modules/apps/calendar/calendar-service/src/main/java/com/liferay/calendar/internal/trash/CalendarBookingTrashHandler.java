@@ -46,6 +46,21 @@ public class CalendarBookingTrashHandler extends BaseTrashHandler {
 	}
 
 	@Override
+	public boolean hasTrashPermission(
+			PermissionChecker permissionChecker, long groupId, long classPK,
+			String trashActionId)
+		throws PortalException {
+
+		if (trashActionId.equals(TrashActionKeys.MOVE)) {
+			return _calendarModelResourcePermission.contains(
+				permissionChecker, classPK, CalendarActionKeys.MANAGE_BOOKINGS);
+		}
+
+		return super.hasTrashPermission(
+			permissionChecker, groupId, classPK, trashActionId);
+	}
+
+	@Override
 	public boolean isInTrash(long classPK) throws PortalException {
 		CalendarBooking calendarBooking =
 			_calendarBookingLocalService.getCalendarBooking(classPK);

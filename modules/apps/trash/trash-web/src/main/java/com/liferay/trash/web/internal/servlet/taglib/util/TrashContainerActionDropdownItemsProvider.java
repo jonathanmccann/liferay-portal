@@ -71,7 +71,7 @@ public class TrashContainerActionDropdownItemsProvider {
 					add(_getDeleteActionDropdownItem());
 				}
 
-				if (trashHandler.isMovable()) {
+				if (trashHandler.isRestorable(_trashRenderer.getClassPK())) {
 					add(_getRestoreActionDropdownItem());
 				}
 			}
