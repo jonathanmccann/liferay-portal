@@ -215,7 +215,9 @@ public class TrashEntryActionDropdownItemsProvider {
 			boolean isRestorable = _trashHandler.isRestorable(
 				_trashEntry.getClassPK());
 
-			if (!isRestorable && _trashHandler.isMovable()) {
+			if (!isRestorable &&
+				_trashHandler.isMovable(_trashEntry.getClassPK())) {
+
 				movable = true;
 			}
 
@@ -237,7 +239,7 @@ public class TrashEntryActionDropdownItemsProvider {
 		TrashHandler trashHandler = TrashHandlerRegistryUtil.getTrashHandler(
 			_trashRenderer.getClassName());
 
-		return trashHandler.isMovable();
+		return trashHandler.isMovable(_trashEntry.getClassPK());
 	}
 
 	private final LiferayPortletRequest _liferayPortletRequest;
