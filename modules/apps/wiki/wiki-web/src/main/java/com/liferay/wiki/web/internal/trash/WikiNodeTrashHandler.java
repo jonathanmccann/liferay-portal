@@ -40,6 +40,7 @@ import com.liferay.wiki.model.WikiPage;
 import com.liferay.wiki.service.WikiNodeLocalService;
 import com.liferay.wiki.service.WikiPageLocalService;
 import com.liferay.wiki.web.internal.asset.WikiNodeTrashRenderer;
+import com.liferay.wiki.web.internal.security.permission.resource.WikiResourcePermission;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -187,8 +188,8 @@ public class WikiNodeTrashHandler extends BaseWikiTrashHandler {
 		throws PortalException {
 
 		if (trashActionId.equals(TrashActionKeys.MOVE)) {
-			return _wikiNodeModelResourcePermission.contains(
-				permissionChecker, classPK, ActionKeys.ADD_NODE);
+			return WikiResourcePermission.contains(
+				permissionChecker, groupId, ActionKeys.ADD_NODE);
 		}
 
 		return super.hasTrashPermission(
