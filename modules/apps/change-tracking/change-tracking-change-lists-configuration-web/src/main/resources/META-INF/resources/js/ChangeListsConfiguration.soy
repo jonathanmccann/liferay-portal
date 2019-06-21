@@ -99,7 +99,11 @@
 						</span>
 						<span class="toggle-label-text">
 							<span class="custom-control-label-text">
-								{msg desc=""}yes{/msg}
+								{if ($changeTrackingEnabled)}
+									{msg desc=""}yes{/msg}
+								{else}
+									{msg desc=""}no{/msg}
+								{/if}
 							</span>
 						</span>
 					</label>
