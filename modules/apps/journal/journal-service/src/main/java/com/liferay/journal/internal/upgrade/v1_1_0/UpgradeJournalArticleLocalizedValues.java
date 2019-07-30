@@ -19,24 +19,34 @@ import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.dao.db.DB;
 import com.liferay.portal.kernel.dao.db.DBManagerUtil;
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
+import com.liferay.portal.kernel.dao.jdbc.DataAccess;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.upgrade.UpgradeException;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
+import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.LocalizationUtil;
 import com.liferay.portal.kernel.util.LoggingTimer;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 /**
  * @author Jürgen Kappler
@@ -238,28 +248,42 @@ public class UpgradeJournalArticleLocalizedValues extends UpgradeProcess {
 				StringBundler.concat(
 					"select id_, ", sourceField, " from JournalArticle",
 					whereClause));
-			PreparedStatement ps2 =
-				AutoBatchPreparedStatementUtil.concurrentAutoBatch(
-					connection,
-					"update JournalArticle set defaultLanguageId = ? where " +
-						"id_ = ?");
 			ResultSet rs = ps1.executeQuery()) {
 
+			List<UpdateDefaultLanguageCallable> updateDefaultLanguageCallables =
+				new ArrayList<>();
+
 			while (rs.next()) {
+				long id = rs.getLong(1);
 				String sourceFieldValue = rs.getString(2);
 
 				if (Validator.isXml(sourceFieldValue) || strictUpdate) {
-					ps2.setString(
-						1,
-						LocalizationUtil.getDefaultLanguageId(
-							sourceFieldValue, LocaleUtil.getSiteDefault()));
-					ps2.setLong(2, rs.getLong(1));
+					UpdateDefaultLanguageCallable
+						updateDefaultLanguageCallable =
+							new UpdateDefaultLanguageCallable(
+								id, sourceFieldValue);
 
-					ps2.addBatch();
+					updateDefaultLanguageCallables.add(
+						updateDefaultLanguageCallable);
 				}
 			}
 
-			ps2.executeBatch();
+			ExecutorService executorService = Executors.newWorkStealingPool();
+
+			List<Future<Boolean>> futures = executorService.invokeAll(
+				updateDefaultLanguageCallables);
+
+			executorService.shutdown();
+
+			for (Future<Boolean> future : futures) {
+				boolean success = GetterUtil.get(future.get(), true);
+
+				if (!success) {
+					throw new UpgradeException(
+						"Unable to update journal article default language " +
+							"IDs");
+				}
+			}
 		}
 	}
 
@@ -269,5 +293,42 @@ public class UpgradeJournalArticleLocalizedValues extends UpgradeProcess {
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		UpgradeJournalArticleLocalizedValues.class);
+
+	private class UpdateDefaultLanguageCallable implements Callable<Boolean> {
+
+		public UpdateDefaultLanguageCallable(long id, String sourceField) {
+			_id = id;
+			_sourceField = sourceField;
+		}
+
+		@Override
+		public Boolean call() throws Exception {
+			try (Connection connection = DataAccess.getConnection()) {
+				StringBundler sb = new StringBundler(4);
+
+				sb.append("update JournalArticle set defaultLanguageId = '");
+				sb.append(
+					LocalizationUtil.getDefaultLanguageId(
+						_sourceField, LocaleUtil.getSiteDefault()));
+				sb.append("' where id_ = ");
+				sb.append(_id);
+
+				runSQL(connection, sb.toString());
+			}
+			catch (Exception e) {
+				_log.error(
+					"Unable to update default language ID for article " + _id,
+					e);
+
+				return false;
+			}
+
+			return true;
+		}
+
+		private final long _id;
+		private final String _sourceField;
+
+	}
 
 }
