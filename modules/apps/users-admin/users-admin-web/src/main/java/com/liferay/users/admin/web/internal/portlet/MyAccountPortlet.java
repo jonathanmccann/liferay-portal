@@ -16,9 +16,16 @@ package com.liferay.users.admin.web.internal.portlet;
 
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.security.auth.PrincipalException;
+import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.users.admin.constants.UsersAdminPortletKeys;
 
+import java.io.IOException;
+
 import javax.portlet.Portlet;
+import javax.portlet.PortletException;
+import javax.portlet.RenderRequest;
+import javax.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -50,6 +57,25 @@ import org.osgi.service.component.annotations.Reference;
 	service = Portlet.class
 )
 public class MyAccountPortlet extends MVCPortlet {
+
+	@Override
+	protected void doDispatch(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws IOException, PortletException {
+
+		String path = getPath(renderRequest, renderResponse);
+
+		if (!path.equals("/edit_user.jsp")) {
+			SessionErrors.add(renderRequest, PrincipalException.class);
+
+			path = "/error.jsp";
+
+			include(path, renderRequest, renderResponse);
+		}
+		else {
+			super.doDispatch(renderRequest, renderResponse);
+		}
+	}
 
 	@Reference(
 		target = "(&(release.bundle.symbolic.name=com.liferay.users.admin.web)(&(release.schema.version>=1.0.1)(!(release.schema.version>=1.1.0))))",
