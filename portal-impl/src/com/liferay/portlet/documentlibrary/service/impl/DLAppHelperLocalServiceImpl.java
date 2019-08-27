@@ -571,15 +571,19 @@ public class DLAppHelperLocalServiceImpl
 	public void reindex(long companyId, List<Long> dlFileEntryIds)
 		throws PortalException {
 
+		final Indexer<DLFileEntry> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(DLFileEntry.class);
+
+		if (!indexer.isIndexerEnabled()) {
+			return;
+		}
+
 		IntervalActionProcessor<Void> intervalActionProcessor =
 			new IntervalActionProcessor<>(dlFileEntryIds.size());
 
 		intervalActionProcessor.setPerformIntervalActionMethod(
 			(start, end) -> {
 				List<Long> sublist = dlFileEntryIds.subList(start, end);
-
-				Indexer<DLFileEntry> indexer =
-					IndexerRegistryUtil.nullSafeGetIndexer(DLFileEntry.class);
 
 				IndexableActionableDynamicQuery
 					indexableActionableDynamicQuery =

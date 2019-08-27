@@ -5545,8 +5545,8 @@ public class JournalArticleLocalServiceImpl
 						treePathProperty.ne(treePath)));
 			});
 
-		final Indexer<JournalArticle> indexer = IndexerRegistryUtil.getIndexer(
-			JournalArticle.class.getName());
+		final Indexer<JournalArticle> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(JournalArticle.class);
 
 		indexableActionableDynamicQuery.setPerformActionMethod(
 			(JournalArticle article) -> {
@@ -5554,7 +5554,7 @@ public class JournalArticleLocalServiceImpl
 
 				updateJournalArticle(article);
 
-				if (!reindex) {
+				if (!reindex || !indexer.isIndexerEnabled()) {
 					return;
 				}
 
@@ -7277,9 +7277,6 @@ public class JournalArticleLocalServiceImpl
 		IndexableActionableDynamicQuery indexableActionableDynamicQuery =
 			getIndexableActionableDynamicQuery();
 
-		Indexer<JournalArticle> indexer = IndexerRegistryUtil.getIndexer(
-			JournalArticle.class);
-
 		indexableActionableDynamicQuery.setAddCriteriaMethod(
 			dynamicQuery -> {
 				Property classNameIdProperty = PropertyFactoryUtil.forName(
@@ -7300,6 +7297,10 @@ public class JournalArticleLocalServiceImpl
 					statusProperty.eq(WorkflowConstants.STATUS_APPROVED));
 			});
 		indexableActionableDynamicQuery.setCompanyId(companyId);
+
+		final Indexer<JournalArticle> indexer =
+			IndexerRegistryUtil.nullSafeGetIndexer(JournalArticle.class);
+
 		indexableActionableDynamicQuery.setPerformActionMethod(
 			(JournalArticle article) -> {
 				if (_log.isDebugEnabled()) {
@@ -7336,7 +7337,7 @@ public class JournalArticleLocalServiceImpl
 
 				updatePreviousApprovedArticle(article);
 
-				if (indexer != null) {
+				if (indexer.isIndexerEnabled()) {
 					indexableActionableDynamicQuery.addDocuments(
 						indexer.getDocument(article));
 				}
