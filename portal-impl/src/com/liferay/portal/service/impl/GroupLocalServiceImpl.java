@@ -4687,6 +4687,10 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 		final Indexer<User> indexer = IndexerRegistryUtil.nullSafeGetIndexer(
 			User.class);
 
+		if (!indexer.isIndexerEnabled()) {
+			return;
+		}
+
 		final IndexableActionableDynamicQuery indexableActionableDynamicQuery =
 			userLocalService.getIndexableActionableDynamicQuery();
 
