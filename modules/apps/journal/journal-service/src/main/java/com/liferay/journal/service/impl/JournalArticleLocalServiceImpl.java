@@ -9149,10 +9149,6 @@ public class JournalArticleLocalServiceImpl
 				}
 			}
 
-			friendlyURL =
-				FriendlyURLNormalizerUtil.normalizeWithPeriodsAndSlashes(
-					friendlyURL);
-
 			String urlTitle = friendlyURLEntryLocalService.getUniqueUrlTitle(
 				groupId,
 				classNameLocalService.getClassNameId(JournalArticle.class),
