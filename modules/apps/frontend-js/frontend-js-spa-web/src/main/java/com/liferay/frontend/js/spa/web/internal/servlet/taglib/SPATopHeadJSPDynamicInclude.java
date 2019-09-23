@@ -19,6 +19,7 @@ import com.liferay.frontend.js.spa.web.internal.servlet.taglib.util.SPAUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.servlet.BrowserSnifferUtil;
 import com.liferay.portal.kernel.servlet.taglib.BaseJSPDynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.DynamicInclude;
 import com.liferay.portal.kernel.servlet.taglib.aui.ScriptData;
@@ -55,6 +56,12 @@ public class SPATopHeadJSPDynamicInclude extends BaseJSPDynamicInclude {
 			HttpServletRequest httpServletRequest,
 			HttpServletResponse httpServletResponse, String key)
 		throws IOException {
+
+		if (BrowserSnifferUtil.isIe(httpServletRequest) &&
+			(BrowserSnifferUtil.getMajorVersion(httpServletRequest) == 11.0)) {
+
+			return;
+		}
 
 		ScriptData scriptData = new ScriptData();
 
