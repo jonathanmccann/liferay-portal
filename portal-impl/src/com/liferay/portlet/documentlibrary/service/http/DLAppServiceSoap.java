@@ -568,6 +568,31 @@ public class DLAppServiceSoap {
 	}
 
 	/**
+	 * Returns the file entry with the UUID and group.
+	 *
+	 * @param uuid the file entry's UUID
+	 * @param groupId the primary key of the file entry's group
+	 * @return the file entry with the UUID and group
+	 */
+	public static com.liferay.portal.kernel.repository.model.FileEntrySoap
+			fetchFileEntryByUuidAndGroupId(String uuid, long groupId)
+		throws RemoteException {
+
+		try {
+			com.liferay.portal.kernel.repository.model.FileEntry returnValue =
+				DLAppServiceUtil.fetchFileEntryByUuidAndGroupId(uuid, groupId);
+
+			return com.liferay.portal.kernel.repository.model.FileEntrySoap.
+				toSoapModel(returnValue);
+		}
+		catch (Exception e) {
+			_log.error(e, e);
+
+			throw new RemoteException(e.getMessage());
+		}
+	}
+
+	/**
 	 * Returns all the file entries in the folder.
 	 *
 	 * @param repositoryId the primary key of the file entry's repository

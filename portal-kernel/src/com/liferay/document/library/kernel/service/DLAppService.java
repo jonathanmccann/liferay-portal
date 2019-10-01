@@ -516,6 +516,16 @@ public interface DLAppService extends BaseService {
 		throws PortalException;
 
 	/**
+	 * Returns the file entry with the UUID and group.
+	 *
+	 * @param uuid the file entry's UUID
+	 * @param groupId the primary key of the file entry's group
+	 * @return the file entry with the UUID and group
+	 */
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public FileEntry fetchFileEntryByUuidAndGroupId(String uuid, long groupId);
+
+	/**
 	 * Returns all the file entries in the folder.
 	 *
 	 * @param repositoryId the primary key of the file entry's repository

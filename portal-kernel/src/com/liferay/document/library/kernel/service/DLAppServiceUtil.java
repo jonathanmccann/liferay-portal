@@ -589,6 +589,19 @@ public class DLAppServiceUtil {
 	}
 
 	/**
+	 * Returns the file entry with the UUID and group.
+	 *
+	 * @param uuid the file entry's UUID
+	 * @param groupId the primary key of the file entry's group
+	 * @return the file entry with the UUID and group
+	 */
+	public static com.liferay.portal.kernel.repository.model.FileEntry
+		fetchFileEntryByUuidAndGroupId(String uuid, long groupId) {
+
+		return getService().fetchFileEntryByUuidAndGroupId(uuid, groupId);
+	}
+
+	/**
 	 * Returns all the file entries in the folder.
 	 *
 	 * @param repositoryId the primary key of the file entry's repository
