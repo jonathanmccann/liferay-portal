@@ -268,6 +268,12 @@ public class AccountEntryLocalServiceUtil {
 	}
 
 	public static java.util.List<com.liferay.account.model.AccountEntry>
+		getAccountEntries(long companyId, int status) {
+
+		return getService().getAccountEntries(companyId, status);
+	}
+
+	public static java.util.List<com.liferay.account.model.AccountEntry>
 		getAccountEntries(
 			long companyId, int status, int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator

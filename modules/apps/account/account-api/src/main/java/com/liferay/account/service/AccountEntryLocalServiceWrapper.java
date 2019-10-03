@@ -283,6 +283,13 @@ public class AccountEntryLocalServiceWrapper
 
 	@Override
 	public java.util.List<com.liferay.account.model.AccountEntry>
+		getAccountEntries(long companyId, int status) {
+
+		return _accountEntryLocalService.getAccountEntries(companyId, status);
+	}
+
+	@Override
+	public java.util.List<com.liferay.account.model.AccountEntry>
 		getAccountEntries(
 			long companyId, int status, int start, int end,
 			com.liferay.portal.kernel.util.OrderByComparator
