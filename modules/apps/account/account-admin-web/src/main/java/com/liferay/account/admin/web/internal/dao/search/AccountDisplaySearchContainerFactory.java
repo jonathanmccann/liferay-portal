@@ -22,6 +22,7 @@ import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
+import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.OrderByComparatorFactoryUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
@@ -72,16 +73,22 @@ public class AccountDisplaySearchContainerFactory {
 
 		List<AccountEntry> accountEntries =
 			AccountEntryLocalServiceUtil.getAccountEntries(
-				themeDisplay.getCompanyId(), _getStatus(navigation),
-				accountDisplaySearchContainer.getStart(),
-				accountDisplaySearchContainer.getEnd(),
-				accountDisplaySearchContainer.getOrderByComparator());
+				themeDisplay.getCompanyId(), _getStatus(navigation));
+
+		accountDisplaySearchContainer.setTotal(accountEntries.size());
+
+		accountEntries = ListUtil.sort(
+			accountEntries,
+			accountDisplaySearchContainer.getOrderByComparator());
+
+		accountEntries = ListUtil.subList(
+			accountEntries, accountDisplaySearchContainer.getStart(),
+			accountDisplaySearchContainer.getEnd());
 
 		List<AccountDisplay> accountDisplays = TransformUtil.transform(
 			accountEntries, AccountDisplay::of);
 
 		accountDisplaySearchContainer.setResults(accountDisplays);
-		accountDisplaySearchContainer.setTotal(accountDisplays.size());
 
 		return accountDisplaySearchContainer;
 	}
