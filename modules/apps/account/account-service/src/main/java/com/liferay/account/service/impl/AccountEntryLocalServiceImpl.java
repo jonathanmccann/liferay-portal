@@ -163,6 +163,11 @@ public class AccountEntryLocalServiceImpl
 	}
 
 	@Override
+	public List<AccountEntry> getAccountEntries(long companyId, int status) {
+		return accountEntryPersistence.findByC_S(companyId, status);
+	}
+
+	@Override
 	public List<AccountEntry> getAccountEntries(
 		long companyId, int status, int start, int end,
 		OrderByComparator<AccountEntry> obc) {
