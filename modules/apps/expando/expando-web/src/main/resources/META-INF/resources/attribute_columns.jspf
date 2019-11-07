@@ -16,26 +16,8 @@
 
 <liferay-ui:search-container-column-text
 	cssClass="table-cell-expand table-cell-minw-200 table-title"
-	name="name"
->
-
-	<%
-	String localizedName = LanguageUtil.get(request, name);
-
-	if (name.equals(localizedName)) {
-		localizedName = TextFormatter.format(name, TextFormatter.J);
-	}
-	%>
-
-	<a href="<%= rowURL %>"><strong><%= HtmlUtil.escape(localizedName) %></strong></a>
-
-	<br />
-</liferay-ui:search-container-column-text>
-
-<liferay-ui:search-container-column-text
-	cssClass="table-cell-expand table-cell-minw-200"
 	href="<%= rowURL %>"
-	name="key"
+	name="name"
 	value="<%= HtmlUtil.escape(name) %>"
 />
 
