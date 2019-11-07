@@ -143,7 +143,7 @@ else {
 					<c:when test="<%= expandoColumn != null %>">
 						<aui:input name="name" type="hidden" value="<%= expandoColumn.getName() %>" />
 
-						<aui:input label="field-name" name="key" type="resource" value="<%= expandoColumn.getName() %>" />
+						<aui:input label="field-name" name="nameLabel" type="resource" value="<%= expandoColumn.getName() %>" />
 					</c:when>
 					<c:otherwise>
 						<aui:input autoFocus="<%= windowState.equals(WindowState.MAXIMIZED) %>" label="field-name" maxlength='<%= ModelHintsUtil.getMaxLength(ExpandoColumn.class.getName(), "name") %>' name="name" required="<%= true %>" />
@@ -151,7 +151,7 @@ else {
 				</c:choose>
 
 				<div class="form-text">
-					<liferay-ui:message key="custom-field-key-help" />
+					<liferay-ui:message key="custom-field-name-help" />
 				</div>
 			</aui:field-wrapper>
 
