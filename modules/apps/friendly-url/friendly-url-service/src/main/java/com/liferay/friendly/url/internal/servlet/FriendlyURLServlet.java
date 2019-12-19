@@ -30,7 +30,6 @@ import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutConstants;
 import com.liferay.portal.kernel.model.LayoutFriendlyURL;
-import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.LayoutFriendlyURLSeparatorComposite;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutFriendlyURLLocalService;
@@ -38,7 +37,6 @@ import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextFactory;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
-import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.servlet.PortalMessages;
 import com.liferay.portal.kernel.servlet.ServletContextPool;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -107,20 +105,6 @@ public class FriendlyURLServlet extends HttpServlet {
 
 		Group group = groupLocalService.fetchFriendlyURLGroup(
 			companyId, friendlyURL);
-
-		if (group == null) {
-			String screenName = friendlyURL.substring(1);
-
-			User user = userLocalService.fetchUserByScreenName(
-				companyId, screenName);
-
-			if (user != null) {
-				group = user.getGroup();
-			}
-			else if (_log.isWarnEnabled()) {
-				_log.warn("No user exists with friendly URL " + screenName);
-			}
-		}
 
 		if (group == null) {
 			StringBundler sb = new StringBundler(5);
@@ -606,9 +590,6 @@ public class FriendlyURLServlet extends HttpServlet {
 
 	@Reference
 	protected SiteFriendlyURLLocalService siteFriendlyURLLocalService;
-
-	@Reference
-	protected UserLocalService userLocalService;
 
 	private boolean _equalsLayoutFriendlyURL(
 		String layoutFriendlyURLSeparatorCompositeFriendlyURL, Layout layout,
