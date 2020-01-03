@@ -78,6 +78,10 @@ if (extension) {
 					<liferay-util:include page="<%= sectionJsp %>" servletContext="<%= application %>" />
 				</c:when>
 				<c:otherwise>
+					<%
+					request.setAttribute("SELECTED_USER", selUser);
+					%>
+
 					<liferay-util:include page="<%= sectionJsp %>" portletId="<%= PortletProviderUtil.getPortletId(User.class.getName(), PortletProvider.Action.VIEW) %>" />
 				</c:otherwise>
 			</c:choose>
