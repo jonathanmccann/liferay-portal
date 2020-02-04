@@ -89,6 +89,7 @@ public class PortalImplEscapeRedirectTest {
 			Assert.assertEquals(
 				":@google.com", _portalImpl.escapeRedirect(":@google.com"));
 			Assert.assertNull(_portalImpl.escapeRedirect("liferay.com"));
+			Assert.assertNull(_portalImpl.escapeRedirect("/\\liferay.com"));
 			Assert.assertNull(_portalImpl.escapeRedirect("http://liferay.com"));
 			Assert.assertNull(
 				_portalImpl.escapeRedirect(
@@ -155,6 +156,7 @@ public class PortalImplEscapeRedirectTest {
 			}
 
 			Assert.assertNull(_portalImpl.escapeRedirect("liferay.com"));
+			Assert.assertNull(_portalImpl.escapeRedirect("/\\liferay.com"));
 			Assert.assertNull(_portalImpl.escapeRedirect("http://liferay.com"));
 			Assert.assertNull(
 				_portalImpl.escapeRedirect(
@@ -223,6 +225,7 @@ public class PortalImplEscapeRedirectTest {
 				_portalImpl.escapeRedirect(
 					"https://google.com:8080/a/b;c=d?e=f&g=h#x=y"));
 			Assert.assertNull(_portalImpl.escapeRedirect("liferay.com"));
+			Assert.assertNull(_portalImpl.escapeRedirect("/\\liferay.com"));
 			Assert.assertNull(_portalImpl.escapeRedirect("http://liferay.com"));
 			Assert.assertNull(
 				_portalImpl.escapeRedirect(
