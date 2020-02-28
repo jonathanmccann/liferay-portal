@@ -121,26 +121,28 @@ public class ModuleCacheModel implements CacheModel<Module>, Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		moduleId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		appId = objectInput.readLong();
-		bundleSymbolicName = objectInput.readUTF();
-		bundleVersion = objectInput.readUTF();
-		contextName = objectInput.readUTF();
+		bundleSymbolicName = (String)objectInput.readObject();
+		bundleVersion = (String)objectInput.readObject();
+		contextName = (String)objectInput.readObject();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(moduleId);
@@ -150,24 +152,24 @@ public class ModuleCacheModel implements CacheModel<Module>, Externalizable {
 		objectOutput.writeLong(appId);
 
 		if (bundleSymbolicName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(bundleSymbolicName);
+			objectOutput.writeObject(bundleSymbolicName);
 		}
 
 		if (bundleVersion == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(bundleVersion);
+			objectOutput.writeObject(bundleVersion);
 		}
 
 		if (contextName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(contextName);
+			objectOutput.writeObject(contextName);
 		}
 	}
 

@@ -141,7 +141,9 @@ public class FriendlyURLEntryLocalizationCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		friendlyURLEntryLocalizationId = objectInput.readLong();
@@ -149,8 +151,8 @@ public class FriendlyURLEntryLocalizationCacheModel
 		companyId = objectInput.readLong();
 
 		friendlyURLEntryId = objectInput.readLong();
-		languageId = objectInput.readUTF();
-		urlTitle = objectInput.readUTF();
+		languageId = (String)objectInput.readObject();
+		urlTitle = (String)objectInput.readObject();
 
 		groupId = objectInput.readLong();
 
@@ -170,17 +172,17 @@ public class FriendlyURLEntryLocalizationCacheModel
 		objectOutput.writeLong(friendlyURLEntryId);
 
 		if (languageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(languageId);
+			objectOutput.writeObject(languageId);
 		}
 
 		if (urlTitle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(urlTitle);
+			objectOutput.writeObject(urlTitle);
 		}
 
 		objectOutput.writeLong(groupId);

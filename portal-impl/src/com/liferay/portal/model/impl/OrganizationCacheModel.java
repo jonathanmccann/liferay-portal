@@ -210,24 +210,26 @@ public class OrganizationCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
-		externalReferenceCode = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
+		externalReferenceCode = (String)objectInput.readObject();
 
 		organizationId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		parentOrganizationId = objectInput.readLong();
-		treePath = objectInput.readUTF();
-		name = objectInput.readUTF();
-		type = objectInput.readUTF();
+		treePath = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		type = (String)objectInput.readObject();
 
 		recursable = objectInput.readBoolean();
 
@@ -236,7 +238,7 @@ public class OrganizationCacheModel
 		countryId = objectInput.readLong();
 
 		statusId = objectInput.readLong();
-		comments = objectInput.readUTF();
+		comments = (String)objectInput.readObject();
 
 		logoId = objectInput.readLong();
 	}
@@ -246,17 +248,17 @@ public class OrganizationCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		if (externalReferenceCode == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(externalReferenceCode);
+			objectOutput.writeObject(externalReferenceCode);
 		}
 
 		objectOutput.writeLong(organizationId);
@@ -266,10 +268,10 @@ public class OrganizationCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -278,24 +280,24 @@ public class OrganizationCacheModel
 		objectOutput.writeLong(parentOrganizationId);
 
 		if (treePath == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(treePath);
+			objectOutput.writeObject(treePath);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		objectOutput.writeBoolean(recursable);
@@ -307,10 +309,10 @@ public class OrganizationCacheModel
 		objectOutput.writeLong(statusId);
 
 		if (comments == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(comments);
+			objectOutput.writeObject(comments);
 		}
 
 		objectOutput.writeLong(logoId);

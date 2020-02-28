@@ -201,24 +201,26 @@ public class SamlSpSessionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		samlSpSessionId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		samlIdpEntityId = objectInput.readUTF();
-		samlSpSessionKey = objectInput.readUTF();
-		assertionXml = objectInput.readUTF();
-		jSessionId = objectInput.readUTF();
-		nameIdFormat = objectInput.readUTF();
-		nameIdNameQualifier = objectInput.readUTF();
-		nameIdSPNameQualifier = objectInput.readUTF();
-		nameIdValue = objectInput.readUTF();
-		sessionIndex = objectInput.readUTF();
+		samlIdpEntityId = (String)objectInput.readObject();
+		samlSpSessionKey = (String)objectInput.readObject();
+		assertionXml = (String)objectInput.readObject();
+		jSessionId = (String)objectInput.readObject();
+		nameIdFormat = (String)objectInput.readObject();
+		nameIdNameQualifier = (String)objectInput.readObject();
+		nameIdSPNameQualifier = (String)objectInput.readObject();
+		nameIdValue = (String)objectInput.readObject();
+		sessionIndex = (String)objectInput.readObject();
 
 		terminated = objectInput.readBoolean();
 	}
@@ -232,76 +234,76 @@ public class SamlSpSessionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (samlIdpEntityId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(samlIdpEntityId);
+			objectOutput.writeObject(samlIdpEntityId);
 		}
 
 		if (samlSpSessionKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(samlSpSessionKey);
+			objectOutput.writeObject(samlSpSessionKey);
 		}
 
 		if (assertionXml == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(assertionXml);
+			objectOutput.writeObject(assertionXml);
 		}
 
 		if (jSessionId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(jSessionId);
+			objectOutput.writeObject(jSessionId);
 		}
 
 		if (nameIdFormat == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(nameIdFormat);
+			objectOutput.writeObject(nameIdFormat);
 		}
 
 		if (nameIdNameQualifier == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(nameIdNameQualifier);
+			objectOutput.writeObject(nameIdNameQualifier);
 		}
 
 		if (nameIdSPNameQualifier == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(nameIdSPNameQualifier);
+			objectOutput.writeObject(nameIdSPNameQualifier);
 		}
 
 		if (nameIdValue == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(nameIdValue);
+			objectOutput.writeObject(nameIdValue);
 		}
 
 		if (sessionIndex == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sessionIndex);
+			objectOutput.writeObject(sessionIndex);
 		}
 
 		objectOutput.writeBoolean(terminated);

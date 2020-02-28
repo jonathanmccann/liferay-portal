@@ -246,22 +246,24 @@ public class PasswordPolicyCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		passwordPolicyId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		defaultPolicy = objectInput.readBoolean();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
 
 		changeable = objectInput.readBoolean();
 
@@ -284,7 +286,7 @@ public class PasswordPolicyCacheModel
 		minSymbols = objectInput.readInt();
 
 		minUpperCase = objectInput.readInt();
-		regex = objectInput.readUTF();
+		regex = (String)objectInput.readObject();
 
 		history = objectInput.readBoolean();
 
@@ -316,10 +318,10 @@ public class PasswordPolicyCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(passwordPolicyId);
@@ -329,10 +331,10 @@ public class PasswordPolicyCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -341,17 +343,17 @@ public class PasswordPolicyCacheModel
 		objectOutput.writeBoolean(defaultPolicy);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		objectOutput.writeBoolean(changeable);
@@ -377,10 +379,10 @@ public class PasswordPolicyCacheModel
 		objectOutput.writeInt(minUpperCase);
 
 		if (regex == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(regex);
+			objectOutput.writeObject(regex);
 		}
 
 		objectOutput.writeBoolean(history);

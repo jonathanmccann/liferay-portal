@@ -236,9 +236,11 @@ public class DLFolderCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		folderId = objectInput.readLong();
 
@@ -247,7 +249,7 @@ public class DLFolderCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -256,9 +258,9 @@ public class DLFolderCacheModel
 		mountPoint = objectInput.readBoolean();
 
 		parentFolderId = objectInput.readLong();
-		treePath = objectInput.readUTF();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
+		treePath = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
 		lastPostDate = objectInput.readLong();
 
 		defaultFileEntryTypeId = objectInput.readLong();
@@ -271,7 +273,7 @@ public class DLFolderCacheModel
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
@@ -280,10 +282,10 @@ public class DLFolderCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(folderId);
@@ -295,10 +297,10 @@ public class DLFolderCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -311,24 +313,24 @@ public class DLFolderCacheModel
 		objectOutput.writeLong(parentFolderId);
 
 		if (treePath == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(treePath);
+			objectOutput.writeObject(treePath);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		objectOutput.writeLong(lastPostDate);
@@ -345,10 +347,10 @@ public class DLFolderCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

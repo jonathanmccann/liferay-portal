@@ -227,33 +227,35 @@ public class OAuth2ApplicationCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		oAuth2ApplicationId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		oAuth2ApplicationScopeAliasesId = objectInput.readLong();
-		allowedGrantTypes = objectInput.readUTF();
+		allowedGrantTypes = (String)objectInput.readObject();
 
 		clientCredentialUserId = objectInput.readLong();
-		clientCredentialUserName = objectInput.readUTF();
-		clientId = objectInput.readUTF();
+		clientCredentialUserName = (String)objectInput.readObject();
+		clientId = (String)objectInput.readObject();
 
 		clientProfile = objectInput.readInt();
-		clientSecret = objectInput.readUTF();
-		description = objectInput.readUTF();
-		features = objectInput.readUTF();
-		homePageURL = objectInput.readUTF();
+		clientSecret = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		features = (String)objectInput.readObject();
+		homePageURL = (String)objectInput.readObject();
 
 		iconFileEntryId = objectInput.readLong();
-		name = objectInput.readUTF();
-		privacyPolicyURL = objectInput.readUTF();
-		redirectURIs = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		privacyPolicyURL = (String)objectInput.readObject();
+		redirectURIs = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -265,10 +267,10 @@ public class OAuth2ApplicationCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -277,79 +279,79 @@ public class OAuth2ApplicationCacheModel
 		objectOutput.writeLong(oAuth2ApplicationScopeAliasesId);
 
 		if (allowedGrantTypes == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(allowedGrantTypes);
+			objectOutput.writeObject(allowedGrantTypes);
 		}
 
 		objectOutput.writeLong(clientCredentialUserId);
 
 		if (clientCredentialUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(clientCredentialUserName);
+			objectOutput.writeObject(clientCredentialUserName);
 		}
 
 		if (clientId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(clientId);
+			objectOutput.writeObject(clientId);
 		}
 
 		objectOutput.writeInt(clientProfile);
 
 		if (clientSecret == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(clientSecret);
+			objectOutput.writeObject(clientSecret);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (features == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(features);
+			objectOutput.writeObject(features);
 		}
 
 		if (homePageURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(homePageURL);
+			objectOutput.writeObject(homePageURL);
 		}
 
 		objectOutput.writeLong(iconFileEntryId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (privacyPolicyURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(privacyPolicyURL);
+			objectOutput.writeObject(privacyPolicyURL);
 		}
 
 		if (redirectURIs == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(redirectURIs);
+			objectOutput.writeObject(redirectURIs);
 		}
 	}
 

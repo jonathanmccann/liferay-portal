@@ -199,9 +199,11 @@ public class CalendarCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		calendarId = objectInput.readLong();
 
@@ -210,14 +212,14 @@ public class CalendarCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		calendarResourceId = objectInput.readLong();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		timeZoneId = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		timeZoneId = (String)objectInput.readObject();
 
 		color = objectInput.readInt();
 
@@ -234,10 +236,10 @@ public class CalendarCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(calendarId);
@@ -249,10 +251,10 @@ public class CalendarCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -261,24 +263,24 @@ public class CalendarCacheModel
 		objectOutput.writeLong(calendarResourceId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (timeZoneId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(timeZoneId);
+			objectOutput.writeObject(timeZoneId);
 		}
 
 		objectOutput.writeInt(color);

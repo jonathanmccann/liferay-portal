@@ -218,33 +218,35 @@ public class MessageCacheModel implements CacheModel<Message>, Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		messageId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		accountId = objectInput.readLong();
 
 		folderId = objectInput.readLong();
-		sender = objectInput.readUTF();
-		to = objectInput.readUTF();
-		cc = objectInput.readUTF();
-		bcc = objectInput.readUTF();
+		sender = (String)objectInput.readObject();
+		to = (String)objectInput.readObject();
+		cc = (String)objectInput.readObject();
+		bcc = (String)objectInput.readObject();
 		sentDate = objectInput.readLong();
-		subject = objectInput.readUTF();
-		preview = objectInput.readUTF();
-		body = objectInput.readUTF();
-		flags = objectInput.readUTF();
+		subject = (String)objectInput.readObject();
+		preview = (String)objectInput.readObject();
+		body = (String)objectInput.readObject();
+		flags = (String)objectInput.readObject();
 
 		size = objectInput.readLong();
 
 		remoteMessageId = objectInput.readLong();
-		contentType = objectInput.readUTF();
+		contentType = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -256,10 +258,10 @@ public class MessageCacheModel implements CacheModel<Message>, Externalizable {
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -270,61 +272,61 @@ public class MessageCacheModel implements CacheModel<Message>, Externalizable {
 		objectOutput.writeLong(folderId);
 
 		if (sender == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sender);
+			objectOutput.writeObject(sender);
 		}
 
 		if (to == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(to);
+			objectOutput.writeObject(to);
 		}
 
 		if (cc == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(cc);
+			objectOutput.writeObject(cc);
 		}
 
 		if (bcc == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(bcc);
+			objectOutput.writeObject(bcc);
 		}
 
 		objectOutput.writeLong(sentDate);
 
 		if (subject == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(subject);
+			objectOutput.writeObject(subject);
 		}
 
 		if (preview == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(preview);
+			objectOutput.writeObject(preview);
 		}
 
 		if (body == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(body);
+			objectOutput.writeObject(body);
 		}
 
 		if (flags == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(flags);
+			objectOutput.writeObject(flags);
 		}
 
 		objectOutput.writeLong(size);
@@ -332,10 +334,10 @@ public class MessageCacheModel implements CacheModel<Message>, Externalizable {
 		objectOutput.writeLong(remoteMessageId);
 
 		if (contentType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(contentType);
+			objectOutput.writeObject(contentType);
 		}
 	}
 

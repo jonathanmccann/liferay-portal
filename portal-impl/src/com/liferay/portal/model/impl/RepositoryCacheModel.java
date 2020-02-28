@@ -199,9 +199,11 @@ public class RepositoryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		repositoryId = objectInput.readLong();
 
@@ -210,15 +212,15 @@ public class RepositoryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		portletId = objectInput.readUTF();
-		typeSettings = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		portletId = (String)objectInput.readObject();
+		typeSettings = (String)objectInput.readObject();
 
 		dlFolderId = objectInput.readLong();
 		lastPublishDate = objectInput.readLong();
@@ -229,10 +231,10 @@ public class RepositoryCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(repositoryId);
@@ -244,10 +246,10 @@ public class RepositoryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -256,31 +258,31 @@ public class RepositoryCacheModel
 		objectOutput.writeLong(classNameId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (portletId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(portletId);
+			objectOutput.writeObject(portletId);
 		}
 
 		if (typeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeSettings);
+			objectOutput.writeObject(typeSettings);
 		}
 
 		objectOutput.writeLong(dlFolderId);

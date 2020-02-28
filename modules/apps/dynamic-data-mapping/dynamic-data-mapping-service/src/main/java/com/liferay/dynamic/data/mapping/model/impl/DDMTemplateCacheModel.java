@@ -281,7 +281,7 @@ public class DDMTemplateCacheModel
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		templateId = objectInput.readLong();
 
@@ -290,10 +290,10 @@ public class DDMTemplateCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 
 		versionUserId = objectInput.readLong();
-		versionUserName = objectInput.readUTF();
+		versionUserName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -302,21 +302,21 @@ public class DDMTemplateCacheModel
 		classPK = objectInput.readLong();
 
 		resourceClassNameId = objectInput.readLong();
-		templateKey = objectInput.readUTF();
-		version = objectInput.readUTF();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		type = objectInput.readUTF();
-		mode = objectInput.readUTF();
-		language = objectInput.readUTF();
-		script = objectInput.readUTF();
+		templateKey = (String)objectInput.readObject();
+		version = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		type = (String)objectInput.readObject();
+		mode = (String)objectInput.readObject();
+		language = (String)objectInput.readObject();
+		script = (String)objectInput.readObject();
 
 		cacheable = objectInput.readBoolean();
 
 		smallImage = objectInput.readBoolean();
 
 		smallImageId = objectInput.readLong();
-		smallImageURL = objectInput.readUTF();
+		smallImageURL = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 
 		_resourceClassName = (String)objectInput.readObject();
@@ -329,10 +329,10 @@ public class DDMTemplateCacheModel
 		objectOutput.writeLong(ctCollectionId);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(templateId);
@@ -344,19 +344,19 @@ public class DDMTemplateCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(versionUserId);
 
 		if (versionUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(versionUserName);
+			objectOutput.writeObject(versionUserName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -369,59 +369,59 @@ public class DDMTemplateCacheModel
 		objectOutput.writeLong(resourceClassNameId);
 
 		if (templateKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(templateKey);
+			objectOutput.writeObject(templateKey);
 		}
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		if (mode == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(mode);
+			objectOutput.writeObject(mode);
 		}
 
 		if (language == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(language);
+			objectOutput.writeObject(language);
 		}
 
 		if (script == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(script);
+			objectOutput.writeObject(script);
 		}
 
 		objectOutput.writeBoolean(cacheable);
@@ -431,10 +431,10 @@ public class DDMTemplateCacheModel
 		objectOutput.writeLong(smallImageId);
 
 		if (smallImageURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(smallImageURL);
+			objectOutput.writeObject(smallImageURL);
 		}
 
 		objectOutput.writeLong(lastPublishDate);

@@ -220,7 +220,7 @@ public class BatchEngineExportTaskCacheModel
 		throws ClassNotFoundException, IOException {
 
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		batchEngineExportTaskId = objectInput.readLong();
 
@@ -229,13 +229,13 @@ public class BatchEngineExportTaskCacheModel
 		userId = objectInput.readLong();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		callbackURL = objectInput.readUTF();
-		className = objectInput.readUTF();
-		contentType = objectInput.readUTF();
+		callbackURL = (String)objectInput.readObject();
+		className = (String)objectInput.readObject();
+		contentType = (String)objectInput.readObject();
 		endTime = objectInput.readLong();
-		errorMessage = objectInput.readUTF();
-		fieldNames = objectInput.readUTF();
-		executeStatus = objectInput.readUTF();
+		errorMessage = (String)objectInput.readObject();
+		fieldNames = (String)objectInput.readObject();
+		executeStatus = (String)objectInput.readObject();
 		parameters = (Map<String, Serializable>)objectInput.readObject();
 		startTime = objectInput.readLong();
 	}
@@ -245,10 +245,10 @@ public class BatchEngineExportTaskCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(batchEngineExportTaskId);
@@ -260,47 +260,47 @@ public class BatchEngineExportTaskCacheModel
 		objectOutput.writeLong(modifiedDate);
 
 		if (callbackURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(callbackURL);
+			objectOutput.writeObject(callbackURL);
 		}
 
 		if (className == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(className);
+			objectOutput.writeObject(className);
 		}
 
 		if (contentType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(contentType);
+			objectOutput.writeObject(contentType);
 		}
 
 		objectOutput.writeLong(endTime);
 
 		if (errorMessage == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(errorMessage);
+			objectOutput.writeObject(errorMessage);
 		}
 
 		if (fieldNames == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(fieldNames);
+			objectOutput.writeObject(fieldNames);
 		}
 
 		if (executeStatus == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(executeStatus);
+			objectOutput.writeObject(executeStatus);
 		}
 
 		objectOutput.writeObject(parameters);

@@ -127,7 +127,9 @@ public class SocialActivityCounterCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		activityCounterId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
@@ -137,7 +139,7 @@ public class SocialActivityCounterCacheModel
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 
 		ownerType = objectInput.readInt();
 
@@ -167,10 +169,10 @@ public class SocialActivityCounterCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		objectOutput.writeInt(ownerType);

@@ -203,8 +203,10 @@ public class MBThreadCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		threadId = objectInput.readLong();
 
@@ -213,7 +215,7 @@ public class MBThreadCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -222,7 +224,7 @@ public class MBThreadCacheModel
 		rootMessageId = objectInput.readLong();
 
 		rootMessageUserId = objectInput.readLong();
-		title = objectInput.readUTF();
+		title = (String)objectInput.readObject();
 
 		messageCount = objectInput.readInt();
 
@@ -237,17 +239,17 @@ public class MBThreadCacheModel
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(threadId);
@@ -259,10 +261,10 @@ public class MBThreadCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -275,10 +277,10 @@ public class MBThreadCacheModel
 		objectOutput.writeLong(rootMessageUserId);
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		objectOutput.writeInt(messageCount);
@@ -296,10 +298,10 @@ public class MBThreadCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

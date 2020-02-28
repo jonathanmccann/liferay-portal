@@ -210,7 +210,9 @@ public class KaleoTaskAssignmentCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoTaskAssignmentId = objectInput.readLong();
@@ -220,23 +222,23 @@ public class KaleoTaskAssignmentCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		kaleoClassName = objectInput.readUTF();
+		kaleoClassName = (String)objectInput.readObject();
 
 		kaleoClassPK = objectInput.readLong();
 
 		kaleoDefinitionVersionId = objectInput.readLong();
 
 		kaleoNodeId = objectInput.readLong();
-		assigneeClassName = objectInput.readUTF();
+		assigneeClassName = (String)objectInput.readObject();
 
 		assigneeClassPK = objectInput.readLong();
-		assigneeActionId = objectInput.readUTF();
-		assigneeScript = objectInput.readUTF();
-		assigneeScriptLanguage = objectInput.readUTF();
-		assigneeScriptRequiredContexts = objectInput.readUTF();
+		assigneeActionId = (String)objectInput.readObject();
+		assigneeScript = (String)objectInput.readObject();
+		assigneeScriptLanguage = (String)objectInput.readObject();
+		assigneeScriptRequiredContexts = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -252,20 +254,20 @@ public class KaleoTaskAssignmentCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (kaleoClassName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(kaleoClassName);
+			objectOutput.writeObject(kaleoClassName);
 		}
 
 		objectOutput.writeLong(kaleoClassPK);
@@ -275,40 +277,40 @@ public class KaleoTaskAssignmentCacheModel
 		objectOutput.writeLong(kaleoNodeId);
 
 		if (assigneeClassName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(assigneeClassName);
+			objectOutput.writeObject(assigneeClassName);
 		}
 
 		objectOutput.writeLong(assigneeClassPK);
 
 		if (assigneeActionId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(assigneeActionId);
+			objectOutput.writeObject(assigneeActionId);
 		}
 
 		if (assigneeScript == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(assigneeScript);
+			objectOutput.writeObject(assigneeScript);
 		}
 
 		if (assigneeScriptLanguage == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(assigneeScriptLanguage);
+			objectOutput.writeObject(assigneeScriptLanguage);
 		}
 
 		if (assigneeScriptRequiredContexts == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(assigneeScriptRequiredContexts);
+			objectOutput.writeObject(assigneeScriptRequiredContexts);
 		}
 	}
 

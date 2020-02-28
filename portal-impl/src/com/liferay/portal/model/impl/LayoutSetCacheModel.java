@@ -202,11 +202,11 @@ public class LayoutSetCacheModel
 		privateLayout = objectInput.readBoolean();
 
 		logoId = objectInput.readLong();
-		themeId = objectInput.readUTF();
-		colorSchemeId = objectInput.readUTF();
-		css = objectInput.readUTF();
-		settings = objectInput.readUTF();
-		layoutSetPrototypeUuid = objectInput.readUTF();
+		themeId = (String)objectInput.readObject();
+		colorSchemeId = (String)objectInput.readObject();
+		css = (String)objectInput.readObject();
+		settings = (String)objectInput.readObject();
+		layoutSetPrototypeUuid = (String)objectInput.readObject();
 
 		layoutSetPrototypeLinkEnabled = objectInput.readBoolean();
 
@@ -231,38 +231,38 @@ public class LayoutSetCacheModel
 		objectOutput.writeLong(logoId);
 
 		if (themeId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(themeId);
+			objectOutput.writeObject(themeId);
 		}
 
 		if (colorSchemeId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(colorSchemeId);
+			objectOutput.writeObject(colorSchemeId);
 		}
 
 		if (css == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(css);
+			objectOutput.writeObject(css);
 		}
 
 		if (settings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(settings);
+			objectOutput.writeObject(settings);
 		}
 
 		if (layoutSetPrototypeUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(layoutSetPrototypeUuid);
+			objectOutput.writeObject(layoutSetPrototypeUuid);
 		}
 
 		objectOutput.writeBoolean(layoutSetPrototypeLinkEnabled);

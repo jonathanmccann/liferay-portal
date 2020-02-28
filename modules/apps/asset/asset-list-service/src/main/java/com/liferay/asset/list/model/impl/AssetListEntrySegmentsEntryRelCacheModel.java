@@ -186,11 +186,13 @@ public class AssetListEntrySegmentsEntryRelCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		assetListEntrySegmentsEntryRelId = objectInput.readLong();
 
@@ -199,14 +201,14 @@ public class AssetListEntrySegmentsEntryRelCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		assetListEntryId = objectInput.readLong();
 
 		segmentsEntryId = objectInput.readLong();
-		typeSettings = objectInput.readUTF();
+		typeSettings = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 	}
 
@@ -217,10 +219,10 @@ public class AssetListEntrySegmentsEntryRelCacheModel
 		objectOutput.writeLong(ctCollectionId);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(assetListEntrySegmentsEntryRelId);
@@ -232,10 +234,10 @@ public class AssetListEntrySegmentsEntryRelCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -246,10 +248,10 @@ public class AssetListEntrySegmentsEntryRelCacheModel
 		objectOutput.writeLong(segmentsEntryId);
 
 		if (typeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeSettings);
+			objectOutput.writeObject(typeSettings);
 		}
 
 		objectOutput.writeLong(lastPublishDate);

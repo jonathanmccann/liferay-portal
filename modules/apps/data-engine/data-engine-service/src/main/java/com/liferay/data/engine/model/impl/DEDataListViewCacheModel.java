@@ -168,8 +168,10 @@ public class DEDataListViewCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		deDataListViewId = objectInput.readLong();
 
@@ -178,24 +180,24 @@ public class DEDataListViewCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		appliedFilters = objectInput.readUTF();
+		appliedFilters = (String)objectInput.readObject();
 
 		ddmStructureId = objectInput.readLong();
-		fieldNames = objectInput.readUTF();
-		name = objectInput.readUTF();
-		sortField = objectInput.readUTF();
+		fieldNames = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		sortField = (String)objectInput.readObject();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(deDataListViewId);
@@ -207,43 +209,43 @@ public class DEDataListViewCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (appliedFilters == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(appliedFilters);
+			objectOutput.writeObject(appliedFilters);
 		}
 
 		objectOutput.writeLong(ddmStructureId);
 
 		if (fieldNames == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(fieldNames);
+			objectOutput.writeObject(fieldNames);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (sortField == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sortField);
+			objectOutput.writeObject(sortField);
 		}
 	}
 

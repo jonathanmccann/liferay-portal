@@ -208,8 +208,10 @@ public class MBCategoryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		categoryId = objectInput.readLong();
 
@@ -218,14 +220,14 @@ public class MBCategoryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		parentCategoryId = objectInput.readLong();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		displayStyle = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		displayStyle = (String)objectInput.readObject();
 
 		threadCount = objectInput.readInt();
 
@@ -236,17 +238,17 @@ public class MBCategoryCacheModel
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(categoryId);
@@ -258,10 +260,10 @@ public class MBCategoryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -270,24 +272,24 @@ public class MBCategoryCacheModel
 		objectOutput.writeLong(parentCategoryId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (displayStyle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(displayStyle);
+			objectOutput.writeObject(displayStyle);
 		}
 
 		objectOutput.writeInt(threadCount);
@@ -301,10 +303,10 @@ public class MBCategoryCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

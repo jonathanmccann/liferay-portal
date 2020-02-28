@@ -175,7 +175,9 @@ public class MFAEmailOTPEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		mfaEmailOTPEntryId = objectInput.readLong();
@@ -183,15 +185,15 @@ public class MFAEmailOTPEntryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		failedAttempts = objectInput.readInt();
 		lastFailDate = objectInput.readLong();
-		lastFailIP = objectInput.readUTF();
+		lastFailIP = (String)objectInput.readObject();
 		lastSuccessDate = objectInput.readLong();
-		lastSuccessIP = objectInput.readUTF();
+		lastSuccessIP = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -205,10 +207,10 @@ public class MFAEmailOTPEntryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -218,19 +220,19 @@ public class MFAEmailOTPEntryCacheModel
 		objectOutput.writeLong(lastFailDate);
 
 		if (lastFailIP == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(lastFailIP);
+			objectOutput.writeObject(lastFailIP);
 		}
 
 		objectOutput.writeLong(lastSuccessDate);
 
 		if (lastSuccessIP == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(lastSuccessIP);
+			objectOutput.writeObject(lastSuccessIP);
 		}
 	}
 

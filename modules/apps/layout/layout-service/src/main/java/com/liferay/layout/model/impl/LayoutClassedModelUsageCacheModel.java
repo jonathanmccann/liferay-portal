@@ -174,9 +174,11 @@ public class LayoutClassedModelUsageCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		layoutClassedModelUsageId = objectInput.readLong();
 
@@ -189,7 +191,7 @@ public class LayoutClassedModelUsageCacheModel
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		containerKey = objectInput.readUTF();
+		containerKey = (String)objectInput.readObject();
 
 		containerType = objectInput.readLong();
 
@@ -204,10 +206,10 @@ public class LayoutClassedModelUsageCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(layoutClassedModelUsageId);
@@ -223,10 +225,10 @@ public class LayoutClassedModelUsageCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (containerKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(containerKey);
+			objectOutput.writeObject(containerKey);
 		}
 
 		objectOutput.writeLong(containerType);

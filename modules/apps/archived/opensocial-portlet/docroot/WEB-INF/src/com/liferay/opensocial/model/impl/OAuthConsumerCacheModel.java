@@ -149,17 +149,19 @@ public class OAuthConsumerCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		oAuthConsumerId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		gadgetKey = objectInput.readUTF();
-		serviceName = objectInput.readUTF();
-		consumerKey = objectInput.readUTF();
-		consumerSecret = objectInput.readUTF();
-		keyType = objectInput.readUTF();
+		gadgetKey = (String)objectInput.readObject();
+		serviceName = (String)objectInput.readObject();
+		consumerKey = (String)objectInput.readObject();
+		consumerSecret = (String)objectInput.readObject();
+		keyType = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -171,38 +173,38 @@ public class OAuthConsumerCacheModel
 		objectOutput.writeLong(modifiedDate);
 
 		if (gadgetKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(gadgetKey);
+			objectOutput.writeObject(gadgetKey);
 		}
 
 		if (serviceName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(serviceName);
+			objectOutput.writeObject(serviceName);
 		}
 
 		if (consumerKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(consumerKey);
+			objectOutput.writeObject(consumerKey);
 		}
 
 		if (consumerSecret == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(consumerSecret);
+			objectOutput.writeObject(consumerSecret);
 		}
 
 		if (keyType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(keyType);
+			objectOutput.writeObject(keyType);
 		}
 	}
 

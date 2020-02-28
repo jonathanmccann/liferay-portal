@@ -120,15 +120,17 @@ public class PushNotificationsDeviceCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		pushNotificationsDeviceId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
 		createDate = objectInput.readLong();
-		platform = objectInput.readUTF();
-		token = objectInput.readUTF();
+		platform = (String)objectInput.readObject();
+		token = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -141,17 +143,17 @@ public class PushNotificationsDeviceCacheModel
 		objectOutput.writeLong(createDate);
 
 		if (platform == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(platform);
+			objectOutput.writeObject(platform);
 		}
 
 		if (token == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(token);
+			objectOutput.writeObject(token);
 		}
 	}
 

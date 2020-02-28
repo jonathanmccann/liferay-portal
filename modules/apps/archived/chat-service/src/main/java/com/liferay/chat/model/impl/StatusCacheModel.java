@@ -113,7 +113,9 @@ public class StatusCacheModel implements CacheModel<Status>, Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		statusId = objectInput.readLong();
 
 		userId = objectInput.readLong();
@@ -123,8 +125,8 @@ public class StatusCacheModel implements CacheModel<Status>, Externalizable {
 		online = objectInput.readBoolean();
 
 		awake = objectInput.readBoolean();
-		activePanelIds = objectInput.readUTF();
-		message = objectInput.readUTF();
+		activePanelIds = (String)objectInput.readObject();
+		message = (String)objectInput.readObject();
 
 		playSound = objectInput.readBoolean();
 	}
@@ -142,17 +144,17 @@ public class StatusCacheModel implements CacheModel<Status>, Externalizable {
 		objectOutput.writeBoolean(awake);
 
 		if (activePanelIds == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(activePanelIds);
+			objectOutput.writeObject(activePanelIds);
 		}
 
 		if (message == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(message);
+			objectOutput.writeObject(message);
 		}
 
 		objectOutput.writeBoolean(playSound);

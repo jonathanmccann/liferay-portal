@@ -230,24 +230,24 @@ public class DDMStructureVersionCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 
 		structureId = objectInput.readLong();
-		version = objectInput.readUTF();
+		version = (String)objectInput.readObject();
 
 		parentStructureId = objectInput.readLong();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		definition = objectInput.readUTF();
-		storageType = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		definition = (String)objectInput.readObject();
+		storageType = (String)objectInput.readObject();
 
 		type = objectInput.readInt();
 
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 
 		_ddmForm =
@@ -270,10 +270,10 @@ public class DDMStructureVersionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -281,40 +281,40 @@ public class DDMStructureVersionCacheModel
 		objectOutput.writeLong(structureId);
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		objectOutput.writeLong(parentStructureId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (definition == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(definition);
+			objectOutput.writeObject(definition);
 		}
 
 		if (storageType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(storageType);
+			objectOutput.writeObject(storageType);
 		}
 
 		objectOutput.writeInt(type);
@@ -324,10 +324,10 @@ public class DDMStructureVersionCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

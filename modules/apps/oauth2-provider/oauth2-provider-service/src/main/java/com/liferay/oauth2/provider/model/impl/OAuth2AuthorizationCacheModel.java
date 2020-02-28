@@ -204,26 +204,28 @@ public class OAuth2AuthorizationCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		oAuth2AuthorizationId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 
 		oAuth2ApplicationId = objectInput.readLong();
 
 		oAuth2ApplicationScopeAliasesId = objectInput.readLong();
-		accessTokenContent = objectInput.readUTF();
+		accessTokenContent = (String)objectInput.readObject();
 
 		accessTokenContentHash = objectInput.readLong();
 		accessTokenCreateDate = objectInput.readLong();
 		accessTokenExpirationDate = objectInput.readLong();
-		remoteHostInfo = objectInput.readUTF();
-		remoteIPInfo = objectInput.readUTF();
-		refreshTokenContent = objectInput.readUTF();
+		remoteHostInfo = (String)objectInput.readObject();
+		remoteIPInfo = (String)objectInput.readObject();
+		refreshTokenContent = (String)objectInput.readObject();
 
 		refreshTokenContentHash = objectInput.readLong();
 		refreshTokenCreateDate = objectInput.readLong();
@@ -239,10 +241,10 @@ public class OAuth2AuthorizationCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -252,10 +254,10 @@ public class OAuth2AuthorizationCacheModel
 		objectOutput.writeLong(oAuth2ApplicationScopeAliasesId);
 
 		if (accessTokenContent == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(accessTokenContent);
+			objectOutput.writeObject(accessTokenContent);
 		}
 
 		objectOutput.writeLong(accessTokenContentHash);
@@ -263,24 +265,24 @@ public class OAuth2AuthorizationCacheModel
 		objectOutput.writeLong(accessTokenExpirationDate);
 
 		if (remoteHostInfo == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(remoteHostInfo);
+			objectOutput.writeObject(remoteHostInfo);
 		}
 
 		if (remoteIPInfo == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(remoteIPInfo);
+			objectOutput.writeObject(remoteIPInfo);
 		}
 
 		if (refreshTokenContent == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(refreshTokenContent);
+			objectOutput.writeObject(refreshTokenContent);
 		}
 
 		objectOutput.writeLong(refreshTokenContentHash);

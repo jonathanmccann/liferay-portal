@@ -213,7 +213,9 @@ public class DDMTemplateVersionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -225,7 +227,7 @@ public class DDMTemplateVersionCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
@@ -233,16 +235,16 @@ public class DDMTemplateVersionCacheModel
 		classPK = objectInput.readLong();
 
 		templateId = objectInput.readLong();
-		version = objectInput.readUTF();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		language = objectInput.readUTF();
-		script = objectInput.readUTF();
+		version = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		language = (String)objectInput.readObject();
+		script = (String)objectInput.readObject();
 
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
@@ -261,10 +263,10 @@ public class DDMTemplateVersionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -276,38 +278,38 @@ public class DDMTemplateVersionCacheModel
 		objectOutput.writeLong(templateId);
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (language == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(language);
+			objectOutput.writeObject(language);
 		}
 
 		if (script == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(script);
+			objectOutput.writeObject(script);
 		}
 
 		objectOutput.writeInt(status);
@@ -315,10 +317,10 @@ public class DDMTemplateVersionCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

@@ -121,19 +121,21 @@ public class LVEntryVersionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		lvEntryVersionId = objectInput.readLong();
 
 		version = objectInput.readInt();
-		uuid = objectInput.readUTF();
-		defaultLanguageId = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
+		defaultLanguageId = (String)objectInput.readObject();
 
 		lvEntryId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
-		uniqueGroupKey = objectInput.readUTF();
+		uniqueGroupKey = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -143,17 +145,17 @@ public class LVEntryVersionCacheModel
 		objectOutput.writeInt(version);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		if (defaultLanguageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(defaultLanguageId);
+			objectOutput.writeObject(defaultLanguageId);
 		}
 
 		objectOutput.writeLong(lvEntryId);
@@ -163,10 +165,10 @@ public class LVEntryVersionCacheModel
 		objectOutput.writeLong(groupId);
 
 		if (uniqueGroupKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uniqueGroupKey);
+			objectOutput.writeObject(uniqueGroupKey);
 		}
 	}
 

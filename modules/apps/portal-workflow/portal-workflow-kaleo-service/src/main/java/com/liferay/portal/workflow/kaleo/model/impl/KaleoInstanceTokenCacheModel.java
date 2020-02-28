@@ -189,7 +189,9 @@ public class KaleoInstanceTokenCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoInstanceTokenId = objectInput.readLong();
@@ -199,7 +201,7 @@ public class KaleoInstanceTokenCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -210,8 +212,8 @@ public class KaleoInstanceTokenCacheModel
 		parentKaleoInstanceTokenId = objectInput.readLong();
 
 		currentKaleoNodeId = objectInput.readLong();
-		currentKaleoNodeName = objectInput.readUTF();
-		className = objectInput.readUTF();
+		currentKaleoNodeName = (String)objectInput.readObject();
+		className = (String)objectInput.readObject();
 
 		classPK = objectInput.readLong();
 
@@ -232,10 +234,10 @@ public class KaleoInstanceTokenCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -250,17 +252,17 @@ public class KaleoInstanceTokenCacheModel
 		objectOutput.writeLong(currentKaleoNodeId);
 
 		if (currentKaleoNodeName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(currentKaleoNodeName);
+			objectOutput.writeObject(currentKaleoNodeName);
 		}
 
 		if (className == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(className);
+			objectOutput.writeObject(className);
 		}
 
 		objectOutput.writeLong(classPK);

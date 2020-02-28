@@ -120,7 +120,9 @@ public class DepotAppCustomizationCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		depotAppCustomizationId = objectInput.readLong();
@@ -130,7 +132,7 @@ public class DepotAppCustomizationCacheModel
 		depotEntryId = objectInput.readLong();
 
 		enabled = objectInput.readBoolean();
-		portletId = objectInput.readUTF();
+		portletId = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -146,10 +148,10 @@ public class DepotAppCustomizationCacheModel
 		objectOutput.writeBoolean(enabled);
 
 		if (portletId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(portletId);
+			objectOutput.writeObject(portletId);
 		}
 	}
 

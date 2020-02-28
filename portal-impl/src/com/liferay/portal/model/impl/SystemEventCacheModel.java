@@ -166,7 +166,9 @@ public class SystemEventCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		systemEventId = objectInput.readLong();
@@ -176,13 +178,13 @@ public class SystemEventCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		classUuid = objectInput.readUTF();
+		classUuid = (String)objectInput.readObject();
 
 		referrerClassNameId = objectInput.readLong();
 
@@ -191,7 +193,7 @@ public class SystemEventCacheModel
 		systemEventSetKey = objectInput.readLong();
 
 		type = objectInput.readInt();
-		extraData = objectInput.readUTF();
+		extraData = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -207,10 +209,10 @@ public class SystemEventCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -220,10 +222,10 @@ public class SystemEventCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (classUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(classUuid);
+			objectOutput.writeObject(classUuid);
 		}
 
 		objectOutput.writeLong(referrerClassNameId);
@@ -235,10 +237,10 @@ public class SystemEventCacheModel
 		objectOutput.writeInt(type);
 
 		if (extraData == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(extraData);
+			objectOutput.writeObject(extraData);
 		}
 	}
 

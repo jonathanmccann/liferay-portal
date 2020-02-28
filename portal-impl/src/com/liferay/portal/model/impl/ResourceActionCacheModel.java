@@ -121,12 +121,14 @@ public class ResourceActionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		resourceActionId = objectInput.readLong();
-		name = objectInput.readUTF();
-		actionId = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		actionId = (String)objectInput.readObject();
 
 		bitwiseValue = objectInput.readLong();
 	}
@@ -138,17 +140,17 @@ public class ResourceActionCacheModel
 		objectOutput.writeLong(resourceActionId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (actionId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(actionId);
+			objectOutput.writeObject(actionId);
 		}
 
 		objectOutput.writeLong(bitwiseValue);

@@ -252,9 +252,11 @@ public class WikiPageCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		pageId = objectInput.readLong();
 
@@ -265,29 +267,29 @@ public class WikiPageCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		nodeId = objectInput.readLong();
-		title = objectInput.readUTF();
+		title = (String)objectInput.readObject();
 
 		version = objectInput.readDouble();
 
 		minorEdit = objectInput.readBoolean();
-		content = objectInput.readUTF();
-		summary = objectInput.readUTF();
-		format = objectInput.readUTF();
+		content = (String)objectInput.readObject();
+		summary = (String)objectInput.readObject();
+		format = (String)objectInput.readObject();
 
 		head = objectInput.readBoolean();
-		parentTitle = objectInput.readUTF();
-		redirectTitle = objectInput.readUTF();
+		parentTitle = (String)objectInput.readObject();
+		redirectTitle = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
@@ -296,10 +298,10 @@ public class WikiPageCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(pageId);
@@ -313,10 +315,10 @@ public class WikiPageCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -325,10 +327,10 @@ public class WikiPageCacheModel
 		objectOutput.writeLong(nodeId);
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		objectOutput.writeDouble(version);
@@ -336,40 +338,40 @@ public class WikiPageCacheModel
 		objectOutput.writeBoolean(minorEdit);
 
 		if (content == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(content);
+			objectOutput.writeObject(content);
 		}
 
 		if (summary == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(summary);
+			objectOutput.writeObject(summary);
 		}
 
 		if (format == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(format);
+			objectOutput.writeObject(format);
 		}
 
 		objectOutput.writeBoolean(head);
 
 		if (parentTitle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(parentTitle);
+			objectOutput.writeObject(parentTitle);
 		}
 
 		if (redirectTitle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(redirectTitle);
+			objectOutput.writeObject(redirectTitle);
 		}
 
 		objectOutput.writeLong(lastPublishDate);
@@ -379,10 +381,10 @@ public class WikiPageCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

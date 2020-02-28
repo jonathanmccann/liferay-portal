@@ -123,14 +123,16 @@ public class RegionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		regionId = objectInput.readLong();
 
 		countryId = objectInput.readLong();
-		regionCode = objectInput.readUTF();
-		name = objectInput.readUTF();
+		regionCode = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
 
 		active = objectInput.readBoolean();
 	}
@@ -144,17 +146,17 @@ public class RegionCacheModel
 		objectOutput.writeLong(countryId);
 
 		if (regionCode == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(regionCode);
+			objectOutput.writeObject(regionCode);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		objectOutput.writeBoolean(active);

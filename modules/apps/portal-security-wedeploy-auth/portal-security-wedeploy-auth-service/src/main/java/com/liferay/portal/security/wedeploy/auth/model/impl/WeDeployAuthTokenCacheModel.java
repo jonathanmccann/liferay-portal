@@ -141,17 +141,19 @@ public class WeDeployAuthTokenCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		weDeployAuthTokenId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		clientId = objectInput.readUTF();
-		token = objectInput.readUTF();
+		clientId = (String)objectInput.readObject();
+		token = (String)objectInput.readObject();
 
 		type = objectInput.readInt();
 	}
@@ -165,27 +167,27 @@ public class WeDeployAuthTokenCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (clientId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(clientId);
+			objectOutput.writeObject(clientId);
 		}
 
 		if (token == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(token);
+			objectOutput.writeObject(token);
 		}
 
 		objectOutput.writeInt(type);

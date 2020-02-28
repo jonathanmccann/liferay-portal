@@ -130,8 +130,10 @@ public class SocialRequestCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		requestId = objectInput.readLong();
 
@@ -150,7 +152,7 @@ public class SocialRequestCacheModel
 		classPK = objectInput.readLong();
 
 		type = objectInput.readInt();
-		extraData = objectInput.readUTF();
+		extraData = (String)objectInput.readObject();
 
 		receiverUserId = objectInput.readLong();
 
@@ -160,10 +162,10 @@ public class SocialRequestCacheModel
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(requestId);
@@ -185,10 +187,10 @@ public class SocialRequestCacheModel
 		objectOutput.writeInt(type);
 
 		if (extraData == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(extraData);
+			objectOutput.writeObject(extraData);
 		}
 
 		objectOutput.writeLong(receiverUserId);

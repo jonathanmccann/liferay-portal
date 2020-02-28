@@ -191,25 +191,27 @@ public class AuditEventCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		auditEventId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
-		eventType = objectInput.readUTF();
-		className = objectInput.readUTF();
-		classPK = objectInput.readUTF();
-		message = objectInput.readUTF();
-		clientHost = objectInput.readUTF();
-		clientIP = objectInput.readUTF();
-		serverName = objectInput.readUTF();
+		eventType = (String)objectInput.readObject();
+		className = (String)objectInput.readObject();
+		classPK = (String)objectInput.readObject();
+		message = (String)objectInput.readObject();
+		clientHost = (String)objectInput.readObject();
+		clientIP = (String)objectInput.readObject();
+		serverName = (String)objectInput.readObject();
 
 		serverPort = objectInput.readInt();
-		sessionID = objectInput.readUTF();
-		additionalInfo = objectInput.readUTF();
+		sessionID = (String)objectInput.readObject();
+		additionalInfo = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -221,77 +223,77 @@ public class AuditEventCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 
 		if (eventType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(eventType);
+			objectOutput.writeObject(eventType);
 		}
 
 		if (className == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(className);
+			objectOutput.writeObject(className);
 		}
 
 		if (classPK == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(classPK);
+			objectOutput.writeObject(classPK);
 		}
 
 		if (message == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(message);
+			objectOutput.writeObject(message);
 		}
 
 		if (clientHost == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(clientHost);
+			objectOutput.writeObject(clientHost);
 		}
 
 		if (clientIP == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(clientIP);
+			objectOutput.writeObject(clientIP);
 		}
 
 		if (serverName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(serverName);
+			objectOutput.writeObject(serverName);
 		}
 
 		objectOutput.writeInt(serverPort);
 
 		if (sessionID == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sessionID);
+			objectOutput.writeObject(sessionID);
 		}
 
 		if (additionalInfo == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(additionalInfo);
+			objectOutput.writeObject(additionalInfo);
 		}
 	}
 

@@ -127,7 +127,9 @@ public class VirtualHostCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		virtualHostId = objectInput.readLong();
@@ -135,10 +137,10 @@ public class VirtualHostCacheModel
 		companyId = objectInput.readLong();
 
 		layoutSetId = objectInput.readLong();
-		hostname = objectInput.readUTF();
+		hostname = (String)objectInput.readObject();
 
 		defaultVirtualHost = objectInput.readBoolean();
-		languageId = objectInput.readUTF();
+		languageId = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -152,19 +154,19 @@ public class VirtualHostCacheModel
 		objectOutput.writeLong(layoutSetId);
 
 		if (hostname == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(hostname);
+			objectOutput.writeObject(hostname);
 		}
 
 		objectOutput.writeBoolean(defaultVirtualHost);
 
 		if (languageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(languageId);
+			objectOutput.writeObject(languageId);
 		}
 	}
 

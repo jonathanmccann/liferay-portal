@@ -125,16 +125,18 @@ public class ServiceComponentCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		serviceComponentId = objectInput.readLong();
-		buildNamespace = objectInput.readUTF();
+		buildNamespace = (String)objectInput.readObject();
 
 		buildNumber = objectInput.readLong();
 
 		buildDate = objectInput.readLong();
-		data = objectInput.readUTF();
+		data = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -144,10 +146,10 @@ public class ServiceComponentCacheModel
 		objectOutput.writeLong(serviceComponentId);
 
 		if (buildNamespace == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(buildNamespace);
+			objectOutput.writeObject(buildNamespace);
 		}
 
 		objectOutput.writeLong(buildNumber);
@@ -155,10 +157,10 @@ public class ServiceComponentCacheModel
 		objectOutput.writeLong(buildDate);
 
 		if (data == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(data);
+			objectOutput.writeObject(data);
 		}
 	}
 

@@ -181,11 +181,13 @@ public class AssetListEntryUsageCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		assetListEntryUsageId = objectInput.readLong();
 
@@ -194,7 +196,7 @@ public class AssetListEntryUsageCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -203,7 +205,7 @@ public class AssetListEntryUsageCacheModel
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		portletId = objectInput.readUTF();
+		portletId = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 	}
 
@@ -214,10 +216,10 @@ public class AssetListEntryUsageCacheModel
 		objectOutput.writeLong(ctCollectionId);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(assetListEntryUsageId);
@@ -229,10 +231,10 @@ public class AssetListEntryUsageCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -245,10 +247,10 @@ public class AssetListEntryUsageCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (portletId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(portletId);
+			objectOutput.writeObject(portletId);
 		}
 
 		objectOutput.writeLong(lastPublishDate);

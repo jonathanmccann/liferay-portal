@@ -150,7 +150,9 @@ public class TicketCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ticketId = objectInput.readLong();
@@ -161,10 +163,10 @@ public class TicketCacheModel
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		key = objectInput.readUTF();
+		key = (String)objectInput.readObject();
 
 		type = objectInput.readInt();
-		extraInfo = objectInput.readUTF();
+		extraInfo = (String)objectInput.readObject();
 		expirationDate = objectInput.readLong();
 	}
 
@@ -182,19 +184,19 @@ public class TicketCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (key == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(key);
+			objectOutput.writeObject(key);
 		}
 
 		objectOutput.writeInt(type);
 
 		if (extraInfo == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(extraInfo);
+			objectOutput.writeObject(extraInfo);
 		}
 
 		objectOutput.writeLong(expirationDate);

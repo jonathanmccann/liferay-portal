@@ -161,7 +161,9 @@ public class AssetCategoryPropertyCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -171,13 +173,13 @@ public class AssetCategoryPropertyCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		categoryId = objectInput.readLong();
-		key = objectInput.readUTF();
-		value = objectInput.readUTF();
+		key = (String)objectInput.readObject();
+		value = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -193,10 +195,10 @@ public class AssetCategoryPropertyCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -205,17 +207,17 @@ public class AssetCategoryPropertyCacheModel
 		objectOutput.writeLong(categoryId);
 
 		if (key == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(key);
+			objectOutput.writeObject(key);
 		}
 
 		if (value == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(value);
+			objectOutput.writeObject(value);
 		}
 	}
 

@@ -200,7 +200,9 @@ public class KaleoTimerCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoTimerId = objectInput.readLong();
@@ -210,24 +212,24 @@ public class KaleoTimerCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		kaleoClassName = objectInput.readUTF();
+		kaleoClassName = (String)objectInput.readObject();
 
 		kaleoClassPK = objectInput.readLong();
 
 		kaleoDefinitionVersionId = objectInput.readLong();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 
 		blocking = objectInput.readBoolean();
-		description = objectInput.readUTF();
+		description = (String)objectInput.readObject();
 
 		duration = objectInput.readDouble();
-		scale = objectInput.readUTF();
+		scale = (String)objectInput.readObject();
 
 		recurrenceDuration = objectInput.readDouble();
-		recurrenceScale = objectInput.readUTF();
+		recurrenceScale = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -243,20 +245,20 @@ public class KaleoTimerCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (kaleoClassName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(kaleoClassName);
+			objectOutput.writeObject(kaleoClassName);
 		}
 
 		objectOutput.writeLong(kaleoClassPK);
@@ -264,37 +266,37 @@ public class KaleoTimerCacheModel
 		objectOutput.writeLong(kaleoDefinitionVersionId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		objectOutput.writeBoolean(blocking);
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		objectOutput.writeDouble(duration);
 
 		if (scale == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(scale);
+			objectOutput.writeObject(scale);
 		}
 
 		objectOutput.writeDouble(recurrenceDuration);
 
 		if (recurrenceScale == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(recurrenceScale);
+			objectOutput.writeObject(recurrenceScale);
 		}
 	}
 

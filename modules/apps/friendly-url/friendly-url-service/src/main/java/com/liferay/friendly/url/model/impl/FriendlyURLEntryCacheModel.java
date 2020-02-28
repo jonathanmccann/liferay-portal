@@ -152,10 +152,12 @@ public class FriendlyURLEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
-		defaultLanguageId = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
+		defaultLanguageId = (String)objectInput.readObject();
 
 		friendlyURLEntryId = objectInput.readLong();
 
@@ -175,17 +177,17 @@ public class FriendlyURLEntryCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		if (defaultLanguageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(defaultLanguageId);
+			objectOutput.writeObject(defaultLanguageId);
 		}
 
 		objectOutput.writeLong(friendlyURLEntryId);

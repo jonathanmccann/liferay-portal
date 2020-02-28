@@ -145,7 +145,9 @@ public class ResourcePermissionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -153,10 +155,10 @@ public class ResourcePermissionCacheModel
 		resourcePermissionId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 
 		scope = objectInput.readInt();
-		primKey = objectInput.readUTF();
+		primKey = (String)objectInput.readObject();
 
 		primKeyId = objectInput.readLong();
 
@@ -180,19 +182,19 @@ public class ResourcePermissionCacheModel
 		objectOutput.writeLong(companyId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		objectOutput.writeInt(scope);
 
 		if (primKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(primKey);
+			objectOutput.writeObject(primKey);
 		}
 
 		objectOutput.writeLong(primKeyId);

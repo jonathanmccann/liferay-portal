@@ -272,9 +272,11 @@ public class JournalFeedCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		id = objectInput.readLong();
 
@@ -283,23 +285,23 @@ public class JournalFeedCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		feedId = objectInput.readUTF();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		DDMStructureKey = objectInput.readUTF();
-		DDMTemplateKey = objectInput.readUTF();
-		DDMRendererTemplateKey = objectInput.readUTF();
+		feedId = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		DDMStructureKey = (String)objectInput.readObject();
+		DDMTemplateKey = (String)objectInput.readObject();
+		DDMRendererTemplateKey = (String)objectInput.readObject();
 
 		delta = objectInput.readInt();
-		orderByCol = objectInput.readUTF();
-		orderByType = objectInput.readUTF();
-		targetLayoutFriendlyUrl = objectInput.readUTF();
-		targetPortletId = objectInput.readUTF();
-		contentField = objectInput.readUTF();
-		feedFormat = objectInput.readUTF();
+		orderByCol = (String)objectInput.readObject();
+		orderByType = (String)objectInput.readObject();
+		targetLayoutFriendlyUrl = (String)objectInput.readObject();
+		targetPortletId = (String)objectInput.readObject();
+		contentField = (String)objectInput.readObject();
+		feedFormat = (String)objectInput.readObject();
 
 		feedVersion = objectInput.readDouble();
 		lastPublishDate = objectInput.readLong();
@@ -310,10 +312,10 @@ public class JournalFeedCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(id);
@@ -325,99 +327,99 @@ public class JournalFeedCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (feedId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(feedId);
+			objectOutput.writeObject(feedId);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (DDMStructureKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(DDMStructureKey);
+			objectOutput.writeObject(DDMStructureKey);
 		}
 
 		if (DDMTemplateKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(DDMTemplateKey);
+			objectOutput.writeObject(DDMTemplateKey);
 		}
 
 		if (DDMRendererTemplateKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(DDMRendererTemplateKey);
+			objectOutput.writeObject(DDMRendererTemplateKey);
 		}
 
 		objectOutput.writeInt(delta);
 
 		if (orderByCol == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(orderByCol);
+			objectOutput.writeObject(orderByCol);
 		}
 
 		if (orderByType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(orderByType);
+			objectOutput.writeObject(orderByType);
 		}
 
 		if (targetLayoutFriendlyUrl == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(targetLayoutFriendlyUrl);
+			objectOutput.writeObject(targetLayoutFriendlyUrl);
 		}
 
 		if (targetPortletId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(targetPortletId);
+			objectOutput.writeObject(targetPortletId);
 		}
 
 		if (contentField == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(contentField);
+			objectOutput.writeObject(contentField);
 		}
 
 		if (feedFormat == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(feedFormat);
+			objectOutput.writeObject(feedFormat);
 		}
 
 		objectOutput.writeDouble(feedVersion);

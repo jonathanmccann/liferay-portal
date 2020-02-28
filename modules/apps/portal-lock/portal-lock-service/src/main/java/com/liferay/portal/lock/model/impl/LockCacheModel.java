@@ -174,20 +174,22 @@ public class LockCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		lockId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
-		className = objectInput.readUTF();
-		key = objectInput.readUTF();
-		owner = objectInput.readUTF();
+		className = (String)objectInput.readObject();
+		key = (String)objectInput.readObject();
+		owner = (String)objectInput.readObject();
 
 		inheritable = objectInput.readBoolean();
 		expirationDate = objectInput.readLong();
@@ -198,10 +200,10 @@ public class LockCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(lockId);
@@ -211,33 +213,33 @@ public class LockCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 
 		if (className == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(className);
+			objectOutput.writeObject(className);
 		}
 
 		if (key == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(key);
+			objectOutput.writeObject(key);
 		}
 
 		if (owner == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(owner);
+			objectOutput.writeObject(owner);
 		}
 
 		objectOutput.writeBoolean(inheritable);

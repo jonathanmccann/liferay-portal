@@ -218,9 +218,11 @@ public class CalendarNotificationTemplateCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		calendarNotificationTemplateId = objectInput.readLong();
 
@@ -229,16 +231,16 @@ public class CalendarNotificationTemplateCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		calendarId = objectInput.readLong();
-		notificationType = objectInput.readUTF();
-		notificationTypeSettings = objectInput.readUTF();
-		notificationTemplateType = objectInput.readUTF();
-		subject = objectInput.readUTF();
-		body = objectInput.readUTF();
+		notificationType = (String)objectInput.readObject();
+		notificationTypeSettings = (String)objectInput.readObject();
+		notificationTemplateType = (String)objectInput.readObject();
+		subject = (String)objectInput.readObject();
+		body = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 	}
 
@@ -247,10 +249,10 @@ public class CalendarNotificationTemplateCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(calendarNotificationTemplateId);
@@ -262,10 +264,10 @@ public class CalendarNotificationTemplateCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -274,38 +276,38 @@ public class CalendarNotificationTemplateCacheModel
 		objectOutput.writeLong(calendarId);
 
 		if (notificationType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(notificationType);
+			objectOutput.writeObject(notificationType);
 		}
 
 		if (notificationTypeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(notificationTypeSettings);
+			objectOutput.writeObject(notificationTypeSettings);
 		}
 
 		if (notificationTemplateType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(notificationTemplateType);
+			objectOutput.writeObject(notificationTemplateType);
 		}
 
 		if (subject == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(subject);
+			objectOutput.writeObject(subject);
 		}
 
 		if (body == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(body);
+			objectOutput.writeObject(body);
 		}
 
 		objectOutput.writeLong(lastPublishDate);

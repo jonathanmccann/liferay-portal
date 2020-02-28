@@ -165,20 +165,22 @@ public class PowwowServerCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		powwowServerId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		name = objectInput.readUTF();
-		providerType = objectInput.readUTF();
-		url = objectInput.readUTF();
-		apiKey = objectInput.readUTF();
-		secret = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		providerType = (String)objectInput.readObject();
+		url = (String)objectInput.readObject();
+		apiKey = (String)objectInput.readObject();
+		secret = (String)objectInput.readObject();
 
 		active = objectInput.readBoolean();
 	}
@@ -192,48 +194,48 @@ public class PowwowServerCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (providerType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(providerType);
+			objectOutput.writeObject(providerType);
 		}
 
 		if (url == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(url);
+			objectOutput.writeObject(url);
 		}
 
 		if (apiKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(apiKey);
+			objectOutput.writeObject(apiKey);
 		}
 
 		if (secret == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(secret);
+			objectOutput.writeObject(secret);
 		}
 
 		objectOutput.writeBoolean(active);

@@ -289,9 +289,11 @@ public class DLFileVersionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		fileVersionId = objectInput.readLong();
 
@@ -300,7 +302,7 @@ public class DLFileVersionCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -309,26 +311,26 @@ public class DLFileVersionCacheModel
 		folderId = objectInput.readLong();
 
 		fileEntryId = objectInput.readLong();
-		treePath = objectInput.readUTF();
-		fileName = objectInput.readUTF();
-		extension = objectInput.readUTF();
-		mimeType = objectInput.readUTF();
-		title = objectInput.readUTF();
-		description = objectInput.readUTF();
-		changeLog = objectInput.readUTF();
-		extraSettings = objectInput.readUTF();
+		treePath = (String)objectInput.readObject();
+		fileName = (String)objectInput.readObject();
+		extension = (String)objectInput.readObject();
+		mimeType = (String)objectInput.readObject();
+		title = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		changeLog = (String)objectInput.readObject();
+		extraSettings = (String)objectInput.readObject();
 
 		fileEntryTypeId = objectInput.readLong();
-		version = objectInput.readUTF();
+		version = (String)objectInput.readObject();
 
 		size = objectInput.readLong();
-		checksum = objectInput.readUTF();
+		checksum = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
@@ -337,10 +339,10 @@ public class DLFileVersionCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(fileVersionId);
@@ -352,10 +354,10 @@ public class DLFileVersionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -368,77 +370,77 @@ public class DLFileVersionCacheModel
 		objectOutput.writeLong(fileEntryId);
 
 		if (treePath == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(treePath);
+			objectOutput.writeObject(treePath);
 		}
 
 		if (fileName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(fileName);
+			objectOutput.writeObject(fileName);
 		}
 
 		if (extension == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(extension);
+			objectOutput.writeObject(extension);
 		}
 
 		if (mimeType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(mimeType);
+			objectOutput.writeObject(mimeType);
 		}
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (changeLog == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(changeLog);
+			objectOutput.writeObject(changeLog);
 		}
 
 		if (extraSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(extraSettings);
+			objectOutput.writeObject(extraSettings);
 		}
 
 		objectOutput.writeLong(fileEntryTypeId);
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		objectOutput.writeLong(size);
 
 		if (checksum == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(checksum);
+			objectOutput.writeObject(checksum);
 		}
 
 		objectOutput.writeLong(lastPublishDate);
@@ -448,10 +450,10 @@ public class DLFileVersionCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

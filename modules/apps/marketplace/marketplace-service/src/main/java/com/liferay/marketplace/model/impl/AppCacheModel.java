@@ -176,24 +176,26 @@ public class AppCacheModel implements CacheModel<App>, Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		appId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		remoteAppId = objectInput.readLong();
-		title = objectInput.readUTF();
-		description = objectInput.readUTF();
-		category = objectInput.readUTF();
-		iconURL = objectInput.readUTF();
-		version = objectInput.readUTF();
+		title = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		category = (String)objectInput.readObject();
+		iconURL = (String)objectInput.readObject();
+		version = (String)objectInput.readObject();
 
 		required = objectInput.readBoolean();
 	}
@@ -201,10 +203,10 @@ public class AppCacheModel implements CacheModel<App>, Externalizable {
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(appId);
@@ -214,10 +216,10 @@ public class AppCacheModel implements CacheModel<App>, Externalizable {
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -226,38 +228,38 @@ public class AppCacheModel implements CacheModel<App>, Externalizable {
 		objectOutput.writeLong(remoteAppId);
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (category == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(category);
+			objectOutput.writeObject(category);
 		}
 
 		if (iconURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(iconURL);
+			objectOutput.writeObject(iconURL);
 		}
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		objectOutput.writeBoolean(required);

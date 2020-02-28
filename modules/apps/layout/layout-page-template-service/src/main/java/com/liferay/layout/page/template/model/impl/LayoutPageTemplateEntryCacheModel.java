@@ -232,9 +232,11 @@ public class LayoutPageTemplateEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		layoutPageTemplateEntryId = objectInput.readLong();
 
@@ -243,17 +245,17 @@ public class LayoutPageTemplateEntryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		layoutPageTemplateCollectionId = objectInput.readLong();
-		layoutPageTemplateEntryKey = objectInput.readUTF();
+		layoutPageTemplateEntryKey = (String)objectInput.readObject();
 
 		classNameId = objectInput.readLong();
 
 		classTypeId = objectInput.readLong();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 
 		type = objectInput.readInt();
 
@@ -269,7 +271,7 @@ public class LayoutPageTemplateEntryCacheModel
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
@@ -278,10 +280,10 @@ public class LayoutPageTemplateEntryCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(layoutPageTemplateEntryId);
@@ -293,10 +295,10 @@ public class LayoutPageTemplateEntryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -305,10 +307,10 @@ public class LayoutPageTemplateEntryCacheModel
 		objectOutput.writeLong(layoutPageTemplateCollectionId);
 
 		if (layoutPageTemplateEntryKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(layoutPageTemplateEntryKey);
+			objectOutput.writeObject(layoutPageTemplateEntryKey);
 		}
 
 		objectOutput.writeLong(classNameId);
@@ -316,10 +318,10 @@ public class LayoutPageTemplateEntryCacheModel
 		objectOutput.writeLong(classTypeId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		objectOutput.writeInt(type);
@@ -338,10 +340,10 @@ public class LayoutPageTemplateEntryCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

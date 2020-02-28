@@ -157,9 +157,9 @@ public class CompanyCacheModel
 		companyId = objectInput.readLong();
 
 		accountId = objectInput.readLong();
-		webId = objectInput.readUTF();
-		mx = objectInput.readUTF();
-		homeURL = objectInput.readUTF();
+		webId = (String)objectInput.readObject();
+		mx = (String)objectInput.readObject();
+		homeURL = (String)objectInput.readObject();
 
 		logoId = objectInput.readLong();
 
@@ -187,24 +187,24 @@ public class CompanyCacheModel
 		objectOutput.writeLong(accountId);
 
 		if (webId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(webId);
+			objectOutput.writeObject(webId);
 		}
 
 		if (mx == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(mx);
+			objectOutput.writeObject(mx);
 		}
 
 		if (homeURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(homeURL);
+			objectOutput.writeObject(homeURL);
 		}
 
 		objectOutput.writeLong(logoId);

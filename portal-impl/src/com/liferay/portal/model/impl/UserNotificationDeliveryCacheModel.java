@@ -131,7 +131,9 @@ public class UserNotificationDeliveryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		userNotificationDeliveryId = objectInput.readLong();
@@ -139,7 +141,7 @@ public class UserNotificationDeliveryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		portletId = objectInput.readUTF();
+		portletId = (String)objectInput.readObject();
 
 		classNameId = objectInput.readLong();
 
@@ -161,10 +163,10 @@ public class UserNotificationDeliveryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (portletId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(portletId);
+			objectOutput.writeObject(portletId);
 		}
 
 		objectOutput.writeLong(classNameId);

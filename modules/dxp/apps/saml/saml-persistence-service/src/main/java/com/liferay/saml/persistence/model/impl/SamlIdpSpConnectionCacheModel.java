@@ -210,19 +210,21 @@ public class SamlIdpSpConnectionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		samlIdpSpConnectionId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		samlSpEntityId = objectInput.readUTF();
+		samlSpEntityId = (String)objectInput.readObject();
 
 		assertionLifetime = objectInput.readInt();
-		attributeNames = objectInput.readUTF();
+		attributeNames = (String)objectInput.readObject();
 
 		attributesEnabled = objectInput.readBoolean();
 
@@ -231,12 +233,12 @@ public class SamlIdpSpConnectionCacheModel
 		enabled = objectInput.readBoolean();
 
 		encryptionForced = objectInput.readBoolean();
-		metadataUrl = objectInput.readUTF();
-		metadataXml = objectInput.readUTF();
+		metadataUrl = (String)objectInput.readObject();
+		metadataXml = (String)objectInput.readObject();
 		metadataUpdatedDate = objectInput.readLong();
-		name = objectInput.readUTF();
-		nameIdAttribute = objectInput.readUTF();
-		nameIdFormat = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		nameIdAttribute = (String)objectInput.readObject();
+		nameIdFormat = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -248,29 +250,29 @@ public class SamlIdpSpConnectionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (samlSpEntityId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(samlSpEntityId);
+			objectOutput.writeObject(samlSpEntityId);
 		}
 
 		objectOutput.writeInt(assertionLifetime);
 
 		if (attributeNames == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(attributeNames);
+			objectOutput.writeObject(attributeNames);
 		}
 
 		objectOutput.writeBoolean(attributesEnabled);
@@ -282,40 +284,40 @@ public class SamlIdpSpConnectionCacheModel
 		objectOutput.writeBoolean(encryptionForced);
 
 		if (metadataUrl == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(metadataUrl);
+			objectOutput.writeObject(metadataUrl);
 		}
 
 		if (metadataXml == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(metadataXml);
+			objectOutput.writeObject(metadataXml);
 		}
 
 		objectOutput.writeLong(metadataUpdatedDate);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (nameIdAttribute == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(nameIdAttribute);
+			objectOutput.writeObject(nameIdAttribute);
 		}
 
 		if (nameIdFormat == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(nameIdFormat);
+			objectOutput.writeObject(nameIdFormat);
 		}
 	}
 

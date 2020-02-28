@@ -233,36 +233,38 @@ public class AccountCacheModel implements CacheModel<Account>, Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		accountId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		address = objectInput.readUTF();
-		personalName = objectInput.readUTF();
-		protocol = objectInput.readUTF();
-		incomingHostName = objectInput.readUTF();
+		address = (String)objectInput.readObject();
+		personalName = (String)objectInput.readObject();
+		protocol = (String)objectInput.readObject();
+		incomingHostName = (String)objectInput.readObject();
 
 		incomingPort = objectInput.readInt();
 
 		incomingSecure = objectInput.readBoolean();
-		outgoingHostName = objectInput.readUTF();
+		outgoingHostName = (String)objectInput.readObject();
 
 		outgoingPort = objectInput.readInt();
 
 		outgoingSecure = objectInput.readBoolean();
-		login = objectInput.readUTF();
-		password = objectInput.readUTF();
+		login = (String)objectInput.readObject();
+		password = (String)objectInput.readObject();
 
 		savePassword = objectInput.readBoolean();
-		signature = objectInput.readUTF();
+		signature = (String)objectInput.readObject();
 
 		useSignature = objectInput.readBoolean();
-		folderPrefix = objectInput.readUTF();
+		folderPrefix = (String)objectInput.readObject();
 
 		inboxFolderId = objectInput.readLong();
 
@@ -284,41 +286,41 @@ public class AccountCacheModel implements CacheModel<Account>, Externalizable {
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (address == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(address);
+			objectOutput.writeObject(address);
 		}
 
 		if (personalName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(personalName);
+			objectOutput.writeObject(personalName);
 		}
 
 		if (protocol == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(protocol);
+			objectOutput.writeObject(protocol);
 		}
 
 		if (incomingHostName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(incomingHostName);
+			objectOutput.writeObject(incomingHostName);
 		}
 
 		objectOutput.writeInt(incomingPort);
@@ -326,10 +328,10 @@ public class AccountCacheModel implements CacheModel<Account>, Externalizable {
 		objectOutput.writeBoolean(incomingSecure);
 
 		if (outgoingHostName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(outgoingHostName);
+			objectOutput.writeObject(outgoingHostName);
 		}
 
 		objectOutput.writeInt(outgoingPort);
@@ -337,35 +339,35 @@ public class AccountCacheModel implements CacheModel<Account>, Externalizable {
 		objectOutput.writeBoolean(outgoingSecure);
 
 		if (login == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(login);
+			objectOutput.writeObject(login);
 		}
 
 		if (password == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(password);
+			objectOutput.writeObject(password);
 		}
 
 		objectOutput.writeBoolean(savePassword);
 
 		if (signature == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(signature);
+			objectOutput.writeObject(signature);
 		}
 
 		objectOutput.writeBoolean(useSignature);
 
 		if (folderPrefix == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(folderPrefix);
+			objectOutput.writeObject(folderPrefix);
 		}
 
 		objectOutput.writeLong(inboxFolderId);

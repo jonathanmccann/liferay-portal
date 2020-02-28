@@ -242,8 +242,10 @@ public class MBMailingListCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		mailingListId = objectInput.readLong();
 
@@ -252,32 +254,32 @@ public class MBMailingListCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		categoryId = objectInput.readLong();
-		emailAddress = objectInput.readUTF();
-		inProtocol = objectInput.readUTF();
-		inServerName = objectInput.readUTF();
+		emailAddress = (String)objectInput.readObject();
+		inProtocol = (String)objectInput.readObject();
+		inServerName = (String)objectInput.readObject();
 
 		inServerPort = objectInput.readInt();
 
 		inUseSSL = objectInput.readBoolean();
-		inUserName = objectInput.readUTF();
-		inPassword = objectInput.readUTF();
+		inUserName = (String)objectInput.readObject();
+		inPassword = (String)objectInput.readObject();
 
 		inReadInterval = objectInput.readInt();
-		outEmailAddress = objectInput.readUTF();
+		outEmailAddress = (String)objectInput.readObject();
 
 		outCustom = objectInput.readBoolean();
-		outServerName = objectInput.readUTF();
+		outServerName = (String)objectInput.readObject();
 
 		outServerPort = objectInput.readInt();
 
 		outUseSSL = objectInput.readBoolean();
-		outUserName = objectInput.readUTF();
-		outPassword = objectInput.readUTF();
+		outUserName = (String)objectInput.readObject();
+		outPassword = (String)objectInput.readObject();
 
 		allowAnonymous = objectInput.readBoolean();
 
@@ -287,10 +289,10 @@ public class MBMailingListCacheModel
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(mailingListId);
@@ -302,10 +304,10 @@ public class MBMailingListCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -314,24 +316,24 @@ public class MBMailingListCacheModel
 		objectOutput.writeLong(categoryId);
 
 		if (emailAddress == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(emailAddress);
+			objectOutput.writeObject(emailAddress);
 		}
 
 		if (inProtocol == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(inProtocol);
+			objectOutput.writeObject(inProtocol);
 		}
 
 		if (inServerName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(inServerName);
+			objectOutput.writeObject(inServerName);
 		}
 
 		objectOutput.writeInt(inServerPort);
@@ -339,35 +341,35 @@ public class MBMailingListCacheModel
 		objectOutput.writeBoolean(inUseSSL);
 
 		if (inUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(inUserName);
+			objectOutput.writeObject(inUserName);
 		}
 
 		if (inPassword == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(inPassword);
+			objectOutput.writeObject(inPassword);
 		}
 
 		objectOutput.writeInt(inReadInterval);
 
 		if (outEmailAddress == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(outEmailAddress);
+			objectOutput.writeObject(outEmailAddress);
 		}
 
 		objectOutput.writeBoolean(outCustom);
 
 		if (outServerName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(outServerName);
+			objectOutput.writeObject(outServerName);
 		}
 
 		objectOutput.writeInt(outServerPort);
@@ -375,17 +377,17 @@ public class MBMailingListCacheModel
 		objectOutput.writeBoolean(outUseSSL);
 
 		if (outUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(outUserName);
+			objectOutput.writeObject(outUserName);
 		}
 
 		if (outPassword == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(outPassword);
+			objectOutput.writeObject(outPassword);
 		}
 
 		objectOutput.writeBoolean(allowAnonymous);

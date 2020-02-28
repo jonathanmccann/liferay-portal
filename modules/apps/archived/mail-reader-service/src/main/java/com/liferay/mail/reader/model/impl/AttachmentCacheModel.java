@@ -117,7 +117,9 @@ public class AttachmentCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		attachmentId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
@@ -129,8 +131,8 @@ public class AttachmentCacheModel
 		folderId = objectInput.readLong();
 
 		messageId = objectInput.readLong();
-		contentPath = objectInput.readUTF();
-		fileName = objectInput.readUTF();
+		contentPath = (String)objectInput.readObject();
+		fileName = (String)objectInput.readObject();
 
 		size = objectInput.readLong();
 	}
@@ -150,17 +152,17 @@ public class AttachmentCacheModel
 		objectOutput.writeLong(messageId);
 
 		if (contentPath == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(contentPath);
+			objectOutput.writeObject(contentPath);
 		}
 
 		if (fileName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(fileName);
+			objectOutput.writeObject(fileName);
 		}
 
 		objectOutput.writeLong(size);

@@ -218,7 +218,9 @@ public class AccountCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		accountId = objectInput.readLong();
@@ -226,20 +228,20 @@ public class AccountCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		parentAccountId = objectInput.readLong();
-		name = objectInput.readUTF();
-		legalName = objectInput.readUTF();
-		legalId = objectInput.readUTF();
-		legalType = objectInput.readUTF();
-		sicCode = objectInput.readUTF();
-		tickerSymbol = objectInput.readUTF();
-		industry = objectInput.readUTF();
-		type = objectInput.readUTF();
-		size = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		legalName = (String)objectInput.readObject();
+		legalId = (String)objectInput.readObject();
+		legalType = (String)objectInput.readObject();
+		sicCode = (String)objectInput.readObject();
+		tickerSymbol = (String)objectInput.readObject();
+		industry = (String)objectInput.readObject();
+		type = (String)objectInput.readObject();
+		size = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -253,10 +255,10 @@ public class AccountCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -265,66 +267,66 @@ public class AccountCacheModel
 		objectOutput.writeLong(parentAccountId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (legalName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(legalName);
+			objectOutput.writeObject(legalName);
 		}
 
 		if (legalId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(legalId);
+			objectOutput.writeObject(legalId);
 		}
 
 		if (legalType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(legalType);
+			objectOutput.writeObject(legalType);
 		}
 
 		if (sicCode == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sicCode);
+			objectOutput.writeObject(sicCode);
 		}
 
 		if (tickerSymbol == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(tickerSymbol);
+			objectOutput.writeObject(tickerSymbol);
 		}
 
 		if (industry == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(industry);
+			objectOutput.writeObject(industry);
 		}
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		if (size == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(size);
+			objectOutput.writeObject(size);
 		}
 	}
 

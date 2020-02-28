@@ -249,9 +249,11 @@ public class FragmentEntryLinkCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		fragmentEntryLinkId = objectInput.readLong();
 
@@ -260,7 +262,7 @@ public class FragmentEntryLinkCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -271,15 +273,15 @@ public class FragmentEntryLinkCacheModel
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		css = objectInput.readUTF();
-		html = objectInput.readUTF();
-		js = objectInput.readUTF();
-		configuration = objectInput.readUTF();
-		editableValues = objectInput.readUTF();
-		namespace = objectInput.readUTF();
+		css = (String)objectInput.readObject();
+		html = (String)objectInput.readObject();
+		js = (String)objectInput.readObject();
+		configuration = (String)objectInput.readObject();
+		editableValues = (String)objectInput.readObject();
+		namespace = (String)objectInput.readObject();
 
 		position = objectInput.readInt();
-		rendererKey = objectInput.readUTF();
+		rendererKey = (String)objectInput.readObject();
 		lastPropagationDate = objectInput.readLong();
 		lastPublishDate = objectInput.readLong();
 	}
@@ -289,10 +291,10 @@ public class FragmentEntryLinkCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(fragmentEntryLinkId);
@@ -304,10 +306,10 @@ public class FragmentEntryLinkCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -322,54 +324,54 @@ public class FragmentEntryLinkCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (css == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(css);
+			objectOutput.writeObject(css);
 		}
 
 		if (html == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(html);
+			objectOutput.writeObject(html);
 		}
 
 		if (js == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(js);
+			objectOutput.writeObject(js);
 		}
 
 		if (configuration == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(configuration);
+			objectOutput.writeObject(configuration);
 		}
 
 		if (editableValues == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(editableValues);
+			objectOutput.writeObject(editableValues);
 		}
 
 		if (namespace == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(namespace);
+			objectOutput.writeObject(namespace);
 		}
 
 		objectOutput.writeInt(position);
 
 		if (rendererKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(rendererKey);
+			objectOutput.writeObject(rendererKey);
 		}
 
 		objectOutput.writeLong(lastPropagationDate);

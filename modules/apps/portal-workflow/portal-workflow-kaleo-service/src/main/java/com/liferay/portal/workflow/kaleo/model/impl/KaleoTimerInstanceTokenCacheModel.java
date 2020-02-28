@@ -209,7 +209,9 @@ public class KaleoTimerInstanceTokenCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoTimerInstanceTokenId = objectInput.readLong();
@@ -219,10 +221,10 @@ public class KaleoTimerInstanceTokenCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		kaleoClassName = objectInput.readUTF();
+		kaleoClassName = (String)objectInput.readObject();
 
 		kaleoClassPK = objectInput.readLong();
 
@@ -235,7 +237,7 @@ public class KaleoTimerInstanceTokenCacheModel
 		kaleoTaskInstanceTokenId = objectInput.readLong();
 
 		kaleoTimerId = objectInput.readLong();
-		kaleoTimerName = objectInput.readUTF();
+		kaleoTimerName = (String)objectInput.readObject();
 
 		blocking = objectInput.readBoolean();
 
@@ -243,7 +245,7 @@ public class KaleoTimerInstanceTokenCacheModel
 
 		completed = objectInput.readBoolean();
 		completionDate = objectInput.readLong();
-		workflowContext = objectInput.readUTF();
+		workflowContext = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -259,20 +261,20 @@ public class KaleoTimerInstanceTokenCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (kaleoClassName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(kaleoClassName);
+			objectOutput.writeObject(kaleoClassName);
 		}
 
 		objectOutput.writeLong(kaleoClassPK);
@@ -288,10 +290,10 @@ public class KaleoTimerInstanceTokenCacheModel
 		objectOutput.writeLong(kaleoTimerId);
 
 		if (kaleoTimerName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(kaleoTimerName);
+			objectOutput.writeObject(kaleoTimerName);
 		}
 
 		objectOutput.writeBoolean(blocking);
@@ -302,10 +304,10 @@ public class KaleoTimerInstanceTokenCacheModel
 		objectOutput.writeLong(completionDate);
 
 		if (workflowContext == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(workflowContext);
+			objectOutput.writeObject(workflowContext);
 		}
 	}
 

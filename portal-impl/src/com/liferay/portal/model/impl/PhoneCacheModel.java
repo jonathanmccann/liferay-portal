@@ -175,24 +175,26 @@ public class PhoneCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		phoneId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		number = objectInput.readUTF();
-		extension = objectInput.readUTF();
+		number = (String)objectInput.readObject();
+		extension = (String)objectInput.readObject();
 
 		typeId = objectInput.readLong();
 
@@ -204,10 +206,10 @@ public class PhoneCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(phoneId);
@@ -217,10 +219,10 @@ public class PhoneCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -231,17 +233,17 @@ public class PhoneCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (number == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(number);
+			objectOutput.writeObject(number);
 		}
 
 		if (extension == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(extension);
+			objectOutput.writeObject(extension);
 		}
 
 		objectOutput.writeLong(typeId);

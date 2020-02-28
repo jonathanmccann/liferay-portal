@@ -149,8 +149,10 @@ public class KaleoProcessCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		kaleoProcessId = objectInput.readLong();
 
@@ -159,14 +161,14 @@ public class KaleoProcessCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		DDLRecordSetId = objectInput.readLong();
 
 		DDMTemplateId = objectInput.readLong();
-		workflowDefinitionName = objectInput.readUTF();
+		workflowDefinitionName = (String)objectInput.readObject();
 
 		workflowDefinitionVersion = objectInput.readInt();
 	}
@@ -174,10 +176,10 @@ public class KaleoProcessCacheModel
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(kaleoProcessId);
@@ -189,10 +191,10 @@ public class KaleoProcessCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -203,10 +205,10 @@ public class KaleoProcessCacheModel
 		objectOutput.writeLong(DDMTemplateId);
 
 		if (workflowDefinitionName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(workflowDefinitionName);
+			objectOutput.writeObject(workflowDefinitionName);
 		}
 
 		objectOutput.writeInt(workflowDefinitionVersion);

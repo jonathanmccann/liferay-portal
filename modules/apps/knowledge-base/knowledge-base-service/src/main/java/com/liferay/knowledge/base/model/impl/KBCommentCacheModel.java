@@ -179,9 +179,11 @@ public class KBCommentCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		kbCommentId = objectInput.readLong();
 
@@ -190,14 +192,14 @@ public class KBCommentCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		content = objectInput.readUTF();
+		content = (String)objectInput.readObject();
 
 		userRating = objectInput.readInt();
 		lastPublishDate = objectInput.readLong();
@@ -210,10 +212,10 @@ public class KBCommentCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(kbCommentId);
@@ -225,10 +227,10 @@ public class KBCommentCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -239,10 +241,10 @@ public class KBCommentCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (content == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(content);
+			objectOutput.writeObject(content);
 		}
 
 		objectOutput.writeInt(userRating);

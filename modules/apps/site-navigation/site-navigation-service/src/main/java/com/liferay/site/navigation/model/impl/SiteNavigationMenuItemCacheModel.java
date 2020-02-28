@@ -200,9 +200,11 @@ public class SiteNavigationMenuItemCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		siteNavigationMenuItemId = objectInput.readLong();
 
@@ -211,16 +213,16 @@ public class SiteNavigationMenuItemCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		siteNavigationMenuId = objectInput.readLong();
 
 		parentSiteNavigationMenuItemId = objectInput.readLong();
-		name = objectInput.readUTF();
-		type = objectInput.readUTF();
-		typeSettings = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		type = (String)objectInput.readObject();
+		typeSettings = (String)objectInput.readObject();
 
 		order = objectInput.readInt();
 		lastPublishDate = objectInput.readLong();
@@ -231,10 +233,10 @@ public class SiteNavigationMenuItemCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(siteNavigationMenuItemId);
@@ -246,10 +248,10 @@ public class SiteNavigationMenuItemCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -260,24 +262,24 @@ public class SiteNavigationMenuItemCacheModel
 		objectOutput.writeLong(parentSiteNavigationMenuItemId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		if (typeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeSettings);
+			objectOutput.writeObject(typeSettings);
 		}
 
 		objectOutput.writeInt(order);

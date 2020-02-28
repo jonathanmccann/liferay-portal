@@ -193,7 +193,9 @@ public class KaleoTaskFormInstanceCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoTaskFormInstanceId = objectInput.readLong();
@@ -203,7 +205,7 @@ public class KaleoTaskFormInstanceCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -216,13 +218,13 @@ public class KaleoTaskFormInstanceCacheModel
 		kaleoTaskInstanceTokenId = objectInput.readLong();
 
 		kaleoTaskFormId = objectInput.readLong();
-		formValues = objectInput.readUTF();
+		formValues = (String)objectInput.readObject();
 
 		formValueEntryGroupId = objectInput.readLong();
 
 		formValueEntryId = objectInput.readLong();
-		formValueEntryUuid = objectInput.readUTF();
-		metadata = objectInput.readUTF();
+		formValueEntryUuid = (String)objectInput.readObject();
+		metadata = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -238,10 +240,10 @@ public class KaleoTaskFormInstanceCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -258,10 +260,10 @@ public class KaleoTaskFormInstanceCacheModel
 		objectOutput.writeLong(kaleoTaskFormId);
 
 		if (formValues == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(formValues);
+			objectOutput.writeObject(formValues);
 		}
 
 		objectOutput.writeLong(formValueEntryGroupId);
@@ -269,17 +271,17 @@ public class KaleoTaskFormInstanceCacheModel
 		objectOutput.writeLong(formValueEntryId);
 
 		if (formValueEntryUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(formValueEntryUuid);
+			objectOutput.writeObject(formValueEntryUuid);
 		}
 
 		if (metadata == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(metadata);
+			objectOutput.writeObject(metadata);
 		}
 	}
 

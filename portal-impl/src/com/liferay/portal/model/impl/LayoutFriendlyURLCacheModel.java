@@ -186,11 +186,13 @@ public class LayoutFriendlyURLCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		layoutFriendlyURLId = objectInput.readLong();
 
@@ -199,15 +201,15 @@ public class LayoutFriendlyURLCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		plid = objectInput.readLong();
 
 		privateLayout = objectInput.readBoolean();
-		friendlyURL = objectInput.readUTF();
-		languageId = objectInput.readUTF();
+		friendlyURL = (String)objectInput.readObject();
+		languageId = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 	}
 
@@ -218,10 +220,10 @@ public class LayoutFriendlyURLCacheModel
 		objectOutput.writeLong(ctCollectionId);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(layoutFriendlyURLId);
@@ -233,10 +235,10 @@ public class LayoutFriendlyURLCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -247,17 +249,17 @@ public class LayoutFriendlyURLCacheModel
 		objectOutput.writeBoolean(privateLayout);
 
 		if (friendlyURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(friendlyURL);
+			objectOutput.writeObject(friendlyURL);
 		}
 
 		if (languageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(languageId);
+			objectOutput.writeObject(languageId);
 		}
 
 		objectOutput.writeLong(lastPublishDate);

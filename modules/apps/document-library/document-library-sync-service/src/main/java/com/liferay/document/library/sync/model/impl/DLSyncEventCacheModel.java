@@ -109,14 +109,16 @@ public class DLSyncEventCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		syncEventId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		modifiedTime = objectInput.readLong();
-		event = objectInput.readUTF();
-		type = objectInput.readUTF();
+		event = (String)objectInput.readObject();
+		type = (String)objectInput.readObject();
 
 		typePK = objectInput.readLong();
 	}
@@ -130,17 +132,17 @@ public class DLSyncEventCacheModel
 		objectOutput.writeLong(modifiedTime);
 
 		if (event == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(event);
+			objectOutput.writeObject(event);
 		}
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		objectOutput.writeLong(typePK);

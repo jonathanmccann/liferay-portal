@@ -327,7 +327,7 @@ public class JournalArticleCacheModel
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		id = objectInput.readLong();
 
@@ -338,7 +338,7 @@ public class JournalArticleCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -347,16 +347,16 @@ public class JournalArticleCacheModel
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		treePath = objectInput.readUTF();
-		articleId = objectInput.readUTF();
+		treePath = (String)objectInput.readObject();
+		articleId = (String)objectInput.readObject();
 
 		version = objectInput.readDouble();
-		urlTitle = objectInput.readUTF();
-		content = objectInput.readUTF();
-		DDMStructureKey = objectInput.readUTF();
-		DDMTemplateKey = objectInput.readUTF();
-		defaultLanguageId = objectInput.readUTF();
-		layoutUuid = objectInput.readUTF();
+		urlTitle = (String)objectInput.readObject();
+		content = (String)objectInput.readObject();
+		DDMStructureKey = (String)objectInput.readObject();
+		DDMTemplateKey = (String)objectInput.readObject();
+		defaultLanguageId = (String)objectInput.readObject();
+		layoutUuid = (String)objectInput.readObject();
 		displayDate = objectInput.readLong();
 		expirationDate = objectInput.readLong();
 		reviewDate = objectInput.readLong();
@@ -366,13 +366,13 @@ public class JournalArticleCacheModel
 		smallImage = objectInput.readBoolean();
 
 		smallImageId = objectInput.readLong();
-		smallImageURL = objectInput.readUTF();
+		smallImageURL = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 
 		_document =
@@ -386,10 +386,10 @@ public class JournalArticleCacheModel
 		objectOutput.writeLong(ctCollectionId);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(id);
@@ -403,10 +403,10 @@ public class JournalArticleCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -419,61 +419,61 @@ public class JournalArticleCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (treePath == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(treePath);
+			objectOutput.writeObject(treePath);
 		}
 
 		if (articleId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(articleId);
+			objectOutput.writeObject(articleId);
 		}
 
 		objectOutput.writeDouble(version);
 
 		if (urlTitle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(urlTitle);
+			objectOutput.writeObject(urlTitle);
 		}
 
 		if (content == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(content);
+			objectOutput.writeObject(content);
 		}
 
 		if (DDMStructureKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(DDMStructureKey);
+			objectOutput.writeObject(DDMStructureKey);
 		}
 
 		if (DDMTemplateKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(DDMTemplateKey);
+			objectOutput.writeObject(DDMTemplateKey);
 		}
 
 		if (defaultLanguageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(defaultLanguageId);
+			objectOutput.writeObject(defaultLanguageId);
 		}
 
 		if (layoutUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(layoutUuid);
+			objectOutput.writeObject(layoutUuid);
 		}
 
 		objectOutput.writeLong(displayDate);
@@ -487,10 +487,10 @@ public class JournalArticleCacheModel
 		objectOutput.writeLong(smallImageId);
 
 		if (smallImageURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(smallImageURL);
+			objectOutput.writeObject(smallImageURL);
 		}
 
 		objectOutput.writeLong(lastPublishDate);
@@ -500,10 +500,10 @@ public class JournalArticleCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

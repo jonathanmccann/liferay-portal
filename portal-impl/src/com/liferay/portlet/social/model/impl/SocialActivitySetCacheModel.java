@@ -119,7 +119,9 @@ public class SocialActivitySetCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		activitySetId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
@@ -137,7 +139,7 @@ public class SocialActivitySetCacheModel
 		classPK = objectInput.readLong();
 
 		type = objectInput.readInt();
-		extraData = objectInput.readUTF();
+		extraData = (String)objectInput.readObject();
 
 		activityCount = objectInput.readInt();
 	}
@@ -163,10 +165,10 @@ public class SocialActivitySetCacheModel
 		objectOutput.writeInt(type);
 
 		if (extraData == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(extraData);
+			objectOutput.writeObject(extraData);
 		}
 
 		objectOutput.writeInt(activityCount);

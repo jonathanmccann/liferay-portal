@@ -165,14 +165,16 @@ public class ReleaseCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		releaseId = objectInput.readLong();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		servletContextName = objectInput.readUTF();
-		schemaVersion = objectInput.readUTF();
+		servletContextName = (String)objectInput.readObject();
+		schemaVersion = (String)objectInput.readObject();
 
 		buildNumber = objectInput.readInt();
 		buildDate = objectInput.readLong();
@@ -180,7 +182,7 @@ public class ReleaseCacheModel
 		verified = objectInput.readBoolean();
 
 		state = objectInput.readInt();
-		testString = objectInput.readUTF();
+		testString = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -192,17 +194,17 @@ public class ReleaseCacheModel
 		objectOutput.writeLong(modifiedDate);
 
 		if (servletContextName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(servletContextName);
+			objectOutput.writeObject(servletContextName);
 		}
 
 		if (schemaVersion == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(schemaVersion);
+			objectOutput.writeObject(schemaVersion);
 		}
 
 		objectOutput.writeInt(buildNumber);
@@ -213,10 +215,10 @@ public class ReleaseCacheModel
 		objectOutput.writeInt(state);
 
 		if (testString == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(testString);
+			objectOutput.writeObject(testString);
 		}
 	}
 

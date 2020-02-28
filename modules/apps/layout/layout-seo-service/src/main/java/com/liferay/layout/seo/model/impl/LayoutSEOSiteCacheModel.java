@@ -165,9 +165,11 @@ public class LayoutSEOSiteCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		layoutSEOSiteId = objectInput.readLong();
 
@@ -176,12 +178,12 @@ public class LayoutSEOSiteCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		openGraphEnabled = objectInput.readBoolean();
-		openGraphImageAlt = objectInput.readUTF();
+		openGraphImageAlt = (String)objectInput.readObject();
 
 		openGraphImageFileEntryId = objectInput.readLong();
 	}
@@ -191,10 +193,10 @@ public class LayoutSEOSiteCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(layoutSEOSiteId);
@@ -206,10 +208,10 @@ public class LayoutSEOSiteCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -218,10 +220,10 @@ public class LayoutSEOSiteCacheModel
 		objectOutput.writeBoolean(openGraphEnabled);
 
 		if (openGraphImageAlt == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(openGraphImageAlt);
+			objectOutput.writeObject(openGraphImageAlt);
 		}
 
 		objectOutput.writeLong(openGraphImageFileEntryId);

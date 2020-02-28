@@ -191,7 +191,9 @@ public class KaleoInstanceCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoInstanceId = objectInput.readLong();
@@ -201,23 +203,23 @@ public class KaleoInstanceCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		kaleoDefinitionVersionId = objectInput.readLong();
-		kaleoDefinitionName = objectInput.readUTF();
+		kaleoDefinitionName = (String)objectInput.readObject();
 
 		kaleoDefinitionVersion = objectInput.readInt();
 
 		rootKaleoInstanceTokenId = objectInput.readLong();
-		className = objectInput.readUTF();
+		className = (String)objectInput.readObject();
 
 		classPK = objectInput.readLong();
 
 		completed = objectInput.readBoolean();
 		completionDate = objectInput.readLong();
-		workflowContext = objectInput.readUTF();
+		workflowContext = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -233,10 +235,10 @@ public class KaleoInstanceCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -245,10 +247,10 @@ public class KaleoInstanceCacheModel
 		objectOutput.writeLong(kaleoDefinitionVersionId);
 
 		if (kaleoDefinitionName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(kaleoDefinitionName);
+			objectOutput.writeObject(kaleoDefinitionName);
 		}
 
 		objectOutput.writeInt(kaleoDefinitionVersion);
@@ -256,10 +258,10 @@ public class KaleoInstanceCacheModel
 		objectOutput.writeLong(rootKaleoInstanceTokenId);
 
 		if (className == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(className);
+			objectOutput.writeObject(className);
 		}
 
 		objectOutput.writeLong(classPK);
@@ -268,10 +270,10 @@ public class KaleoInstanceCacheModel
 		objectOutput.writeLong(completionDate);
 
 		if (workflowContext == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(workflowContext);
+			objectOutput.writeObject(workflowContext);
 		}
 	}
 

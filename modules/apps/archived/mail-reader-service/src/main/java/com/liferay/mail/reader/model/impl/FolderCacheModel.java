@@ -140,19 +140,21 @@ public class FolderCacheModel implements CacheModel<Folder>, Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		folderId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		accountId = objectInput.readLong();
-		fullName = objectInput.readUTF();
-		displayName = objectInput.readUTF();
+		fullName = (String)objectInput.readObject();
+		displayName = (String)objectInput.readObject();
 
 		remoteMessageCount = objectInput.readInt();
 	}
@@ -166,10 +168,10 @@ public class FolderCacheModel implements CacheModel<Folder>, Externalizable {
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -178,17 +180,17 @@ public class FolderCacheModel implements CacheModel<Folder>, Externalizable {
 		objectOutput.writeLong(accountId);
 
 		if (fullName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(fullName);
+			objectOutput.writeObject(fullName);
 		}
 
 		if (displayName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(displayName);
+			objectOutput.writeObject(displayName);
 		}
 
 		objectOutput.writeInt(remoteMessageCount);

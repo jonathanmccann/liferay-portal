@@ -180,8 +180,10 @@ public class SourceCacheModel implements CacheModel<Source>, Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		sourceId = objectInput.readLong();
 
@@ -190,24 +192,24 @@ public class SourceCacheModel implements CacheModel<Source>, Externalizable {
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 		lastPublishDate = objectInput.readLong();
-		name = objectInput.readUTF();
-		driverClassName = objectInput.readUTF();
-		driverUrl = objectInput.readUTF();
-		driverUserName = objectInput.readUTF();
-		driverPassword = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		driverClassName = (String)objectInput.readObject();
+		driverUrl = (String)objectInput.readObject();
+		driverUserName = (String)objectInput.readObject();
+		driverPassword = (String)objectInput.readObject();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(sourceId);
@@ -219,10 +221,10 @@ public class SourceCacheModel implements CacheModel<Source>, Externalizable {
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -230,38 +232,38 @@ public class SourceCacheModel implements CacheModel<Source>, Externalizable {
 		objectOutput.writeLong(lastPublishDate);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (driverClassName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(driverClassName);
+			objectOutput.writeObject(driverClassName);
 		}
 
 		if (driverUrl == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(driverUrl);
+			objectOutput.writeObject(driverUrl);
 		}
 
 		if (driverUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(driverUserName);
+			objectOutput.writeObject(driverUserName);
 		}
 
 		if (driverPassword == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(driverPassword);
+			objectOutput.writeObject(driverPassword);
 		}
 	}
 

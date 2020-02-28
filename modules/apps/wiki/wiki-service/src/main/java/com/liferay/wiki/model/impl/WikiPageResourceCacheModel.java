@@ -127,9 +127,11 @@ public class WikiPageResourceCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		resourcePrimKey = objectInput.readLong();
 
@@ -138,7 +140,7 @@ public class WikiPageResourceCacheModel
 		companyId = objectInput.readLong();
 
 		nodeId = objectInput.readLong();
-		title = objectInput.readUTF();
+		title = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -146,10 +148,10 @@ public class WikiPageResourceCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(resourcePrimKey);
@@ -161,10 +163,10 @@ public class WikiPageResourceCacheModel
 		objectOutput.writeLong(nodeId);
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 	}
 

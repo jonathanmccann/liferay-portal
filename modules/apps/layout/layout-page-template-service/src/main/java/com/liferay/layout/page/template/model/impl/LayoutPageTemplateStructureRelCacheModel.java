@@ -174,9 +174,11 @@ public class LayoutPageTemplateStructureRelCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		layoutPageTemplateStructureRelId = objectInput.readLong();
 
@@ -185,14 +187,14 @@ public class LayoutPageTemplateStructureRelCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		layoutPageTemplateStructureId = objectInput.readLong();
 
 		segmentsExperienceId = objectInput.readLong();
-		data = objectInput.readUTF();
+		data = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -200,10 +202,10 @@ public class LayoutPageTemplateStructureRelCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(layoutPageTemplateStructureRelId);
@@ -215,10 +217,10 @@ public class LayoutPageTemplateStructureRelCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -229,10 +231,10 @@ public class LayoutPageTemplateStructureRelCacheModel
 		objectOutput.writeLong(segmentsExperienceId);
 
 		if (data == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(data);
+			objectOutput.writeObject(data);
 		}
 	}
 

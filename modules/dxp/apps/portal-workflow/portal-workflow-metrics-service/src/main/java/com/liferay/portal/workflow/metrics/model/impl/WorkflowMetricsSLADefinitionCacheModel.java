@@ -267,9 +267,11 @@ public class WorkflowMetricsSLADefinitionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		workflowMetricsSLADefinitionId = objectInput.readLong();
 
@@ -278,28 +280,28 @@ public class WorkflowMetricsSLADefinitionCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		active = objectInput.readBoolean();
-		calendarKey = objectInput.readUTF();
-		description = objectInput.readUTF();
+		calendarKey = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
 
 		duration = objectInput.readLong();
-		name = objectInput.readUTF();
-		pauseNodeKeys = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		pauseNodeKeys = (String)objectInput.readObject();
 
 		processId = objectInput.readLong();
-		processVersion = objectInput.readUTF();
-		startNodeKeys = objectInput.readUTF();
-		stopNodeKeys = objectInput.readUTF();
-		version = objectInput.readUTF();
+		processVersion = (String)objectInput.readObject();
+		startNodeKeys = (String)objectInput.readObject();
+		stopNodeKeys = (String)objectInput.readObject();
+		version = (String)objectInput.readObject();
 
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
@@ -308,10 +310,10 @@ public class WorkflowMetricsSLADefinitionCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(workflowMetricsSLADefinitionId);
@@ -323,10 +325,10 @@ public class WorkflowMetricsSLADefinitionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -335,63 +337,63 @@ public class WorkflowMetricsSLADefinitionCacheModel
 		objectOutput.writeBoolean(active);
 
 		if (calendarKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(calendarKey);
+			objectOutput.writeObject(calendarKey);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		objectOutput.writeLong(duration);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (pauseNodeKeys == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(pauseNodeKeys);
+			objectOutput.writeObject(pauseNodeKeys);
 		}
 
 		objectOutput.writeLong(processId);
 
 		if (processVersion == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(processVersion);
+			objectOutput.writeObject(processVersion);
 		}
 
 		if (startNodeKeys == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(startNodeKeys);
+			objectOutput.writeObject(startNodeKeys);
 		}
 
 		if (stopNodeKeys == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(stopNodeKeys);
+			objectOutput.writeObject(stopNodeKeys);
 		}
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		objectOutput.writeInt(status);
@@ -399,10 +401,10 @@ public class WorkflowMetricsSLADefinitionCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

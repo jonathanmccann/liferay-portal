@@ -291,9 +291,11 @@ public class BlogsEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		entryId = objectInput.readLong();
 
@@ -302,37 +304,37 @@ public class BlogsEntryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		title = objectInput.readUTF();
-		subtitle = objectInput.readUTF();
-		urlTitle = objectInput.readUTF();
-		description = objectInput.readUTF();
-		content = objectInput.readUTF();
+		title = (String)objectInput.readObject();
+		subtitle = (String)objectInput.readObject();
+		urlTitle = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		content = (String)objectInput.readObject();
 		displayDate = objectInput.readLong();
 
 		allowPingbacks = objectInput.readBoolean();
 
 		allowTrackbacks = objectInput.readBoolean();
-		trackbacks = objectInput.readUTF();
-		coverImageCaption = objectInput.readUTF();
+		trackbacks = (String)objectInput.readObject();
+		coverImageCaption = (String)objectInput.readObject();
 
 		coverImageFileEntryId = objectInput.readLong();
-		coverImageURL = objectInput.readUTF();
+		coverImageURL = (String)objectInput.readObject();
 
 		smallImage = objectInput.readBoolean();
 
 		smallImageFileEntryId = objectInput.readLong();
 
 		smallImageId = objectInput.readLong();
-		smallImageURL = objectInput.readUTF();
+		smallImageURL = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
@@ -341,10 +343,10 @@ public class BlogsEntryCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(entryId);
@@ -356,48 +358,48 @@ public class BlogsEntryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (subtitle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(subtitle);
+			objectOutput.writeObject(subtitle);
 		}
 
 		if (urlTitle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(urlTitle);
+			objectOutput.writeObject(urlTitle);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (content == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(content);
+			objectOutput.writeObject(content);
 		}
 
 		objectOutput.writeLong(displayDate);
@@ -407,26 +409,26 @@ public class BlogsEntryCacheModel
 		objectOutput.writeBoolean(allowTrackbacks);
 
 		if (trackbacks == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(trackbacks);
+			objectOutput.writeObject(trackbacks);
 		}
 
 		if (coverImageCaption == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(coverImageCaption);
+			objectOutput.writeObject(coverImageCaption);
 		}
 
 		objectOutput.writeLong(coverImageFileEntryId);
 
 		if (coverImageURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(coverImageURL);
+			objectOutput.writeObject(coverImageURL);
 		}
 
 		objectOutput.writeBoolean(smallImage);
@@ -436,10 +438,10 @@ public class BlogsEntryCacheModel
 		objectOutput.writeLong(smallImageId);
 
 		if (smallImageURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(smallImageURL);
+			objectOutput.writeObject(smallImageURL);
 		}
 
 		objectOutput.writeLong(lastPublishDate);
@@ -449,10 +451,10 @@ public class BlogsEntryCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

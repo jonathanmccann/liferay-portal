@@ -150,15 +150,17 @@ public class CountryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		countryId = objectInput.readLong();
-		name = objectInput.readUTF();
-		a2 = objectInput.readUTF();
-		a3 = objectInput.readUTF();
-		number = objectInput.readUTF();
-		idd = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		a2 = (String)objectInput.readObject();
+		a3 = (String)objectInput.readObject();
+		number = (String)objectInput.readObject();
+		idd = (String)objectInput.readObject();
 
 		zipRequired = objectInput.readBoolean();
 
@@ -172,38 +174,38 @@ public class CountryCacheModel
 		objectOutput.writeLong(countryId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (a2 == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(a2);
+			objectOutput.writeObject(a2);
 		}
 
 		if (a3 == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(a3);
+			objectOutput.writeObject(a3);
 		}
 
 		if (number == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(number);
+			objectOutput.writeObject(number);
 		}
 
 		if (idd == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(idd);
+			objectOutput.writeObject(idd);
 		}
 
 		objectOutput.writeBoolean(zipRequired);

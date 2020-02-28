@@ -126,7 +126,9 @@ public class UserTrackerPathCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		userTrackerPathId = objectInput.readLong();
@@ -134,7 +136,7 @@ public class UserTrackerPathCacheModel
 		companyId = objectInput.readLong();
 
 		userTrackerId = objectInput.readLong();
-		path = objectInput.readUTF();
+		path = (String)objectInput.readObject();
 		pathDate = objectInput.readLong();
 	}
 
@@ -149,10 +151,10 @@ public class UserTrackerPathCacheModel
 		objectOutput.writeLong(userTrackerId);
 
 		if (path == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(path);
+			objectOutput.writeObject(path);
 		}
 
 		objectOutput.writeLong(pathDate);

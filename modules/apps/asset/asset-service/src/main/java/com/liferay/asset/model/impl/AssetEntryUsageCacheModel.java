@@ -174,11 +174,13 @@ public class AssetEntryUsageCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		assetEntryUsageId = objectInput.readLong();
 
@@ -191,7 +193,7 @@ public class AssetEntryUsageCacheModel
 		assetEntryId = objectInput.readLong();
 
 		containerType = objectInput.readLong();
-		containerKey = objectInput.readUTF();
+		containerKey = (String)objectInput.readObject();
 
 		plid = objectInput.readLong();
 
@@ -206,10 +208,10 @@ public class AssetEntryUsageCacheModel
 		objectOutput.writeLong(ctCollectionId);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(assetEntryUsageId);
@@ -225,10 +227,10 @@ public class AssetEntryUsageCacheModel
 		objectOutput.writeLong(containerType);
 
 		if (containerKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(containerKey);
+			objectOutput.writeObject(containerKey);
 		}
 
 		objectOutput.writeLong(plid);

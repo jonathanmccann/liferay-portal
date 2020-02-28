@@ -183,7 +183,9 @@ public class KaleoNodeCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoNodeId = objectInput.readLong();
@@ -193,15 +195,15 @@ public class KaleoNodeCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		kaleoDefinitionVersionId = objectInput.readLong();
-		name = objectInput.readUTF();
-		metadata = objectInput.readUTF();
-		description = objectInput.readUTF();
-		type = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		metadata = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		type = (String)objectInput.readObject();
 
 		initial = objectInput.readBoolean();
 
@@ -221,10 +223,10 @@ public class KaleoNodeCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -233,31 +235,31 @@ public class KaleoNodeCacheModel
 		objectOutput.writeLong(kaleoDefinitionVersionId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (metadata == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(metadata);
+			objectOutput.writeObject(metadata);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		objectOutput.writeBoolean(initial);

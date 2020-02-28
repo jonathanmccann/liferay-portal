@@ -197,9 +197,11 @@ public class DDLRecordCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		recordId = objectInput.readLong();
 
@@ -208,18 +210,18 @@ public class DDLRecordCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 
 		versionUserId = objectInput.readLong();
-		versionUserName = objectInput.readUTF();
+		versionUserName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		DDMStorageId = objectInput.readLong();
 
 		recordSetId = objectInput.readLong();
-		recordSetVersion = objectInput.readUTF();
-		version = objectInput.readUTF();
+		recordSetVersion = (String)objectInput.readObject();
+		version = (String)objectInput.readObject();
 
 		displayIndex = objectInput.readInt();
 		lastPublishDate = objectInput.readLong();
@@ -230,10 +232,10 @@ public class DDLRecordCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(recordId);
@@ -245,19 +247,19 @@ public class DDLRecordCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(versionUserId);
 
 		if (versionUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(versionUserName);
+			objectOutput.writeObject(versionUserName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -268,17 +270,17 @@ public class DDLRecordCacheModel
 		objectOutput.writeLong(recordSetId);
 
 		if (recordSetVersion == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(recordSetVersion);
+			objectOutput.writeObject(recordSetVersion);
 		}
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		objectOutput.writeInt(displayIndex);

@@ -150,7 +150,9 @@ public class TrashEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		entryId = objectInput.readLong();
@@ -160,7 +162,7 @@ public class TrashEntryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
@@ -168,7 +170,7 @@ public class TrashEntryCacheModel
 		classPK = objectInput.readLong();
 
 		systemEventSetKey = objectInput.readLong();
-		typeSettings = objectInput.readUTF();
+		typeSettings = (String)objectInput.readObject();
 
 		status = objectInput.readInt();
 	}
@@ -186,10 +188,10 @@ public class TrashEntryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -201,10 +203,10 @@ public class TrashEntryCacheModel
 		objectOutput.writeLong(systemEventSetKey);
 
 		if (typeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeSettings);
+			objectOutput.writeObject(typeSettings);
 		}
 
 		objectOutput.writeInt(status);

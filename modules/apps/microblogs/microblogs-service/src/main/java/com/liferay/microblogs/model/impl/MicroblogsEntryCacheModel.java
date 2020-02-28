@@ -142,20 +142,22 @@ public class MicroblogsEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		microblogsEntryId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		creatorClassNameId = objectInput.readLong();
 
 		creatorClassPK = objectInput.readLong();
-		content = objectInput.readUTF();
+		content = (String)objectInput.readObject();
 
 		type = objectInput.readInt();
 
@@ -173,10 +175,10 @@ public class MicroblogsEntryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -187,10 +189,10 @@ public class MicroblogsEntryCacheModel
 		objectOutput.writeLong(creatorClassPK);
 
 		if (content == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(content);
+			objectOutput.writeObject(content);
 		}
 
 		objectOutput.writeInt(type);

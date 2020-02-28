@@ -196,27 +196,29 @@ public class SPIDefinitionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		spiDefinitionId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		name = objectInput.readUTF();
-		connectorAddress = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		connectorAddress = (String)objectInput.readObject();
 
 		connectorPort = objectInput.readInt();
-		description = objectInput.readUTF();
-		jvmArguments = objectInput.readUTF();
-		portletIds = objectInput.readUTF();
-		servletContextNames = objectInput.readUTF();
-		typeSettings = objectInput.readUTF();
+		description = (String)objectInput.readObject();
+		jvmArguments = (String)objectInput.readObject();
+		portletIds = (String)objectInput.readObject();
+		servletContextNames = (String)objectInput.readObject();
+		typeSettings = (String)objectInput.readObject();
 
 		status = objectInput.readInt();
-		statusMessage = objectInput.readUTF();
+		statusMessage = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -228,73 +230,73 @@ public class SPIDefinitionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (connectorAddress == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(connectorAddress);
+			objectOutput.writeObject(connectorAddress);
 		}
 
 		objectOutput.writeInt(connectorPort);
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (jvmArguments == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(jvmArguments);
+			objectOutput.writeObject(jvmArguments);
 		}
 
 		if (portletIds == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(portletIds);
+			objectOutput.writeObject(portletIds);
 		}
 
 		if (servletContextNames == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(servletContextNames);
+			objectOutput.writeObject(servletContextNames);
 		}
 
 		if (typeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeSettings);
+			objectOutput.writeObject(typeSettings);
 		}
 
 		objectOutput.writeInt(status);
 
 		if (statusMessage == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusMessage);
+			objectOutput.writeObject(statusMessage);
 		}
 	}
 

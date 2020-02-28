@@ -138,7 +138,9 @@ public class CTSContentCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -148,11 +150,11 @@ public class CTSContentCacheModel
 		companyId = objectInput.readLong();
 
 		repositoryId = objectInput.readLong();
-		path = objectInput.readUTF();
-		version = objectInput.readUTF();
+		path = (String)objectInput.readObject();
+		version = (String)objectInput.readObject();
 
 		size = objectInput.readLong();
-		storeType = objectInput.readUTF();
+		storeType = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -168,26 +170,26 @@ public class CTSContentCacheModel
 		objectOutput.writeLong(repositoryId);
 
 		if (path == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(path);
+			objectOutput.writeObject(path);
 		}
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		objectOutput.writeLong(size);
 
 		if (storeType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(storeType);
+			objectOutput.writeObject(storeType);
 		}
 	}
 

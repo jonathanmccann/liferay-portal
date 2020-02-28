@@ -132,7 +132,9 @@ public class UserIdMapperCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		userIdMapperId = objectInput.readLong();
@@ -140,9 +142,9 @@ public class UserIdMapperCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		type = objectInput.readUTF();
-		description = objectInput.readUTF();
-		externalUserId = objectInput.readUTF();
+		type = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		externalUserId = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -156,24 +158,24 @@ public class UserIdMapperCacheModel
 		objectOutput.writeLong(userId);
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (externalUserId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(externalUserId);
+			objectOutput.writeObject(externalUserId);
 		}
 	}
 

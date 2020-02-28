@@ -96,13 +96,15 @@ public class ExpandoTableCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		tableId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -114,10 +116,10 @@ public class ExpandoTableCacheModel
 		objectOutput.writeLong(classNameId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 	}
 

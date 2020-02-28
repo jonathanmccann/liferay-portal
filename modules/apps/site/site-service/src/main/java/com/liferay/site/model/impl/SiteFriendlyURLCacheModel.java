@@ -176,22 +176,24 @@ public class SiteFriendlyURLCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		siteFriendlyURLId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		groupId = objectInput.readLong();
-		friendlyURL = objectInput.readUTF();
-		languageId = objectInput.readUTF();
+		friendlyURL = (String)objectInput.readObject();
+		languageId = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 	}
 
@@ -200,10 +202,10 @@ public class SiteFriendlyURLCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(siteFriendlyURLId);
@@ -213,10 +215,10 @@ public class SiteFriendlyURLCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -225,17 +227,17 @@ public class SiteFriendlyURLCacheModel
 		objectOutput.writeLong(groupId);
 
 		if (friendlyURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(friendlyURL);
+			objectOutput.writeObject(friendlyURL);
 		}
 
 		if (languageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(languageId);
+			objectOutput.writeObject(languageId);
 		}
 
 		objectOutput.writeLong(lastPublishDate);

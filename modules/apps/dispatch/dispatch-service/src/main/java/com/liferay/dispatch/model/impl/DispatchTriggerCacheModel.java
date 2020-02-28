@@ -197,7 +197,9 @@ public class DispatchTriggerCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		dispatchTriggerId = objectInput.readLong();
@@ -205,19 +207,19 @@ public class DispatchTriggerCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		active = objectInput.readBoolean();
-		cronExpression = objectInput.readUTF();
+		cronExpression = (String)objectInput.readObject();
 		endDate = objectInput.readLong();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 		startDate = objectInput.readLong();
 
 		system = objectInput.readBoolean();
-		type = objectInput.readUTF();
-		typeSettings = objectInput.readUTF();
+		type = (String)objectInput.readObject();
+		typeSettings = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -231,10 +233,10 @@ public class DispatchTriggerCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -243,19 +245,19 @@ public class DispatchTriggerCacheModel
 		objectOutput.writeBoolean(active);
 
 		if (cronExpression == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(cronExpression);
+			objectOutput.writeObject(cronExpression);
 		}
 
 		objectOutput.writeLong(endDate);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		objectOutput.writeLong(startDate);
@@ -263,17 +265,17 @@ public class DispatchTriggerCacheModel
 		objectOutput.writeBoolean(system);
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		if (typeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeSettings);
+			objectOutput.writeObject(typeSettings);
 		}
 	}
 

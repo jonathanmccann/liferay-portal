@@ -137,21 +137,23 @@ public class LVEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		headId = objectInput.readLong();
 
 		head = objectInput.readBoolean();
-		defaultLanguageId = objectInput.readUTF();
+		defaultLanguageId = (String)objectInput.readObject();
 
 		lvEntryId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
-		uniqueGroupKey = objectInput.readUTF();
+		uniqueGroupKey = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -159,10 +161,10 @@ public class LVEntryCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(headId);
@@ -170,10 +172,10 @@ public class LVEntryCacheModel
 		objectOutput.writeBoolean(head);
 
 		if (defaultLanguageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(defaultLanguageId);
+			objectOutput.writeObject(defaultLanguageId);
 		}
 
 		objectOutput.writeLong(lvEntryId);
@@ -183,10 +185,10 @@ public class LVEntryCacheModel
 		objectOutput.writeLong(groupId);
 
 		if (uniqueGroupKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uniqueGroupKey);
+			objectOutput.writeObject(uniqueGroupKey);
 		}
 	}
 

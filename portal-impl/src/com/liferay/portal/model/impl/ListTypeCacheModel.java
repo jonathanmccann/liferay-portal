@@ -116,12 +116,14 @@ public class ListTypeCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		listTypeId = objectInput.readLong();
-		name = objectInput.readUTF();
-		type = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		type = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -131,17 +133,17 @@ public class ListTypeCacheModel
 		objectOutput.writeLong(listTypeId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 	}
 

@@ -211,27 +211,29 @@ public class AddressCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		addressId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		street1 = objectInput.readUTF();
-		street2 = objectInput.readUTF();
-		street3 = objectInput.readUTF();
-		city = objectInput.readUTF();
-		zip = objectInput.readUTF();
+		street1 = (String)objectInput.readObject();
+		street2 = (String)objectInput.readObject();
+		street3 = (String)objectInput.readObject();
+		city = (String)objectInput.readObject();
+		zip = (String)objectInput.readObject();
 
 		regionId = objectInput.readLong();
 
@@ -249,10 +251,10 @@ public class AddressCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(addressId);
@@ -262,10 +264,10 @@ public class AddressCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -276,38 +278,38 @@ public class AddressCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (street1 == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(street1);
+			objectOutput.writeObject(street1);
 		}
 
 		if (street2 == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(street2);
+			objectOutput.writeObject(street2);
 		}
 
 		if (street3 == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(street3);
+			objectOutput.writeObject(street3);
 		}
 
 		if (city == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(city);
+			objectOutput.writeObject(city);
 		}
 
 		if (zip == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(zip);
+			objectOutput.writeObject(zip);
 		}
 
 		objectOutput.writeLong(regionId);

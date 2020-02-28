@@ -125,7 +125,9 @@ public class AnnouncementsDeliveryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		deliveryId = objectInput.readLong();
@@ -133,7 +135,7 @@ public class AnnouncementsDeliveryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		type = objectInput.readUTF();
+		type = (String)objectInput.readObject();
 
 		email = objectInput.readBoolean();
 
@@ -153,10 +155,10 @@ public class AnnouncementsDeliveryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		objectOutput.writeBoolean(email);

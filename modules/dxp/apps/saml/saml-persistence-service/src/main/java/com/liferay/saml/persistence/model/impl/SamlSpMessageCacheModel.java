@@ -122,13 +122,15 @@ public class SamlSpMessageCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		samlSpMessageId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 		createDate = objectInput.readLong();
-		samlIdpEntityId = objectInput.readUTF();
-		samlIdpResponseKey = objectInput.readUTF();
+		samlIdpEntityId = (String)objectInput.readObject();
+		samlIdpResponseKey = (String)objectInput.readObject();
 		expirationDate = objectInput.readLong();
 	}
 
@@ -140,17 +142,17 @@ public class SamlSpMessageCacheModel
 		objectOutput.writeLong(createDate);
 
 		if (samlIdpEntityId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(samlIdpEntityId);
+			objectOutput.writeObject(samlIdpEntityId);
 		}
 
 		if (samlIdpResponseKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(samlIdpResponseKey);
+			objectOutput.writeObject(samlIdpResponseKey);
 		}
 
 		objectOutput.writeLong(expirationDate);

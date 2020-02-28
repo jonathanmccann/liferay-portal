@@ -88,8 +88,10 @@ public class CounterCacheModel implements CacheModel<Counter>, Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		name = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		name = (String)objectInput.readObject();
 
 		currentId = objectInput.readLong();
 	}
@@ -97,10 +99,10 @@ public class CounterCacheModel implements CacheModel<Counter>, Externalizable {
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		objectOutput.writeLong(currentId);

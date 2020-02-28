@@ -153,23 +153,25 @@ public class SyncDeviceCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		syncDeviceId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		type = objectInput.readUTF();
+		type = (String)objectInput.readObject();
 
 		buildNumber = objectInput.readLong();
 
 		featureSet = objectInput.readInt();
-		hostname = objectInput.readUTF();
+		hostname = (String)objectInput.readObject();
 
 		status = objectInput.readInt();
 	}
@@ -177,10 +179,10 @@ public class SyncDeviceCacheModel
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(syncDeviceId);
@@ -190,20 +192,20 @@ public class SyncDeviceCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		objectOutput.writeLong(buildNumber);
@@ -211,10 +213,10 @@ public class SyncDeviceCacheModel
 		objectOutput.writeInt(featureSet);
 
 		if (hostname == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(hostname);
+			objectOutput.writeObject(hostname);
 		}
 
 		objectOutput.writeInt(status);

@@ -194,7 +194,9 @@ public class KaleoTransitionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoTransitionId = objectInput.readLong();
@@ -204,21 +206,21 @@ public class KaleoTransitionCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		kaleoDefinitionVersionId = objectInput.readLong();
 
 		kaleoNodeId = objectInput.readLong();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
 
 		sourceKaleoNodeId = objectInput.readLong();
-		sourceKaleoNodeName = objectInput.readUTF();
+		sourceKaleoNodeName = (String)objectInput.readObject();
 
 		targetKaleoNodeId = objectInput.readLong();
-		targetKaleoNodeName = objectInput.readUTF();
+		targetKaleoNodeName = (String)objectInput.readObject();
 
 		defaultTransition = objectInput.readBoolean();
 	}
@@ -236,10 +238,10 @@ public class KaleoTransitionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -250,35 +252,35 @@ public class KaleoTransitionCacheModel
 		objectOutput.writeLong(kaleoNodeId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		objectOutput.writeLong(sourceKaleoNodeId);
 
 		if (sourceKaleoNodeName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sourceKaleoNodeName);
+			objectOutput.writeObject(sourceKaleoNodeName);
 		}
 
 		objectOutput.writeLong(targetKaleoNodeId);
 
 		if (targetKaleoNodeName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(targetKaleoNodeName);
+			objectOutput.writeObject(targetKaleoNodeName);
 		}
 
 		objectOutput.writeBoolean(defaultTransition);

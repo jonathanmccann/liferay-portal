@@ -204,9 +204,11 @@ public class GroupCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		groupId = objectInput.readLong();
 
@@ -221,18 +223,18 @@ public class GroupCacheModel
 		parentGroupId = objectInput.readLong();
 
 		liveGroupId = objectInput.readLong();
-		treePath = objectInput.readUTF();
-		groupKey = objectInput.readUTF();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
+		treePath = (String)objectInput.readObject();
+		groupKey = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
 
 		type = objectInput.readInt();
-		typeSettings = objectInput.readUTF();
+		typeSettings = (String)objectInput.readObject();
 
 		manualMembership = objectInput.readBoolean();
 
 		membershipRestriction = objectInput.readInt();
-		friendlyURL = objectInput.readUTF();
+		friendlyURL = (String)objectInput.readObject();
 
 		site = objectInput.readBoolean();
 
@@ -248,10 +250,10 @@ public class GroupCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(groupId);
@@ -269,40 +271,40 @@ public class GroupCacheModel
 		objectOutput.writeLong(liveGroupId);
 
 		if (treePath == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(treePath);
+			objectOutput.writeObject(treePath);
 		}
 
 		if (groupKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(groupKey);
+			objectOutput.writeObject(groupKey);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		objectOutput.writeInt(type);
 
 		if (typeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeSettings);
+			objectOutput.writeObject(typeSettings);
 		}
 
 		objectOutput.writeBoolean(manualMembership);
@@ -310,10 +312,10 @@ public class GroupCacheModel
 		objectOutput.writeInt(membershipRestriction);
 
 		if (friendlyURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(friendlyURL);
+			objectOutput.writeObject(friendlyURL);
 		}
 
 		objectOutput.writeBoolean(site);

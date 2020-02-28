@@ -131,14 +131,16 @@ public class ImageCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		imageId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		type = objectInput.readUTF();
+		type = (String)objectInput.readObject();
 
 		height = objectInput.readInt();
 
@@ -157,10 +159,10 @@ public class ImageCacheModel
 		objectOutput.writeLong(modifiedDate);
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		objectOutput.writeInt(height);

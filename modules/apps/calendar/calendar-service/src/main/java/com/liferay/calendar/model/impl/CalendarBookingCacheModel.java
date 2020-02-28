@@ -277,9 +277,11 @@ public class CalendarBookingCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		calendarBookingId = objectInput.readLong();
 
@@ -288,7 +290,7 @@ public class CalendarBookingCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -299,29 +301,29 @@ public class CalendarBookingCacheModel
 		parentCalendarBookingId = objectInput.readLong();
 
 		recurringCalendarBookingId = objectInput.readLong();
-		vEventUid = objectInput.readUTF();
-		title = objectInput.readUTF();
-		description = objectInput.readUTF();
-		location = objectInput.readUTF();
+		vEventUid = (String)objectInput.readObject();
+		title = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		location = (String)objectInput.readObject();
 
 		startTime = objectInput.readLong();
 
 		endTime = objectInput.readLong();
 
 		allDay = objectInput.readBoolean();
-		recurrence = objectInput.readUTF();
+		recurrence = (String)objectInput.readObject();
 
 		firstReminder = objectInput.readLong();
-		firstReminderType = objectInput.readUTF();
+		firstReminderType = (String)objectInput.readObject();
 
 		secondReminder = objectInput.readLong();
-		secondReminderType = objectInput.readUTF();
+		secondReminderType = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
@@ -330,10 +332,10 @@ public class CalendarBookingCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(calendarBookingId);
@@ -345,10 +347,10 @@ public class CalendarBookingCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -363,31 +365,31 @@ public class CalendarBookingCacheModel
 		objectOutput.writeLong(recurringCalendarBookingId);
 
 		if (vEventUid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(vEventUid);
+			objectOutput.writeObject(vEventUid);
 		}
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (location == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(location);
+			objectOutput.writeObject(location);
 		}
 
 		objectOutput.writeLong(startTime);
@@ -397,28 +399,28 @@ public class CalendarBookingCacheModel
 		objectOutput.writeBoolean(allDay);
 
 		if (recurrence == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(recurrence);
+			objectOutput.writeObject(recurrence);
 		}
 
 		objectOutput.writeLong(firstReminder);
 
 		if (firstReminderType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(firstReminderType);
+			objectOutput.writeObject(firstReminderType);
 		}
 
 		objectOutput.writeLong(secondReminder);
 
 		if (secondReminderType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(secondReminderType);
+			objectOutput.writeObject(secondReminderType);
 		}
 
 		objectOutput.writeLong(lastPublishDate);
@@ -428,10 +430,10 @@ public class CalendarBookingCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

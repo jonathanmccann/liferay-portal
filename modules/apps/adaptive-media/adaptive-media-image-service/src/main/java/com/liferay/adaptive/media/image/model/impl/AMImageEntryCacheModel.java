@@ -139,8 +139,10 @@ public class AMImageEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		amImageEntryId = objectInput.readLong();
 
@@ -148,10 +150,10 @@ public class AMImageEntryCacheModel
 
 		companyId = objectInput.readLong();
 		createDate = objectInput.readLong();
-		configurationUuid = objectInput.readUTF();
+		configurationUuid = (String)objectInput.readObject();
 
 		fileVersionId = objectInput.readLong();
-		mimeType = objectInput.readUTF();
+		mimeType = (String)objectInput.readObject();
 
 		height = objectInput.readInt();
 
@@ -163,10 +165,10 @@ public class AMImageEntryCacheModel
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(amImageEntryId);
@@ -177,19 +179,19 @@ public class AMImageEntryCacheModel
 		objectOutput.writeLong(createDate);
 
 		if (configurationUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(configurationUuid);
+			objectOutput.writeObject(configurationUuid);
 		}
 
 		objectOutput.writeLong(fileVersionId);
 
 		if (mimeType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(mimeType);
+			objectOutput.writeObject(mimeType);
 		}
 
 		objectOutput.writeInt(height);

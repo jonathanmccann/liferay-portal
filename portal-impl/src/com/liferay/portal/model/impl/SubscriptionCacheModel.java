@@ -155,7 +155,9 @@ public class SubscriptionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		subscriptionId = objectInput.readLong();
@@ -165,14 +167,14 @@ public class SubscriptionCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		frequency = objectInput.readUTF();
+		frequency = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -188,10 +190,10 @@ public class SubscriptionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -202,10 +204,10 @@ public class SubscriptionCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (frequency == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(frequency);
+			objectOutput.writeObject(frequency);
 		}
 	}
 

@@ -126,7 +126,9 @@ public class PasswordTrackerCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		passwordTrackerId = objectInput.readLong();
@@ -135,7 +137,7 @@ public class PasswordTrackerCacheModel
 
 		userId = objectInput.readLong();
 		createDate = objectInput.readLong();
-		password = objectInput.readUTF();
+		password = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -150,10 +152,10 @@ public class PasswordTrackerCacheModel
 		objectOutput.writeLong(createDate);
 
 		if (password == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(password);
+			objectOutput.writeObject(password);
 		}
 	}
 

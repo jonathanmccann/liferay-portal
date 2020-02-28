@@ -394,10 +394,12 @@ public class UserCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
-		externalReferenceCode = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
+		externalReferenceCode = (String)objectInput.readObject();
 
 		userId = objectInput.readLong();
 
@@ -408,39 +410,39 @@ public class UserCacheModel
 		defaultUser = objectInput.readBoolean();
 
 		contactId = objectInput.readLong();
-		password = objectInput.readUTF();
+		password = (String)objectInput.readObject();
 
 		passwordEncrypted = objectInput.readBoolean();
 
 		passwordReset = objectInput.readBoolean();
 		passwordModifiedDate = objectInput.readLong();
-		digest = objectInput.readUTF();
-		reminderQueryQuestion = objectInput.readUTF();
-		reminderQueryAnswer = objectInput.readUTF();
+		digest = (String)objectInput.readObject();
+		reminderQueryQuestion = (String)objectInput.readObject();
+		reminderQueryAnswer = (String)objectInput.readObject();
 
 		graceLoginCount = objectInput.readInt();
-		screenName = objectInput.readUTF();
-		emailAddress = objectInput.readUTF();
+		screenName = (String)objectInput.readObject();
+		emailAddress = (String)objectInput.readObject();
 
 		facebookId = objectInput.readLong();
-		googleUserId = objectInput.readUTF();
+		googleUserId = (String)objectInput.readObject();
 
 		ldapServerId = objectInput.readLong();
-		openId = objectInput.readUTF();
+		openId = (String)objectInput.readObject();
 
 		portraitId = objectInput.readLong();
-		languageId = objectInput.readUTF();
-		timeZoneId = objectInput.readUTF();
-		greeting = objectInput.readUTF();
-		comments = objectInput.readUTF();
-		firstName = objectInput.readUTF();
-		middleName = objectInput.readUTF();
-		lastName = objectInput.readUTF();
-		jobTitle = objectInput.readUTF();
+		languageId = (String)objectInput.readObject();
+		timeZoneId = (String)objectInput.readObject();
+		greeting = (String)objectInput.readObject();
+		comments = (String)objectInput.readObject();
+		firstName = (String)objectInput.readObject();
+		middleName = (String)objectInput.readObject();
+		lastName = (String)objectInput.readObject();
+		jobTitle = (String)objectInput.readObject();
 		loginDate = objectInput.readLong();
-		loginIP = objectInput.readUTF();
+		loginIP = (String)objectInput.readObject();
 		lastLoginDate = objectInput.readLong();
-		lastLoginIP = objectInput.readUTF();
+		lastLoginIP = (String)objectInput.readObject();
 		lastFailedLoginDate = objectInput.readLong();
 
 		failedLoginAttempts = objectInput.readInt();
@@ -460,17 +462,17 @@ public class UserCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		if (externalReferenceCode == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(externalReferenceCode);
+			objectOutput.writeObject(externalReferenceCode);
 		}
 
 		objectOutput.writeLong(userId);
@@ -484,10 +486,10 @@ public class UserCacheModel
 		objectOutput.writeLong(contactId);
 
 		if (password == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(password);
+			objectOutput.writeObject(password);
 		}
 
 		objectOutput.writeBoolean(passwordEncrypted);
@@ -496,134 +498,134 @@ public class UserCacheModel
 		objectOutput.writeLong(passwordModifiedDate);
 
 		if (digest == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(digest);
+			objectOutput.writeObject(digest);
 		}
 
 		if (reminderQueryQuestion == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(reminderQueryQuestion);
+			objectOutput.writeObject(reminderQueryQuestion);
 		}
 
 		if (reminderQueryAnswer == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(reminderQueryAnswer);
+			objectOutput.writeObject(reminderQueryAnswer);
 		}
 
 		objectOutput.writeInt(graceLoginCount);
 
 		if (screenName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(screenName);
+			objectOutput.writeObject(screenName);
 		}
 
 		if (emailAddress == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(emailAddress);
+			objectOutput.writeObject(emailAddress);
 		}
 
 		objectOutput.writeLong(facebookId);
 
 		if (googleUserId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(googleUserId);
+			objectOutput.writeObject(googleUserId);
 		}
 
 		objectOutput.writeLong(ldapServerId);
 
 		if (openId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(openId);
+			objectOutput.writeObject(openId);
 		}
 
 		objectOutput.writeLong(portraitId);
 
 		if (languageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(languageId);
+			objectOutput.writeObject(languageId);
 		}
 
 		if (timeZoneId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(timeZoneId);
+			objectOutput.writeObject(timeZoneId);
 		}
 
 		if (greeting == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(greeting);
+			objectOutput.writeObject(greeting);
 		}
 
 		if (comments == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(comments);
+			objectOutput.writeObject(comments);
 		}
 
 		if (firstName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(firstName);
+			objectOutput.writeObject(firstName);
 		}
 
 		if (middleName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(middleName);
+			objectOutput.writeObject(middleName);
 		}
 
 		if (lastName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(lastName);
+			objectOutput.writeObject(lastName);
 		}
 
 		if (jobTitle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(jobTitle);
+			objectOutput.writeObject(jobTitle);
 		}
 
 		objectOutput.writeLong(loginDate);
 
 		if (loginIP == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(loginIP);
+			objectOutput.writeObject(loginIP);
 		}
 
 		objectOutput.writeLong(lastLoginDate);
 
 		if (lastLoginIP == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(lastLoginIP);
+			objectOutput.writeObject(lastLoginIP);
 		}
 
 		objectOutput.writeLong(lastFailedLoginDate);

@@ -137,19 +137,21 @@ public class OAuthUserCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		oAuthUserId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		oAuthApplicationId = objectInput.readLong();
-		accessToken = objectInput.readUTF();
-		accessSecret = objectInput.readUTF();
+		accessToken = (String)objectInput.readObject();
+		accessSecret = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -161,10 +163,10 @@ public class OAuthUserCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -173,17 +175,17 @@ public class OAuthUserCacheModel
 		objectOutput.writeLong(oAuthApplicationId);
 
 		if (accessToken == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(accessToken);
+			objectOutput.writeObject(accessToken);
 		}
 
 		if (accessSecret == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(accessSecret);
+			objectOutput.writeObject(accessSecret);
 		}
 	}
 

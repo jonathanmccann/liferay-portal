@@ -216,7 +216,9 @@ public class KaleoTaskFormCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoTaskFormId = objectInput.readLong();
@@ -226,7 +228,7 @@ public class KaleoTaskFormCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -235,18 +237,18 @@ public class KaleoTaskFormCacheModel
 		kaleoNodeId = objectInput.readLong();
 
 		kaleoTaskId = objectInput.readLong();
-		kaleoTaskName = objectInput.readUTF();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
+		kaleoTaskName = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
 
 		formCompanyId = objectInput.readLong();
-		formDefinition = objectInput.readUTF();
+		formDefinition = (String)objectInput.readObject();
 
 		formGroupId = objectInput.readLong();
 
 		formId = objectInput.readLong();
-		formUuid = objectInput.readUTF();
-		metadata = objectInput.readUTF();
+		formUuid = (String)objectInput.readObject();
+		metadata = (String)objectInput.readObject();
 
 		priority = objectInput.readInt();
 	}
@@ -264,10 +266,10 @@ public class KaleoTaskFormCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -280,33 +282,33 @@ public class KaleoTaskFormCacheModel
 		objectOutput.writeLong(kaleoTaskId);
 
 		if (kaleoTaskName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(kaleoTaskName);
+			objectOutput.writeObject(kaleoTaskName);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		objectOutput.writeLong(formCompanyId);
 
 		if (formDefinition == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(formDefinition);
+			objectOutput.writeObject(formDefinition);
 		}
 
 		objectOutput.writeLong(formGroupId);
@@ -314,17 +316,17 @@ public class KaleoTaskFormCacheModel
 		objectOutput.writeLong(formId);
 
 		if (formUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(formUuid);
+			objectOutput.writeObject(formUuid);
 		}
 
 		if (metadata == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(metadata);
+			objectOutput.writeObject(metadata);
 		}
 
 		objectOutput.writeInt(priority);

@@ -123,14 +123,16 @@ public class PortletCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		id = objectInput.readLong();
 
 		companyId = objectInput.readLong();
-		portletId = objectInput.readUTF();
-		roles = objectInput.readUTF();
+		portletId = (String)objectInput.readObject();
+		roles = (String)objectInput.readObject();
 
 		active = objectInput.readBoolean();
 	}
@@ -144,17 +146,17 @@ public class PortletCacheModel
 		objectOutput.writeLong(companyId);
 
 		if (portletId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(portletId);
+			objectOutput.writeObject(portletId);
 		}
 
 		if (roles == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(roles);
+			objectOutput.writeObject(roles);
 		}
 
 		objectOutput.writeBoolean(active);

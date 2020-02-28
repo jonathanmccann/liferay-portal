@@ -165,7 +165,9 @@ public class WorkflowDefinitionLinkCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		workflowDefinitionLinkId = objectInput.readLong();
@@ -175,7 +177,7 @@ public class WorkflowDefinitionLinkCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -184,7 +186,7 @@ public class WorkflowDefinitionLinkCacheModel
 		classPK = objectInput.readLong();
 
 		typePK = objectInput.readLong();
-		workflowDefinitionName = objectInput.readUTF();
+		workflowDefinitionName = (String)objectInput.readObject();
 
 		workflowDefinitionVersion = objectInput.readInt();
 	}
@@ -202,10 +204,10 @@ public class WorkflowDefinitionLinkCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -218,10 +220,10 @@ public class WorkflowDefinitionLinkCacheModel
 		objectOutput.writeLong(typePK);
 
 		if (workflowDefinitionName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(workflowDefinitionName);
+			objectOutput.writeObject(workflowDefinitionName);
 		}
 
 		objectOutput.writeInt(workflowDefinitionVersion);

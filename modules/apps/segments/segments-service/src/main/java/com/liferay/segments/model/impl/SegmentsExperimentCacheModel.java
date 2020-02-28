@@ -204,9 +204,11 @@ public class SegmentsExperimentCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		segmentsExperimentId = objectInput.readLong();
 
@@ -215,21 +217,21 @@ public class SegmentsExperimentCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		segmentsEntryId = objectInput.readLong();
 
 		segmentsExperienceId = objectInput.readLong();
-		segmentsExperimentKey = objectInput.readUTF();
+		segmentsExperimentKey = (String)objectInput.readObject();
 
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		typeSettings = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		typeSettings = (String)objectInput.readObject();
 
 		status = objectInput.readInt();
 	}
@@ -239,10 +241,10 @@ public class SegmentsExperimentCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(segmentsExperimentId);
@@ -254,10 +256,10 @@ public class SegmentsExperimentCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -268,10 +270,10 @@ public class SegmentsExperimentCacheModel
 		objectOutput.writeLong(segmentsExperienceId);
 
 		if (segmentsExperimentKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(segmentsExperimentKey);
+			objectOutput.writeObject(segmentsExperimentKey);
 		}
 
 		objectOutput.writeLong(classNameId);
@@ -279,24 +281,24 @@ public class SegmentsExperimentCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (typeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeSettings);
+			objectOutput.writeObject(typeSettings);
 		}
 
 		objectOutput.writeInt(status);

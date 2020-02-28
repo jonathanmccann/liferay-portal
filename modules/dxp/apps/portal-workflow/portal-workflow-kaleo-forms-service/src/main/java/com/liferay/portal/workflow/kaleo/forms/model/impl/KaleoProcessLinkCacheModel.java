@@ -102,13 +102,15 @@ public class KaleoProcessLinkCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		kaleoProcessLinkId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		kaleoProcessId = objectInput.readLong();
-		workflowTaskName = objectInput.readUTF();
+		workflowTaskName = (String)objectInput.readObject();
 
 		DDMTemplateId = objectInput.readLong();
 	}
@@ -122,10 +124,10 @@ public class KaleoProcessLinkCacheModel
 		objectOutput.writeLong(kaleoProcessId);
 
 		if (workflowTaskName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(workflowTaskName);
+			objectOutput.writeObject(workflowTaskName);
 		}
 
 		objectOutput.writeLong(DDMTemplateId);

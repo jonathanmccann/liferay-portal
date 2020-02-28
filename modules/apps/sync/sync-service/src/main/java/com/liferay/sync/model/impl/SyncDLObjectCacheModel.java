@@ -272,13 +272,15 @@ public class SyncDLObjectCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		syncDLObjectId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 
 		createTime = objectInput.readLong();
 
@@ -287,30 +289,30 @@ public class SyncDLObjectCacheModel
 		repositoryId = objectInput.readLong();
 
 		parentFolderId = objectInput.readLong();
-		treePath = objectInput.readUTF();
-		name = objectInput.readUTF();
-		extension = objectInput.readUTF();
-		mimeType = objectInput.readUTF();
-		description = objectInput.readUTF();
-		changeLog = objectInput.readUTF();
-		extraSettings = objectInput.readUTF();
-		version = objectInput.readUTF();
+		treePath = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		extension = (String)objectInput.readObject();
+		mimeType = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		changeLog = (String)objectInput.readObject();
+		extraSettings = (String)objectInput.readObject();
+		version = (String)objectInput.readObject();
 
 		versionId = objectInput.readLong();
 
 		size = objectInput.readLong();
-		checksum = objectInput.readUTF();
-		event = objectInput.readUTF();
-		lanTokenKey = objectInput.readUTF();
+		checksum = (String)objectInput.readObject();
+		event = (String)objectInput.readObject();
+		lanTokenKey = (String)objectInput.readObject();
 		lastPermissionChangeDate = objectInput.readLong();
 		lockExpirationDate = objectInput.readLong();
 
 		lockUserId = objectInput.readLong();
-		lockUserName = objectInput.readUTF();
-		type = objectInput.readUTF();
+		lockUserName = (String)objectInput.readObject();
+		type = (String)objectInput.readObject();
 
 		typePK = objectInput.readLong();
-		typeUuid = objectInput.readUTF();
+		typeUuid = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -322,10 +324,10 @@ public class SyncDLObjectCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createTime);
@@ -337,59 +339,59 @@ public class SyncDLObjectCacheModel
 		objectOutput.writeLong(parentFolderId);
 
 		if (treePath == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(treePath);
+			objectOutput.writeObject(treePath);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (extension == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(extension);
+			objectOutput.writeObject(extension);
 		}
 
 		if (mimeType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(mimeType);
+			objectOutput.writeObject(mimeType);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (changeLog == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(changeLog);
+			objectOutput.writeObject(changeLog);
 		}
 
 		if (extraSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(extraSettings);
+			objectOutput.writeObject(extraSettings);
 		}
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		objectOutput.writeLong(versionId);
@@ -397,24 +399,24 @@ public class SyncDLObjectCacheModel
 		objectOutput.writeLong(size);
 
 		if (checksum == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(checksum);
+			objectOutput.writeObject(checksum);
 		}
 
 		if (event == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(event);
+			objectOutput.writeObject(event);
 		}
 
 		if (lanTokenKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(lanTokenKey);
+			objectOutput.writeObject(lanTokenKey);
 		}
 
 		objectOutput.writeLong(lastPermissionChangeDate);
@@ -423,26 +425,26 @@ public class SyncDLObjectCacheModel
 		objectOutput.writeLong(lockUserId);
 
 		if (lockUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(lockUserName);
+			objectOutput.writeObject(lockUserName);
 		}
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		objectOutput.writeLong(typePK);
 
 		if (typeUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeUuid);
+			objectOutput.writeObject(typeUuid);
 		}
 	}
 

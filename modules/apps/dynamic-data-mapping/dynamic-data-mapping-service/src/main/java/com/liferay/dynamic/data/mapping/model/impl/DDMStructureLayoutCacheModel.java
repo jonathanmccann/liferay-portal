@@ -199,7 +199,7 @@ public class DDMStructureLayoutCacheModel
 		throws ClassNotFoundException, IOException {
 
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		structureLayoutId = objectInput.readLong();
 
@@ -208,17 +208,17 @@ public class DDMStructureLayoutCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
-		structureLayoutKey = objectInput.readUTF();
+		structureLayoutKey = (String)objectInput.readObject();
 
 		structureVersionId = objectInput.readLong();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		definition = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		definition = (String)objectInput.readObject();
 
 		_ddmFormLayout =
 			(com.liferay.dynamic.data.mapping.model.DDMFormLayout)
@@ -230,10 +230,10 @@ public class DDMStructureLayoutCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(structureLayoutId);
@@ -245,10 +245,10 @@ public class DDMStructureLayoutCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -257,33 +257,33 @@ public class DDMStructureLayoutCacheModel
 		objectOutput.writeLong(classNameId);
 
 		if (structureLayoutKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(structureLayoutKey);
+			objectOutput.writeObject(structureLayoutKey);
 		}
 
 		objectOutput.writeLong(structureVersionId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (definition == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(definition);
+			objectOutput.writeObject(definition);
 		}
 
 		objectOutput.writeObject(_ddmFormLayout);

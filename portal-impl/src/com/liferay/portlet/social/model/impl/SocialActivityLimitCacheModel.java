@@ -118,7 +118,9 @@ public class SocialActivityLimitCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		activityLimitId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
@@ -132,8 +134,8 @@ public class SocialActivityLimitCacheModel
 		classPK = objectInput.readLong();
 
 		activityType = objectInput.readInt();
-		activityCounterName = objectInput.readUTF();
-		value = objectInput.readUTF();
+		activityCounterName = (String)objectInput.readObject();
+		value = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -153,17 +155,17 @@ public class SocialActivityLimitCacheModel
 		objectOutput.writeInt(activityType);
 
 		if (activityCounterName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(activityCounterName);
+			objectOutput.writeObject(activityCounterName);
 		}
 
 		if (value == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(value);
+			objectOutput.writeObject(value);
 		}
 	}
 

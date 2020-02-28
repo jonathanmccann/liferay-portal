@@ -156,16 +156,18 @@ public class UserNotificationEventCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		userNotificationEventId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		type = objectInput.readUTF();
+		type = (String)objectInput.readObject();
 
 		timestamp = objectInput.readLong();
 
@@ -174,7 +176,7 @@ public class UserNotificationEventCacheModel
 		deliverBy = objectInput.readLong();
 
 		delivered = objectInput.readBoolean();
-		payload = objectInput.readUTF();
+		payload = (String)objectInput.readObject();
 
 		actionRequired = objectInput.readBoolean();
 
@@ -186,10 +188,10 @@ public class UserNotificationEventCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(userNotificationEventId);
@@ -199,10 +201,10 @@ public class UserNotificationEventCacheModel
 		objectOutput.writeLong(userId);
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		objectOutput.writeLong(timestamp);
@@ -214,10 +216,10 @@ public class UserNotificationEventCacheModel
 		objectOutput.writeBoolean(delivered);
 
 		if (payload == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(payload);
+			objectOutput.writeObject(payload);
 		}
 
 		objectOutput.writeBoolean(actionRequired);

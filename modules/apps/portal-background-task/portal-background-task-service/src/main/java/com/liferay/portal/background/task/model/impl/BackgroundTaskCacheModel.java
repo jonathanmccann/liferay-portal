@@ -207,19 +207,19 @@ public class BackgroundTaskCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		name = objectInput.readUTF();
-		servletContextNames = objectInput.readUTF();
-		taskExecutorClassName = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		servletContextNames = (String)objectInput.readObject();
+		taskExecutorClassName = (String)objectInput.readObject();
 		taskContextMap = (Map<String, Serializable>)objectInput.readObject();
 
 		completed = objectInput.readBoolean();
 		completionDate = objectInput.readLong();
 
 		status = objectInput.readInt();
-		statusMessage = objectInput.readUTF();
+		statusMessage = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -235,34 +235,34 @@ public class BackgroundTaskCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (servletContextNames == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(servletContextNames);
+			objectOutput.writeObject(servletContextNames);
 		}
 
 		if (taskExecutorClassName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(taskExecutorClassName);
+			objectOutput.writeObject(taskExecutorClassName);
 		}
 
 		objectOutput.writeObject(taskContextMap);
@@ -273,10 +273,10 @@ public class BackgroundTaskCacheModel
 		objectOutput.writeInt(status);
 
 		if (statusMessage == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusMessage);
+			objectOutput.writeObject(statusMessage);
 		}
 	}
 

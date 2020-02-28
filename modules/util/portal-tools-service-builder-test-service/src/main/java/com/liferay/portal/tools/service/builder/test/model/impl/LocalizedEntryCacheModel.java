@@ -90,8 +90,10 @@ public class LocalizedEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		defaultLanguageId = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		defaultLanguageId = (String)objectInput.readObject();
 
 		localizedEntryId = objectInput.readLong();
 	}
@@ -99,10 +101,10 @@ public class LocalizedEntryCacheModel
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (defaultLanguageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(defaultLanguageId);
+			objectOutput.writeObject(defaultLanguageId);
 		}
 
 		objectOutput.writeLong(localizedEntryId);

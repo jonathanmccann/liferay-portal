@@ -129,18 +129,20 @@ public class JournalArticleResourceCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		resourcePrimKey = objectInput.readLong();
 
 		groupId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
-		articleId = objectInput.readUTF();
+		articleId = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -150,10 +152,10 @@ public class JournalArticleResourceCacheModel
 		objectOutput.writeLong(ctCollectionId);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(resourcePrimKey);
@@ -163,10 +165,10 @@ public class JournalArticleResourceCacheModel
 		objectOutput.writeLong(companyId);
 
 		if (articleId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(articleId);
+			objectOutput.writeObject(articleId);
 		}
 	}
 

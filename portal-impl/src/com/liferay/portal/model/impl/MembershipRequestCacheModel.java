@@ -155,7 +155,9 @@ public class MembershipRequestCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		membershipRequestId = objectInput.readLong();
@@ -166,8 +168,8 @@ public class MembershipRequestCacheModel
 
 		userId = objectInput.readLong();
 		createDate = objectInput.readLong();
-		comments = objectInput.readUTF();
-		replyComments = objectInput.readUTF();
+		comments = (String)objectInput.readObject();
+		replyComments = (String)objectInput.readObject();
 		replyDate = objectInput.readLong();
 
 		replierUserId = objectInput.readLong();
@@ -189,17 +191,17 @@ public class MembershipRequestCacheModel
 		objectOutput.writeLong(createDate);
 
 		if (comments == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(comments);
+			objectOutput.writeObject(comments);
 		}
 
 		if (replyComments == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(replyComments);
+			objectOutput.writeObject(replyComments);
 		}
 
 		objectOutput.writeLong(replyDate);

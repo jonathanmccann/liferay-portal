@@ -126,16 +126,18 @@ public class OAuth2ScopeGrantCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		oAuth2ScopeGrantId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		oAuth2ApplicationScopeAliasesId = objectInput.readLong();
-		applicationName = objectInput.readUTF();
-		bundleSymbolicName = objectInput.readUTF();
-		scope = objectInput.readUTF();
-		scopeAliases = objectInput.readUTF();
+		applicationName = (String)objectInput.readObject();
+		bundleSymbolicName = (String)objectInput.readObject();
+		scope = (String)objectInput.readObject();
+		scopeAliases = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -147,31 +149,31 @@ public class OAuth2ScopeGrantCacheModel
 		objectOutput.writeLong(oAuth2ApplicationScopeAliasesId);
 
 		if (applicationName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(applicationName);
+			objectOutput.writeObject(applicationName);
 		}
 
 		if (bundleSymbolicName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(bundleSymbolicName);
+			objectOutput.writeObject(bundleSymbolicName);
 		}
 
 		if (scope == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(scope);
+			objectOutput.writeObject(scope);
 		}
 
 		if (scopeAliases == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(scopeAliases);
+			objectOutput.writeObject(scopeAliases);
 		}
 	}
 

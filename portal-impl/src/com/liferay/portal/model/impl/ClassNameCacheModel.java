@@ -107,11 +107,13 @@ public class ClassNameCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
-		value = objectInput.readUTF();
+		value = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -121,10 +123,10 @@ public class ClassNameCacheModel
 		objectOutput.writeLong(classNameId);
 
 		if (value == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(value);
+			objectOutput.writeObject(value);
 		}
 	}
 

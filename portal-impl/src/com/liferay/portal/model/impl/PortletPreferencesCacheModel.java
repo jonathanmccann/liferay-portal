@@ -134,7 +134,9 @@ public class PortletPreferencesCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -148,8 +150,8 @@ public class PortletPreferencesCacheModel
 		ownerType = objectInput.readInt();
 
 		plid = objectInput.readLong();
-		portletId = objectInput.readUTF();
-		preferences = objectInput.readUTF();
+		portletId = (String)objectInput.readObject();
+		preferences = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -169,17 +171,17 @@ public class PortletPreferencesCacheModel
 		objectOutput.writeLong(plid);
 
 		if (portletId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(portletId);
+			objectOutput.writeObject(portletId);
 		}
 
 		if (preferences == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(preferences);
+			objectOutput.writeObject(preferences);
 		}
 	}
 

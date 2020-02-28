@@ -116,13 +116,15 @@ public class SamlSpAuthRequestCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		samlSpAuthnRequestId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 		createDate = objectInput.readLong();
-		samlIdpEntityId = objectInput.readUTF();
-		samlSpAuthRequestKey = objectInput.readUTF();
+		samlIdpEntityId = (String)objectInput.readObject();
+		samlSpAuthRequestKey = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -133,17 +135,17 @@ public class SamlSpAuthRequestCacheModel
 		objectOutput.writeLong(createDate);
 
 		if (samlIdpEntityId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(samlIdpEntityId);
+			objectOutput.writeObject(samlIdpEntityId);
 		}
 
 		if (samlSpAuthRequestKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(samlSpAuthRequestKey);
+			objectOutput.writeObject(samlSpAuthRequestKey);
 		}
 	}
 

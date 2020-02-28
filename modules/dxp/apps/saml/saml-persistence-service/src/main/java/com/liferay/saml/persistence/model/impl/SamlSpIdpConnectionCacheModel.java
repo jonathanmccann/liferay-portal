@@ -209,16 +209,18 @@ public class SamlSpIdpConnectionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		samlSpIdpConnectionId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		samlIdpEntityId = objectInput.readUTF();
+		samlIdpEntityId = (String)objectInput.readObject();
 
 		assertionSignatureRequired = objectInput.readBoolean();
 
@@ -230,15 +232,15 @@ public class SamlSpIdpConnectionCacheModel
 
 		ldapImportEnabled = objectInput.readBoolean();
 		metadataUpdatedDate = objectInput.readLong();
-		metadataUrl = objectInput.readUTF();
-		metadataXml = objectInput.readUTF();
-		name = objectInput.readUTF();
-		nameIdFormat = objectInput.readUTF();
+		metadataUrl = (String)objectInput.readObject();
+		metadataXml = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		nameIdFormat = (String)objectInput.readObject();
 
 		signAuthnRequest = objectInput.readBoolean();
 
 		unknownUsersAreStrangers = objectInput.readBoolean();
-		userAttributeMappings = objectInput.readUTF();
+		userAttributeMappings = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -250,20 +252,20 @@ public class SamlSpIdpConnectionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (samlIdpEntityId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(samlIdpEntityId);
+			objectOutput.writeObject(samlIdpEntityId);
 		}
 
 		objectOutput.writeBoolean(assertionSignatureRequired);
@@ -278,31 +280,31 @@ public class SamlSpIdpConnectionCacheModel
 		objectOutput.writeLong(metadataUpdatedDate);
 
 		if (metadataUrl == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(metadataUrl);
+			objectOutput.writeObject(metadataUrl);
 		}
 
 		if (metadataXml == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(metadataXml);
+			objectOutput.writeObject(metadataXml);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (nameIdFormat == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(nameIdFormat);
+			objectOutput.writeObject(nameIdFormat);
 		}
 
 		objectOutput.writeBoolean(signAuthnRequest);
@@ -310,10 +312,10 @@ public class SamlSpIdpConnectionCacheModel
 		objectOutput.writeBoolean(unknownUsersAreStrangers);
 
 		if (userAttributeMappings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userAttributeMappings);
+			objectOutput.writeObject(userAttributeMappings);
 		}
 	}
 

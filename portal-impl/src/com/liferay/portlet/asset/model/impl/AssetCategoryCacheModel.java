@@ -212,12 +212,14 @@ public class AssetCategoryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		uuid = objectInput.readUTF();
-		externalReferenceCode = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
+		externalReferenceCode = (String)objectInput.readObject();
 
 		categoryId = objectInput.readLong();
 
@@ -226,15 +228,15 @@ public class AssetCategoryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		parentCategoryId = objectInput.readLong();
-		treePath = objectInput.readUTF();
-		name = objectInput.readUTF();
-		title = objectInput.readUTF();
-		description = objectInput.readUTF();
+		treePath = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		title = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
 
 		vocabularyId = objectInput.readLong();
 		lastPublishDate = objectInput.readLong();
@@ -247,17 +249,17 @@ public class AssetCategoryCacheModel
 		objectOutput.writeLong(ctCollectionId);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		if (externalReferenceCode == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(externalReferenceCode);
+			objectOutput.writeObject(externalReferenceCode);
 		}
 
 		objectOutput.writeLong(categoryId);
@@ -269,10 +271,10 @@ public class AssetCategoryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -281,31 +283,31 @@ public class AssetCategoryCacheModel
 		objectOutput.writeLong(parentCategoryId);
 
 		if (treePath == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(treePath);
+			objectOutput.writeObject(treePath);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		objectOutput.writeLong(vocabularyId);

@@ -151,7 +151,9 @@ public class DLOpenerFileEntryReferenceCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		dlOpenerFileEntryReferenceId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
@@ -159,11 +161,11 @@ public class DLOpenerFileEntryReferenceCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		referenceKey = objectInput.readUTF();
-		referenceType = objectInput.readUTF();
+		referenceKey = (String)objectInput.readObject();
+		referenceType = (String)objectInput.readObject();
 
 		fileEntryId = objectInput.readLong();
 
@@ -181,27 +183,27 @@ public class DLOpenerFileEntryReferenceCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (referenceKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(referenceKey);
+			objectOutput.writeObject(referenceKey);
 		}
 
 		if (referenceType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(referenceType);
+			objectOutput.writeObject(referenceType);
 		}
 
 		objectOutput.writeLong(fileEntryId);

@@ -175,7 +175,9 @@ public class PowwowMeetingCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		powwowMeetingId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
@@ -183,16 +185,16 @@ public class PowwowMeetingCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		powwowServerId = objectInput.readLong();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		providerType = objectInput.readUTF();
-		providerTypeMetadata = objectInput.readUTF();
-		languageId = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		providerType = (String)objectInput.readObject();
+		providerTypeMetadata = (String)objectInput.readObject();
+		languageId = (String)objectInput.readObject();
 
 		calendarBookingId = objectInput.readLong();
 
@@ -210,10 +212,10 @@ public class PowwowMeetingCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -222,38 +224,38 @@ public class PowwowMeetingCacheModel
 		objectOutput.writeLong(powwowServerId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (providerType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(providerType);
+			objectOutput.writeObject(providerType);
 		}
 
 		if (providerTypeMetadata == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(providerTypeMetadata);
+			objectOutput.writeObject(providerTypeMetadata);
 		}
 
 		if (languageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(languageId);
+			objectOutput.writeObject(languageId);
 		}
 
 		objectOutput.writeLong(calendarBookingId);

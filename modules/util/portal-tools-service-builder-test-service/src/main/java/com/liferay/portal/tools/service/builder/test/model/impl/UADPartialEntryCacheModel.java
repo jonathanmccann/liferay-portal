@@ -102,12 +102,14 @@ public class UADPartialEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		uadPartialEntryId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
-		message = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
+		message = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -117,17 +119,17 @@ public class UADPartialEntryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		if (message == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(message);
+			objectOutput.writeObject(message);
 		}
 	}
 

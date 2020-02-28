@@ -264,9 +264,11 @@ public class KBArticleCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		kbArticleId = objectInput.readLong();
 
@@ -277,7 +279,7 @@ public class KBArticleCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -290,24 +292,24 @@ public class KBArticleCacheModel
 		kbFolderId = objectInput.readLong();
 
 		version = objectInput.readInt();
-		title = objectInput.readUTF();
-		urlTitle = objectInput.readUTF();
-		content = objectInput.readUTF();
-		description = objectInput.readUTF();
+		title = (String)objectInput.readObject();
+		urlTitle = (String)objectInput.readObject();
+		content = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
 
 		priority = objectInput.readDouble();
-		sections = objectInput.readUTF();
+		sections = (String)objectInput.readObject();
 
 		latest = objectInput.readBoolean();
 
 		main = objectInput.readBoolean();
-		sourceURL = objectInput.readUTF();
+		sourceURL = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
@@ -316,10 +318,10 @@ public class KBArticleCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(kbArticleId);
@@ -333,10 +335,10 @@ public class KBArticleCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -353,40 +355,40 @@ public class KBArticleCacheModel
 		objectOutput.writeInt(version);
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (urlTitle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(urlTitle);
+			objectOutput.writeObject(urlTitle);
 		}
 
 		if (content == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(content);
+			objectOutput.writeObject(content);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		objectOutput.writeDouble(priority);
 
 		if (sections == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sections);
+			objectOutput.writeObject(sections);
 		}
 
 		objectOutput.writeBoolean(latest);
@@ -394,10 +396,10 @@ public class KBArticleCacheModel
 		objectOutput.writeBoolean(main);
 
 		if (sourceURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sourceURL);
+			objectOutput.writeObject(sourceURL);
 		}
 
 		objectOutput.writeLong(lastPublishDate);
@@ -407,10 +409,10 @@ public class KBArticleCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

@@ -155,7 +155,9 @@ public class PowwowParticipantCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		powwowParticipantId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
@@ -163,15 +165,15 @@ public class PowwowParticipantCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		powwowMeetingId = objectInput.readLong();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 
 		participantUserId = objectInput.readLong();
-		emailAddress = objectInput.readUTF();
+		emailAddress = (String)objectInput.readObject();
 
 		type = objectInput.readInt();
 
@@ -189,10 +191,10 @@ public class PowwowParticipantCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -201,19 +203,19 @@ public class PowwowParticipantCacheModel
 		objectOutput.writeLong(powwowMeetingId);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		objectOutput.writeLong(participantUserId);
 
 		if (emailAddress == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(emailAddress);
+			objectOutput.writeObject(emailAddress);
 		}
 
 		objectOutput.writeInt(type);

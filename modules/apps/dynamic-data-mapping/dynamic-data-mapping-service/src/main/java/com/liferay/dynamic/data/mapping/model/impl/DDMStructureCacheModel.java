@@ -247,7 +247,7 @@ public class DDMStructureCacheModel
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		structureId = objectInput.readLong();
 
@@ -256,22 +256,22 @@ public class DDMStructureCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 
 		versionUserId = objectInput.readLong();
-		versionUserName = objectInput.readUTF();
+		versionUserName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		parentStructureId = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
-		structureKey = objectInput.readUTF();
-		version = objectInput.readUTF();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		definition = objectInput.readUTF();
-		storageType = objectInput.readUTF();
+		structureKey = (String)objectInput.readObject();
+		version = (String)objectInput.readObject();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		definition = (String)objectInput.readObject();
+		storageType = (String)objectInput.readObject();
 
 		type = objectInput.readInt();
 		lastPublishDate = objectInput.readLong();
@@ -289,10 +289,10 @@ public class DDMStructureCacheModel
 		objectOutput.writeLong(ctCollectionId);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(structureId);
@@ -304,19 +304,19 @@ public class DDMStructureCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(versionUserId);
 
 		if (versionUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(versionUserName);
+			objectOutput.writeObject(versionUserName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -327,45 +327,45 @@ public class DDMStructureCacheModel
 		objectOutput.writeLong(classNameId);
 
 		if (structureKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(structureKey);
+			objectOutput.writeObject(structureKey);
 		}
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (definition == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(definition);
+			objectOutput.writeObject(definition);
 		}
 
 		if (storageType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(storageType);
+			objectOutput.writeObject(storageType);
 		}
 
 		objectOutput.writeInt(type);

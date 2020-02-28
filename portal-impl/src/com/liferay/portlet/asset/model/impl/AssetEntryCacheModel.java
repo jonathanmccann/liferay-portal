@@ -265,7 +265,9 @@ public class AssetEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -277,14 +279,14 @@ public class AssetEntryCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		classUuid = objectInput.readUTF();
+		classUuid = (String)objectInput.readObject();
 
 		classTypeId = objectInput.readLong();
 
@@ -295,12 +297,12 @@ public class AssetEntryCacheModel
 		endDate = objectInput.readLong();
 		publishDate = objectInput.readLong();
 		expirationDate = objectInput.readLong();
-		mimeType = objectInput.readUTF();
-		title = objectInput.readUTF();
-		description = objectInput.readUTF();
-		summary = objectInput.readUTF();
-		url = objectInput.readUTF();
-		layoutUuid = objectInput.readUTF();
+		mimeType = (String)objectInput.readObject();
+		title = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		summary = (String)objectInput.readObject();
+		url = (String)objectInput.readObject();
+		layoutUuid = (String)objectInput.readObject();
 
 		height = objectInput.readInt();
 
@@ -324,10 +326,10 @@ public class AssetEntryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -338,10 +340,10 @@ public class AssetEntryCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (classUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(classUuid);
+			objectOutput.writeObject(classUuid);
 		}
 
 		objectOutput.writeLong(classTypeId);
@@ -355,45 +357,45 @@ public class AssetEntryCacheModel
 		objectOutput.writeLong(expirationDate);
 
 		if (mimeType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(mimeType);
+			objectOutput.writeObject(mimeType);
 		}
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (summary == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(summary);
+			objectOutput.writeObject(summary);
 		}
 
 		if (url == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(url);
+			objectOutput.writeObject(url);
 		}
 
 		if (layoutUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(layoutUuid);
+			objectOutput.writeObject(layoutUuid);
 		}
 
 		objectOutput.writeInt(height);

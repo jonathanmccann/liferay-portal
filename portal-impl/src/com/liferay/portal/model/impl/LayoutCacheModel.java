@@ -350,11 +350,13 @@ public class LayoutCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		plid = objectInput.readLong();
 
@@ -363,7 +365,7 @@ public class LayoutCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -378,38 +380,38 @@ public class LayoutCacheModel
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		name = objectInput.readUTF();
-		title = objectInput.readUTF();
-		description = objectInput.readUTF();
-		keywords = objectInput.readUTF();
-		robots = objectInput.readUTF();
-		type = objectInput.readUTF();
-		typeSettings = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		title = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		keywords = (String)objectInput.readObject();
+		robots = (String)objectInput.readObject();
+		type = (String)objectInput.readObject();
+		typeSettings = (String)objectInput.readObject();
 
 		hidden = objectInput.readBoolean();
 
 		system = objectInput.readBoolean();
-		friendlyURL = objectInput.readUTF();
+		friendlyURL = (String)objectInput.readObject();
 
 		iconImageId = objectInput.readLong();
-		themeId = objectInput.readUTF();
-		colorSchemeId = objectInput.readUTF();
-		css = objectInput.readUTF();
+		themeId = (String)objectInput.readObject();
+		colorSchemeId = (String)objectInput.readObject();
+		css = (String)objectInput.readObject();
 
 		priority = objectInput.readInt();
 
 		masterLayoutPlid = objectInput.readLong();
-		layoutPrototypeUuid = objectInput.readUTF();
+		layoutPrototypeUuid = (String)objectInput.readObject();
 
 		layoutPrototypeLinkEnabled = objectInput.readBoolean();
-		sourcePrototypeLayoutUuid = objectInput.readUTF();
+		sourcePrototypeLayoutUuid = (String)objectInput.readObject();
 		publishDate = objectInput.readLong();
 		lastPublishDate = objectInput.readLong();
 
 		status = objectInput.readInt();
 
 		statusByUserId = objectInput.readLong();
-		statusByUserName = objectInput.readUTF();
+		statusByUserName = (String)objectInput.readObject();
 		statusDate = objectInput.readLong();
 	}
 
@@ -420,10 +422,10 @@ public class LayoutCacheModel
 		objectOutput.writeLong(ctCollectionId);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(plid);
@@ -435,10 +437,10 @@ public class LayoutCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -457,52 +459,52 @@ public class LayoutCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (keywords == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(keywords);
+			objectOutput.writeObject(keywords);
 		}
 
 		if (robots == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(robots);
+			objectOutput.writeObject(robots);
 		}
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		if (typeSettings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(typeSettings);
+			objectOutput.writeObject(typeSettings);
 		}
 
 		objectOutput.writeBoolean(hidden);
@@ -510,33 +512,33 @@ public class LayoutCacheModel
 		objectOutput.writeBoolean(system);
 
 		if (friendlyURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(friendlyURL);
+			objectOutput.writeObject(friendlyURL);
 		}
 
 		objectOutput.writeLong(iconImageId);
 
 		if (themeId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(themeId);
+			objectOutput.writeObject(themeId);
 		}
 
 		if (colorSchemeId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(colorSchemeId);
+			objectOutput.writeObject(colorSchemeId);
 		}
 
 		if (css == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(css);
+			objectOutput.writeObject(css);
 		}
 
 		objectOutput.writeInt(priority);
@@ -544,19 +546,19 @@ public class LayoutCacheModel
 		objectOutput.writeLong(masterLayoutPlid);
 
 		if (layoutPrototypeUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(layoutPrototypeUuid);
+			objectOutput.writeObject(layoutPrototypeUuid);
 		}
 
 		objectOutput.writeBoolean(layoutPrototypeLinkEnabled);
 
 		if (sourcePrototypeLayoutUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sourcePrototypeLayoutUuid);
+			objectOutput.writeObject(sourcePrototypeLayoutUuid);
 		}
 
 		objectOutput.writeLong(publishDate);
@@ -567,10 +569,10 @@ public class LayoutCacheModel
 		objectOutput.writeLong(statusByUserId);
 
 		if (statusByUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(statusByUserName);
+			objectOutput.writeObject(statusByUserName);
 		}
 
 		objectOutput.writeLong(statusDate);

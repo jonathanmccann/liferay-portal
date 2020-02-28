@@ -141,7 +141,9 @@ public class MemberRequestCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		memberRequestId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
@@ -149,10 +151,10 @@ public class MemberRequestCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		key = objectInput.readUTF();
+		key = (String)objectInput.readObject();
 
 		receiverUserId = objectInput.readLong();
 
@@ -174,20 +176,20 @@ public class MemberRequestCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (key == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(key);
+			objectOutput.writeObject(key);
 		}
 
 		objectOutput.writeLong(receiverUserId);

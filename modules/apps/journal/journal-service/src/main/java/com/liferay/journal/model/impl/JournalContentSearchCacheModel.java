@@ -131,7 +131,9 @@ public class JournalContentSearchCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		contentSearchId = objectInput.readLong();
@@ -143,8 +145,8 @@ public class JournalContentSearchCacheModel
 		privateLayout = objectInput.readBoolean();
 
 		layoutId = objectInput.readLong();
-		portletId = objectInput.readUTF();
-		articleId = objectInput.readUTF();
+		portletId = (String)objectInput.readObject();
+		articleId = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -162,17 +164,17 @@ public class JournalContentSearchCacheModel
 		objectOutput.writeLong(layoutId);
 
 		if (portletId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(portletId);
+			objectOutput.writeObject(portletId);
 		}
 
 		if (articleId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(articleId);
+			objectOutput.writeObject(articleId);
 		}
 	}
 

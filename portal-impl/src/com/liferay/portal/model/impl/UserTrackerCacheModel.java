@@ -152,7 +152,9 @@ public class UserTrackerCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		userTrackerId = objectInput.readLong();
@@ -161,10 +163,10 @@ public class UserTrackerCacheModel
 
 		userId = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		sessionId = objectInput.readUTF();
-		remoteAddr = objectInput.readUTF();
-		remoteHost = objectInput.readUTF();
-		userAgent = objectInput.readUTF();
+		sessionId = (String)objectInput.readObject();
+		remoteAddr = (String)objectInput.readObject();
+		remoteHost = (String)objectInput.readObject();
+		userAgent = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -179,31 +181,31 @@ public class UserTrackerCacheModel
 		objectOutput.writeLong(modifiedDate);
 
 		if (sessionId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sessionId);
+			objectOutput.writeObject(sessionId);
 		}
 
 		if (remoteAddr == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(remoteAddr);
+			objectOutput.writeObject(remoteAddr);
 		}
 
 		if (remoteHost == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(remoteHost);
+			objectOutput.writeObject(remoteHost);
 		}
 
 		if (userAgent == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userAgent);
+			objectOutput.writeObject(userAgent);
 		}
 	}
 

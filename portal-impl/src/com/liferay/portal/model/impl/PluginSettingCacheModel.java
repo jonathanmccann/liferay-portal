@@ -133,15 +133,17 @@ public class PluginSettingCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		pluginSettingId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
-		pluginId = objectInput.readUTF();
-		pluginType = objectInput.readUTF();
-		roles = objectInput.readUTF();
+		pluginId = (String)objectInput.readObject();
+		pluginType = (String)objectInput.readObject();
+		roles = (String)objectInput.readObject();
 
 		active = objectInput.readBoolean();
 	}
@@ -155,24 +157,24 @@ public class PluginSettingCacheModel
 		objectOutput.writeLong(companyId);
 
 		if (pluginId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(pluginId);
+			objectOutput.writeObject(pluginId);
 		}
 
 		if (pluginType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(pluginType);
+			objectOutput.writeObject(pluginType);
 		}
 
 		if (roles == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(roles);
+			objectOutput.writeObject(roles);
 		}
 
 		objectOutput.writeBoolean(active);

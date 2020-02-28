@@ -177,23 +177,25 @@ public class OAuthTokenCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		oAuthTokenId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		gadgetKey = objectInput.readUTF();
-		serviceName = objectInput.readUTF();
+		gadgetKey = (String)objectInput.readObject();
+		serviceName = (String)objectInput.readObject();
 
 		moduleId = objectInput.readLong();
-		accessToken = objectInput.readUTF();
-		tokenName = objectInput.readUTF();
-		tokenSecret = objectInput.readUTF();
-		sessionHandle = objectInput.readUTF();
+		accessToken = (String)objectInput.readObject();
+		tokenName = (String)objectInput.readObject();
+		tokenSecret = (String)objectInput.readObject();
+		sessionHandle = (String)objectInput.readObject();
 
 		expiration = objectInput.readLong();
 	}
@@ -207,57 +209,57 @@ public class OAuthTokenCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (gadgetKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(gadgetKey);
+			objectOutput.writeObject(gadgetKey);
 		}
 
 		if (serviceName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(serviceName);
+			objectOutput.writeObject(serviceName);
 		}
 
 		objectOutput.writeLong(moduleId);
 
 		if (accessToken == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(accessToken);
+			objectOutput.writeObject(accessToken);
 		}
 
 		if (tokenName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(tokenName);
+			objectOutput.writeObject(tokenName);
 		}
 
 		if (tokenSecret == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(tokenSecret);
+			objectOutput.writeObject(tokenSecret);
 		}
 
 		if (sessionHandle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(sessionHandle);
+			objectOutput.writeObject(sessionHandle);
 		}
 
 		objectOutput.writeLong(expiration);

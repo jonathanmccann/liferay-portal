@@ -138,7 +138,9 @@ public class CTAutoResolutionInfoCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctAutoResolutionInfoId = objectInput.readLong();
@@ -153,7 +155,7 @@ public class CTAutoResolutionInfoCacheModel
 		sourceModelClassPK = objectInput.readLong();
 
 		targetModelClassPK = objectInput.readLong();
-		conflictIdentifier = objectInput.readUTF();
+		conflictIdentifier = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -174,10 +176,10 @@ public class CTAutoResolutionInfoCacheModel
 		objectOutput.writeLong(targetModelClassPK);
 
 		if (conflictIdentifier == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(conflictIdentifier);
+			objectOutput.writeObject(conflictIdentifier);
 		}
 	}
 

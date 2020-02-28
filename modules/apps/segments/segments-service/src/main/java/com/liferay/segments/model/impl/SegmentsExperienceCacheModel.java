@@ -196,9 +196,11 @@ public class SegmentsExperienceCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		segmentsExperienceId = objectInput.readLong();
 
@@ -207,17 +209,17 @@ public class SegmentsExperienceCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		segmentsEntryId = objectInput.readLong();
-		segmentsExperienceKey = objectInput.readUTF();
+		segmentsExperienceKey = (String)objectInput.readObject();
 
 		classNameId = objectInput.readLong();
 
 		classPK = objectInput.readLong();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 
 		priority = objectInput.readInt();
 
@@ -230,10 +232,10 @@ public class SegmentsExperienceCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(segmentsExperienceId);
@@ -245,10 +247,10 @@ public class SegmentsExperienceCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -257,10 +259,10 @@ public class SegmentsExperienceCacheModel
 		objectOutput.writeLong(segmentsEntryId);
 
 		if (segmentsExperienceKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(segmentsExperienceKey);
+			objectOutput.writeObject(segmentsExperienceKey);
 		}
 
 		objectOutput.writeLong(classNameId);
@@ -268,10 +270,10 @@ public class SegmentsExperienceCacheModel
 		objectOutput.writeLong(classPK);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		objectOutput.writeInt(priority);

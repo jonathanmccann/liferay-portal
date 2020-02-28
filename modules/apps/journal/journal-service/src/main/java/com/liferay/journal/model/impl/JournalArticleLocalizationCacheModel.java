@@ -140,7 +140,9 @@ public class JournalArticleLocalizationCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -150,9 +152,9 @@ public class JournalArticleLocalizationCacheModel
 		companyId = objectInput.readLong();
 
 		articlePK = objectInput.readLong();
-		title = objectInput.readUTF();
-		description = objectInput.readUTF();
-		languageId = objectInput.readUTF();
+		title = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		languageId = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -168,24 +170,24 @@ public class JournalArticleLocalizationCacheModel
 		objectOutput.writeLong(articlePK);
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (languageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(languageId);
+			objectOutput.writeObject(languageId);
 		}
 	}
 

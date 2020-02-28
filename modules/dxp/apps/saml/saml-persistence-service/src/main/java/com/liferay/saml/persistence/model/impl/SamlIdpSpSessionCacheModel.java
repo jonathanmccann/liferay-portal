@@ -149,20 +149,22 @@ public class SamlIdpSpSessionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		samlIdpSpSessionId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		samlIdpSsoSessionId = objectInput.readLong();
-		samlSpEntityId = objectInput.readUTF();
-		nameIdFormat = objectInput.readUTF();
-		nameIdValue = objectInput.readUTF();
+		samlSpEntityId = (String)objectInput.readObject();
+		nameIdFormat = (String)objectInput.readObject();
+		nameIdValue = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -174,10 +176,10 @@ public class SamlIdpSpSessionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -186,24 +188,24 @@ public class SamlIdpSpSessionCacheModel
 		objectOutput.writeLong(samlIdpSsoSessionId);
 
 		if (samlSpEntityId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(samlSpEntityId);
+			objectOutput.writeObject(samlSpEntityId);
 		}
 
 		if (nameIdFormat == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(nameIdFormat);
+			objectOutput.writeObject(nameIdFormat);
 		}
 
 		if (nameIdValue == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(nameIdValue);
+			objectOutput.writeObject(nameIdValue);
 		}
 	}
 

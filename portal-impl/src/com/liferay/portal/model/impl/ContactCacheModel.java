@@ -291,7 +291,9 @@ public class ContactCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		contactId = objectInput.readLong();
@@ -299,7 +301,7 @@ public class ContactCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
@@ -310,10 +312,10 @@ public class ContactCacheModel
 		accountId = objectInput.readLong();
 
 		parentContactId = objectInput.readLong();
-		emailAddress = objectInput.readUTF();
-		firstName = objectInput.readUTF();
-		middleName = objectInput.readUTF();
-		lastName = objectInput.readUTF();
+		emailAddress = (String)objectInput.readObject();
+		firstName = (String)objectInput.readObject();
+		middleName = (String)objectInput.readObject();
+		lastName = (String)objectInput.readObject();
 
 		prefixId = objectInput.readLong();
 
@@ -321,16 +323,16 @@ public class ContactCacheModel
 
 		male = objectInput.readBoolean();
 		birthday = objectInput.readLong();
-		smsSn = objectInput.readUTF();
-		facebookSn = objectInput.readUTF();
-		jabberSn = objectInput.readUTF();
-		skypeSn = objectInput.readUTF();
-		twitterSn = objectInput.readUTF();
-		employeeStatusId = objectInput.readUTF();
-		employeeNumber = objectInput.readUTF();
-		jobTitle = objectInput.readUTF();
-		jobClass = objectInput.readUTF();
-		hoursOfOperation = objectInput.readUTF();
+		smsSn = (String)objectInput.readObject();
+		facebookSn = (String)objectInput.readObject();
+		jabberSn = (String)objectInput.readObject();
+		skypeSn = (String)objectInput.readObject();
+		twitterSn = (String)objectInput.readObject();
+		employeeStatusId = (String)objectInput.readObject();
+		employeeNumber = (String)objectInput.readObject();
+		jobTitle = (String)objectInput.readObject();
+		jobClass = (String)objectInput.readObject();
+		hoursOfOperation = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -344,10 +346,10 @@ public class ContactCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -362,31 +364,31 @@ public class ContactCacheModel
 		objectOutput.writeLong(parentContactId);
 
 		if (emailAddress == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(emailAddress);
+			objectOutput.writeObject(emailAddress);
 		}
 
 		if (firstName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(firstName);
+			objectOutput.writeObject(firstName);
 		}
 
 		if (middleName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(middleName);
+			objectOutput.writeObject(middleName);
 		}
 
 		if (lastName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(lastName);
+			objectOutput.writeObject(lastName);
 		}
 
 		objectOutput.writeLong(prefixId);
@@ -397,73 +399,73 @@ public class ContactCacheModel
 		objectOutput.writeLong(birthday);
 
 		if (smsSn == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(smsSn);
+			objectOutput.writeObject(smsSn);
 		}
 
 		if (facebookSn == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(facebookSn);
+			objectOutput.writeObject(facebookSn);
 		}
 
 		if (jabberSn == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(jabberSn);
+			objectOutput.writeObject(jabberSn);
 		}
 
 		if (skypeSn == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(skypeSn);
+			objectOutput.writeObject(skypeSn);
 		}
 
 		if (twitterSn == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(twitterSn);
+			objectOutput.writeObject(twitterSn);
 		}
 
 		if (employeeStatusId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(employeeStatusId);
+			objectOutput.writeObject(employeeStatusId);
 		}
 
 		if (employeeNumber == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(employeeNumber);
+			objectOutput.writeObject(employeeNumber);
 		}
 
 		if (jobTitle == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(jobTitle);
+			objectOutput.writeObject(jobTitle);
 		}
 
 		if (jobClass == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(jobClass);
+			objectOutput.writeObject(jobClass);
 		}
 
 		if (hoursOfOperation == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(hoursOfOperation);
+			objectOutput.writeObject(hoursOfOperation);
 		}
 	}
 

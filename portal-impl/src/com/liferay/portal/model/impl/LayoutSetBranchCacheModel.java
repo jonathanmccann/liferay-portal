@@ -218,7 +218,9 @@ public class LayoutSetBranchCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		layoutSetBranchId = objectInput.readLong();
@@ -228,22 +230,22 @@ public class LayoutSetBranchCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		privateLayout = objectInput.readBoolean();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
 
 		master = objectInput.readBoolean();
 
 		logoId = objectInput.readLong();
-		themeId = objectInput.readUTF();
-		colorSchemeId = objectInput.readUTF();
-		css = objectInput.readUTF();
-		settings = objectInput.readUTF();
-		layoutSetPrototypeUuid = objectInput.readUTF();
+		themeId = (String)objectInput.readObject();
+		colorSchemeId = (String)objectInput.readObject();
+		css = (String)objectInput.readObject();
+		settings = (String)objectInput.readObject();
+		layoutSetPrototypeUuid = (String)objectInput.readObject();
 
 		layoutSetPrototypeLinkEnabled = objectInput.readBoolean();
 	}
@@ -261,10 +263,10 @@ public class LayoutSetBranchCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -273,17 +275,17 @@ public class LayoutSetBranchCacheModel
 		objectOutput.writeBoolean(privateLayout);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		objectOutput.writeBoolean(master);
@@ -291,38 +293,38 @@ public class LayoutSetBranchCacheModel
 		objectOutput.writeLong(logoId);
 
 		if (themeId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(themeId);
+			objectOutput.writeObject(themeId);
 		}
 
 		if (colorSchemeId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(colorSchemeId);
+			objectOutput.writeObject(colorSchemeId);
 		}
 
 		if (css == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(css);
+			objectOutput.writeObject(css);
 		}
 
 		if (settings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(settings);
+			objectOutput.writeObject(settings);
 		}
 
 		if (layoutSetPrototypeUuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(layoutSetPrototypeUuid);
+			objectOutput.writeObject(layoutSetPrototypeUuid);
 		}
 
 		objectOutput.writeBoolean(layoutSetPrototypeLinkEnabled);

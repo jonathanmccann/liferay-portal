@@ -128,16 +128,18 @@ public class SamlIdpSsoSessionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		samlIdpSsoSessionId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		samlIdpSsoSessionKey = objectInput.readUTF();
+		samlIdpSsoSessionKey = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -149,20 +151,20 @@ public class SamlIdpSsoSessionCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (samlIdpSsoSessionKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(samlIdpSsoSessionKey);
+			objectOutput.writeObject(samlIdpSsoSessionKey);
 		}
 	}
 

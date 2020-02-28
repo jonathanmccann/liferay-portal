@@ -144,7 +144,9 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		entryId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
@@ -152,12 +154,12 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		fullName = objectInput.readUTF();
-		emailAddress = objectInput.readUTF();
-		comments = objectInput.readUTF();
+		fullName = (String)objectInput.readObject();
+		emailAddress = (String)objectInput.readObject();
+		comments = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -171,34 +173,34 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (fullName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(fullName);
+			objectOutput.writeObject(fullName);
 		}
 
 		if (emailAddress == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(emailAddress);
+			objectOutput.writeObject(emailAddress);
 		}
 
 		if (comments == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(comments);
+			objectOutput.writeObject(comments);
 		}
 	}
 

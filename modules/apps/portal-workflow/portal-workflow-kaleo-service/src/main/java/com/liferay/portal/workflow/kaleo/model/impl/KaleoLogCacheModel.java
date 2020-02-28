@@ -284,7 +284,9 @@ public class KaleoLogCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoLogId = objectInput.readLong();
@@ -294,10 +296,10 @@ public class KaleoLogCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		kaleoClassName = objectInput.readUTF();
+		kaleoClassName = (String)objectInput.readObject();
 
 		kaleoClassPK = objectInput.readLong();
 
@@ -308,29 +310,29 @@ public class KaleoLogCacheModel
 		kaleoInstanceTokenId = objectInput.readLong();
 
 		kaleoTaskInstanceTokenId = objectInput.readLong();
-		kaleoNodeName = objectInput.readUTF();
+		kaleoNodeName = (String)objectInput.readObject();
 
 		terminalKaleoNode = objectInput.readBoolean();
 
 		kaleoActionId = objectInput.readLong();
-		kaleoActionName = objectInput.readUTF();
-		kaleoActionDescription = objectInput.readUTF();
+		kaleoActionName = (String)objectInput.readObject();
+		kaleoActionDescription = (String)objectInput.readObject();
 
 		previousKaleoNodeId = objectInput.readLong();
-		previousKaleoNodeName = objectInput.readUTF();
-		previousAssigneeClassName = objectInput.readUTF();
+		previousKaleoNodeName = (String)objectInput.readObject();
+		previousAssigneeClassName = (String)objectInput.readObject();
 
 		previousAssigneeClassPK = objectInput.readLong();
-		currentAssigneeClassName = objectInput.readUTF();
+		currentAssigneeClassName = (String)objectInput.readObject();
 
 		currentAssigneeClassPK = objectInput.readLong();
-		type = objectInput.readUTF();
-		comment = objectInput.readUTF();
+		type = (String)objectInput.readObject();
+		comment = (String)objectInput.readObject();
 		startDate = objectInput.readLong();
 		endDate = objectInput.readLong();
 
 		duration = objectInput.readLong();
-		workflowContext = objectInput.readUTF();
+		workflowContext = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -346,20 +348,20 @@ public class KaleoLogCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (kaleoClassName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(kaleoClassName);
+			objectOutput.writeObject(kaleoClassName);
 		}
 
 		objectOutput.writeLong(kaleoClassPK);
@@ -373,10 +375,10 @@ public class KaleoLogCacheModel
 		objectOutput.writeLong(kaleoTaskInstanceTokenId);
 
 		if (kaleoNodeName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(kaleoNodeName);
+			objectOutput.writeObject(kaleoNodeName);
 		}
 
 		objectOutput.writeBoolean(terminalKaleoNode);
@@ -384,58 +386,58 @@ public class KaleoLogCacheModel
 		objectOutput.writeLong(kaleoActionId);
 
 		if (kaleoActionName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(kaleoActionName);
+			objectOutput.writeObject(kaleoActionName);
 		}
 
 		if (kaleoActionDescription == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(kaleoActionDescription);
+			objectOutput.writeObject(kaleoActionDescription);
 		}
 
 		objectOutput.writeLong(previousKaleoNodeId);
 
 		if (previousKaleoNodeName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(previousKaleoNodeName);
+			objectOutput.writeObject(previousKaleoNodeName);
 		}
 
 		if (previousAssigneeClassName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(previousAssigneeClassName);
+			objectOutput.writeObject(previousAssigneeClassName);
 		}
 
 		objectOutput.writeLong(previousAssigneeClassPK);
 
 		if (currentAssigneeClassName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(currentAssigneeClassName);
+			objectOutput.writeObject(currentAssigneeClassName);
 		}
 
 		objectOutput.writeLong(currentAssigneeClassPK);
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 
 		if (comment == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(comment);
+			objectOutput.writeObject(comment);
 		}
 
 		objectOutput.writeLong(startDate);
@@ -444,10 +446,10 @@ public class KaleoLogCacheModel
 		objectOutput.writeLong(duration);
 
 		if (workflowContext == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(workflowContext);
+			objectOutput.writeObject(workflowContext);
 		}
 	}
 

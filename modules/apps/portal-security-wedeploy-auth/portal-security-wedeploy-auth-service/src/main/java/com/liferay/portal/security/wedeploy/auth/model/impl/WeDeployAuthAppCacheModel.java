@@ -152,19 +152,21 @@ public class WeDeployAuthAppCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		weDeployAuthAppId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		name = objectInput.readUTF();
-		redirectURI = objectInput.readUTF();
-		clientId = objectInput.readUTF();
-		clientSecret = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		redirectURI = (String)objectInput.readObject();
+		clientId = (String)objectInput.readObject();
+		clientSecret = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -176,41 +178,41 @@ public class WeDeployAuthAppCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (redirectURI == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(redirectURI);
+			objectOutput.writeObject(redirectURI);
 		}
 
 		if (clientId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(clientId);
+			objectOutput.writeObject(clientId);
 		}
 
 		if (clientSecret == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(clientSecret);
+			objectOutput.writeObject(clientSecret);
 		}
 	}
 

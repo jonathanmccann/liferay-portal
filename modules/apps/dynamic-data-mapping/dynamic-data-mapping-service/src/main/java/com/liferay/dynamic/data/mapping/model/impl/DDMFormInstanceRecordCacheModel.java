@@ -199,9 +199,11 @@ public class DDMFormInstanceRecordCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
-		uuid = objectInput.readUTF();
+		uuid = (String)objectInput.readObject();
 
 		formInstanceRecordId = objectInput.readLong();
 
@@ -210,18 +212,18 @@ public class DDMFormInstanceRecordCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 
 		versionUserId = objectInput.readLong();
-		versionUserName = objectInput.readUTF();
+		versionUserName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		formInstanceId = objectInput.readLong();
-		formInstanceVersion = objectInput.readUTF();
+		formInstanceVersion = (String)objectInput.readObject();
 
 		storageId = objectInput.readLong();
-		version = objectInput.readUTF();
+		version = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 	}
 
@@ -230,10 +232,10 @@ public class DDMFormInstanceRecordCacheModel
 		objectOutput.writeLong(mvccVersion);
 
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(formInstanceRecordId);
@@ -245,19 +247,19 @@ public class DDMFormInstanceRecordCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(versionUserId);
 
 		if (versionUserName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(versionUserName);
+			objectOutput.writeObject(versionUserName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -266,19 +268,19 @@ public class DDMFormInstanceRecordCacheModel
 		objectOutput.writeLong(formInstanceId);
 
 		if (formInstanceVersion == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(formInstanceVersion);
+			objectOutput.writeObject(formInstanceVersion);
 		}
 
 		objectOutput.writeLong(storageId);
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		objectOutput.writeLong(lastPublishDate);

@@ -132,7 +132,9 @@ public class DLContentCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		ctCollectionId = objectInput.readLong();
@@ -144,8 +146,8 @@ public class DLContentCacheModel
 		companyId = objectInput.readLong();
 
 		repositoryId = objectInput.readLong();
-		path = objectInput.readUTF();
-		version = objectInput.readUTF();
+		path = (String)objectInput.readObject();
+		version = (String)objectInput.readObject();
 
 		size = objectInput.readLong();
 	}
@@ -165,17 +167,17 @@ public class DLContentCacheModel
 		objectOutput.writeLong(repositoryId);
 
 		if (path == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(path);
+			objectOutput.writeObject(path);
 		}
 
 		if (version == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(version);
+			objectOutput.writeObject(version);
 		}
 
 		objectOutput.writeLong(size);

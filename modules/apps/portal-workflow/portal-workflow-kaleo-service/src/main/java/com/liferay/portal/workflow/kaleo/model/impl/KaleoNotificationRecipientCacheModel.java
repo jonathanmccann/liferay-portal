@@ -218,7 +218,9 @@ public class KaleoNotificationRecipientCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		mvccVersion = objectInput.readLong();
 
 		kaleoNotificationRecipientId = objectInput.readLong();
@@ -228,23 +230,23 @@ public class KaleoNotificationRecipientCacheModel
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		kaleoDefinitionVersionId = objectInput.readLong();
 
 		kaleoNotificationId = objectInput.readLong();
-		recipientClassName = objectInput.readUTF();
+		recipientClassName = (String)objectInput.readObject();
 
 		recipientClassPK = objectInput.readLong();
 
 		recipientRoleType = objectInput.readInt();
-		recipientScript = objectInput.readUTF();
-		recipientScriptLanguage = objectInput.readUTF();
-		recipientScriptContexts = objectInput.readUTF();
-		address = objectInput.readUTF();
-		notificationReceptionType = objectInput.readUTF();
+		recipientScript = (String)objectInput.readObject();
+		recipientScriptLanguage = (String)objectInput.readObject();
+		recipientScriptContexts = (String)objectInput.readObject();
+		address = (String)objectInput.readObject();
+		notificationReceptionType = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -260,10 +262,10 @@ public class KaleoNotificationRecipientCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -274,10 +276,10 @@ public class KaleoNotificationRecipientCacheModel
 		objectOutput.writeLong(kaleoNotificationId);
 
 		if (recipientClassName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(recipientClassName);
+			objectOutput.writeObject(recipientClassName);
 		}
 
 		objectOutput.writeLong(recipientClassPK);
@@ -285,38 +287,38 @@ public class KaleoNotificationRecipientCacheModel
 		objectOutput.writeInt(recipientRoleType);
 
 		if (recipientScript == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(recipientScript);
+			objectOutput.writeObject(recipientScript);
 		}
 
 		if (recipientScriptLanguage == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(recipientScriptLanguage);
+			objectOutput.writeObject(recipientScriptLanguage);
 		}
 
 		if (recipientScriptContexts == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(recipientScriptContexts);
+			objectOutput.writeObject(recipientScriptContexts);
 		}
 
 		if (address == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(address);
+			objectOutput.writeObject(address);
 		}
 
 		if (notificationReceptionType == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(notificationReceptionType);
+			objectOutput.writeObject(notificationReceptionType);
 		}
 	}
 

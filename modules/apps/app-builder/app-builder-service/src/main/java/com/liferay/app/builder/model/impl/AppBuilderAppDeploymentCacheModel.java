@@ -109,14 +109,16 @@ public class AppBuilderAppDeploymentCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		appBuilderAppDeploymentId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		appBuilderAppId = objectInput.readLong();
-		settings = objectInput.readUTF();
-		type = objectInput.readUTF();
+		settings = (String)objectInput.readObject();
+		type = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -128,17 +130,17 @@ public class AppBuilderAppDeploymentCacheModel
 		objectOutput.writeLong(appBuilderAppId);
 
 		if (settings == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(settings);
+			objectOutput.writeObject(settings);
 		}
 
 		if (type == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(type);
+			objectOutput.writeObject(type);
 		}
 	}
 

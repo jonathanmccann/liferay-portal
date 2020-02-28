@@ -127,7 +127,9 @@ public class LVEntryLocalizationVersionCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		lvEntryLocalizationVersionId = objectInput.readLong();
 
 		version = objectInput.readInt();
@@ -137,9 +139,9 @@ public class LVEntryLocalizationVersionCacheModel
 		companyId = objectInput.readLong();
 
 		lvEntryId = objectInput.readLong();
-		languageId = objectInput.readUTF();
-		title = objectInput.readUTF();
-		content = objectInput.readUTF();
+		languageId = (String)objectInput.readObject();
+		title = (String)objectInput.readObject();
+		content = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -155,24 +157,24 @@ public class LVEntryLocalizationVersionCacheModel
 		objectOutput.writeLong(lvEntryId);
 
 		if (languageId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(languageId);
+			objectOutput.writeObject(languageId);
 		}
 
 		if (title == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(title);
+			objectOutput.writeObject(title);
 		}
 
 		if (content == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(content);
+			objectOutput.writeObject(content);
 		}
 	}
 

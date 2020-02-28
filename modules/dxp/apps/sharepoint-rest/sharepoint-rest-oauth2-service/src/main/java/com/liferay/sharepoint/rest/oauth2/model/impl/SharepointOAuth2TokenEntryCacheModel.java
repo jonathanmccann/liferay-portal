@@ -151,18 +151,20 @@ public class SharepointOAuth2TokenEntryCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		sharepointOAuth2TokenEntryId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
-		accessToken = objectInput.readUTF();
-		configurationPid = objectInput.readUTF();
+		accessToken = (String)objectInput.readObject();
+		configurationPid = (String)objectInput.readObject();
 		expirationDate = objectInput.readLong();
-		refreshToken = objectInput.readUTF();
+		refreshToken = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -174,35 +176,35 @@ public class SharepointOAuth2TokenEntryCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 
 		if (accessToken == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(accessToken);
+			objectOutput.writeObject(accessToken);
 		}
 
 		if (configurationPid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(configurationPid);
+			objectOutput.writeObject(configurationPid);
 		}
 
 		objectOutput.writeLong(expirationDate);
 
 		if (refreshToken == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(refreshToken);
+			objectOutput.writeObject(refreshToken);
 		}
 	}
 

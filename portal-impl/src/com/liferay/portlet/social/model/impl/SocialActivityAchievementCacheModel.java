@@ -111,7 +111,9 @@ public class SocialActivityAchievementCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		activityAchievementId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
@@ -121,7 +123,7 @@ public class SocialActivityAchievementCacheModel
 		userId = objectInput.readLong();
 
 		createDate = objectInput.readLong();
-		name = objectInput.readUTF();
+		name = (String)objectInput.readObject();
 
 		firstInGroup = objectInput.readBoolean();
 	}
@@ -139,10 +141,10 @@ public class SocialActivityAchievementCacheModel
 		objectOutput.writeLong(createDate);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		objectOutput.writeBoolean(firstInGroup);

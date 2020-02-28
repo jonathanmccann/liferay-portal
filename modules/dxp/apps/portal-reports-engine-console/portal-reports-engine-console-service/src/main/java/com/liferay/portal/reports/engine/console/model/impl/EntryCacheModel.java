@@ -228,7 +228,9 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		entryId = objectInput.readLong();
 
 		groupId = objectInput.readLong();
@@ -236,26 +238,26 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
 
 		definitionId = objectInput.readLong();
-		format = objectInput.readUTF();
+		format = (String)objectInput.readObject();
 
 		scheduleRequest = objectInput.readBoolean();
 		startDate = objectInput.readLong();
 		endDate = objectInput.readLong();
 
 		repeating = objectInput.readBoolean();
-		recurrence = objectInput.readUTF();
-		emailNotifications = objectInput.readUTF();
-		emailDelivery = objectInput.readUTF();
-		portletId = objectInput.readUTF();
-		pageURL = objectInput.readUTF();
-		reportParameters = objectInput.readUTF();
-		errorMessage = objectInput.readUTF();
-		status = objectInput.readUTF();
+		recurrence = (String)objectInput.readObject();
+		emailNotifications = (String)objectInput.readObject();
+		emailDelivery = (String)objectInput.readObject();
+		portletId = (String)objectInput.readObject();
+		pageURL = (String)objectInput.readObject();
+		reportParameters = (String)objectInput.readObject();
+		errorMessage = (String)objectInput.readObject();
+		status = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -269,10 +271,10 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
@@ -281,10 +283,10 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 		objectOutput.writeLong(definitionId);
 
 		if (format == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(format);
+			objectOutput.writeObject(format);
 		}
 
 		objectOutput.writeBoolean(scheduleRequest);
@@ -294,59 +296,59 @@ public class EntryCacheModel implements CacheModel<Entry>, Externalizable {
 		objectOutput.writeBoolean(repeating);
 
 		if (recurrence == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(recurrence);
+			objectOutput.writeObject(recurrence);
 		}
 
 		if (emailNotifications == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(emailNotifications);
+			objectOutput.writeObject(emailNotifications);
 		}
 
 		if (emailDelivery == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(emailDelivery);
+			objectOutput.writeObject(emailDelivery);
 		}
 
 		if (portletId == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(portletId);
+			objectOutput.writeObject(portletId);
 		}
 
 		if (pageURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(pageURL);
+			objectOutput.writeObject(pageURL);
 		}
 
 		if (reportParameters == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(reportParameters);
+			objectOutput.writeObject(reportParameters);
 		}
 
 		if (errorMessage == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(errorMessage);
+			objectOutput.writeObject(errorMessage);
 		}
 
 		if (status == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(status);
+			objectOutput.writeObject(status);
 		}
 	}
 

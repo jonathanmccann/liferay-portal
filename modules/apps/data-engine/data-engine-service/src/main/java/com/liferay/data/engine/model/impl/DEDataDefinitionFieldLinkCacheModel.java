@@ -152,8 +152,10 @@ public class DEDataDefinitionFieldLinkCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
-		uuid = objectInput.readUTF();
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
+		uuid = (String)objectInput.readObject();
 
 		deDataDefinitionFieldLinkId = objectInput.readLong();
 
@@ -168,17 +170,17 @@ public class DEDataDefinitionFieldLinkCacheModel
 		classPK = objectInput.readLong();
 
 		ddmStructureId = objectInput.readLong();
-		fieldName = objectInput.readUTF();
+		fieldName = (String)objectInput.readObject();
 		lastPublishDate = objectInput.readLong();
 	}
 
 	@Override
 	public void writeExternal(ObjectOutput objectOutput) throws IOException {
 		if (uuid == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(uuid);
+			objectOutput.writeObject(uuid);
 		}
 
 		objectOutput.writeLong(deDataDefinitionFieldLinkId);
@@ -196,10 +198,10 @@ public class DEDataDefinitionFieldLinkCacheModel
 		objectOutput.writeLong(ddmStructureId);
 
 		if (fieldName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(fieldName);
+			objectOutput.writeObject(fieldName);
 		}
 
 		objectOutput.writeLong(lastPublishDate);

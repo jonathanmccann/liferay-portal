@@ -182,27 +182,29 @@ public class OAuthApplicationCacheModel
 	}
 
 	@Override
-	public void readExternal(ObjectInput objectInput) throws IOException {
+	public void readExternal(ObjectInput objectInput)
+		throws ClassNotFoundException, IOException {
+
 		oAuthApplicationId = objectInput.readLong();
 
 		companyId = objectInput.readLong();
 
 		userId = objectInput.readLong();
-		userName = objectInput.readUTF();
+		userName = (String)objectInput.readObject();
 		createDate = objectInput.readLong();
 		modifiedDate = objectInput.readLong();
-		name = objectInput.readUTF();
-		description = objectInput.readUTF();
-		consumerKey = objectInput.readUTF();
-		consumerSecret = objectInput.readUTF();
+		name = (String)objectInput.readObject();
+		description = (String)objectInput.readObject();
+		consumerKey = (String)objectInput.readObject();
+		consumerSecret = (String)objectInput.readObject();
 
 		accessLevel = objectInput.readInt();
 
 		logoId = objectInput.readLong();
 
 		shareableAccessToken = objectInput.readBoolean();
-		callbackURI = objectInput.readUTF();
-		websiteURL = objectInput.readUTF();
+		callbackURI = (String)objectInput.readObject();
+		websiteURL = (String)objectInput.readObject();
 	}
 
 	@Override
@@ -214,41 +216,41 @@ public class OAuthApplicationCacheModel
 		objectOutput.writeLong(userId);
 
 		if (userName == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(userName);
+			objectOutput.writeObject(userName);
 		}
 
 		objectOutput.writeLong(createDate);
 		objectOutput.writeLong(modifiedDate);
 
 		if (name == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(name);
+			objectOutput.writeObject(name);
 		}
 
 		if (description == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(description);
+			objectOutput.writeObject(description);
 		}
 
 		if (consumerKey == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(consumerKey);
+			objectOutput.writeObject(consumerKey);
 		}
 
 		if (consumerSecret == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(consumerSecret);
+			objectOutput.writeObject(consumerSecret);
 		}
 
 		objectOutput.writeInt(accessLevel);
@@ -258,17 +260,17 @@ public class OAuthApplicationCacheModel
 		objectOutput.writeBoolean(shareableAccessToken);
 
 		if (callbackURI == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(callbackURI);
+			objectOutput.writeObject(callbackURI);
 		}
 
 		if (websiteURL == null) {
-			objectOutput.writeUTF("");
+			objectOutput.writeObject("");
 		}
 		else {
-			objectOutput.writeUTF(websiteURL);
+			objectOutput.writeObject(websiteURL);
 		}
 	}
 
