@@ -105,50 +105,8 @@ public class UserModelListener extends BaseLDAPExportModelListener<User> {
 			user.getOriginalEmailAddress());
 	}
 
-	protected void exportToLDAP(final User user) {
-		if (user.isDefaultUser() ||
-			UserImportTransactionThreadLocal.isOriginatesFromImport()) {
-
-			return;
-		}
-
-		Callable<Void> callable = CallableUtil.getCallable(
-			expandoBridgeAttributes -> {
-				boolean oldPasswordModified =
-					PasswordModificationThreadLocal.isPasswordModified();
-
-				if (oldPasswordModified) {
-					String lastPasswordUnencrypted =
-						_lastPasswordUnencrypted.get();
-					String newPasswordUnencrypted =
-						PasswordModificationThreadLocal.
-							getPasswordUnencrypted();
-
-					boolean newPasswordModified = !Objects.equals(
-						lastPasswordUnencrypted, newPasswordUnencrypted);
-
-					_lastPasswordUnencrypted.set(newPasswordUnencrypted);
-
-					PasswordModificationThreadLocal.setPasswordModified(
-						newPasswordModified);
-				}
-
-				try {
-					_userExporter.exportUser(user, expandoBridgeAttributes);
-				}
-				catch (Exception exception) {
-					_log.error(
-						"Unable to export user with user ID " +
-							user.getUserId() + " to LDAP on after create",
-						exception);
-				}
-				finally {
-					PasswordModificationThreadLocal.setPasswordModified(
-						oldPasswordModified);
-				}
-			});
-
-		TransactionCommitCallbackUtil.registerCallback(callable);
+	protected void exportToLDAP(final User user) throws Exception {
+		exportToLDAP(user, _userExporter, _ldapSettings);
 	}
 
 	protected void updateMembershipRequestStatus(long userId, long groupId)
