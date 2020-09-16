@@ -227,8 +227,8 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 						%>
 
 						<c:if test="<%= moreCommentsPagination %>">
-							<div class="lfr-discussion-more-comments" id="<%= namespace %>moreCommentsContainer">
-								<button class="btn btn-secondary btn-sm" id="<%= namespace %>moreCommentsTrigger" type="button"><liferay-ui:message key="more-comments" /></button>
+							<div class="lfr-discussion-more-comments" id="<%= namespace + randomNamespace %>moreCommentsContainer">
+								<button class="btn btn-secondary btn-sm" id="<%= namespace + randomNamespace %>moreCommentsTrigger" type="button"><liferay-ui:message key="more-comments" /></button>
 
 								<aui:input name="rootIndexPage" type="hidden" value="<%= String.valueOf(rootIndexPage) %>" />
 								<aui:input name="index" type="hidden" value="<%= String.valueOf(index) %>" />
@@ -600,7 +600,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 			</c:if>
 
 			var moreCommentsTrigger = document.getElementById(
-				'<%= namespace %>moreCommentsTrigger'
+				'<%= namespace + randomNamespace %>moreCommentsTrigger'
 			);
 
 			var indexElement = Util.getFormElement(form, 'index');
@@ -608,7 +608,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 
 			if (moreCommentsTrigger && indexElement && rootIndexPageElement) {
 				moreCommentsTrigger.addEventListener('click', function (event) {
-					var data = Util.ns('<%= namespace %>', {
+					var data = Util.ns('<%= namespace + randomNamespace %>', {
 						className: '<%= discussionTaglibHelper.getClassName() %>',
 						classPK: '<%= discussionTaglibHelper.getClassPK() %>',
 						hideControls: '<%= discussionTaglibHelper.isHideControls() %>',
@@ -620,7 +620,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 					});
 
 					<%
-					String paginationURL = HttpUtil.addParameter(discussionTaglibHelper.getPaginationURL(), "namespace", namespace);
+					String paginationURL = HttpUtil.addParameter(discussionTaglibHelper.getPaginationURL(), "namespace", namespace + randomNamespace);
 
 					paginationURL = HttpUtil.addParameter(paginationURL, "skipEditorLoading", "true");
 					%>
@@ -634,7 +634,7 @@ StagingGroupHelper stagingGroupHelper = StagingGroupHelperUtil.getStagingGroupHe
 						})
 						.then(function (response) {
 							var moreCommentsContainer = document.getElementById(
-								'<%= namespace %>moreCommentsContainer'
+								'<%= namespace + randomNamespace %>moreCommentsContainer'
 							);
 
 							if (moreCommentsContainer) {
