@@ -1552,8 +1552,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return 0;
 		}
 
-		user = _checkPasswordPolicy(user);
-
 		if (!PropsValues.BASIC_AUTH_PASSWORD_REQUIRED) {
 			return user.getUserId();
 		}
@@ -1568,6 +1566,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			password, userPassword);
 
 		if (userPassword.equals(password) || userPassword.equals(encPassword)) {
+			user = _checkPasswordPolicy(user);
+
 			resetFailedLoginAttempts(user);
 
 			return user.getUserId();
@@ -1626,8 +1626,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return 0;
 		}
 
-		user = _checkPasswordPolicy(user);
-
 		// Verify digest
 
 		if (Validator.isNull(user.getDigest())) {
@@ -1646,6 +1644,8 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 				Digester.MD5, ha1, nonce, ha2);
 
 			if (response.equals(curResponse)) {
+				user = _checkPasswordPolicy(user);
+
 				resetFailedLoginAttempts(user);
 
 				return user.getUserId();
@@ -5869,8 +5869,6 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			return Authenticator.FAILURE;
 		}
 
-		user = _checkPasswordPolicy(user);
-
 		if (!user.isPasswordEncrypted()) {
 			user.setPassword(PasswordEncryptorUtil.encrypt(user.getPassword()));
 			user.setPasswordEncrypted(true);
@@ -5899,6 +5897,10 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			else {
 				authResult = Authenticator.FAILURE;
 			}
+		}
+
+		if (authResult == Authenticator.SUCCESS) {
+			user = _checkPasswordPolicy(user);
 		}
 
 		// Post-authentication pipeline
