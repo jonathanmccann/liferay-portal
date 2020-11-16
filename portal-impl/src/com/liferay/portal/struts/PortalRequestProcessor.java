@@ -582,7 +582,9 @@ public class PortalRequestProcessor {
 
 			// Authenticated users can always log out
 
-			if (path.equals(_PATH_PORTAL_LOGOUT)) {
+			if (path.equals(_PATH_PORTAL_LOGOUT) ||
+				path.equals(_PATH_PORTAL_SAML_SLO)) {
+
 				return path;
 			}
 
@@ -846,6 +848,8 @@ public class PortalRequestProcessor {
 
 	private static final String _PATH_PORTAL_RENDER_PORTLET =
 		"/portal/render_portlet";
+
+	private static final String _PATH_PORTAL_SAML_SLO = "/portal/saml/slo";
 
 	private static final String _PATH_PORTAL_SETUP_WIZARD =
 		"/portal/setup_wizard";
