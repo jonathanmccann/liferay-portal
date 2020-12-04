@@ -14,14 +14,10 @@
 
 package com.liferay.portal.configuration.module.configuration.internal;
 
-import com.liferay.petra.concurrent.ConcurrentReferenceKeyHashMap;
-import com.liferay.petra.concurrent.ConcurrentReferenceValueHashMap;
-import com.liferay.petra.memory.FinalizeManager;
 import com.liferay.portal.kernel.module.configuration.ConfigurationException;
 import com.liferay.portal.kernel.settings.Settings;
 import com.liferay.portal.kernel.settings.TypedSettings;
 
-import java.lang.ref.Reference;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 
@@ -46,18 +42,8 @@ public class ConfigurationOverrideInstance {
 			return null;
 		}
 
-		ConfigurationOverrideInstance configurationOverrideInstance =
-			_configurationOverrideInstances.get(configurationOverrideClass);
-
-		if (configurationOverrideInstance == null) {
-			configurationOverrideInstance = new ConfigurationOverrideInstance(
-				configurationOverrideClass, typedSettings);
-
-			_configurationOverrideInstances.put(
-				configurationOverrideClass, configurationOverrideInstance);
-		}
-
-		return configurationOverrideInstance;
+		return new ConfigurationOverrideInstance(
+			configurationOverrideClass, typedSettings);
 	}
 
 	public Object invoke(Method method) throws ReflectiveOperationException {
@@ -98,13 +84,6 @@ public class ConfigurationOverrideInstance {
 			_methods.put(method.getName(), method);
 		}
 	}
-
-	private static final Map<Class<?>, ConfigurationOverrideInstance>
-		_configurationOverrideInstances = new ConcurrentReferenceKeyHashMap<>(
-			new ConcurrentReferenceValueHashMap
-				<Reference<Class<?>>, ConfigurationOverrideInstance>(
-					FinalizeManager.WEAK_REFERENCE_FACTORY),
-			FinalizeManager.WEAK_REFERENCE_FACTORY);
 
 	private final Object _configurationOverrideInstance;
 	private final Map<String, Method> _methods = new HashMap<>();
