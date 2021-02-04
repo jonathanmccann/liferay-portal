@@ -344,9 +344,9 @@ public class XMLWorkflowModelParser implements WorkflowModelParser {
 
 		parseActionsElement(actionsElement, condition);
 
-		Element timersElement = conditionElement.element("timers");
+		Element timersElement = conditionElement.element("task-timers");
 
-		parseTimerElements(timersElement, condition);
+		parseTaskTimerElements(timersElement, condition);
 
 		return condition;
 	}
