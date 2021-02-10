@@ -28,6 +28,8 @@ import com.liferay.portal.kernel.scheduler.Trigger;
 import com.liferay.portal.kernel.scheduler.TriggerFactory;
 import com.liferay.portal.kernel.scheduler.TriggerFactoryUtil;
 import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.transaction.Propagation;
+import com.liferay.portal.kernel.transaction.Transactional;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.workflow.kaleo.definition.DelayDuration;
 import com.liferay.portal.workflow.kaleo.definition.DurationScale;
@@ -123,6 +125,7 @@ public class KaleoTimerInstanceTokenLocalServiceImpl
 	}
 
 	@Override
+	@Transactional(propagation = Propagation.REQUIRES_NEW)
 	public List<KaleoTimerInstanceToken> addKaleoTimerInstanceTokens(
 			KaleoInstanceToken kaleoInstanceToken,
 			KaleoTaskInstanceToken kaleoTaskInstanceToken,
