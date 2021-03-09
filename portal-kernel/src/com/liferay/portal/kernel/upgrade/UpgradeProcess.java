@@ -111,12 +111,17 @@ public abstract class UpgradeProcess
 		finally {
 			connection = null;
 
+			long duration = System.currentTimeMillis() - start;
+
 			if (_log.isInfoEnabled()) {
 				_log.info(
 					StringBundler.concat(
 						message, ClassUtil.getClassName(this), " in ",
-						System.currentTimeMillis() - start, " ms"));
+						duration, " ms"));
 			}
+
+			UpgradeReportUtil.addUpgradeInformation(
+				ClassUtil.getClassName(this), duration, message);
 		}
 	}
 
