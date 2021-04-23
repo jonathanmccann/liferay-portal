@@ -23,6 +23,9 @@ import com.liferay.portal.kernel.model.PortletApp;
 import com.liferay.portal.kernel.portlet.LiferayPortletContext;
 import com.liferay.portal.kernel.portlet.LiferayPortletRequest;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
+import com.liferay.portal.kernel.service.ServiceContext;
+import com.liferay.portal.kernel.service.ServiceContextFactory;
+import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
 import com.liferay.portal.kernel.servlet.URLEncoder;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.PortalUtil;
@@ -287,6 +290,11 @@ public class PortletRequestDispatcherImpl
 		}
 
 		try {
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(
+				portletServletRequest);
+
+			ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
 			if (include) {
 				_requestDispatcher.include(
 					portletServletRequest, portletServletResponse);
@@ -296,18 +304,19 @@ public class PortletRequestDispatcherImpl
 					portletServletRequest, portletServletResponse);
 			}
 		}
-		catch (ServletException servletException) {
+		catch (Exception exception) {
 			if (_log.isDebugEnabled()) {
-				_log.debug("Unable to dispatch request", servletException);
+				_log.debug("Unable to dispatch request", exception);
 			}
 
-			_log.error(
-				"Unable to dispatch request: " + servletException.getMessage());
+			_log.error("Unable to dispatch request: " + exception.getMessage());
 
-			throw new PortletException(servletException);
+			throw new PortletException(exception);
 		}
 		finally {
 			liferayPortletRequest.setPortletRequestDispatcherRequest(null);
+
+			ServiceContextThreadLocal.popServiceContext();
 		}
 	}
 
