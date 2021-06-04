@@ -323,7 +323,73 @@ renderResponse.setTitle(headerTitle);
 					<aui:input label="title" name="title" />
 
 					<div>
-						<aui:input label="file-name" name="fileName" type='<%= dlEditFileEntryDisplayContext.isFileNameVisible() ? "text" : "hidden" %>' />
+						<aui:input label="file-name" name="fileName" type='<%= dlEditFileEntryDisplayContext.isFileNameVisible() ? "text" : "hidden" %>'>
+							<aui:validator errorMessage="please-enter-a-file-with-a-valid-file-name" name="custom">
+								function(val) {
+									if (!val || val.match(/^\s*$/)) {
+										return false;
+									}
+
+									<%
+									JSONArray blacklistCharJSONArray = JSONFactoryUtil.createJSONArray();
+
+									for (String s : PropsValues.DL_CHAR_BLACKLIST) {
+										blacklistCharJSONArray.put(s);
+									}
+									%>
+
+									var blacklistCharJSONArray = <%= blacklistCharJSONArray.toJSONString() %>;
+
+									for (var i = 0; i < blacklistCharJSONArray.length; i++) {
+										if (val.indexOf(blacklistCharJSONArray[i]) !== -1) {
+											return false;
+										}
+									}
+
+									<%
+									JSONArray blacklistCharLastJSONArray = JSONFactoryUtil.createJSONArray();
+
+									for (String s : PropsValues.DL_CHAR_LAST_BLACKLIST) {
+										if (s.startsWith(UnicodeFormatter.UNICODE_PREFIX)) {
+											s = UnicodeFormatter.parseString(s);
+										}
+
+										blacklistCharLastJSONArray.put(s);
+									}
+									%>
+
+									var blacklistCharLastJSONArray = <%= blacklistCharLastJSONArray.toJSONString() %>;
+
+									for (var i = 0; i < blacklistCharLastJSONArray.length; i++) {
+										if (val.endsWith(blacklistCharLastJSONArray[i])) {
+											return false;
+										}
+									}
+
+									<%
+									JSONArray blacklistNameJSONArray = JSONFactoryUtil.createJSONArray();
+
+									for (String s : PropsValues.DL_NAME_BLACKLIST) {
+										blacklistNameJSONArray.put(s);
+									}
+									%>
+
+									var blacklistNameJSONArray = <%= blacklistNameJSONArray.toJSONString() %>;
+
+									var indexOfLastPeriod = val.lastIndexOf('.');
+
+									var fileNameWithoutExtension = indexOfLastPeriod > 0 ? val.substring(0, indexOfLastPeriod).toLowerCase() : val.toLowerCase();
+
+									for (var i = 0; i < blacklistNameJSONArray.length; i++) {
+										if (fileNameWithoutExtension === blacklistNameJSONArray[i].toLowerCase()) {
+											return false;
+										}
+									}
+
+									return true;
+								}
+							</aui:validator>
+						</aui:input>
 
 						<c:if test="<%= fileVersion != null %>">
 							<react:component
