@@ -229,7 +229,11 @@ public class JournalTransformer {
 
 			UnsyncStringWriter unsyncStringWriter = new UnsyncStringWriter();
 
+			boolean isolated = themeDisplay.isIsolated();
+
 			try {
+				themeDisplay.setIsolated(true);
+
 				Locale locale = LocaleUtil.fromLanguageId(languageId);
 
 				if (document != null) {
@@ -328,6 +332,8 @@ public class JournalTransformer {
 				}
 			}
 			finally {
+				themeDisplay.setIsolated(isolated);
+
 				if ((httpServletRequest != null) &&
 					(portletRequestModel != null)) {
 
