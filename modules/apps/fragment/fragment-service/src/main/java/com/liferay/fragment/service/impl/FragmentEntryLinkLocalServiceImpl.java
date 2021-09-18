@@ -14,7 +14,11 @@
 
 package com.liferay.fragment.service.impl;
 
+import com.liferay.changeset.model.ChangesetCollection;
+import com.liferay.changeset.service.ChangesetCollectionLocalService;
+import com.liferay.changeset.service.ChangesetEntryLocalService;
 import com.liferay.document.library.util.DLURLHelper;
+import com.liferay.exportimport.kernel.staging.constants.StagingConstants;
 import com.liferay.fragment.constants.FragmentEntryLinkConstants;
 import com.liferay.fragment.model.FragmentCollection;
 import com.liferay.fragment.model.FragmentEntry;
@@ -23,6 +27,8 @@ import com.liferay.fragment.processor.DefaultFragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorContext;
 import com.liferay.fragment.processor.FragmentEntryProcessorRegistry;
 import com.liferay.fragment.service.base.FragmentEntryLinkLocalServiceBaseImpl;
+import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
+import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalServiceUtil;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.aop.AopService;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -32,12 +38,14 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.SystemEventConstants;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portletfilerepository.PortletFileRepositoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.service.ClassNameLocalService;
+import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
@@ -51,6 +59,7 @@ import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.segments.constants.SegmentsExperienceConstants;
+import com.liferay.staging.StagingGroupHelper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -738,7 +747,59 @@ public class FragmentEntryLinkLocalServiceImpl
 
 		fragmentEntryLink.setLastPropagationDate(new Date());
 
+		_addLayoutToChangesetCollection(fragmentEntryLink);
+
 		fragmentEntryLinkPersistence.update(fragmentEntryLink);
+	}
+
+	private void _addLayoutToChangesetCollection(
+		FragmentEntryLink fragmentEntryLink) {
+
+		Group group = _groupLocalService.fetchGroup(
+			fragmentEntryLink.getGroupId());
+
+		if ((group == null) || !_stagingGroupHelper.isStagingGroup(group)) {
+			return;
+		}
+
+		try {
+			ChangesetCollection changesetCollection =
+				_changesetCollectionLocalService.fetchOrAddChangesetCollection(
+					fragmentEntryLink.getGroupId(),
+					StagingConstants.
+						RANGE_FROM_LAST_PUBLISH_DATE_CHANGESET_NAME);
+
+			long layoutClassNameId = _classNameLocalService.getClassNameId(
+				Layout.class.getName());
+
+			_changesetEntryLocalService.fetchOrAddChangesetEntry(
+				changesetCollection.getChangesetCollectionId(),
+				layoutClassNameId, fragmentEntryLink.getPlid());
+
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				LayoutPageTemplateEntryLocalServiceUtil.
+					fetchLayoutPageTemplateEntryByPlid(
+						fragmentEntryLink.getPlid());
+
+			if (layoutPageTemplateEntry != null) {
+				long layoutPageTemplateEntryClassNameId =
+					_classNameLocalService.getClassNameId(
+						LayoutPageTemplateEntry.class.getName());
+
+				_changesetEntryLocalService.fetchOrAddChangesetEntry(
+					changesetCollection.getChangesetCollectionId(),
+					layoutPageTemplateEntryClassNameId,
+					layoutPageTemplateEntry.getLayoutPageTemplateEntryId());
+			}
+		}
+		catch (PortalException portalException) {
+			if (_log.isWarnEnabled()) {
+				_log.warn(
+					"Unable to process layouts for fragment entry link" +
+						fragmentEntryLink.getFragmentEntryLinkId(),
+					portalException);
+			}
+		}
 	}
 
 	private String _getProcessedHTML(
@@ -873,6 +934,12 @@ public class FragmentEntryLinkLocalServiceImpl
 		"\\[resources:(.+?)\\]");
 
 	@Reference
+	private ChangesetCollectionLocalService _changesetCollectionLocalService;
+
+	@Reference
+	private ChangesetEntryLocalService _changesetEntryLocalService;
+
+	@Reference
 	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
@@ -882,6 +949,9 @@ public class FragmentEntryLinkLocalServiceImpl
 	private FragmentEntryProcessorRegistry _fragmentEntryProcessorRegistry;
 
 	@Reference
+	private GroupLocalService _groupLocalService;
+
+	@Reference
 	private JSONFactory _jsonFactory;
 
 	@Reference
@@ -889,5 +959,8 @@ public class FragmentEntryLinkLocalServiceImpl
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private StagingGroupHelper _stagingGroupHelper;
 
 }
