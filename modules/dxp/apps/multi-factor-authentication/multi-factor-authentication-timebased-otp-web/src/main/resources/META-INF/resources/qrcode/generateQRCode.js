@@ -16,7 +16,10 @@ export default function generateQRCode(
 	{account, algorithm, counter, digits, issuer, secret}
 ) {
 	const url = new URL(
-		'otpauth://totp/' + issuer + ':' + encodeURIComponent(account)
+		'otpauth://totp/' +
+			encodeURIComponent(issuer) +
+			':' +
+			encodeURIComponent(account)
 	);
 
 	url.searchParams.append('secret', encodeURIComponent(secret));
