@@ -38,7 +38,7 @@ import jodd.util.Base32;
  */
 public class MFATimeBasedOTPUtil {
 
-	public static final String MFA_TIMEBASED_OTP_ALGORITHM = "HmacSHA1";
+	public static final String MFA_TIMEBASED_OTP_ALGORITHM = "SHA1";
 
 	public static final int MFA_TIMEBASED_OTP_COUNTER = 30 * 1000;
 
