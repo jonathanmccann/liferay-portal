@@ -35,7 +35,7 @@ public class AssetVocabularyTable {
 		{"userName", Types.VARCHAR}, {"createDate", Types.TIMESTAMP},
 		{"modifiedDate", Types.TIMESTAMP}, {"name", Types.VARCHAR},
 		{"title", Types.VARCHAR}, {"description", Types.VARCHAR},
-		{"settings_", Types.VARCHAR}, {"system_", Types.BOOLEAN},
+		{"settings_", Types.VARCHAR}, {"visibilityType", Types.INTEGER},
 		{"lastPublishDate", Types.TIMESTAMP}
 	};
 
@@ -73,13 +73,13 @@ TABLE_COLUMNS_MAP.put("description", Types.VARCHAR);
 
 TABLE_COLUMNS_MAP.put("settings_", Types.VARCHAR);
 
-TABLE_COLUMNS_MAP.put("system_", Types.BOOLEAN);
+TABLE_COLUMNS_MAP.put("visibilityType", Types.INTEGER);
 
 TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
 
 }
 	public static final String TABLE_SQL_CREATE =
-"create table AssetVocabulary (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,vocabularyId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,title STRING null,description STRING null,settings_ STRING null,system_ BOOLEAN,lastPublishDate DATE null,primary key (vocabularyId, ctCollectionId))";
+"create table AssetVocabulary (mvccVersion LONG default 0 not null,ctCollectionId LONG default 0 not null,uuid_ VARCHAR(75) null,externalReferenceCode VARCHAR(75) null,vocabularyId LONG not null,groupId LONG,companyId LONG,userId LONG,userName VARCHAR(75) null,createDate DATE null,modifiedDate DATE null,name VARCHAR(75) null,title STRING null,description STRING null,settings_ STRING null,visibilityType INTEGER,lastPublishDate DATE null,primary key (vocabularyId, ctCollectionId))";
 
 	public static final String TABLE_SQL_DROP = "drop table AssetVocabulary";
 
@@ -89,7 +89,7 @@ TABLE_COLUMNS_MAP.put("lastPublishDate", Types.TIMESTAMP);
 		"create index IX_49B3687A on AssetVocabulary (ctCollectionId)",
 		"create index IX_4E99C46C on AssetVocabulary (groupId, ctCollectionId)",
 		"create unique index IX_AE9F73AB on AssetVocabulary (groupId, name[$COLUMN_LENGTH:75$], ctCollectionId)",
-		"create index IX_31819750 on AssetVocabulary (groupId, system_, ctCollectionId)",
+		"create index IX_2C944C4C on AssetVocabulary (groupId, visibilityType, ctCollectionId)",
 		"create index IX_B955B36E on AssetVocabulary (uuid_[$COLUMN_LENGTH:75$], companyId, ctCollectionId)",
 		"create index IX_2F3D2E76 on AssetVocabulary (uuid_[$COLUMN_LENGTH:75$], ctCollectionId)",
 		"create unique index IX_8F88F9F0 on AssetVocabulary (uuid_[$COLUMN_LENGTH:75$], groupId, ctCollectionId)"
