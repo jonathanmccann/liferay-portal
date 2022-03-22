@@ -4828,11 +4828,30 @@ public class PortalImpl implements Portal {
 							layout.getUuid(), liveGroup.getGroupId(),
 							layout.isPrivateLayout());
 
-					if ((liveGroupLayout != null) &&
-						liveGroupLayout.hasScopeGroup()) {
+					long currentLayoutScopeGroupId = _getScopeGroupId(
+						themeDisplay, layout, portletId);
+					long liveGroupLayoutScopeGroupId = _getScopeGroupId(
+						themeDisplay, liveGroupLayout, portletId);
 
-						scopeGroupId = _getScopeGroupId(
-							themeDisplay, liveGroupLayout, portletId);
+					long portletScopeGroupId = _getScopeGroupId(
+						themeDisplay, layout, portletId);
+
+					//_log.fatal("currentLayoutScopeGroupId = " + currentLayoutScopeGroupId);
+					//_log.fatal("liveGroupLayoutScopeGroupId = " + liveGroupLayoutScopeGroupId);
+
+					if (portletScopeGroupId != layout.getGroupId()) {
+						Group portletScopeGroup = GroupLocalServiceUtil.fetchGroup(
+							portletScopeGroupId);
+
+						if (portletScopeGroup.isStagingGroup()) {
+							Group portletScopeLiveGroup =
+								portletScopeGroup.getLiveGroup();
+
+							scopeGroupId = portletScopeLiveGroup.getGroupId();
+						}
+						else {
+							scopeGroupId = portletScopeGroup.getGroupId();
+						}
 					}
 					else if (checkStagingGroup &&
 							 !liveGroup.isStagedRemotely()) {
@@ -4841,7 +4860,7 @@ public class PortalImpl implements Portal {
 
 						scopeGroupId = stagingGroup.getGroupId();
 					}
-					else {
+					else /*if (scopeGroupId == group.getGroupId())*/ {
 						scopeGroupId = liveGroup.getGroupId();
 					}
 				}
