@@ -4823,16 +4823,23 @@ public class PortalImpl implements Portal {
 				if (liveGroup.isStaged() &&
 					!liveGroup.isStagedPortlet(portletId)) {
 
-					Layout liveGroupLayout =
-						LayoutLocalServiceUtil.fetchLayoutByUuidAndGroupId(
-							layout.getUuid(), liveGroup.getGroupId(),
-							layout.isPrivateLayout());
+					long portletScopeGroupId = _getScopeGroupId(
+						themeDisplay, layout, portletId);
 
-					if ((liveGroupLayout != null) &&
-						liveGroupLayout.hasScopeGroup()) {
+					if (portletScopeGroupId != layout.getGroupId()) {
+						Group portletScopeGroup =
+							GroupLocalServiceUtil.fetchGroup(
+								portletScopeGroupId);
 
-						scopeGroupId = _getScopeGroupId(
-							themeDisplay, liveGroupLayout, portletId);
+						if (portletScopeGroup.isStagingGroup()) {
+							Group portletScopeLiveGroup =
+								portletScopeGroup.getLiveGroup();
+
+							scopeGroupId = portletScopeLiveGroup.getGroupId();
+						}
+						else {
+							scopeGroupId = portletScopeGroup.getGroupId();
+						}
 					}
 					else if (checkStagingGroup &&
 							 !liveGroup.isStagedRemotely()) {
