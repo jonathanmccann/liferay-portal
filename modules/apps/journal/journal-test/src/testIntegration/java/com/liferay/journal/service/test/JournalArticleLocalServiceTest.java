@@ -39,6 +39,7 @@ import com.liferay.journal.model.JournalArticleDisplay;
 import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.journal.util.JournalConverter;
+import com.liferay.journal.util.JournalHelper;
 import com.liferay.layout.page.template.constants.LayoutPageTemplateEntryTypeConstants;
 import com.liferay.layout.page.template.model.LayoutPageTemplateEntry;
 import com.liferay.layout.page.template.service.LayoutPageTemplateEntryLocalService;
@@ -52,6 +53,7 @@ import com.liferay.portal.kernel.model.ResourcePermission;
 import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
+import com.liferay.portal.kernel.portlet.constants.FriendlyURLResolverConstants;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -124,6 +126,7 @@ public class JournalArticleLocalServiceTest {
 		_themeDisplay.setCompany(
 			_companyLocalService.getCompany(_group.getCompanyId()));
 		_themeDisplay.setLayout(layout);
+		_themeDisplay.setLocale(LocaleUtil.US);
 		_themeDisplay.setLookAndFeel(
 			layout.getTheme(), layout.getColorScheme());
 
@@ -141,6 +144,23 @@ public class JournalArticleLocalServiceTest {
 		_themeDisplay.setScopeGroupId(_group.getGroupId());
 		_themeDisplay.setSiteGroupId(_group.getGroupId());
 		_themeDisplay.setUser(user);
+	}
+
+	@Test
+	public void testBuildURLPattern() throws Exception {
+		JournalArticle article = JournalTestUtil.addArticle(
+			_group.getGroupId(),
+			JournalFolderConstants.DEFAULT_PARENT_FOLDER_ID, "Test",
+			RandomTestUtil.randomString());
+
+		Layout layout = _themeDisplay.getLayout();
+
+		Assert.assertEquals(
+			getArticleURL(),
+			_journalHelper.buildURLPattern(
+				article, layout.isPrivateLayout(), _themeDisplay,
+				_themeDisplay.getLocale(),
+				FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE));
 	}
 
 	@Test
@@ -576,6 +596,12 @@ public class JournalArticleLocalServiceTest {
 		Assert.assertEquals("Predefined Value", field.getValue(LocaleUtil.US));
 	}
 
+	protected String getArticleURL() {
+		return StringBundler.concat(
+			"/web", _group.getFriendlyURL(),
+			FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE, "test");
+	}
+
 	private void _assertArticleUser(
 		JournalArticle journalArticle, User expectedOwnerUser,
 		User expectedStatusByUser) {
@@ -689,6 +715,9 @@ public class JournalArticleLocalServiceTest {
 
 	@Inject
 	private JournalConverter _journalConverter;
+
+	@Inject
+	private JournalHelper _journalHelper;
 
 	@Inject
 	private LayoutPageTemplateEntryLocalService
