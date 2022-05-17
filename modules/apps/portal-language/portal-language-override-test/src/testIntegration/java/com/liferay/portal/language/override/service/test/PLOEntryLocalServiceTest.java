@@ -18,7 +18,6 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.model.ModelHintsUtil;
-import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -31,6 +30,8 @@ import com.liferay.portal.language.override.service.PLOEntryLocalService;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 
+import java.util.Locale;
+
 import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
@@ -40,7 +41,6 @@ import org.junit.runner.RunWith;
 /**
  * @author Drew Brokke
  */
-@DataGuard(scope = DataGuard.Scope.METHOD)
 @RunWith(Arquillian.class)
 public class PLOEntryLocalServiceTest {
 
@@ -50,74 +50,82 @@ public class PLOEntryLocalServiceTest {
 		new LiferayIntegrationTestRule();
 
 	@Test
-	public void testAddPLOEntryNewKey() throws Exception {
+	public void testAddPLOEntry() throws Exception {
+		Locale defaultLocale = LocaleUtil.getDefault();
+
+		String languageId = LanguageUtil.getLanguageId(defaultLocale);
+
+		long companyId = TestPropsValues.getCompanyId();
+		long userId = TestPropsValues.getUserId();
+
+		try {
+			String key = StringPool.BLANK;
+
+			_ploEntryLocalService.addOrUpdatePLOEntry(
+				companyId, userId, key, languageId,
+				RandomTestUtil.randomString());
+
+			Assert.fail();
+		}
+		catch (PLOEntryKeyException.MustNotBeNull ploEntryKeyException) {
+			Assert.assertEquals(
+				"Key must not be null", ploEntryKeyException.getMessage());
+		}
+
+		int keyMaxLength = ModelHintsUtil.getMaxLength(
+			PLOEntry.class.getName(), "key");
+
+		try {
+			_ploEntryLocalService.addOrUpdatePLOEntry(
+				companyId, userId,
+				RandomTestUtil.randomString(keyMaxLength + 1), languageId,
+				RandomTestUtil.randomString());
+
+			Assert.fail();
+		}
+		catch (PLOEntryKeyException.MustBeShorter ploEntryKeyException) {
+			Assert.assertEquals(
+				String.format(
+					"Key must not have more than %s characters", keyMaxLength),
+				ploEntryKeyException.getMessage());
+		}
+
 		String key = RandomTestUtil.randomString();
 
-		_assertTranslationValue(key, null);
+		try {
+			_ploEntryLocalService.addOrUpdatePLOEntry(
+				companyId, userId, key, languageId, StringPool.BLANK);
+
+			Assert.fail();
+		}
+		catch (PLOEntryValueException.MustNotBeNull ploEntryValueException) {
+			Assert.assertEquals(
+				"Value must not be null", ploEntryValueException.getMessage());
+		}
 
 		PLOEntry ploEntry = _ploEntryLocalService.addOrUpdatePLOEntry(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(), key,
-			LanguageUtil.getLanguageId(LocaleUtil.getDefault()),
-			RandomTestUtil.randomString());
+			companyId, userId, key, languageId, RandomTestUtil.randomString());
 
-		_assertTranslationValue(key, ploEntry.getValue());
-	}
-
-	@Test
-	public void testAddPLOEntryOverrideExistingKey() throws Exception {
-		String key = "available-languages";
-
-		Assert.assertNotNull(
-			LanguageResources.getMessage(LocaleUtil.getDefault(), key));
-
-		PLOEntry ploEntry = _ploEntryLocalService.addOrUpdatePLOEntry(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(), key,
-			LanguageUtil.getLanguageId(LocaleUtil.getDefault()),
-			RandomTestUtil.randomString());
-
-		_assertTranslationValue(key, ploEntry.getValue());
-	}
-
-	@Test(expected = PLOEntryKeyException.MustBeShorter.class)
-	public void testAddPLOEntryWhenKeyTooLong() throws Exception {
-		int keyMaxLength =
-			ModelHintsUtil.getMaxLength(PLOEntry.class.getName(), "key") + 1;
-
-		_ploEntryLocalService.addOrUpdatePLOEntry(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(keyMaxLength),
-			LanguageUtil.getLanguageId(LocaleUtil.getDefault()),
-			RandomTestUtil.randomString());
-	}
-
-	@Test(expected = PLOEntryKeyException.MustNotBeNull.class)
-	public void testAddPLOEntryWithEmptyKey() throws Exception {
-		String key = StringPool.BLANK;
-
-		_ploEntryLocalService.addOrUpdatePLOEntry(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(), key,
-			LanguageUtil.getLanguageId(LocaleUtil.getDefault()),
-			RandomTestUtil.randomString());
-	}
-
-	@Test(expected = PLOEntryValueException.MustNotBeNull.class)
-	public void testAddPLOEntryWithEmptyValue() throws Exception {
-		String value = StringPool.BLANK;
-
-		_ploEntryLocalService.addOrUpdatePLOEntry(
-			TestPropsValues.getCompanyId(), TestPropsValues.getUserId(),
-			RandomTestUtil.randomString(),
-			LanguageUtil.getLanguageId(LocaleUtil.getDefault()), value);
-	}
-
-	private void _assertTranslationValue(String key, String value) {
 		Assert.assertEquals(
-			value, LanguageResources.getMessage(LocaleUtil.getDefault(), key));
+			ploEntry.getValue(),
+			LanguageResources.getMessage(defaultLocale, key));
+
 		Assert.assertEquals(
-			value,
+			ploEntry.getValue(),
 			ResourceBundleUtil.getString(
-				LanguageResources.getResourceBundle(LocaleUtil.getDefault()),
-				key));
+				LanguageResources.getResourceBundle(defaultLocale), key));
+
+		PLOEntry updatedPLOEntry = _ploEntryLocalService.addOrUpdatePLOEntry(
+			companyId, userId, key, languageId, RandomTestUtil.randomString());
+
+		Assert.assertEquals(
+			updatedPLOEntry.getValue(),
+			LanguageResources.getMessage(defaultLocale, key));
+
+		Assert.assertEquals(
+			updatedPLOEntry.getValue(),
+			ResourceBundleUtil.getString(
+				LanguageResources.getResourceBundle(defaultLocale), key));
 	}
 
 	@Inject
