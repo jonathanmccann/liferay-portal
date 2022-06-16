@@ -6546,7 +6546,7 @@ public class JournalArticleLocalServiceImpl
 			assetEntry = _assetEntryLocalService.updateEntry(
 				userId, article.getGroupId(), article.getCreateDate(),
 				article.getModifiedDate(), JournalArticle.class.getName(),
-				article.getPrimaryKey(), article.getUuid(),
+				article.getResourcePrimKey(), article.getUuid(),
 				getClassTypeId(article), assetCategoryIds, assetTagNames,
 				isListable(article), false, null, null, null,
 				article.getExpirationDate(), ContentTypes.TEXT_HTML, title,
