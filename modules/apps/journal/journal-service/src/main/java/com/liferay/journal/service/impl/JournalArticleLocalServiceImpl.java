@@ -6543,6 +6543,15 @@ public class JournalArticleLocalServiceImpl
 		String description = article.getDescriptionMapAsXML();
 
 		if (addDraftAssetEntry) {
+			if (article.getCtCollectionId() != 0) {
+				AssetEntry previousAssetEntry =
+					_assetEntryLocalService.fetchEntry(
+						JournalArticle.class.getName(),
+						article.getResourcePrimKey());
+
+				_assetEntryLocalService.updateAssetEntry(previousAssetEntry);
+			}
+
 			assetEntry = _assetEntryLocalService.updateEntry(
 				userId, article.getGroupId(), article.getCreateDate(),
 				article.getModifiedDate(), JournalArticle.class.getName(),
