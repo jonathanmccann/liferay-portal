@@ -59,10 +59,8 @@ public class PLOEntryLocalServiceTest {
 		long userId = TestPropsValues.getUserId();
 
 		try {
-			String key = StringPool.BLANK;
-
 			_ploEntryLocalService.addOrUpdatePLOEntry(
-				companyId, userId, key, languageId,
+				companyId, userId, StringPool.BLANK, languageId,
 				RandomTestUtil.randomString());
 
 			Assert.fail();
@@ -106,26 +104,22 @@ public class PLOEntryLocalServiceTest {
 		PLOEntry ploEntry = _ploEntryLocalService.addOrUpdatePLOEntry(
 			companyId, userId, key, languageId, RandomTestUtil.randomString());
 
-		Assert.assertEquals(
-			ploEntry.getValue(),
-			LanguageResources.getMessage(defaultLocale, key));
-
-		Assert.assertEquals(
-			ploEntry.getValue(),
-			ResourceBundleUtil.getString(
-				LanguageResources.getResourceBundle(defaultLocale), key));
+		_assertTranslationValue(key, ploEntry.getValue());
 
 		PLOEntry updatedPLOEntry = _ploEntryLocalService.addOrUpdatePLOEntry(
 			companyId, userId, key, languageId, RandomTestUtil.randomString());
 
-		Assert.assertEquals(
-			updatedPLOEntry.getValue(),
-			LanguageResources.getMessage(defaultLocale, key));
+		_assertTranslationValue(key, updatedPLOEntry.getValue());
+	}
 
+	private void _assertTranslationValue(String key, String value) {
 		Assert.assertEquals(
-			updatedPLOEntry.getValue(),
+			value, LanguageResources.getMessage(LocaleUtil.getDefault(), key));
+		Assert.assertEquals(
+			value,
 			ResourceBundleUtil.getString(
-				LanguageResources.getResourceBundle(defaultLocale), key));
+				LanguageResources.getResourceBundle(LocaleUtil.getDefault()),
+				key));
 	}
 
 	@Inject
