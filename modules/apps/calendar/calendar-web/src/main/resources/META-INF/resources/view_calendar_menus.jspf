@@ -160,6 +160,7 @@
 	}).render();
 
 	window.<portlet:namespace />calendarsMenu = {
+		id: '<portlet:namespace />calendarsMenu',
 		items: [
 			{
 				caption: '<liferay-ui:message key="add-calendar-booking" />',

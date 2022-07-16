@@ -50,7 +50,7 @@ AUI.add(
 		const TPL_ICON = '<i class="{iconClass}"></i>';
 
 		const TPL_SIMPLE_MENU_ITEM =
-			'<li class="{cssClass}" data-id="{id}">{icon} {caption}</li>';
+			'<li class="{cssClass}" data-id="{id}" role="menuitem" tabindex="-1"></li>';
 
 		const getItemHandler = A.cached((id, items) => {
 			let found = null;
@@ -110,11 +110,42 @@ AUI.add(
 				_closeMenu() {
 					const instance = this;
 
+					instance._focusItem();
+
 					instance.hide();
+
+					instance._insideHandler.detach();
+
+					instance._insideHandler = null;
 
 					instance._outsideHandler.detach();
 
 					instance._outsideHandler = null;
+				},
+
+				_focusItem(index) {
+					const instance = this;
+
+					const visibleItems = instance.items.filter(
+						':not(.' + CSS_SIMPLE_MENU_ITEM_HIDDEN + ')'
+					);
+
+					if (index !== undefined) {
+						index =
+							(index + visibleItems.size()) % visibleItems.size();
+
+						const item = visibleItems.item(index);
+
+						item.setAttribute('tabindex', 0);
+
+						item.getDOMNode().focus();
+					}
+
+					for (let i = 0; i < visibleItems.size(); i++) {
+						visibleItems
+							.item(i)
+							.setAttribute('tabindex', i === index ? 0 : -1);
+					}
 				},
 
 				_onClickItems(event) {
@@ -143,11 +174,56 @@ AUI.add(
 					}
 				},
 
+				_onKeyDown(event) {
+					const instance = this;
+
+					if (
+						event.keyCode === A.Event.KeyMap.ESC ||
+						event.keyCode === A.Event.KeyMap.TAB
+					) {
+						instance._closeMenu();
+
+						return;
+					}
+
+					const activeElement = document.activeElement;
+
+					const visibleItems = instance.items.filter(
+						':not(.' + CSS_SIMPLE_MENU_ITEM_HIDDEN + ')'
+					);
+
+					for (let i = 0; i < visibleItems.size(); i++) {
+						const item = visibleItems.item(i);
+
+						if (item.getDOMNode() !== activeElement) {
+							continue;
+						}
+
+						if (event.keyCode === A.Event.KeyMap.UP) {
+							instance._focusItem(i - 1);
+						}
+						else if (event.keyCode === A.Event.KeyMap.DOWN) {
+							instance._focusItem(i + 1);
+						}
+						else if (event.keyCode === A.Event.KeyMap.ENTER) {
+							visibleItems.item(i).simulate('click');
+						}
+
+						break;
+					}
+				},
+
 				_onVisibleChange(event) {
 					const instance = this;
 
 					if (event.newVal) {
 						const contentBox = instance.get('contentBox');
+
+						instance._insideHandler = contentBox.on(
+							['keydown'],
+							instance._onKeyDown,
+							instance
+						);
 
 						instance._outsideHandler = contentBox.on(
 							['mouseupoutside', 'touchendoutside'],
@@ -187,6 +263,12 @@ AUI.add(
 							modal,
 							width,
 						});
+
+						const contentBox = instance.get('contentBox');
+
+						contentBox.getDOMNode().focus();
+
+						this._focusItem(0);
 					}
 				},
 
@@ -270,7 +352,8 @@ AUI.add(
 					}
 				},
 
-				CONTENT_TEMPLATE: '<ul></ul>',
+				CONTENT_TEMPLATE:
+					'<ul aria-live="polite" role="menu" tabindex="0"></ul>',
 
 				bindUI() {
 					const instance = this;
@@ -320,6 +403,7 @@ AUI.add(
 	{
 		requires: [
 			'aui-base',
+			'aui-event-base',
 			'aui-template-deprecated',
 			'event-outside',
 			'event-touch',

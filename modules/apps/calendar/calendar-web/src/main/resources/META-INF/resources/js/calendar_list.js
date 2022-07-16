@@ -263,12 +263,17 @@ AUI.add(
 
 					const calendars = instance.get('calendars');
 					const contentBox = instance.get('contentBox');
+					const simpleMenu = instance.get('simpleMenu');
 
 					instance.items = A.NodeList.create(
 						TPL_CALENDAR_LIST_ITEM.parse({
 							calendars,
 						})
 					);
+
+					instance.items
+						.all(STR_DOT + CSS_CALENDAR_LIST_ITEM_ARROW)
+						.setAttribute('aria-controls', simpleMenu.id);
 
 					contentBox.setContent(instance.items);
 				},
