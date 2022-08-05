@@ -50,6 +50,7 @@ import com.liferay.portal.kernel.util.FastDateFormatFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.PortletKeys;
@@ -525,6 +526,13 @@ public class WorkflowTaskDisplayContext {
 		return WorkflowTaskManagerUtil.getNextTransitionNames(
 			_workflowTaskRequestHelper.getCompanyId(),
 			_workflowTaskRequestHelper.getUserId(),
+			workflowTask.getWorkflowTaskId());
+	}
+
+	public List<ObjectValuePair<String, String>> getTransitionNamesAndLabels(WorkflowTask workflowTask)
+		throws PortalException {
+
+		return WorkflowTaskManagerUtil.getNextTransitionNamesAndLabels(
 			workflowTask.getWorkflowTaskId());
 	}
 
