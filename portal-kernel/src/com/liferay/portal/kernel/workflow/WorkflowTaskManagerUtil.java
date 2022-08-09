@@ -16,6 +16,7 @@ package com.liferay.portal.kernel.workflow;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.search.WorkflowModelSearchResult;
 
@@ -101,6 +102,14 @@ public class WorkflowTaskManagerUtil {
 
 		return _workflowTaskManager.getNextTransitionNames(
 			companyId, userId, workflowTaskId);
+	}
+
+	public static List<ObjectValuePair<String, String>>
+			getNextTransitionNamesAndLabels(long workflowTaskId)
+		throws WorkflowException {
+
+		return _workflowTaskManager.getNextTransitionNamesAndLabels(
+			workflowTaskId);
 	}
 
 	public static WorkflowTask getWorkflowTask(

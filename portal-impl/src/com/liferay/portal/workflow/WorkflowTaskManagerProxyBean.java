@@ -17,7 +17,9 @@ package com.liferay.portal.workflow;
 import com.liferay.portal.kernel.messaging.proxy.BaseProxyBean;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.spring.osgi.OSGiBeanProperties;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.workflow.WorkflowException;
 import com.liferay.portal.kernel.workflow.WorkflowTask;
 import com.liferay.portal.kernel.workflow.WorkflowTaskManager;
 
@@ -78,6 +80,14 @@ public class WorkflowTaskManagerProxyBean
 	@Override
 	public List<String> getNextTransitionNames(
 		long companyId, long userId, long workflowTaskId) {
+
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public List<ObjectValuePair<String, String>>
+			getNextTransitionNamesAndLabels(long workflowTaskId)
+		throws WorkflowException {
 
 		throw new UnsupportedOperationException();
 	}

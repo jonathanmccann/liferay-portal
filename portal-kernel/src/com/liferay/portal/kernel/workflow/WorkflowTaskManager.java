@@ -18,6 +18,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.messaging.proxy.MessagingProxy;
 import com.liferay.portal.kernel.messaging.proxy.ProxyMode;
 import com.liferay.portal.kernel.model.User;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.workflow.search.WorkflowModelSearchResult;
 
@@ -85,6 +86,10 @@ public interface WorkflowTaskManager {
 
 	public List<String> getNextTransitionNames(
 			long companyId, long userId, long workflowTaskId)
+		throws WorkflowException;
+
+	public List<ObjectValuePair<String, String>>
+			getNextTransitionNamesAndLabels(long workflowTaskId)
 		throws WorkflowException;
 
 	public WorkflowTask getWorkflowTask(long companyId, long workflowTaskId)

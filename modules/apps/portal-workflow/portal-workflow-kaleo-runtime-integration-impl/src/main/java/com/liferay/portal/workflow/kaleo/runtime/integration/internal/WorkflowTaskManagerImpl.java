@@ -42,7 +42,10 @@ import com.liferay.portal.kernel.service.UserGroupRoleLocalService;
 import com.liferay.portal.kernel.service.UserLocalService;
 import com.liferay.portal.kernel.transaction.TransactionCommitCallbackUtil;
 import com.liferay.portal.kernel.util.ListUtil;
+import com.liferay.portal.kernel.util.LocaleUtil;
+import com.liferay.portal.kernel.util.ObjectValuePair;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.comparator.UserScreenNameComparator;
 import com.liferay.portal.kernel.workflow.WorkflowConstants;
 import com.liferay.portal.kernel.workflow.WorkflowException;
@@ -355,6 +358,42 @@ public class WorkflowTaskManagerImpl implements WorkflowTaskManager {
 		}
 		catch (Exception exception) {
 			throw new WorkflowException(exception);
+		}
+	}
+
+	@Override
+	public List<ObjectValuePair<String, String>>
+			getNextTransitionNamesAndLabels(long workflowTaskId)
+		throws WorkflowException {
+
+		try {
+			KaleoTaskInstanceToken kaleoTaskInstanceToken =
+				_kaleoTaskInstanceTokenLocalService.getKaleoTaskInstanceToken(
+					workflowTaskId);
+
+			if (kaleoTaskInstanceToken.isCompleted()) {
+				return Collections.emptyList();
+			}
+
+			KaleoTask kaleoTask = kaleoTaskInstanceToken.getKaleoTask();
+
+			KaleoNode kaleoNode = kaleoTask.getKaleoNode();
+
+			return Stream.of(
+				kaleoNode.getKaleoTransitions()
+			).flatMap(
+				List::parallelStream
+			).map(
+				kaleoTransition -> new ObjectValuePair<>(
+					kaleoTransition.getName(),
+					StringUtil.trim(
+						kaleoTransition.getLabel(LocaleUtil.getDefault())))
+			).collect(
+				Collectors.toList()
+			);
+		}
+		catch (PortalException portalException) {
+			throw new WorkflowException(portalException);
 		}
 	}
 
