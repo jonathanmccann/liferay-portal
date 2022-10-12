@@ -998,10 +998,12 @@ public class UserGroupLocalServiceImpl extends UserGroupLocalServiceBaseImpl {
 		attributes.put("description", description);
 		attributes.put("name", name);
 
-		long[] userIds = (long[])params.get("userIds");
+		if (params != null) {
+			long[] userIds = (long[])params.get("userIds");
 
-		if (ArrayUtil.isNotEmpty(userIds)) {
-			attributes.put("userIds", userIds);
+			if (ArrayUtil.isNotEmpty(userIds)) {
+				attributes.put("userIds", userIds);
+			}
 		}
 
 		searchContext.setAttributes(attributes);
