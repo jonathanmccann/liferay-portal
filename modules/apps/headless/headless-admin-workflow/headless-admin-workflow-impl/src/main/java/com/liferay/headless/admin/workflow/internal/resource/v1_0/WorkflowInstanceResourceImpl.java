@@ -122,7 +122,7 @@ public class WorkflowInstanceResourceImpl
 			_workflowInstanceManager.signalWorkflowInstance(
 				contextCompany.getCompanyId(), contextUser.getUserId(),
 				workflowInstanceId, changeTransition.getTransitionName(),
-				null));
+				_getWorkflowContext(workflowInstanceId)));
 	}
 
 	@Override
@@ -141,6 +141,24 @@ public class WorkflowInstanceResourceImpl
 				_toWorkflowContext(
 					workflowInstanceSubmit.getContext(),
 					workflowInstanceSubmit.getSiteId())));
+	}
+
+	private Map<String, Serializable> _getWorkflowContext(
+			long workflowInstanceId)
+		throws Exception {
+
+		com.liferay.portal.kernel.workflow.WorkflowInstance workflowInstance =
+			_workflowInstanceManager.getWorkflowInstance(
+				contextCompany.getCompanyId(), workflowInstanceId);
+
+		Map<String, Serializable> workflowContext =
+			workflowInstance.getWorkflowContext();
+
+		workflowContext.put(
+			WorkflowConstants.CONTEXT_USER_ID,
+			String.valueOf(contextUser.getUserId()));
+
+		return workflowContext;
 	}
 
 	private Map<String, Serializable> _toWorkflowContext(
