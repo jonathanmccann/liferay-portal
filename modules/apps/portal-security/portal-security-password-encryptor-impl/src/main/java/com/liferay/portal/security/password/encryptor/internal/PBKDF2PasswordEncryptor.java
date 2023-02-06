@@ -102,7 +102,7 @@ public class PBKDF2PasswordEncryptor
 
 	private static final int _KEY_SIZE = 160;
 
-	private static final int _ROUNDS = 720000;
+	private static final int _ROUNDS = 1300000;
 
 	private static final int _SALT_BYTES_LENGTH = 8;
 
