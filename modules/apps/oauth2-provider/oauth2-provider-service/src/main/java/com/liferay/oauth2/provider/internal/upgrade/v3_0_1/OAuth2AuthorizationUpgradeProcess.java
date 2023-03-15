@@ -16,6 +16,7 @@ package com.liferay.oauth2.provider.internal.upgrade.v3_0_1;
 
 import com.liferay.oauth2.provider.configuration.OAuth2ProviderConfiguration;
 import com.liferay.petra.string.StringBundler;
+import com.liferay.portal.dao.orm.common.SQLTransformer;
 import com.liferay.portal.kernel.module.configuration.ConfigurationProvider;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.Time;
@@ -54,12 +55,12 @@ public class OAuth2AuthorizationUpgradeProcess extends UpgradeProcess {
 			timestamp.getTime() - expiredAuthorizationsAfterlifeDurationMillis);
 
 		try (PreparedStatement preparedStatement = connection.prepareStatement(
-				StringBundler.concat(
+				SQLTransformer.transform(StringBundler.concat(
 					"create table TEMP_TABLE_1 as (",
 					"select * from OAuth2Authorization where ",
 					"(accessTokenExpirationDate >= ?) or ",
 					"((refreshTokenExpirationDate is not null) and ",
-					"(refreshTokenExpirationDate >= ?)))"))) {
+					"(refreshTokenExpirationDate >= ?)))")))) {
 
 			preparedStatement.setTimestamp(1, timestamp);
 			preparedStatement.setTimestamp(2, timestamp);
@@ -76,11 +77,11 @@ public class OAuth2AuthorizationUpgradeProcess extends UpgradeProcess {
 
 		runSQL("drop table OAuth2Authorization");
 
-		runSQL("rename table TEMP_TABLE_1 to OAuth2Authorization");
+		alterTableName("TEMP_TABLE_1", "OAuth2Authorization");
 
 		runSQL("drop table OA2Auths_OA2ScopeGrants");
 
-		runSQL("rename table TEMP_TABLE_2 to OA2Auths_OA2ScopeGrants");
+		alterTableName("TEMP_TABLE_2", "OA2Auths_OA2ScopeGrants");
 	}
 
 	private final ConfigurationProvider _configurationProvider;
