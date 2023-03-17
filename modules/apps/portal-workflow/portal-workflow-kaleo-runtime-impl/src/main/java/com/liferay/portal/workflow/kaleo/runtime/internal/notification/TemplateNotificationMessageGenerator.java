@@ -43,6 +43,8 @@ import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -79,6 +81,15 @@ public class TemplateNotificationMessageGenerator
 				templateManagerName,
 				new StringTemplateResource(templateId, notificationTemplate),
 				false);
+
+			ServiceContext serviceContext =
+				executionContext.getServiceContext();
+
+			HttpServletRequest httpServletRequest = serviceContext.getRequest();
+
+			if (httpServletRequest != null) {
+				template.prepare(httpServletRequest);
+			}
 
 			_populateContextVariables(template, executionContext);
 
