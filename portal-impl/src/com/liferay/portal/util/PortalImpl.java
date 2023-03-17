@@ -5738,7 +5738,10 @@ public class PortalImpl implements Portal {
 			if ((remoteUser == null) && !PropsValues.PORTAL_JAAS_ENABLE) {
 				HttpSession httpSession = httpServletRequest.getSession();
 
-				remoteUser = (String)httpSession.getAttribute("j_remoteuser");
+				if (httpSession != null) {
+					remoteUser = (String)httpSession.getAttribute(
+						"j_remoteuser");
+				}
 			}
 
 			if (remoteUser == null) {
@@ -5874,6 +5877,10 @@ public class PortalImpl implements Portal {
 		}
 
 		HttpSession httpSession = httpServletRequest.getSession();
+
+		if (httpSession == null) {
+			return 0;
+		}
 
 		userIdObj = (Long)httpSession.getAttribute(WebKeys.USER_ID);
 
