@@ -5182,16 +5182,23 @@ public class UserLocalServiceImpl extends UserLocalServiceBaseImpl {
 			emailAddress = StringPool.BLANK;
 		}
 
+		User user = userPersistence.findByPrimaryKey(userId);
+
+		Company company = _companyPersistence.findByPrimaryKey(
+			user.getCompanyId());
+
+		if (PrefsPropsUtil.getBoolean(
+				company.getCompanyId(),
+				PropsKeys.USERS_SCREEN_NAME_ALWAYS_AUTOGENERATE)) {
+
+			screenName = user.getScreenName();
+		}
+
 		Locale locale = LocaleUtil.fromLanguageId(languageId);
 
 		validate(
 			userId, screenName, emailAddress, null, firstName, middleName,
 			lastName, smsSn, locale);
-
-		User user = userPersistence.findByPrimaryKey(userId);
-
-		Company company = _companyPersistence.findByPrimaryKey(
-			user.getCompanyId());
 
 		if (!PropsValues.USERS_EMAIL_ADDRESS_REQUIRED &&
 			Validator.isNull(emailAddress)) {
