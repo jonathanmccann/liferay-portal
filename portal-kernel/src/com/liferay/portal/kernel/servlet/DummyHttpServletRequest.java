@@ -14,6 +14,7 @@
 
 package com.liferay.portal.kernel.servlet;
 
+import com.liferay.util.servlet.NullSession;
 import javax.servlet.AsyncContext;
 import javax.servlet.DispatcherType;
 import javax.servlet.RequestDispatcher;
@@ -144,7 +145,7 @@ public class DummyHttpServletRequest implements HttpServletRequest {
 
 	@Override
 	public HttpSession getSession() {
-		return null;
+		return new NullSession();
 	}
 
 	@Override
