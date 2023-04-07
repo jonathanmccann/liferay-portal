@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.servlet.DummyHttpServletRequest;
 import com.liferay.portal.kernel.template.StringTemplateResource;
 import com.liferay.portal.kernel.template.Template;
 import com.liferay.portal.kernel.template.TemplateConstants;
@@ -79,6 +80,8 @@ public class TemplateNotificationMessageGenerator
 				templateManagerName,
 				new StringTemplateResource(templateId, notificationTemplate),
 				false);
+
+			template.prepare(new DummyHttpServletRequest());
 
 			_populateContextVariables(template, executionContext);
 
