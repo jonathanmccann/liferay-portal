@@ -812,6 +812,10 @@ public class TemplateContextHelper {
 		Definition definition = (Definition)httpServletRequest.getAttribute(
 			TilesUtil.DEFINITION);
 
+		if (themeDisplay == null) {
+			return;
+		}
+
 		if (definition == null) {
 			themeDisplay.setTilesSelectable(true);
 
