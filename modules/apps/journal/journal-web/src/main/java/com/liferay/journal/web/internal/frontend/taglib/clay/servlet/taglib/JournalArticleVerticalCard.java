@@ -20,6 +20,7 @@ import com.liferay.frontend.taglib.clay.servlet.taglib.util.DropdownItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItem;
 import com.liferay.frontend.taglib.clay.servlet.taglib.util.LabelItemListBuilder;
 import com.liferay.journal.model.JournalArticle;
+import com.liferay.journal.web.internal.security.permission.resource.DDMStructurePermission;
 import com.liferay.journal.web.internal.security.permission.resource.JournalArticlePermission;
 import com.liferay.journal.web.internal.servlet.taglib.util.JournalArticleActionDropdownItemsProvider;
 import com.liferay.petra.string.StringPool;
@@ -99,7 +100,10 @@ public class JournalArticleVerticalCard extends BaseVerticalCard {
 		try {
 			if (!JournalArticlePermission.contains(
 					themeDisplay.getPermissionChecker(), _article,
-					ActionKeys.UPDATE)) {
+					ActionKeys.UPDATE) ||
+				!DDMStructurePermission.contains(
+					themeDisplay.getPermissionChecker(),
+					_article.getDDMStructure(), ActionKeys.VIEW)) {
 
 				return StringPool.BLANK;
 			}

@@ -70,7 +70,7 @@ Map<String, Object> componentContext = journalDisplayContext.getComponentContext
 
 				String editURL = StringPool.BLANK;
 
-				if (JournalArticlePermission.contains(permissionChecker, curArticle, ActionKeys.UPDATE)) {
+				if (JournalArticlePermission.contains(permissionChecker, curArticle, ActionKeys.UPDATE) && DDMStructurePermission.contains(permissionChecker, curArticle.getDDMStructure(), ActionKeys.VIEW)) {
 					editURL = PortletURLBuilder.createRenderURL(
 						liferayPortletResponse
 					).setMVCPath(

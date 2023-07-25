@@ -38,6 +38,7 @@ import com.liferay.journal.web.internal.configuration.FFJournalAutoSaveDraftConf
 import com.liferay.journal.web.internal.configuration.JournalWebConfiguration;
 import com.liferay.journal.web.internal.item.selector.JournalArticleTranslationsItemSelectorCriterion;
 import com.liferay.journal.web.internal.portlet.JournalPortlet;
+import com.liferay.journal.web.internal.security.permission.resource.DDMStructurePermission;
 import com.liferay.journal.web.internal.security.permission.resource.JournalArticlePermission;
 import com.liferay.journal.web.internal.security.permission.resource.JournalFolderPermission;
 import com.liferay.journal.web.internal.util.JournalUtil;
@@ -146,7 +147,11 @@ public class JournalArticleActionDropdownItemsProvider {
 			dropdownGroupItem -> {
 				dropdownGroupItem.setDropdownItems(
 					DropdownItemListBuilder.add(
-						() -> hasUpdatePermission,
+						() ->
+							hasUpdatePermission &&
+							DDMStructurePermission.contains(
+								_themeDisplay.getPermissionChecker(),
+								_article.getDDMStructure(), ActionKeys.VIEW),
 						_getEditArticleActionUnsafeConsumer()
 					).add(
 						() ->
