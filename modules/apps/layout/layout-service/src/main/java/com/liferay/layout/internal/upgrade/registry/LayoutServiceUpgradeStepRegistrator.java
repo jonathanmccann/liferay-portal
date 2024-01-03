@@ -82,6 +82,11 @@ public class LayoutServiceUpgradeStepRegistrator
 			UpgradeProcessFactory.addColumns(
 				"LayoutClassedModelUsage",
 				"cmExternalReferenceCode VARCHAR(75) null"));
+
+		registry.register(
+			"1.4.0", "1.4.1",
+			new com.liferay.layout.internal.upgrade.v1_4_1.
+				LayoutUpgradeProcess());
 	}
 
 	@Reference
