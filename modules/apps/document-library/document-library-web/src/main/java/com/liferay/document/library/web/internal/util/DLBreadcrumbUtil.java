@@ -5,21 +5,29 @@
 
 package com.liferay.document.library.web.internal.util;
 
+import com.liferay.document.library.kernel.model.DLFolder;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppLocalServiceUtil;
 import com.liferay.document.library.web.internal.settings.DLPortletInstanceSettings;
+import com.liferay.petra.function.transform.TransformUtil;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.portlet.LiferayPortletResponse;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.repository.model.FileShortcut;
 import com.liferay.portal.kernel.repository.model.Folder;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.servlet.taglib.ui.BreadcrumbEntry;
 import com.liferay.portal.kernel.theme.PortletDisplay;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.site.navigation.taglib.servlet.taglib.util.BreadcrumbEntryBuilder;
+import com.liferay.site.navigation.taglib.servlet.taglib.util.BreadcrumbEntryListBuilder;
 
 import java.util.Collections;
 import java.util.List;
@@ -255,6 +263,89 @@ public class DLBreadcrumbUtil {
 					folder, httpServletRequest, renderResponse);
 			}
 		}
+	}
+
+	public static List<BreadcrumbEntry> getPortletBreadcrumbEntries(
+		Folder folder, HttpServletRequest httpServletRequest,
+		boolean lastElementLinkable,
+		LiferayPortletResponse liferayPortletResponse) {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay)httpServletRequest.getAttribute(
+				WebKeys.THEME_DISPLAY);
+
+		PermissionChecker permissionChecker =
+			themeDisplay.getPermissionChecker();
+
+		return BreadcrumbEntryListBuilder.add(
+			breadcrumbEntry -> {
+				breadcrumbEntry.setTitle(
+					LanguageUtil.get(httpServletRequest, "home"));
+
+				if ((folder != null) || lastElementLinkable) {
+					breadcrumbEntry.setURL(
+						PortletURLBuilder.createRenderURL(
+							liferayPortletResponse
+						).buildString());
+				}
+			}
+		).addAll(
+			() -> folder != null,
+			() -> {
+				List<Folder> ancestorFolders = folder.getAncestors();
+
+				Collections.reverse(ancestorFolders);
+
+				return TransformUtil.transform(
+					ancestorFolders,
+					ancestorFolder -> {
+						if (permissionChecker.hasPermission(
+								ancestorFolder.getGroupId(),
+								DLFolder.class.getName(),
+								ancestorFolder.getFolderId(),
+								ActionKeys.VIEW)) {
+
+							return BreadcrumbEntryBuilder.setTitle(
+								ancestorFolder.getName()
+							).setURL(
+								PortletURLBuilder.createRenderURL(
+									liferayPortletResponse
+								).setParameter(
+									"folderId", ancestorFolder.getFolderId()
+								).buildString()
+							).build();
+						}
+
+						return BreadcrumbEntryBuilder.setTitle(
+							StringPool.TRIPLE_PERIOD
+						).build();
+					});
+			}
+		).add(
+			() -> folder != null,
+			breadcrumbEntry -> {
+				if (permissionChecker.hasPermission(
+						folder.getGroupId(), DLFolder.class.getName(),
+						folder.getFolderId(), ActionKeys.VIEW)) {
+
+					Folder unescapedFolder = folder.toUnescapedModel();
+
+					breadcrumbEntry.setTitle(unescapedFolder.getName());
+
+					if (lastElementLinkable) {
+						breadcrumbEntry.setURL(
+							PortletURLBuilder.createRenderURL(
+								liferayPortletResponse
+							).setParameter(
+								"folderId", folder.getFolderId()
+							).buildString());
+					}
+				}
+				else {
+					breadcrumbEntry.setTitle(StringPool.TRIPLE_PERIOD);
+				}
+			}
+		).build();
 	}
 
 }
