@@ -85,9 +85,21 @@ else {
 <span>
 	<liferay-ui:message arguments="<%= new String[] {modifiedDateDescription, HtmlUtil.escape(latestFileVersion.getUserName())} %>" key="modified-x-ago-by-x" />
 </span>
-<span>
-	<%= DLUtil.getAbsolutePath(liferayPortletRequest, dlAdminDisplayContext.getRootFolderId(), fileEntry.getFolderId()).replace(StringPool.RAQUO_CHAR, StringPool.GREATER_THAN) %>
-</span>
+
+<c:choose>
+	<c:when test="<%= fileEntry.getFolderId() != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID %>">
+		<liferay-site-navigation:breadcrumb
+			breadcrumbEntries="<%= DLBreadcrumbUtil.getPortletBreadcrumbEntries(fileEntry.getFolder(), request, dlAdminDisplayContext.isSearch(), liferayPortletResponse) %>"
+			cssClass="c-pl-0 c-pt-0"
+		/>
+	</c:when>
+	<c:otherwise>
+		<liferay-site-navigation:breadcrumb
+			breadcrumbEntries="<%= DLBreadcrumbUtil.getPortletBreadcrumbEntries(null, request, dlAdminDisplayContext.isSearch(), liferayPortletResponse) %>"
+			cssClass="c-pl-0 c-pt-0"
+		/>
+	</c:otherwise>
+</c:choose>
 
 <c:if test="<%= latestFileVersion.getModel() instanceof DLFileVersion %>">
 

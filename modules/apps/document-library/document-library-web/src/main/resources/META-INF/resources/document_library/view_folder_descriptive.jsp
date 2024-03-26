@@ -49,6 +49,10 @@ String modifiedDateDescription = LanguageUtil.getTimeDescription(request, System
 		</c:otherwise>
 	</c:choose>
 </span>
-<span>
-	<%= DLUtil.getAbsolutePath(liferayPortletRequest, dlAdminDisplayContext.getRootFolderId(), folder.getParentFolderId()).replace(StringPool.RAQUO_CHAR, StringPool.GREATER_THAN) %>
-</span>
+
+<c:if test="<%= folder.getFolderId() != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID %>">
+	<liferay-site-navigation:breadcrumb
+		breadcrumbEntries="<%= DLBreadcrumbUtil.getPortletBreadcrumbEntries(folder.getParentFolder(), request, dlAdminDisplayContext.isSearch(), liferayPortletResponse) %>"
+		cssClass="c-pl-0 c-pt-0"
+	/>
+</c:if>
