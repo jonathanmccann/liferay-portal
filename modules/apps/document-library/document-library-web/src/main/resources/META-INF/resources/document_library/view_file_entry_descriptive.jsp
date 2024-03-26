@@ -86,20 +86,22 @@ else {
 	<liferay-ui:message arguments="<%= new String[] {modifiedDateDescription, HtmlUtil.escape(latestFileVersion.getUserName())} %>" key="modified-x-ago-by-x" />
 </span>
 
-<c:choose>
-	<c:when test="<%= fileEntry.getFolderId() != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID %>">
-		<liferay-site-navigation:breadcrumb
-			breadcrumbEntries="<%= DLBreadcrumbUtil.getPortletBreadcrumbEntries(fileEntry.getFolder(), request, dlAdminDisplayContext.isSearch(), liferayPortletResponse) %>"
-			cssClass="c-pl-0 c-pt-0"
-		/>
-	</c:when>
-	<c:otherwise>
-		<liferay-site-navigation:breadcrumb
-			breadcrumbEntries="<%= DLBreadcrumbUtil.getPortletBreadcrumbEntries(null, request, dlAdminDisplayContext.isSearch(), liferayPortletResponse) %>"
-			cssClass="c-pl-0 c-pt-0"
-		/>
-	</c:otherwise>
-</c:choose>
+<c:if test="<%= dlAdminDisplayContext.isSearch() %>">
+	<c:choose>
+		<c:when test="<%= fileEntry.getFolderId() != DLFolderConstants.DEFAULT_PARENT_FOLDER_ID %>">
+			<liferay-site-navigation:breadcrumb
+				breadcrumbEntries="<%= DLBreadcrumbUtil.getPortletBreadcrumbEntries(fileEntry.getFolder(), request, true, liferayPortletResponse) %>"
+				cssClass="c-pl-0 c-pt-0"
+			/>
+		</c:when>
+		<c:otherwise>
+			<liferay-site-navigation:breadcrumb
+				breadcrumbEntries="<%= DLBreadcrumbUtil.getPortletBreadcrumbEntries(null, request, true, liferayPortletResponse) %>"
+				cssClass="c-pl-0 c-pt-0"
+			/>
+		</c:otherwise>
+	</c:choose>
+</c:if>
 
 <c:if test="<%= latestFileVersion.getModel() instanceof DLFileVersion %>">
 
