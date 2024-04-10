@@ -225,9 +225,18 @@ public class ImageMagickImpl implements ImageMagick {
 			arguments.add(StringBundler.concat(width, "x", height, ">"));
 			arguments.add(scaledImageFile.getAbsolutePath());
 
+			long start = System.currentTimeMillis();
+
 			Future<?> future = convert(arguments);
 
 			ProcessEvent processEvent = (ProcessEvent)future.get();
+
+			if (_log.isInfoEnabled()) {
+				_log.info(
+					StringBundler.concat(
+						"Converted image with ImageMagick in ",
+						System.currentTimeMillis() - start, "ms"));
+			}
 
 			if (_log.isDebugEnabled() &&
 				(processEvent.getException() != null)) {
