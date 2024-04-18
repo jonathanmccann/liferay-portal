@@ -14,7 +14,9 @@ import com.liferay.portal.kernel.dao.search.SearchContainer;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
+import com.liferay.portal.kernel.repository.model.Folder;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
@@ -29,6 +31,7 @@ import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
 import com.liferay.portal.kernel.test.util.ServiceContextTestUtil;
 import com.liferay.portal.kernel.test.util.TestPropsValues;
+import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ContentTypes;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -94,6 +97,16 @@ public class DLAdminDisplayContextTest {
 	}
 
 	@Test
+	public void testGetSearchContainerWithNavigationMine() throws Exception {
+		_testGetSearchContainerWithNavigation("mine", 2);
+	}
+
+	@Test
+	public void testGetSearchContainerWithNavigationRecent() throws Exception {
+		_testGetSearchContainerWithNavigation("recent", 4);
+	}
+
+	@Test
 	public void testGetSearchContainerWithSearch() throws Exception {
 		for (int i = 0; i < 25; i++) {
 			_addDLFileEntry("alpha_" + i + ".txt", "alpha");
@@ -105,18 +118,33 @@ public class DLAdminDisplayContextTest {
 		Assert.assertEquals(25, searchContainer.getTotal());
 	}
 
-	private FileEntry _addDLFileEntry(String fileName, String content)
+	private FileEntry _addDLFileEntry(
+			long userId, String fileName, String content)
 		throws Exception {
 
 		ServiceContext serviceContext =
 			ServiceContextTestUtil.getServiceContext(_group.getGroupId());
 
 		return _dlAppLocalService.addFileEntry(
-			null, TestPropsValues.getUserId(), serviceContext.getScopeGroupId(),
+			null, userId, serviceContext.getScopeGroupId(),
 			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID, fileName,
 			ContentTypes.TEXT_PLAIN, RandomTestUtil.randomString(),
 			StringPool.BLANK, StringPool.BLANK, StringPool.BLANK,
 			content.getBytes(), null, null, null, serviceContext);
+	}
+
+	private FileEntry _addDLFileEntry(String fileName, String content)
+		throws Exception {
+
+		return _addDLFileEntry(TestPropsValues.getUserId(), fileName, content);
+	}
+
+	private Folder _addDLFolder(long userId) throws Exception {
+		return _dlAppLocalService.addFolder(
+			null, userId, _group.getGroupId(),
+			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			ServiceContextTestUtil.getServiceContext(_group.getGroupId()));
 	}
 
 	private MockLiferayPortletActionRequest
@@ -176,10 +204,34 @@ public class DLAdminDisplayContextTest {
 			PermissionThreadLocal.getPermissionChecker());
 		themeDisplay.setRealUser(TestPropsValues.getUser());
 		themeDisplay.setScopeGroupId(_layout.getGroupId());
+		themeDisplay.setSignedIn(true);
 		themeDisplay.setSiteGroupId(_layout.getGroupId());
 		themeDisplay.setUser(TestPropsValues.getUser());
 
 		return themeDisplay;
+	}
+
+	private void _testGetSearchContainerWithNavigation(
+			String navigation, int expectedItemsCount)
+		throws Exception {
+
+		User user = UserTestUtil.addUser();
+
+		_addDLFileEntry("alpha.txt", "alpha");
+		_addDLFolder(TestPropsValues.getUserId());
+
+		_addDLFileEntry(user.getUserId(), "beta.txt", "beta");
+		_addDLFolder(user.getUserId());
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			_getMockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.setParameter("navigation", navigation);
+
+		SearchContainer<Object> searchContainer = _getSearchContainer(
+			mockLiferayPortletActionRequest);
+
+		Assert.assertEquals(expectedItemsCount, searchContainer.getTotal());
 	}
 
 	private Company _company;
