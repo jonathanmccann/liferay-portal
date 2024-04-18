@@ -490,6 +490,22 @@ public class DLAdminDisplayContext {
 		return false;
 	}
 
+	public boolean isOnlyNavigationFilter() {
+		if (ArrayUtil.isNotEmpty(getAssetCategoryIds()) ||
+			(getFileEntryTypeId() >= 0) ||
+			ArrayUtil.isNotEmpty(getAssetTagIds()) ||
+			ArrayUtil.isNotEmpty(getExtensions())) {
+
+			return false;
+		}
+
+		if (isNavigationMine() || isNavigationRecent()) {
+			return true;
+		}
+
+		return false;
+	}
+
 	public boolean isRootFolderInTrash() {
 		return _rootFolderInTrash;
 	}
@@ -761,11 +777,13 @@ public class DLAdminDisplayContext {
 				_getRepositoryEntries(
 					dlFileEntryIndexer.search(searchContext)));
 
-			Indexer<?> dlFolderIndexer = IndexerRegistryUtil.getIndexer(
-				DLFolderConstants.getClassName());
+			if (isOnlyNavigationFilter()) {
+				Indexer<?> dlFolderIndexer = IndexerRegistryUtil.getIndexer(
+					DLFolderConstants.getClassName());
 
-			repositoryEntries.addAll(
-				_getSearchResults(dlFolderIndexer.search(searchContext)));
+				repositoryEntries.addAll(
+					_getSearchResults(dlFolderIndexer.search(searchContext)));
+			}
 
 			dlSearchContainer.setResultsAndTotal(
 				() -> repositoryEntries, repositoryEntries.size());
