@@ -752,13 +752,23 @@ public class DLAdminDisplayContext {
 
 			_initializeFilterSearchContext(searchContext);
 
-			Indexer<?> indexer = IndexerRegistryUtil.getIndexer(
+			List<RepositoryEntry> repositoryEntries = new ArrayList<>();
+
+			Indexer<?> dlFileEntryIndexer = IndexerRegistryUtil.getIndexer(
 				DLFileEntryConstants.getClassName());
 
-			Hits hits = indexer.search(searchContext);
+			repositoryEntries.addAll(
+				_getRepositoryEntries(
+					dlFileEntryIndexer.search(searchContext)));
+
+			Indexer<?> dlFolderIndexer = IndexerRegistryUtil.getIndexer(
+				DLFolderConstants.getClassName());
+
+			repositoryEntries.addAll(
+				_getSearchResults(dlFolderIndexer.search(searchContext)));
 
 			dlSearchContainer.setResultsAndTotal(
-				() -> _getRepositoryEntries(hits), hits.getLength());
+				() -> repositoryEntries, repositoryEntries.size());
 
 			return dlSearchContainer;
 		}
