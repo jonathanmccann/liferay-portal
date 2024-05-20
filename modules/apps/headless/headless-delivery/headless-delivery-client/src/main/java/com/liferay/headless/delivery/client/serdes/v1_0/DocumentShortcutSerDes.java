@@ -162,6 +162,20 @@ public class DocumentShortcutSerDes {
 			sb.append("\"");
 		}
 
+		if (documentShortcut.getViewableBy() != null) {
+			if (sb.length() > 1) {
+				sb.append(", ");
+			}
+
+			sb.append("\"viewableBy\": ");
+
+			sb.append("\"");
+
+			sb.append(documentShortcut.getViewableBy());
+
+			sb.append("\"");
+		}
+
 		sb.append("}");
 
 		return sb.toString();
@@ -257,6 +271,14 @@ public class DocumentShortcutSerDes {
 			map.put("title", String.valueOf(documentShortcut.getTitle()));
 		}
 
+		if (documentShortcut.getViewableBy() == null) {
+			map.put("viewableBy", null);
+		}
+		else {
+			map.put(
+				"viewableBy", String.valueOf(documentShortcut.getViewableBy()));
+		}
+
 		return map;
 	}
 
@@ -330,6 +352,13 @@ public class DocumentShortcutSerDes {
 			else if (Objects.equals(jsonParserFieldName, "title")) {
 				if (jsonParserFieldValue != null) {
 					documentShortcut.setTitle((String)jsonParserFieldValue);
+				}
+			}
+			else if (Objects.equals(jsonParserFieldName, "viewableBy")) {
+				if (jsonParserFieldValue != null) {
+					documentShortcut.setViewableBy(
+						DocumentShortcut.ViewableBy.create(
+							(String)jsonParserFieldValue));
 				}
 			}
 		}

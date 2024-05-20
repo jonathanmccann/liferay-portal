@@ -53,6 +53,17 @@ public interface DocumentShortcutResource {
 				String fieldNames)
 		throws Exception;
 
+	public DocumentShortcut postAssetLibraryDocumentShortcut(
+			Long assetLibraryId, Long documentId,
+			DocumentShortcut documentShortcut)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse
+			postAssetLibraryDocumentShortcutHttpResponse(
+				Long assetLibraryId, Long documentId,
+				DocumentShortcut documentShortcut)
+		throws Exception;
+
 	public DocumentShortcut getDocumentShortcut(Long documentShortcutId)
 		throws Exception;
 
@@ -76,6 +87,14 @@ public interface DocumentShortcutResource {
 			postSiteDocumentShortcutsPageExportBatchHttpResponse(
 				Long siteId, String callbackURL, String contentType,
 				String fieldNames)
+		throws Exception;
+
+	public DocumentShortcut postSiteDocumentShortcut(
+			Long siteId, Long documentId, DocumentShortcut documentShortcut)
+		throws Exception;
+
+	public HttpInvoker.HttpResponse postSiteDocumentShortcutHttpResponse(
+			Long siteId, Long documentId, DocumentShortcut documentShortcut)
 		throws Exception;
 
 	public static class Builder {
@@ -406,6 +425,117 @@ public interface DocumentShortcutResource {
 			return httpInvoker.invoke();
 		}
 
+		public DocumentShortcut postAssetLibraryDocumentShortcut(
+				Long assetLibraryId, Long documentId,
+				DocumentShortcut documentShortcut)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postAssetLibraryDocumentShortcutHttpResponse(
+					assetLibraryId, documentId, documentShortcut);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return DocumentShortcutSerDes.toDTO(content);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse
+				postAssetLibraryDocumentShortcutHttpResponse(
+					Long assetLibraryId, Long documentId,
+					DocumentShortcut documentShortcut)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(documentShortcut.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/headless-delivery/v1.0/asset-libraries/{assetLibraryId}/document-shortcuts/{documentId}");
+
+			httpInvoker.path("assetLibraryId", assetLibraryId);
+			httpInvoker.path("documentId", documentId);
+
+			httpInvoker.userNameAndPassword(
+				_builder._login + ":" + _builder._password);
+
+			return httpInvoker.invoke();
+		}
+
 		public DocumentShortcut getDocumentShortcut(Long documentShortcutId)
 			throws Exception {
 
@@ -718,6 +848,114 @@ public interface DocumentShortcutResource {
 						"/o/headless-delivery/v1.0/sites/{siteId}/document-shortcuts/export-batch");
 
 			httpInvoker.path("siteId", siteId);
+
+			httpInvoker.userNameAndPassword(
+				_builder._login + ":" + _builder._password);
+
+			return httpInvoker.invoke();
+		}
+
+		public DocumentShortcut postSiteDocumentShortcut(
+				Long siteId, Long documentId, DocumentShortcut documentShortcut)
+			throws Exception {
+
+			HttpInvoker.HttpResponse httpResponse =
+				postSiteDocumentShortcutHttpResponse(
+					siteId, documentId, documentShortcut);
+
+			String content = httpResponse.getContent();
+
+			if ((httpResponse.getStatusCode() / 100) != 2) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response content: " + content);
+				_logger.log(
+					Level.WARNING,
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.log(
+					Level.WARNING,
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+
+				Problem.ProblemException problemException = null;
+
+				if (Objects.equals(
+						httpResponse.getContentType(), "application/json")) {
+
+					problemException = new Problem.ProblemException(
+						Problem.toDTO(content));
+				}
+				else {
+					_logger.log(
+						Level.WARNING,
+						"Unable to process content type: " +
+							httpResponse.getContentType());
+
+					Problem problem = new Problem();
+
+					problem.setStatus(
+						String.valueOf(httpResponse.getStatusCode()));
+
+					problemException = new Problem.ProblemException(problem);
+				}
+
+				throw problemException;
+			}
+			else {
+				_logger.fine("HTTP response content: " + content);
+				_logger.fine(
+					"HTTP response message: " + httpResponse.getMessage());
+				_logger.fine(
+					"HTTP response status code: " +
+						httpResponse.getStatusCode());
+			}
+
+			try {
+				return DocumentShortcutSerDes.toDTO(content);
+			}
+			catch (Exception e) {
+				_logger.log(
+					Level.WARNING,
+					"Unable to process HTTP response: " + content, e);
+
+				throw new Problem.ProblemException(Problem.toDTO(content));
+			}
+		}
+
+		public HttpInvoker.HttpResponse postSiteDocumentShortcutHttpResponse(
+				Long siteId, Long documentId, DocumentShortcut documentShortcut)
+			throws Exception {
+
+			HttpInvoker httpInvoker = HttpInvoker.newHttpInvoker();
+
+			httpInvoker.body(documentShortcut.toString(), "application/json");
+
+			if (_builder._locale != null) {
+				httpInvoker.header(
+					"Accept-Language", _builder._locale.toLanguageTag());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._headers.entrySet()) {
+
+				httpInvoker.header(entry.getKey(), entry.getValue());
+			}
+
+			for (Map.Entry<String, String> entry :
+					_builder._parameters.entrySet()) {
+
+				httpInvoker.parameter(entry.getKey(), entry.getValue());
+			}
+
+			httpInvoker.httpMethod(HttpInvoker.HttpMethod.POST);
+
+			httpInvoker.path(
+				_builder._scheme + "://" + _builder._host + ":" +
+					_builder._port + _builder._contextPath +
+						"/o/headless-delivery/v1.0/sites/{siteId}/document-shortcuts/{documentId}");
+
+			httpInvoker.path("siteId", siteId);
+			httpInvoker.path("documentId", documentId);
 
 			httpInvoker.userNameAndPassword(
 				_builder._login + ":" + _builder._password);
