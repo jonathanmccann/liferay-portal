@@ -6387,6 +6387,40 @@ paths:
                                     $ref: "#/components/schemas/DocumentShortcut"
                                 type: array
             tags: ["DocumentShortcut"]
+    "/asset-libraries/{assetLibraryId}/document-shortcuts/{documentId}":
+        post:
+            operationId: postAssetLibraryDocumentShortcut
+            parameters:
+                - in: path
+                  name: assetLibraryId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: documentId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DocumentShortcut"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DocumentShortcut"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DocumentShortcut"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DocumentShortcut"
+            tags: ["DocumentShortcut"]
     "/asset-libraries/{assetLibraryId}/documents":
         get:
             operationId: getAssetLibraryDocumentsPage
@@ -12577,6 +12611,40 @@ paths:
                                 items:
                                     $ref: "#/components/schemas/DocumentShortcut"
                                 type: array
+            tags: ["DocumentShortcut"]
+    "/sites/{siteId}/document-shortcuts/{documentId}":
+        post:
+            operationId: postSiteDocumentShortcut
+            parameters:
+                - in: path
+                  name: siteId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+                - in: path
+                  name: documentId
+                  required: true
+                  schema:
+                      format: int64
+                      type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: "#/components/schemas/DocumentShortcut"
+                    application/xml:
+                        schema:
+                            $ref: "#/components/schemas/DocumentShortcut"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/DocumentShortcut"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/DocumentShortcut"
             tags: ["DocumentShortcut"]
     "/sites/{siteId}/documents":
         get:
