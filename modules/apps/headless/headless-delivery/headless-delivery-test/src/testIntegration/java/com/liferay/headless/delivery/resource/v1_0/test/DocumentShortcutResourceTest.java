@@ -9,6 +9,7 @@ import com.liferay.arquillian.extension.junit.bridge.junit.Arquillian;
 import com.liferay.document.library.kernel.model.DLFolderConstants;
 import com.liferay.document.library.kernel.service.DLAppService;
 import com.liferay.headless.delivery.client.dto.v1_0.DocumentShortcut;
+import com.liferay.headless.delivery.client.pagination.Page;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -28,6 +29,9 @@ import com.liferay.portal.vulcan.util.GroupUtil;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
+import java.util.List;
+
+import org.junit.Assert;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -49,6 +53,60 @@ public class DocumentShortcutResourceTest
 
 	@Override
 	@Test
+	public void testGetAssetLibraryDocumentShortcutsPage() throws Exception {
+		Long assetLibraryId =
+			testGetAssetLibraryDocumentShortcutsPage_getAssetLibraryId();
+		Long irrelevantAssetLibraryId =
+			testGetAssetLibraryDocumentShortcutsPage_getIrrelevantAssetLibraryId();
+
+		Page<DocumentShortcut> page =
+			documentShortcutResource.getAssetLibraryDocumentShortcutsPage(
+				assetLibraryId);
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantAssetLibraryId != null) {
+			DocumentShortcut irrelevantDocumentShortcut = _addDocumentShortcut(
+				irrelevantGroup);
+
+			page =
+				documentShortcutResource.getAssetLibraryDocumentShortcutsPage(
+					irrelevantAssetLibraryId);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantDocumentShortcut,
+				(List<DocumentShortcut>)page.getItems());
+			assertValid(
+				page,
+				testGetAssetLibraryDocumentShortcutsPage_getExpectedActions(
+					irrelevantAssetLibraryId));
+		}
+
+		DocumentShortcut documentShortcut1 = _addDocumentShortcut(
+			testDepotEntry.getGroup());
+
+		DocumentShortcut documentShortcut2 = _addDocumentShortcut(
+			testDepotEntry.getGroup());
+
+		page = documentShortcutResource.getAssetLibraryDocumentShortcutsPage(
+			assetLibraryId);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(
+			documentShortcut1, (List<DocumentShortcut>)page.getItems());
+		assertContains(
+			documentShortcut2, (List<DocumentShortcut>)page.getItems());
+		assertValid(
+			page,
+			testGetAssetLibraryDocumentShortcutsPage_getExpectedActions(
+				assetLibraryId));
+	}
+
+	@Override
+	@Test
 	public void testGetDocumentShortcut() throws Exception {
 		DocumentShortcut postDocumentShortcut = _addDocumentShortcut();
 
@@ -58,6 +116,52 @@ public class DocumentShortcutResourceTest
 
 		assertEquals(postDocumentShortcut, getDocumentShortcut);
 		assertValid(getDocumentShortcut);
+	}
+
+	@Override
+	@Test
+	public void testGetSiteDocumentShortcutsPage() throws Exception {
+		Long siteId = testGetSiteDocumentShortcutsPage_getSiteId();
+		Long irrelevantSiteId =
+			testGetSiteDocumentShortcutsPage_getIrrelevantSiteId();
+
+		Page<DocumentShortcut> page =
+			documentShortcutResource.getSiteDocumentShortcutsPage(siteId);
+
+		long totalCount = page.getTotalCount();
+
+		if (irrelevantSiteId != null) {
+			DocumentShortcut irrelevantDocumentShortcut = _addDocumentShortcut(
+				irrelevantGroup);
+
+			page = documentShortcutResource.getSiteDocumentShortcutsPage(
+				irrelevantSiteId);
+
+			Assert.assertEquals(totalCount + 1, page.getTotalCount());
+
+			assertContains(
+				irrelevantDocumentShortcut,
+				(List<DocumentShortcut>)page.getItems());
+			assertValid(
+				page,
+				testGetSiteDocumentShortcutsPage_getExpectedActions(
+					irrelevantSiteId));
+		}
+
+		DocumentShortcut documentShortcut1 = _addDocumentShortcut(testGroup);
+
+		DocumentShortcut documentShortcut2 = _addDocumentShortcut(testGroup);
+
+		page = documentShortcutResource.getSiteDocumentShortcutsPage(siteId);
+
+		Assert.assertEquals(totalCount + 2, page.getTotalCount());
+
+		assertContains(
+			documentShortcut1, (List<DocumentShortcut>)page.getItems());
+		assertContains(
+			documentShortcut2, (List<DocumentShortcut>)page.getItems());
+		assertValid(
+			page, testGetSiteDocumentShortcutsPage_getExpectedActions(siteId));
 	}
 
 	@Override
