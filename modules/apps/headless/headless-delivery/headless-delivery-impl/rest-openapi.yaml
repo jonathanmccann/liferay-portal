@@ -1611,7 +1611,6 @@ components:
                     description:
                         The document shortcut's folder ID.
                     format: int64
-                    readOnly: true
                     type: integer
                 id:
                     description:
@@ -1634,7 +1633,14 @@ components:
                 title:
                     description:
                         The title of the document to which this shortcut is scoped.
+                    readOnly: true
                     type: string
+                viewableBy:
+                    description:
+                        A write-only property that specifies the default permissions.
+                    enum: [Anyone, Members, Owner]
+                    type: string
+                    writeOnly: true
             type: object
         Experience:
             description:
