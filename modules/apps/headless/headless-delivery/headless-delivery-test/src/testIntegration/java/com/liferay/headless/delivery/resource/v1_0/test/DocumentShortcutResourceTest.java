@@ -32,6 +32,7 @@ import java.io.InputStream;
 import java.util.List;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,6 +51,15 @@ public class DocumentShortcutResourceTest
 		new AggregateTestRule(
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
+
+	@Before
+	@Override
+	public void setUp() throws Exception {
+		super.setUp();
+
+		_serviceContext = ServiceContextTestUtil.getServiceContext(
+			testGroup, TestPropsValues.getUserId());
+	}
 
 	@Override
 	@Test
@@ -165,6 +175,18 @@ public class DocumentShortcutResourceTest
 	}
 
 	@Override
+	protected DocumentShortcut randomDocumentShortcut() throws Exception {
+		DocumentShortcut documentShortcut = super.randomDocumentShortcut();
+
+		FileEntry fileEntry = _addFileEntry(testGroup.getGroupId());
+
+		documentShortcut.setFolderId(0L);
+		documentShortcut.setTargetDocumentId(fileEntry.getFileEntryId());
+
+		return documentShortcut;
+	}
+
+	@Override
 	protected DocumentShortcut testGetDocumentShortcut_addDocumentShortcut()
 		throws Exception {
 
@@ -178,6 +200,27 @@ public class DocumentShortcutResourceTest
 		return _addDocumentShortcut();
 	}
 
+	@Override
+	protected DocumentShortcut
+			testPostAssetLibraryDocumentShortcut_addDocumentShortcut(
+				DocumentShortcut documentShortcut)
+		throws Exception {
+
+		return documentShortcutResource.postAssetLibraryDocumentShortcut(
+			super.testGetAssetLibraryDocumentShortcutsPage_getAssetLibraryId(),
+			documentShortcut.getTargetDocumentId(), documentShortcut);
+	}
+
+	@Override
+	protected DocumentShortcut testPostSiteDocumentShortcut_addDocumentShortcut(
+			DocumentShortcut documentShortcut)
+		throws Exception {
+
+		return documentShortcutResource.postSiteDocumentShortcut(
+			documentShortcut.getSiteId(),
+			documentShortcut.getTargetDocumentId(), documentShortcut);
+	}
+
 	private DocumentShortcut _addDocumentShortcut() throws Exception {
 		return _addDocumentShortcut(testGroup);
 	}
@@ -185,26 +228,11 @@ public class DocumentShortcutResourceTest
 	private DocumentShortcut _addDocumentShortcut(Group group)
 		throws Exception {
 
-		byte[] bytes = TestDataConstants.TEST_BYTE_ARRAY;
-
-		InputStream inputStream = new ByteArrayInputStream(bytes);
-
-		ServiceContext serviceContext =
-			ServiceContextTestUtil.getServiceContext(
-				testGroup.getGroupId(), TestPropsValues.getUserId());
-
-		FileEntry fileEntry = _dlAppService.addFileEntry(
-			null, group.getGroupId(),
-			DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
-			RandomTestUtil.randomString(),
-			ContentTypes.APPLICATION_OCTET_STREAM,
-			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
-			StringPool.BLANK, StringPool.BLANK, inputStream, bytes.length, null,
-			null, null, serviceContext);
+		FileEntry fileEntry = _addFileEntry(group.getGroupId());
 
 		FileShortcut fileShortcut = _dlAppService.addFileShortcut(
 			fileEntry.getRepositoryId(), fileEntry.getFolderId(),
-			fileEntry.getFileEntryId(), serviceContext);
+			fileEntry.getFileEntryId(), _serviceContext);
 
 		return new DocumentShortcut() {
 			{
@@ -220,7 +248,23 @@ public class DocumentShortcutResourceTest
 		};
 	}
 
+	private FileEntry _addFileEntry(long groupId) throws Exception {
+		byte[] bytes = TestDataConstants.TEST_BYTE_ARRAY;
+
+		InputStream inputStream = new ByteArrayInputStream(bytes);
+
+		return _dlAppService.addFileEntry(
+			null, groupId, DLFolderConstants.DEFAULT_PARENT_FOLDER_ID,
+			RandomTestUtil.randomString(),
+			ContentTypes.APPLICATION_OCTET_STREAM,
+			RandomTestUtil.randomString(), RandomTestUtil.randomString(),
+			StringPool.BLANK, StringPool.BLANK, inputStream, bytes.length, null,
+			null, null, _serviceContext);
+	}
+
 	@Inject
 	private static DLAppService _dlAppService;
+
+	private ServiceContext _serviceContext;
 
 }
