@@ -37,6 +37,13 @@ public class DocumentShortcutResourceImpl
 	extends BaseDocumentShortcutResourceImpl {
 
 	@Override
+	public void deleteDocumentShortcut(Long documentShortcutId)
+		throws Exception {
+
+		_dlAppService.deleteFileShortcut(documentShortcutId);
+	}
+
+	@Override
 	public Page<DocumentShortcut> getAssetLibraryDocumentShortcutsPage(
 			Long assetLibraryId)
 		throws Exception {
