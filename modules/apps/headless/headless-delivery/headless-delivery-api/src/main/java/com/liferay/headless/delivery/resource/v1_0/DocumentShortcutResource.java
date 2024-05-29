@@ -63,6 +63,13 @@ public interface DocumentShortcutResource {
 			DocumentShortcut documentShortcut)
 		throws Exception;
 
+	public void deleteDocumentShortcut(Long documentShortcutId)
+		throws Exception;
+
+	public Response deleteDocumentShortcutBatch(
+			String callbackURL, Object object)
+		throws Exception;
+
 	public DocumentShortcut getDocumentShortcut(Long documentShortcutId)
 		throws Exception;
 
