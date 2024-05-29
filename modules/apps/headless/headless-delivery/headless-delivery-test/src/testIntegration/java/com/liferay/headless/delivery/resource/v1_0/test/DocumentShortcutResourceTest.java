@@ -187,6 +187,13 @@ public class DocumentShortcutResourceTest
 	}
 
 	@Override
+	protected DocumentShortcut testDeleteDocumentShortcut_addDocumentShortcut()
+		throws Exception {
+
+		return _addDocumentShortcut();
+	}
+
+	@Override
 	protected DocumentShortcut testGetDocumentShortcut_addDocumentShortcut()
 		throws Exception {
 
