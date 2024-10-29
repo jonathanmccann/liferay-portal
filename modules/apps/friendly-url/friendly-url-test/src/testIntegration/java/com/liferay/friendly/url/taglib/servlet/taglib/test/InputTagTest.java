@@ -64,6 +64,7 @@ public class InputTagTest {
 
 	@Before
 	public void setUp() throws Exception {
+
 		_group = GroupTestUtil.addGroup();
 
 		_locale = _portal.getSiteDefaultLocale(_group);
