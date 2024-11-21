@@ -234,3 +234,7 @@ Team team = usersDisplayContext.getTeam();
 <aui:form cssClass="hide" method="post" name="editUserGroupRoleFm">
 	<aui:input name="tabs1" type="hidden" value="users" />
 </aui:form>
+
+<aui:form cssClass="hide" name="unassignUserGroupRoleFm">
+	<aui:input name="tabs1" type="hidden" value="users" />
+</aui:form>

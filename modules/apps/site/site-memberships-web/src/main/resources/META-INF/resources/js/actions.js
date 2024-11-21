@@ -55,4 +55,40 @@ export const ACTIONS = {
 			},
 		});
 	},
+
+	unassignRoles(itemData, portletNamespace) {
+		openSelectionModal({
+			buttonAddLabel: Liferay.Language.get('done'),
+			multiple: true,
+			onSelect(selectedItems) {
+				const unassignUserGroupRoleFm = document.getElementById(
+					`${portletNamespace}unassignUserGroupRoleFm`
+				);
+
+				if (!unassignUserGroupRoleFm) {
+					return;
+				}
+				if (!selectedItems) {
+					return;
+				}
+
+				const input = document.createElement('input');
+
+				input.name = `${portletNamespace}rowIds`;
+
+				const selectedUserGroupIds = Array.prototype.map.call(
+					selectedItems,
+					(item) => item.value
+				);
+
+				input.value = selectedUserGroupIds.join();
+
+				unassignUserGroupRoleFm.appendChild(input);
+
+				submitForm(unassignUserGroupRoleFm);
+			},
+			title: Liferay.Language.get('unassign-roles'),
+			url: itemData.unassignUserGroupRoleURL,
+		});
+	},
 };
