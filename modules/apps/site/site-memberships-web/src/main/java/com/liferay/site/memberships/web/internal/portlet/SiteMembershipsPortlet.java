@@ -388,6 +388,18 @@ public class SiteMembershipsPortlet extends MVCPortlet {
 			userGroupId, group.getGroupId(), roleIds);
 	}
 
+	public void unassignUserRole(
+			ActionRequest actionRequest, ActionResponse actionResponse)
+		throws Exception {
+
+		long[] roleIds = ParamUtil.getLongValues(actionRequest, "rowIds");
+		Group group = _getGroup(actionRequest, actionResponse);
+		long userId = ParamUtil.getLong(actionRequest, "userId");
+
+		_userGroupRoleService.deleteUserGroupRoles(
+			userId, group.getGroupId(), roleIds);
+	}
+
 	@Override
 	protected void doDispatch(
 			RenderRequest renderRequest, RenderResponse renderResponse)

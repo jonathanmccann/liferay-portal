@@ -56,7 +56,7 @@ public class UserActionDropdownItemsProvider {
 			dropdownItem -> {
 				dropdownItem.putData("action", "unassignRoles");
 				dropdownItem.putData(
-					"unassignUserGroupRoleURL",
+					"unassignUserRoleURL",
 					PortletURLBuilder.createRenderURL(
 						_renderResponse
 					).setMVCPath(
@@ -67,9 +67,12 @@ public class UserActionDropdownItemsProvider {
 						"groupId", _themeDisplay.getSiteGroupIdOrLiveGroupId()
 					).setParameter(
 						"p_u_i_d", _user.getUserId()
+					).setParameter(
+						"userId", _user.getUserId()
 					).setWindowState(
 						LiferayWindowState.POP_UP
 					).buildString());
+				dropdownItem.putData("userId", _user.getUserId());
 				dropdownItem.setLabel(
 					LanguageUtil.get(_httpServletRequest, "unassign-roles"));
 			}

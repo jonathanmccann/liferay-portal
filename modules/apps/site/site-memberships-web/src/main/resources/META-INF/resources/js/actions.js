@@ -61,11 +61,11 @@ export const ACTIONS = {
 			buttonAddLabel: Liferay.Language.get('done'),
 			multiple: true,
 			onSelect(selectedItems) {
-				const unassignUserGroupRoleFm = document.getElementById(
-					`${portletNamespace}unassignUserGroupRoleFm`
+				const unassignUserRoleFm = document.getElementById(
+					`${portletNamespace}unassignUserRoleFm`
 				);
 
-				if (!unassignUserGroupRoleFm) {
+				if (!unassignUserRoleFm) {
 					return;
 				}
 				if (!selectedItems) {
@@ -83,12 +83,12 @@ export const ACTIONS = {
 
 				input.value = selectedUserGroupIds.join();
 
-				unassignUserGroupRoleFm.appendChild(input);
+				unassignUserRoleFm.appendChild(input);
 
-				submitForm(unassignUserGroupRoleFm);
+				submitForm(unassignUserRoleFm);
 			},
 			title: Liferay.Language.get('unassign-roles'),
-			url: itemData.unassignUserGroupRoleURL,
+			url: itemData.unassignUserRoleURL,
 		});
 	},
 };
