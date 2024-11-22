@@ -147,3 +147,23 @@ test(
 		).toBeVisible();
 	}
 );
+
+test(
+	'Confirm roles are unassing from users tab',
+	{
+		tag: '@LPD-42500',
+	},
+	async ({membershipsPage, page}) => {
+		await membershipsPage.goto();
+
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: page.getByRole('menuitem', {
+				name: 'Unassign Roles',
+			}),
+			trigger: page.locator('[id="_com_liferay_site_memberships_web_portlet_SiteMembershipsPortlet_users_thiagogamer"]').getByLabel('More actions'),
+		});
+
+
+	}
+);
