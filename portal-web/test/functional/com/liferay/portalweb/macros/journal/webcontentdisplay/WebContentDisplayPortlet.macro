@@ -61,7 +61,7 @@ definition {
 			webContentContent = ${webContentContent},
 			webContentTitle = ${webContentTitle});
 
-		Click(locator1 = "Button#PUBLISH_LOCALIZED");
+		WebContent.publishWithPermissions();
 
 		SelectFrame(value1 = "relative=top");
 	}

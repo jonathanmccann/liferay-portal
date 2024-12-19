@@ -1804,7 +1804,7 @@ definition {
 
 	@summary = "Default summary"
 	macro publishWithPermissions(viewableBy = null) {
-		Button.clickPublish();
+		Click(locator1 = "WCEditWebContent#PUBLISH_DROPDOWN_BUTTON");
 
 		Click(locator1 = "WCEditWebContent#PUBLISH_WITH_PERMISSIONS_BUTTON");
 
