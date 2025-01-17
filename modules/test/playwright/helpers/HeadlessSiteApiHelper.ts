@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
+import {SiteApi} from '@liferay/headless-site-client-js'
+
 import {createReadStream} from 'fs';
 
 import {zipFolder} from '../utils/zip';
@@ -26,21 +28,37 @@ export class HeadlessSiteApiHelper {
 	}
 
 	async createSite(site: TSite): Promise<Site> {
-		return this.apiHelpers.post(
+		/*return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/sites`,
 			{data: site}
-		);
+		);*/
+
+		/*
+		const requestBody = {
+			name: site.name
+		};
+		*/
+
+		const siteApiClient =
+			await this.apiHelpers.buildRestClient(SiteApi);
+
+		//return await siteApiClient.postSite(requestBody);
+
+		return await siteApiClient.postSite(site);
 	}
 
 	async createSiteFromZip(
 		site: TSite,
 		siteInitializerPath: string
 	): Promise<Site> {
+		const siteApiClient =
+			await this.apiHelpers.buildRestClient(SiteApi);
+
 		const zip = await zipFolder(siteInitializerPath, {
 			destPath: 'site-initializer/',
 		});
 
-		return this.apiHelpers.post(
+		/*return this.apiHelpers.post(
 			`${this.apiHelpers.baseUrl}${this.basePath}/sites`,
 			{
 				headers: {
@@ -51,7 +69,19 @@ export class HeadlessSiteApiHelper {
 					site: JSON.stringify(site),
 				},
 			}
-		);
+		);*/
+
+		const requestBody = {
+			file: createReadStream(zip),
+			site: JSON.stringify(site)
+		};
+
+		return await siteApiClient.postSite(
+			{options: {
+				method: 'POST',
+				body: requestBody,
+				mediaType: 'multipart/form-data'
+            }});
 	}
 
 	async getSiteByERC(externalReferenceCode: string): Promise<Site> {
