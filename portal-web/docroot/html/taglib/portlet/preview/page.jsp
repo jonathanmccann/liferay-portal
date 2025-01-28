@@ -30,13 +30,15 @@ if (Validator.isNull(width)) {
 	</c:if>
 
 	<div class="preview" id="<%= randomNamespace %>">
-		<div style="margin: 3px; width: <%= Validator.isNotNull(previewWidth) ? ((GetterUtil.getInteger(previewWidth) + 20) + "px") : "100%" %>;">
-			<liferay-portlet:runtime
-				persistSettings="<%= false %>"
-				portletName="<%= portletResource %>"
-				queryString="<%= queryString %>"
-			/>
-		</div>
+		<liferay-ui:csp>
+			<div style="margin: 3px !important; width: <%= Validator.isNotNull(previewWidth) ? ((GetterUtil.getInteger(previewWidth) + 20) + "px") : "100%" %> !important;">
+				<liferay-portlet:runtime
+					persistSettings="<%= false %>"
+					portletName="<%= portletResource %>"
+					queryString="<%= queryString %>"
+				/>
+			</div>
+		</liferay-ui:csp>
 	</div>
 </div>
 
