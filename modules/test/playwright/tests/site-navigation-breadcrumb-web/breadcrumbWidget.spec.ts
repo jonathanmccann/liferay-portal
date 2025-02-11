@@ -5,6 +5,7 @@
 
 import {expect, mergeTests} from '@playwright/test';
 
+import {apiHelpersTest} from '../../fixtures/apiHelpersTest';
 import {breadcrumbWidgetPagesTest} from '../../fixtures/breadcrumbWidgetPagesTest';
 import {isolatedSiteTest} from '../../fixtures/isolatedSiteTest';
 import {loginTest} from '../../fixtures/loginTest';
@@ -14,6 +15,7 @@ import getRandomString from '../../utils/getRandomString';
 import {templatesPageTest} from '../template-web/fixtures/templatesPageTest';
 
 export const test = mergeTests(
+	apiHelpersTest,
 	breadcrumbWidgetPagesTest,
 	isolatedSiteTest,
 	loginTest(),
@@ -113,3 +115,38 @@ test(
 		).toHaveText('Horizontal');
 	}
 );
+
+test('Configure Show Application in Breadcrumb widget', async ({
+	apiHelpers,
+	breadcrumbWidgetPage,
+	page,
+	site,
+	widgetPagePage,
+}) => {
+	const blog = await apiHelpers.headlessDelivery.postBlog(site.id);
+	const layout = await breadcrumbWidgetPage.addBreadcrumbPortlet(site);
+
+	await widgetPagePage.addPortlet('Blogs');
+
+	await page.getByRole('link', {name: blog.headline}).click();
+
+	await expect(page.locator('.active.breadcrumb-text-truncate')).toHaveText(
+		blog.headline
+	);
+
+	await page.waitForTimeout(500);
+
+	await widgetPagePage.clickOnAction('Breadcrumb', 'Configuration');
+
+	const configurationIFrame = page.frameLocator(
+		'iframe[title*="Breadcrumb"]'
+	);
+
+	await configurationIFrame.getByLabel('Show Application Breadcrumb').click();
+
+	await widgetPagePage.saveAndClose('Breadcrumb');
+
+	await expect(page.locator('.active.breadcrumb-text-truncate')).toHaveText(
+		layout.nameCurrentValue
+	);
+});
