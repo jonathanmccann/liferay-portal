@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Page, expect} from '@playwright/test';
+import {FrameLocator, Page, expect} from '@playwright/test';
 
 import {WidgetPagePage} from '../layout-admin-web/WidgetPagePage';
 
@@ -18,9 +18,10 @@ export class BreadcrumbPage {
 
 	async assertBreadcrumbEntries(
 		expectedLength: number,
-		expectedValues: string[]
+		expectedValues: string[],
+		parent: Page | FrameLocator = this.page
 	) {
-		const breadcrumbEntries = await this.page
+		const breadcrumbEntries = await parent
 			.locator('.breadcrumb-text-truncate')
 			.allInnerTexts();
 
