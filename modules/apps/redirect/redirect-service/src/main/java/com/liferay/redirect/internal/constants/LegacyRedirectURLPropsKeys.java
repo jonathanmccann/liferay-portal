@@ -19,4 +19,7 @@ public class LegacyRedirectURLPropsKeys {
 	public static final String REDIRECT_URL_SECURITY_MODE =
 		"redirect.url.security.mode";
 
+	public static final String TEST =
+		"test";
+
 }
