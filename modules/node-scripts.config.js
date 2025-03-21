@@ -386,6 +386,7 @@ module.exports = {
 		'site-navigation-admin-web': [],
 		'site-navigation-item-selector-web': [],
 		'site-navigation-menu-item-layout': [],
+		'site-navigation-menu-item-url': [],
 		'site-navigation-menu-web': [],
 		'site-teams-web': [],
 		'social-bookmarks-taglib': [],

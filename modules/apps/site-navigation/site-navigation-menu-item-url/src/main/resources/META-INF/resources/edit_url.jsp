@@ -30,3 +30,9 @@ if (siteNavigationMenuItem != null) {
 </aui:input>
 
 <aui:input checked="<%= useNewTab %>" label="open-in-a-new-tab" name="TypeSettingsProperties--useNewTab--" type="checkbox" />
+
+<div id="test-jsp">
+	<react:component
+		module="{NavigationMenuIconSelector} from site-navigation-menu-item-url"
+	/>
+</div>
