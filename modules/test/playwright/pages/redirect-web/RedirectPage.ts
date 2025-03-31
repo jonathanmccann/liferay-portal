@@ -13,6 +13,7 @@ export class RedirectPage {
 	readonly destinationURL: Locator;
 	readonly expirationDate: Locator;
 	readonly page: Page;
+	readonly redirectChainModal: Locator;
 	readonly saveButton: Locator;
 	readonly sourceURL: Locator;
 	readonly type: Locator;
@@ -22,6 +23,7 @@ export class RedirectPage {
 		this.destinationURL = page.getByLabel('Destination URL');
 		this.expirationDate = page.getByLabel('Expiration Date');
 		this.page = page;
+		this.redirectChainModal = page.getByRole('dialog');
 		this.saveButton = page.getByRole('button', {name: 'Save'});
 		this.sourceURL = page.getByLabel('Source URL');
 		this.type = page.getByLabel('Type');
@@ -98,5 +100,19 @@ export class RedirectPage {
 		await this.page.goto(
 			`/group${siteUrl || '/guest'}${PORTLET_URLS.redirect}`
 		);
+	}
+
+	async updateReferences(updateReferences: boolean = true) {
+		await this.redirectChainModal.waitFor({state: 'visible'});
+
+		if (!updateReferences) {
+			await this.redirectChainModal
+				.getByLabel('Update References')
+				.click();
+		}
+
+		await this.redirectChainModal
+			.getByRole('button', {name: 'Create'})
+			.click();
 	}
 }
