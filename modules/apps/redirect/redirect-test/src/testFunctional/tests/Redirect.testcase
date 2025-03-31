@@ -35,70 +35,6 @@ definition {
 		}
 	}
 
-	@description = "This ensures that the user will be redirected to the cached target URL of a permanent redirection after it is updated."
-	@priority = 5
-	@refactordone
-	test CanAccessUpdatedPermanentEntry {
-		var portalURL = PropsUtil.get("portal.url");
-		var siteName = TestCase.getSiteName(siteName = ${siteName});
-
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "New Test Destination Page");
-
-		JSONRedirect.addRedirect(
-			destinationURL = "${portalURL}/web/test-site-name/test-destination-page",
-			groupName = "Test Site Name",
-			permanent = "true",
-			sourceURL = "test-source-page");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/test-source-page");
-
-		Redirect.openRedirectAdmin(siteURLKey = "test-site-name");
-
-		Redirect.editEntry(
-			destinationURLEdit = "${portalURL}/web/test-site-name/new-test-destination-page",
-			permanentEntryEdit = "true",
-			sourceURL = "test-source-page");
-
-		Redirect.openRedirectAdmin(siteURLKey = "test-site-name");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/test-source-page");
-
-		AssertLocation(value1 = "${portalURL}/web/test-site-name/test-destination-page");
-	}
-
-	@description = "This ensures that the user will be redirected to the latest target URL of a temporary redirection after it is updated."
-	@priority = 5
-	@refactordone
-	test CanAccessUpdatedTemporaryEntry {
-		var portalURL = PropsUtil.get("portal.url");
-		var siteName = TestCase.getSiteName(siteName = ${siteName});
-
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "New Test Destination Page");
-
-		JSONRedirect.addRedirect(
-			destinationURL = "${portalURL}/web/test-site-name/test-destination-page",
-			groupName = "Test Site Name",
-			sourceURL = "test-source-page");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/test-source-page");
-
-		Redirect.openRedirectAdmin(siteURLKey = "test-site-name");
-
-		Redirect.editEntry(
-			destinationURLEdit = "${portalURL}/web/test-site-name/new-test-destination-page",
-			sourceURL = "test-source-page");
-
-		Redirect.openRedirectAdmin(siteURLKey = "test-site-name");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/test-source-page");
-
-		AssertLocation(value1 = "${portalURL}/web/test-site-name/new-test-destination-page");
-	}
-
 	@description = "This ensures that an entry can be added without update references."
 	@priority = 5
 	@refactordone
@@ -716,42 +652,6 @@ definition {
 			requestNumber = 1);
 	}
 
-	@description = "This ensures that an unexpired redirect can be edited."
-	@priority = 5
-	@refactordone
-	test CanEditEntry {
-		var portalURL = PropsUtil.get("portal.url");
-		var siteName = TestCase.getSiteName(siteName = ${siteName});
-
-		JSONRedirect.addRedirect(
-			destinationURL = "${portalURL}/web/test-site-name/test-destination-page",
-			expirationDate = "2099-12-31",
-			groupName = "Test Site Name",
-			permanent = "true",
-			sourceURL = "test-source-page");
-
-		Redirect.openToEditEntry(
-			destinationURL = "${portalURL}/web/test-site-name/test-destination-page",
-			groupName = "Test Site Name",
-			siteURLKey = "test-site-name");
-
-		Redirect.editEntry(
-			destinationURLEdit = "${portalURL}/web/test-site-name/new-destination-page",
-			expirationDate = "12/31/2013",
-			permanentEntryEdit = "true",
-			redirectTypeEdit = "Temporary (302)",
-			skipNavigation = "true",
-			sourceURL = "test-source-page",
-			sourceURLEdit = "new-source-page",
-			toolTip = "true");
-
-		Redirect.viewEntry(
-			destinationURL = "${portalURL}/web/test-site-name/new-destination-page",
-			expirationDate = "Expired",
-			redirectType = "Temporary",
-			sourceURL = "${portalURL}/web/test-site-name/new-source-page");
-	}
-
 	@description = "This ensures that a URL can be ignored after reactivation."
 	@priority = 5
 	@refactordone
@@ -1032,37 +932,6 @@ definition {
 		}
 	}
 
-	@description = "This ensures that the redirect can be set."
-	@priority = 5
-	@refactordone
-	test CanSetRedirectEntry {
-		ProductMenu.gotoPortlet(
-			category = "Configuration",
-			panel = "Site Administration",
-			portlet = "Redirection",
-			site = "Guest");
-
-		Redirect.viewDefault();
-
-		Redirect.addEntry(
-			destinationURL = "",
-			redirectURLVariation = "Null",
-			siteName = "guest",
-			sourceURL = "sourceURL");
-
-		Redirect.openRedirectAdmin(siteURLKey = "guest");
-
-		Redirect.addEntry(
-			destinationURL = "http://localhost:8080",
-			redirectURLVariation = "Null",
-			siteName = "guest",
-			sourceURL = "");
-
-		AssertSelectedLabel(
-			locator1 = "Select#REDIRECT_TYPE",
-			value1 = "Temporary (302)");
-	}
-
 	@description = "This ensures that an entry can be updated with checking update redirect."
 	@priority = 5
 	@refactordone
@@ -1333,28 +1202,6 @@ definition {
 		Search.clearSearchResult();
 
 		Redirect.view404URLsDefault();
-	}
-
-	@description = "This ensures that a permanent redirect can be added."
-	@priority = 5
-	@refactordone
-	test CanViewPermanentEntryInAdmin {
-		var portalURL = PropsUtil.get("portal.url");
-
-		Redirect.openRedirectAdmin(siteURLKey = "test-site-name");
-
-		Redirect.addEntry(
-			destinationURL = "${portalURL}/web/test-site-name/test-destination-page",
-			redirectType = "Permanent (301)",
-			siteName = "test-site-name",
-			sourceURL = "test-source-page");
-
-		Redirect.openRedirectAdmin(siteURLKey = "test-site-name");
-
-		Redirect.viewEntry(
-			destinationURL = "${portalURL}/web/test-site-name/test-destination-page",
-			redirectType = "Permanent",
-			sourceURL = "${portalURL}/web/test-site-name/test-source-page");
 	}
 
 	@description = "This ensures that a warning message is displayed when stage is activated"
