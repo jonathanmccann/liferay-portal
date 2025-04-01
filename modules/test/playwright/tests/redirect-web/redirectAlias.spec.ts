@@ -428,3 +428,30 @@ test('Ensure redirect entries can be found by search', async ({
 		page.locator('.lfr-expiration-column', {hasText: '12/31/99'})
 	).toBeVisible();
 });
+
+test('Ensure warning messages are displayed when staging is enabled', async ({
+	apiHelpers,
+	page,
+	redirectPage,
+	site,
+}) => {
+	await apiHelpers.jsonWebServicesStaging.enableLocalStaging({
+		groupId: site.id,
+	});
+
+	await page.waitForTimeout(2000);
+
+	await redirectPage.goto(`${site.friendlyUrlPath}-staging`);
+
+	await expect(
+		page.getByText('Redirections are unavailable in staged sites.')
+	).toBeVisible();
+
+	await redirectPage.goto(site.friendlyUrlPath);
+
+	await expect(
+		page.getByText(
+			'Redirect functionality may not work as expected in the staging environment.'
+		)
+	).toBeVisible();
+});
