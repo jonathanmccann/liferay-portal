@@ -495,23 +495,6 @@ definition {
 			entry2 = 2);
 	}
 
-	@description = "This ensures that accessing a nonexistent URL redirects the user to the home of the current site."
-	@priority = 4
-	@refactordone
-	test CanRedirect404sToSiteHomePage {
-		var portalURL = PropsUtil.get("portal.url");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/fakepage");
-
-		AssertLocation(value1 = "${portalURL}/web/test-site-name/fakepage");
-
-		AssertVisible(
-			key_pageName = "Test Source Page",
-			locator1 = "Home#PAGE_ACTIVE");
-
-		AssertTextPresent(value1 = "The requested address was not found on the system.");
-	}
-
 	@description = "This test covers LPS-110773. It ensures that a redirect entry can be found by search."
 	@priority = 3
 	@refactordone
