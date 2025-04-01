@@ -61,6 +61,16 @@ export class RedirectPage {
 		await expect(this.destinationURLErrorMessage).toBeVisible();
 	}
 
+	async deleteRedirect(currentSourceURL: string) {
+		await clickAndExpectToBeVisible({
+			autoClick: true,
+			target: this.page.getByRole('menuitem', {name: 'Delete'}),
+			trigger: this.page
+				.getByRole('row', {name: currentSourceURL})
+				.getByLabel('Show Actions'),
+		});
+	}
+
 	async editRedirect(
 		currentSourceURL: string,
 		sourceURL: string,

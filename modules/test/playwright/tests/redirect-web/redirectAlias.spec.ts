@@ -271,3 +271,54 @@ test('Ensure Check URL button opens to correct destination URL', async ({
 
 	await expect(newPage.url()).toContain(destinationPage.friendlyURL);
 });
+
+test('Ensure redirect entry can be deleted', async ({
+	page,
+	redirectPage,
+	site,
+}) => {
+	await redirectPage.goto(site.friendlyUrlPath);
+
+	await redirectPage.addRedirect(
+		'test/source/url',
+		`http://www.liferay.com`,
+		false
+	);
+
+	await redirectPage.deleteRedirect('test/source/url');
+
+	await expect(page.getByText('No redirects were found.')).toBeVisible();
+
+	await page.goto(`/web/${site.name}/test/source/url`);
+
+	await expect(page.url()).toContain('test/source/url');
+});
+
+test('Ensure all redirect entries can be deleted simultaneously', async ({
+	page,
+	redirectPage,
+	site,
+}) => {
+	await redirectPage.goto(site.friendlyUrlPath);
+
+	await redirectPage.addRedirect(
+		'test/source/url',
+		`http://www.liferay.com`,
+		false
+	);
+	await redirectPage.addRedirect(
+		'test/source/url2',
+		`http://www.liferay.com`,
+		false
+	);
+
+	await page.getByLabel('Select All Items on the Page').click();
+
+	await page.getByRole('button', {name: 'Delete'}).click();
+
+	await expect(page.getByText('No redirects were found.')).toBeVisible();
+
+	await page.goto(`/web/${site.name}/test/source/url`);
+
+	await expect(page.url()).toContain('test/source/url');
+});
