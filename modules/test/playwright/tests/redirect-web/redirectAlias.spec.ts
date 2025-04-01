@@ -212,3 +212,62 @@ test('Ensure that a redirect can be added with updating references for redirect 
 
 	await expect(page.url()).toContain('test-page-3');
 });
+
+test('Ensure destination URL is validated before it can be saved', async ({
+	page,
+	redirectPage,
+	site,
+}) => {
+	await redirectPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('link', {name: 'Add'}).click();
+
+	await redirectPage.assertDestinationURLValidation(' ');
+	await redirectPage.assertDestinationURLValidation('liferay.com');
+	await redirectPage.assertDestinationURLValidation('test');
+	await redirectPage.assertDestinationURLValidation('redirect/test');
+});
+
+test('Ensure HTTP prefix is added to destination URL', async ({
+	page,
+	redirectPage,
+	site,
+}) => {
+	await redirectPage.goto(site.friendlyUrlPath);
+
+	await redirectPage.addRedirect('test/source/url', `www.liferay.com`, false);
+
+	await expect(
+		page.locator('.lfr-destination-url-column', {
+			hasText: 'http://www.liferay.com',
+		})
+	).toBeVisible();
+});
+
+test('Ensure Check URL button opens to correct destination URL', async ({
+	apiHelpers,
+	page,
+	redirectPage,
+	site,
+}) => {
+	const destinationPage = await apiHelpers.jsonWebServicesLayout.addLayout({
+		groupId: site.id,
+		title: 'Destination Page',
+	});
+
+	await redirectPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('link', {name: 'Add'}).click();
+
+	await redirectPage.fillRedirectDetails(
+		'test/source/url',
+		`http://localhost:8080/web/${site.name}${destinationPage.friendlyURL}`,
+		false
+	);
+
+	await page.getByLabel('Check URL').click();
+
+	const newPage = await page.waitForEvent('popup');
+
+	await expect(newPage.url()).toContain(destinationPage.friendlyURL);
+});

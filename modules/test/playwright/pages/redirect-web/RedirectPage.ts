@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: LGPL-2.1-or-later OR LicenseRef-Liferay-DXP-EULA-2.0.0-2023-06
  */
 
-import {Locator, Page} from '@playwright/test';
+import {Locator, Page, expect} from '@playwright/test';
 
 import {clickAndExpectToBeVisible} from '../../utils/clickAndExpectToBeVisible';
 import {PORTLET_URLS} from '../../utils/portletUrls';
@@ -11,6 +11,7 @@ import {PORTLET_URLS} from '../../utils/portletUrls';
 export class RedirectPage {
 	readonly createButton: Locator;
 	readonly destinationURL: Locator;
+	readonly destinationURLErrorMessage: Locator;
 	readonly expirationDate: Locator;
 	readonly page: Page;
 	readonly redirectChainModal: Locator;
@@ -21,6 +22,9 @@ export class RedirectPage {
 	constructor(page: Page) {
 		this.createButton = page.getByRole('button', {name: 'Create'});
 		this.destinationURL = page.getByLabel('Destination URL');
+		this.destinationURLErrorMessage = page.getByText(
+			'This URL is not supported'
+		);
 		this.expirationDate = page.getByLabel('Expiration Date');
 		this.page = page;
 		this.redirectChainModal = page.getByRole('dialog');
@@ -47,6 +51,14 @@ export class RedirectPage {
 		await this.createButton.click();
 
 		await this.page.getByText(sourceURL).waitFor();
+	}
+
+	async assertDestinationURLValidation(destinationURL: string) {
+		await this.fillRedirectDetails('source-page', destinationURL, false);
+
+		await this.createButton.click();
+
+		await expect(this.destinationURLErrorMessage).toBeVisible();
 	}
 
 	async editRedirect(

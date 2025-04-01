@@ -309,51 +309,6 @@ definition {
 			sourceURL = "${portalURL}/web/test-site-name/test-destination-page1");
 	}
 
-	@description = "This ensures that the destination URL passes validation before it can be used."
-	@priority = 5
-	@refactordone
-	test CanCheckDestinationURL {
-		var portalURL = PropsUtil.get("portal.url");
-		var siteName = TestCase.getSiteName(siteName = ${siteName});
-
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Test Source Page1");
-
-		for (var destinationURL : list " ,liferay.com,test,redirect/test") {
-			Redirect.openToAddEntry(siteURLKey = "test-site-name");
-
-			Redirect.addEntry(
-				destinationURL = ${destinationURL},
-				destinationURLVariation = "RelativeURL",
-				siteName = "test-site-name",
-				skipNavigation = "true",
-				sourceURL = "test-source-page");
-		}
-
-		Redirect.openToAddEntry(siteURLKey = "test-site-name");
-
-		Redirect.addEntry(
-			destinationURL = "www.liferay.com",
-			siteName = "test-site-name",
-			skipNavigation = "true",
-			sourceURL = "test-source-page1");
-
-		Redirect.viewEntryFloatingURL(redirectURL = "http://www.liferay.com");
-
-		Redirect.openToAddEntry(siteURLKey = "test-site-name");
-
-		Redirect.addEntry(
-			checkDestinationURL = "true",
-			destinationPageName = "Test Destination Page",
-			destinationURL = "${portalURL}/web/test-site-name/test-destination-page",
-			groupName = "Test Site Name",
-			portalName = ${siteName},
-			siteName = "test-site-name",
-			skipNavigation = "true",
-			sourceURL = "test-source-page");
-	}
-
 	@description = "This ensures that a redirect entry can be deleted."
 	@priority = 5
 	@refactordone
