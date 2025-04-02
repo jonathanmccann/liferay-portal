@@ -99,41 +99,4 @@ definition {
 		return ${redirectEntryId};
 	}
 
-	@summary = "Default summary"
-	macro updateEntry(sourceURL = null, groupName = null) {
-		var redirectEntryId = JSONRedirect.getRedirectEntryId(
-			destinationURL = ${destinationURL},
-			groupName = ${groupName});
-		var portalURL = JSONCompany.getPortalURL();
-		var destinationURL = StringUtil.replace(${destinationURL}, ":", "%3A");
-
-		if (!(isSet(expirationDate))) {
-			var expirationDate = "2100-01-01";
-		}
-
-		if (!(isSet(permanent))) {
-			var permanent = "false";
-		}
-
-		if (!(isSet(userEmailAddress))) {
-			var userEmailAddress = "test@liferay.com";
-		}
-
-		if (!(isSet(userPassword))) {
-			var userPassword = PropsUtil.get("default.admin.password");
-		}
-
-		var curl = '''
-			${portalURL}/api/jsonws/redirect.redirectentry/update-redirect-entry \
-				-u ${userEmailAddress}:${userPassword} \
-				-d redirectEntryId=${redirectEntryId} \
-				-d destinationURL=${destinationURL} \
-				-d expirationDate=${expirationDate} \
-				-d permanent=${permanent} \
-				-d sourceURL=${sourceURL}
-		''';
-
-		com.liferay.poshi.runner.util.JSONCurlUtil.post(${curl});
-	}
-
 }
