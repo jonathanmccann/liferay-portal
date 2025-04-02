@@ -85,61 +85,6 @@ definition {
 			requestNumber = 1);
 	}
 
-	@description = "This ensures that the 404 URLs can be ordered by requests."
-	@priority = 4
-	@refactordone
-	test CanOrder404URLsByRequests {
-		property portal.acceptance = "false";
-		property test.liferay.virtual.instance = "false";
-		property test.run.type = "single";
-
-		var portalURL = PropsUtil.get("portal.url");
-
-		Redirect.openToConfigInSystemSettings();
-
-		FormFields.enableCheckbox(fieldName = "enabled");
-
-		SystemSettings.saveConfiguration();
-
-		JSONLayout.addPublicLayout(
-			groupName = "Test Site Name",
-			layoutName = "Test Source Page2");
-
-		JSONRedirect.addRedirect(
-			destinationURL = "${portalURL}/web/test-site-name/test-destination-page1",
-			groupName = "Test Site Name",
-			sourceURL = "test-source-page");
-
-		JSONRedirect.addRedirect(
-			destinationURL = "${portalURL}/web/test-site-name/test-destination-page2",
-			groupName = "Test Site Name",
-			sourceURL = "test-source-page2");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/test-source-page");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/test-source-page2");
-
-		Navigator.openSpecificURL(url = "${portalURL}/web/test-site-name/test-source-page2");
-
-		Redirect.open404URLsAdmin(siteURLKey = "test-site-name");
-
-		TestUtils.hardRefresh();
-
-		Redirect.view404URLs(
-			ignoreURL = "${portalURL}/web/test-site-name/test-destination-page1",
-			requestNumber = 1);
-
-		Redirect.view404URLs(
-			ignoreURL = "${portalURL}/web/test-site-name/test-destination-page2",
-			requestNumber = 2);
-
-		ManagementBar.setFilterAndOrder(orderBy = "Descending");
-
-		Redirect.viewOrderedURLs(
-			entry1 = 1,
-			entry2 = 2);
-	}
-
 	@description = "This ensures that the 404 URLs can be viewed after reactivating."
 	@priority = 5
 	@refactordone

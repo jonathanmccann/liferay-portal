@@ -171,3 +171,64 @@ test('Ensure that 404 URL tracking is not performed when disabled', async ({
 
 	await expect(page.getByText('non-existing-url')).not.toBeVisible();
 });
+
+test('Ensure that 404 URLs can be ordered by number of requests', async ({
+	page,
+	redirectPage,
+	site,
+}) => {
+	await page.goto(`/web/${site.name}/invalid-page`);
+
+	await page.goto(`/web/${site.name}/non-existing-url`);
+	await page.goto(`/web/${site.name}/non-existing-url`);
+
+	await redirectPage.goto(site.friendlyUrlPath);
+
+	await page.getByRole('link', {name: 'URLs'}).click();
+
+	await page.getByLabel('Order', {exact: true}).click();
+
+	await page.getByRole('menuitem', {name: 'Ascending'}).click();
+
+	await page.waitForTimeout(500);
+
+	const tableRows = page.locator('table > tbody tr');
+
+	let expectedTexts = ['non-existing-url', 'invalid-page'];
+
+	for (let i = 0; i < expectedTexts.length; i++) {
+		const row = tableRows.nth(i);
+
+		await expect(row).toBeVisible();
+
+		const secondColumn = row.locator('td').nth(1);
+
+		await expect(secondColumn).toBeVisible();
+
+		const text = await secondColumn.innerText();
+
+		expect(text).toContain(expectedTexts[i]);
+	}
+
+	await page.getByLabel('Order', {exact: true}).click();
+
+	await page.getByRole('menuitem', {name: 'Descending'}).click();
+
+	await page.waitForTimeout(500);
+
+	expectedTexts = ['invalid-page', 'non-existing-url'];
+
+	for (let i = 0; i < expectedTexts.length; i++) {
+		const row = tableRows.nth(i);
+
+		await expect(row).toBeVisible();
+
+		const secondColumn = row.locator('td').nth(1);
+
+		await expect(secondColumn).toBeVisible();
+
+		const text = await secondColumn.innerText();
+
+		expect(text).toContain(expectedTexts[i]);
+	}
+});
