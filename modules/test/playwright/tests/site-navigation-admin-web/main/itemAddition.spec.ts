@@ -269,7 +269,7 @@ test(
 );
 
 test(
-	'Navigation Menu tem is prepopulated with existing translation',
+	'Navigation Menu item is prepopulated with existing translation',
 	{
 		tag: '@LPS-85566',
 	},

@@ -80,6 +80,14 @@ export class NavigationMenusPage {
 			});
 		};
 
+		this.getNavigationMenuRow = async (menuId: Number) => {
+			return page.locator(
+				'[id="_com_liferay_site_navigation_admin_web_portlet_SiteNavigationAdminPortlet_siteNavigationMenus_' +
+					menuId +
+					'"]'
+			);
+		};
+
 		this.getNestingLevel = async (name: string) => {
 			return this.page
 				.getByText(name)
@@ -88,14 +96,6 @@ export class NavigationMenusPage {
 						'--nesting-level'
 					)
 				);
-		};
-
-		this.getNavigationMenuRow = async (menuId: Number) => {
-			return page.locator(
-				'[id="_com_liferay_site_navigation_admin_web_portlet_SiteNavigationAdminPortlet_siteNavigationMenus_' +
-					menuId +
-					'"]'
-			);
 		};
 
 		this.addButton = page.getByRole('button', {name: 'Add'});
