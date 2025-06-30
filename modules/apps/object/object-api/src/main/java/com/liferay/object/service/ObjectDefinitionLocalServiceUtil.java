@@ -458,6 +458,14 @@ public class ObjectDefinitionLocalServiceUtil {
 	}
 
 	public static List<ObjectDefinition> getObjectDefinitions(
+		long companyId, boolean active, boolean system, int status, int start,
+		int end, OrderByComparator<ObjectDefinition> orderByComparator) {
+
+		return getService().getObjectDefinitions(
+			companyId, active, system, status, start, end, orderByComparator);
+	}
+
+	public static List<ObjectDefinition> getObjectDefinitions(
 		long companyId, boolean active, int status) {
 
 		return getService().getObjectDefinitions(companyId, active, status);
@@ -482,6 +490,14 @@ public class ObjectDefinitionLocalServiceUtil {
 		throws PortalException {
 
 		return getService().getObjectDefinitionsCount(companyId);
+	}
+
+	public static int getObjectDefinitionsCount(
+			long companyId, boolean active, boolean system, int status)
+		throws PortalException {
+
+		return getService().getObjectDefinitionsCount(
+			companyId, active, system, status);
 	}
 
 	public static List<ObjectDefinition> getObjectFolderObjectDefinitions(
