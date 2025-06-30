@@ -165,6 +165,7 @@ import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MethodHandler;
 import com.liferay.portal.kernel.util.MethodKey;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalRunMode;
 import com.liferay.portal.kernel.util.StringUtil;
@@ -888,6 +889,15 @@ public class ObjectDefinitionLocalServiceImpl
 
 	@Override
 	public List<ObjectDefinition> getObjectDefinitions(
+		long companyId, boolean active, boolean system, int status, int start,
+		int end, OrderByComparator<ObjectDefinition> orderByComparator) {
+
+		return objectDefinitionPersistence.findByC_A_S_S(
+			companyId, active, system, status, start, end, orderByComparator);
+	}
+
+	@Override
+	public List<ObjectDefinition> getObjectDefinitions(
 		long companyId, boolean active, int status) {
 
 		return objectDefinitionPersistence.findByC_A_S(
@@ -906,6 +916,15 @@ public class ObjectDefinitionLocalServiceImpl
 		throws PortalException {
 
 		return objectDefinitionPersistence.countByCompanyId(companyId);
+	}
+
+	@Override
+	public int getObjectDefinitionsCount(
+			long companyId, boolean active, boolean system, int status)
+		throws PortalException {
+
+		return objectDefinitionPersistence.countByC_A_S_S(
+			companyId, active, system, status);
 	}
 
 	@Override
