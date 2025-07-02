@@ -74,6 +74,10 @@ public class SaveCompanyConfigurationMVCActionCommand
 
 					return true;
 				}),
+			ArrayUtil.unique(
+				ParamUtil.getLongValues(
+					actionRequest,
+					"objectDefinitionsSearchContainerPrimaryKeys")),
 			ParamUtil.getBoolean(actionRequest, "includeCategories"),
 			ParamUtil.getBoolean(actionRequest, "includePages"),
 			ParamUtil.getBoolean(actionRequest, "includeWebContent"),
