@@ -9,6 +9,7 @@ import {delegate, sub} from 'frontend-js-web';
 interface Props {
 	groupSelectorURL: string;
 	namespace: string;
+	objectDefinitionSelectorURL: string;
 	selectEventName: string;
 }
 
@@ -21,11 +22,20 @@ type SelectedItem = {
 export default function ({
 	groupSelectorURL,
 	namespace,
+	objectDefinitionSelectorURL,
 	selectEventName,
 }: Props) {
 	const groupIdsInput = document.getElementById(
 		`${namespace}groupsSearchContainerPrimaryKeys`
 	) as HTMLInputElement;
+
+	const objectDefinitionIdsInput = document.getElementById(
+		`${namespace}objectDefinitionsSearchContainerPrimaryKeys`
+	) as HTMLInputElement;
+
+	const selectObjectDefinitionButton = document.getElementById(
+		`${namespace}selectObjectDefinitionLink`
+	) as HTMLButtonElement;
 
 	const selectSiteButton = document.getElementById(
 		`${namespace}selectSiteLink`
@@ -33,13 +43,21 @@ export default function ({
 
 	// @ts-ignore
 
-	const searchContainer = Liferay.SearchContainer.get(
+	const groupsSearchContainer = Liferay.SearchContainer.get(
 		`${namespace}groupsSearchContainer`
 	);
 
-	const searchContainerContentBox = searchContainer.get('contentBox');
+	const groupsSearchContainerContentBox =
+		groupsSearchContainer.get('contentBox');
 
-	const getGroupIds = (searchContainer: any) => {
+	const objectDefinitionsSearchContainer = Liferay.SearchContainer.get(
+		`${namespace}objectDefinitionsSearchContainer`
+	);
+
+	const objectDefinitionsSearchContainerContentBox =
+		objectDefinitionsSearchContainer.get('contentBox');
+
+	const getSearchContainerData = (searchContainer: any) => {
 		const searchContainerData = searchContainer.getData();
 
 		return !searchContainerData.length
@@ -47,12 +65,72 @@ export default function ({
 			: searchContainerData.split(',');
 	};
 
-	const onSelectClick = () => {
-		const groupIds = getGroupIds(searchContainer);
+	const onSelectObjectDefinitionClick = () => {
+		const objectDefinitionIds = getSearchContainerData(
+			objectDefinitionsSearchContainer
+		);
 
 		openSelectionModal({
 			onSelect: (selectedItem: SelectedItem) => {
 				if (selectedItem) {
+					const values = JSON.parse(selectedItem.value);
+
+					const rowColumns = [];
+
+					const title = sub(
+						Liferay.Language.get('remove-x'),
+						values.label
+					);
+
+					const removeIcon =
+						Liferay.Util.getLexiconIconTpl('times-circle');
+
+					const removeButton = `<button
+						aria-label="${title}"
+						class="btn btn-monospaced btn-outline-borderless btn-outline-secondary
+							btn-sm lfr-portal-tooltip remove-button text-secondary" 
+						data-rowid="${values.objectDefinitionId}" 
+						type="button" 
+						title="${title}"
+					>
+						<span class="inline-item">${removeIcon}</span>
+					</button>`;
+
+					rowColumns.push(
+						`<span class="text-truncate">${values.label}</span>`
+					);
+					rowColumns.push(removeButton);
+
+					objectDefinitionsSearchContainer.addRow(
+						rowColumns,
+						values.objectDefinitionId
+					);
+					objectDefinitionsSearchContainer.updateDataStore();
+
+					objectDefinitionIds.push(values.objectDefinitionId);
+					objectDefinitionIdsInput!.value =
+						objectDefinitionIds.join(',');
+
+					console.error('Testing depot stuff');
+				}
+			},
+			selectEventName,
+			selectedData: objectDefinitionsSearchContainer.getData(true),
+			title: sub(
+				Liferay.Language.get('select-x'),
+				Liferay.Language.get('object-definition')
+			),
+			url: objectDefinitionSelectorURL,
+		});
+	};
+
+	const onSelectSiteClick = () => {
+		const groupIds = getSearchContainerData(groupsSearchContainer);
+
+		openSelectionModal({
+			onSelect: (selectedItem: SelectedItem) => {
+				if (selectedItem) {
+					console.error(selectedItem);
 					const {
 						groupdescriptivename: entityName,
 						groupid: entityId,
@@ -114,8 +192,8 @@ export default function ({
 					rowColumns.push(siteName);
 					rowColumns.push(removeButton);
 
-					searchContainer.addRow(rowColumns, entityId);
-					searchContainer.updateDataStore();
+					groupsSearchContainer.addRow(rowColumns, entityId);
+					groupsSearchContainer.updateDataStore();
 
 					groupIds.push(entityId);
 					groupIdsInput!.value = groupIds.join(',');
@@ -131,32 +209,59 @@ export default function ({
 		});
 	};
 
-	const onRemoveSite = searchContainerContentBox.delegate(
+	const onRemoveObjectDefinition =
+		objectDefinitionsSearchContainerContentBox.delegate(
+			'click',
+			({currentTarget: removeButton}: {currentTarget: any}) => {
+				objectDefinitionsSearchContainer.deleteRow(
+					removeButton.ancestor('tr'),
+					removeButton.attr('data-rowid')
+				);
+
+				const objectDefinitionIds = getSearchContainerData(
+					objectDefinitionsSearchContainer
+				);
+
+				objectDefinitionIdsInput.value = objectDefinitionIds.join(',');
+			},
+			'.remove-button'
+		);
+
+	const onRemoveSite = groupsSearchContainerContentBox.delegate(
 		'click',
 		({currentTarget: removeButton}: {currentTarget: any}) => {
-			searchContainer.deleteRow(
+			groupsSearchContainer.deleteRow(
 				removeButton.ancestor('tr'),
 				removeButton.attr('data-rowid')
 			);
 
-			const groupIds = getGroupIds(searchContainer);
+			const groupIds = getSearchContainerData(groupsSearchContainer);
 
 			groupIdsInput.value = groupIds.join(',');
 		},
 		'.remove-button'
 	);
 
-	const selectDelegate = delegate(
+	const selectObjectDefinitionDelegate = delegate(
+		selectObjectDefinitionButton,
+		'click',
+		'.btn',
+		onSelectObjectDefinitionClick
+	);
+
+	const selectSiteDelegate = delegate(
 		selectSiteButton,
 		'click',
 		'.btn',
-		onSelectClick
+		onSelectSiteClick
 	);
 
 	return {
 		dispose() {
+			onRemoveObjectDefinition.detach();
 			onRemoveSite.detach();
-			selectDelegate.dispose();
+			selectObjectDefinitionDelegate.dispose();
+			selectSiteDelegate.dispose();
 		},
 	};
 }
