@@ -36,6 +36,19 @@ public class SitemapConfigurationManagerImpl
 	}
 
 	@Override
+	public String[] getCompanySitemapObjectDefinitionExternalReferenceCodes(
+			long companyId)
+		throws Exception {
+
+		SitemapCompanyConfiguration sitemapCompanyConfiguration =
+			_configurationProvider.getCompanyConfiguration(
+				SitemapCompanyConfiguration.class, companyId);
+
+		return sitemapCompanyConfiguration.
+			companySitemapObjectDefinitionExternalReferenceCodes();
+	}
+
+	@Override
 	public boolean includeCategoriesCompanyEnabled(long companyId)
 		throws ConfigurationException {
 
@@ -116,6 +129,7 @@ public class SitemapConfigurationManagerImpl
 	@Override
 	public void saveSitemapCompanyConfiguration(
 			long companyId, long[] companySitemapGroupIds,
+			String[] companySitemapObjectDefinitionExternalReferenceCodes,
 			boolean includeCategories, boolean includePages,
 			boolean includeWebContent, boolean xmlSitemapIndexEnabled)
 		throws ConfigurationException {
@@ -124,6 +138,9 @@ public class SitemapConfigurationManagerImpl
 			SitemapCompanyConfiguration.class, companyId,
 			HashMapDictionaryBuilder.<String, Object>put(
 				"companySitemapGroupIds", companySitemapGroupIds
+			).put(
+				"companySitemapObjectDefinitionExternalReferenceCodes",
+				companySitemapObjectDefinitionExternalReferenceCodes
 			).put(
 				"includeCategories", includeCategories
 			).put(

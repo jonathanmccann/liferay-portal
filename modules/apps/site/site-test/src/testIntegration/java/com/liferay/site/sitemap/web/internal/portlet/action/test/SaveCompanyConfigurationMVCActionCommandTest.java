@@ -85,6 +85,9 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_originalCompanySitemapGroupIds =
 			_sitemapConfigurationManager.getCompanySitemapGroupIds(
 				_company.getCompanyId());
+		_originalCompanySitemapObjectDefinitionExternalReferenceCodes =
+			_sitemapConfigurationManager.getCompanySitemapObjectDefinitionExternalReferenceCodes(
+				_company.getCompanyId());
 		_originalIncludeCategories =
 			_sitemapConfigurationManager.includeCategoriesCompanyEnabled(
 				_company.getCompanyId());
@@ -108,6 +111,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_sitemapConfigurationManager.saveSitemapCompanyConfiguration(
 			_company.getCompanyId(),
 			ArrayUtil.toArray(_originalCompanySitemapGroupIds),
+			_originalCompanySitemapObjectDefinitionExternalReferenceCodes,
 			_originalIncludeCategories, _originalIncludePages,
 			_originalIncludeWebContent, _originalXMLSitemapIndexEnabled);
 
@@ -353,6 +357,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	private static LayoutLocalService _layoutLocalService;
 
 	private static Long[] _originalCompanySitemapGroupIds;
+	private static String[]
+		_originalCompanySitemapObjectDefinitionExternalReferenceCodes;
 	private static boolean _originalIncludeCategories;
 	private static boolean _originalIncludePages;
 	private static boolean _originalIncludeWebContent;
