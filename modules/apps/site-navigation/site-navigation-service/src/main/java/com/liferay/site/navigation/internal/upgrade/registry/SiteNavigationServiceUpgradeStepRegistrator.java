@@ -13,8 +13,11 @@ import com.liferay.portal.upgrade.registry.UpgradeStepRegistrator;
 import com.liferay.site.navigation.internal.upgrade.v2_0_0.util.SiteNavigationMenuItemTable;
 import com.liferay.site.navigation.internal.upgrade.v2_0_0.util.SiteNavigationMenuTable;
 import com.liferay.site.navigation.internal.upgrade.v2_3_0.SiteNavigationMenuItemUpgradeProcess;
+import com.liferay.site.navigation.internal.upgrade.v3_0_0.SiteNavigationMenuItemExternalReferenceCodeUpgradeProcess;
+import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * @author José Ángel Jiménez
@@ -79,6 +82,15 @@ public class SiteNavigationServiceUpgradeStepRegistrator
 				}
 
 			});
+
+		registry.register(
+			"2.5.0", "3.0.0",
+			new SiteNavigationMenuItemExternalReferenceCodeUpgradeProcess(
+				_siteNavigationMenuItemTypeRegistry));
 	}
+
+	@Reference
+	private SiteNavigationMenuItemTypeRegistry
+		_siteNavigationMenuItemTypeRegistry;
 
 }
