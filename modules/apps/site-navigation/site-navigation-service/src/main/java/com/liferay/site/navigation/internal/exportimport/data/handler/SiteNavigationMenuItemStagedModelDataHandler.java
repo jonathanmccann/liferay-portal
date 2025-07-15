@@ -83,22 +83,37 @@ public class SiteNavigationMenuItemStagedModelDataHandler
 		}
 
 		if (siteNavigationMenuItem.getParentSiteNavigationMenuItemId() > 0) {
-			SiteNavigationMenuItem parentSiteNavigationMenuItem =
+			SiteNavigationMenuItem originalParentSiteNavigationMenuItem =
 				_siteNavigationMenuItemLocalService.getSiteNavigationMenuItem(
 					siteNavigationMenuItem.getParentSiteNavigationMenuItemId());
 
-			StagedModelDataHandlerUtil.exportReferenceStagedModel(// <--- Is there a way to tell if this succeeded or not?
-				portletDataContext, siteNavigationMenuItem,
-				parentSiteNavigationMenuItem,
-				PortletDataContext.REFERENCE_TYPE_PARENT);
+			SiteNavigationMenuItem parentSiteNavigationMenuItem = originalParentSiteNavigationMenuItem;
 
-			/*
-			if (parentNotExported) {
-				Remove current element from portletDataContext
+			while (parentSiteNavigationMenuItem != null) {
+				siteNavigationMenuItemType =
+					_siteNavigationMenuItemTypeRegistry.getSiteNavigationMenuItemType(
+						parentSiteNavigationMenuItem.getType());
 
-				return early
+				if (!siteNavigationMenuItemType.exportData(
+						portletDataContext, siteNavigationMenuItemElement,
+						parentSiteNavigationMenuItem)) {
+
+					Element parentElement = siteNavigationMenuItemElement.getParent();
+
+					parentElement.remove(siteNavigationMenuItemElement);
+
+					return;
+				}
+
+				parentSiteNavigationMenuItem =
+					_siteNavigationMenuItemLocalService.fetchSiteNavigationMenuItem(
+						parentSiteNavigationMenuItem.getParentSiteNavigationMenuItemId());
 			}
-			*/
+
+			StagedModelDataHandlerUtil.exportReferenceStagedModel(
+				portletDataContext, siteNavigationMenuItem,
+				originalParentSiteNavigationMenuItem,
+				PortletDataContext.REFERENCE_TYPE_PARENT);
 		}
 
 		portletDataContext.addClassedModel(
