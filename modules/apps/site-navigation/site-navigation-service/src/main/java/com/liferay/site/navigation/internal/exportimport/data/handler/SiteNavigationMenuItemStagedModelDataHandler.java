@@ -87,10 +87,18 @@ public class SiteNavigationMenuItemStagedModelDataHandler
 				_siteNavigationMenuItemLocalService.getSiteNavigationMenuItem(
 					siteNavigationMenuItem.getParentSiteNavigationMenuItemId());
 
-			StagedModelDataHandlerUtil.exportReferenceStagedModel(
+			StagedModelDataHandlerUtil.exportReferenceStagedModel(// <--- Is there a way to tell if this succeeded or not?
 				portletDataContext, siteNavigationMenuItem,
 				parentSiteNavigationMenuItem,
 				PortletDataContext.REFERENCE_TYPE_PARENT);
+
+			/*
+			if (parentNotExported) {
+				Remove current element from portletDataContext
+
+				return early
+			}
+			*/
 		}
 
 		portletDataContext.addClassedModel(
