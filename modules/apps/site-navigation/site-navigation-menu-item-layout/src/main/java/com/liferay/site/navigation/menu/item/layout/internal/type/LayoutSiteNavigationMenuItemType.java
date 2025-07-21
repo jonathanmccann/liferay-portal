@@ -114,11 +114,11 @@ public class LayoutSiteNavigationMenuItemType
 			return false;
 		}
 
-		if (!ArrayUtil.contains(
+		/*if (!ArrayUtil.contains(
 				portletDataContext.getLayoutIds(), layout.getLayoutId())) {
 
 			return false;
-		}
+		}*/
 
 		LayoutRevision layoutRevision = _layoutStaging.getLayoutRevision(
 			layout);

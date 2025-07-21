@@ -65,9 +65,9 @@ public class SiteNavigationMenuItemStagedModelDataHandler
 				portletDataContext, siteNavigationMenuItemElement,
 				siteNavigationMenuItem)) {
 
-			Element parentElement = siteNavigationMenuItemElement.getParent();
+			//Element parentElement = siteNavigationMenuItemElement.getParent();
 
-			parentElement.remove(siteNavigationMenuItemElement);
+			//parentElement.remove(siteNavigationMenuItemElement);
 
 			return;
 		}
