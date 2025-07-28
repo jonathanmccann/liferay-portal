@@ -66,14 +66,18 @@ public class SiteNavigationMenuItemExternalReferenceCodeUpgradeProcess
 				ClassedModel classedModel = siteNavigationMenuItemType.getModel(
 					typeSettingsUnicodeProperties);
 
-				if (classedModel instanceof ExternalReferenceCodeModel) {
-					ExternalReferenceCodeModel externalReferenceCodeModel =
-						(ExternalReferenceCodeModel)classedModel;
+				if ((classedModel == null) ||
+					!(classedModel instanceof ExternalReferenceCodeModel)) {
 
-					typeSettingsUnicodeProperties.setProperty(
-						"externalReferenceCode",
-						externalReferenceCodeModel.getExternalReferenceCode());
+					continue;
 				}
+
+				ExternalReferenceCodeModel externalReferenceCodeModel =
+					(ExternalReferenceCodeModel)classedModel;
+
+				typeSettingsUnicodeProperties.setProperty(
+					"externalReferenceCode",
+					externalReferenceCodeModel.getExternalReferenceCode());
 
 				preparedStatement2.setString(
 					1, typeSettingsUnicodeProperties.toString());
