@@ -6,8 +6,8 @@
 package com.liferay.site.navigation.internal.upgrade.v3_0_0;
 
 import com.liferay.portal.kernel.dao.jdbc.AutoBatchPreparedStatementUtil;
+import com.liferay.portal.kernel.model.ClassedModel;
 import com.liferay.portal.kernel.model.ExternalReferenceCodeModel;
-import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.upgrade.UpgradeProcess;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
@@ -63,12 +63,12 @@ public class SiteNavigationMenuItemExternalReferenceCodeUpgradeProcess
 					_siteNavigationMenuItemTypeRegistry.
 						getSiteNavigationMenuItemType(navigationMenuItemType);
 
-				PersistedModel model = siteNavigationMenuItemType.getModel(
+				ClassedModel classedModel = siteNavigationMenuItemType.getModel(
 					typeSettingsUnicodeProperties);
 
-				if (model instanceof ExternalReferenceCodeModel) {
+				if (classedModel instanceof ExternalReferenceCodeModel) {
 					ExternalReferenceCodeModel externalReferenceCodeModel =
-						(ExternalReferenceCodeModel)model;
+						(ExternalReferenceCodeModel)classedModel;
 
 					typeSettingsUnicodeProperties.setProperty(
 						"externalReferenceCode",

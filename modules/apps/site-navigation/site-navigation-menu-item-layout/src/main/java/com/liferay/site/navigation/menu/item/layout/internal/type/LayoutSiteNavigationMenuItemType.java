@@ -19,12 +19,12 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.ClassedModel;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.LayoutRevision;
 import com.liferay.portal.kernel.model.LayoutType;
-import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Field;
@@ -197,7 +197,7 @@ public class LayoutSiteNavigationMenuItemType
 	}
 
 	@Override
-	public PersistedModel getModel(
+	public ClassedModel getModel(
 		UnicodeProperties typeSettingsUnicodeProperties) {
 
 		return _layoutLocalService.fetchLayoutByUuidAndGroupId(
