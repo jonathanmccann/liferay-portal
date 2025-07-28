@@ -24,6 +24,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutFriendlyURL;
 import com.liferay.portal.kernel.model.LayoutRevision;
 import com.liferay.portal.kernel.model.LayoutType;
+import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Field;
@@ -193,6 +194,18 @@ public class LayoutSiteNavigationMenuItemType
 	@Override
 	public Layout getLayout(SiteNavigationMenuItem siteNavigationMenuItem) {
 		return _fetchLayout(siteNavigationMenuItem);
+	}
+
+	@Override
+	public PersistedModel getModel(
+		UnicodeProperties typeSettingsUnicodeProperties) {
+
+		return _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			typeSettingsUnicodeProperties.getProperty("layoutUuid"),
+			GetterUtil.getLong(
+				typeSettingsUnicodeProperties.getProperty("groupId")),
+			GetterUtil.getBoolean(
+				typeSettingsUnicodeProperties.getProperty("privateLayout")));
 	}
 
 	@Override

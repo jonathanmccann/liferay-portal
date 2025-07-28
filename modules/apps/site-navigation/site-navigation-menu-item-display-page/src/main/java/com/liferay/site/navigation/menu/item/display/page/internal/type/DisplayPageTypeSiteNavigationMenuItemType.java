@@ -7,6 +7,7 @@ package com.liferay.site.navigation.menu.item.display.page.internal.type;
 
 import com.liferay.asset.display.page.portlet.AssetDisplayPageFriendlyURLProvider;
 import com.liferay.asset.display.page.util.AssetDisplayPageUtil;
+import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.exportimport.kernel.lar.PortletDataContext;
 import com.liferay.frontend.taglib.servlet.taglib.util.JSPRenderer;
 import com.liferay.info.item.provider.InfoItemPermissionProvider;
@@ -24,11 +25,14 @@ import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.ClassedModel;
+import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
+import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
+import com.liferay.portal.kernel.service.PersistedModelLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
@@ -40,6 +44,7 @@ import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.xml.Element;
+import com.liferay.portal.service.PersistedModelLocalServiceRegistryUtil;
 import com.liferay.site.navigation.menu.item.display.page.internal.display.context.DisplayPageTypeSiteNavigationMenuTypeDisplayContext;
 import com.liferay.site.navigation.model.SiteNavigationMenuItem;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
@@ -193,6 +198,32 @@ public class DisplayPageTypeSiteNavigationMenuItemType
 	@Override
 	public String getLabel(Locale locale) {
 		return _displayPageTypeContext.getLabel(locale);
+	}
+
+	@Override
+	public PersistedModel getModel(
+			UnicodeProperties typeSettingsUnicodeProperties)
+		throws PortalException {
+
+		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
+			_displayPageTypeContext.getLayoutDisplayPageObjectProvider(
+				GetterUtil.getLong(
+					typeSettingsUnicodeProperties.get("classPK")));
+
+		String className = typeSettingsUnicodeProperties.get("className");
+
+		if (className.equals(FileEntry.class.getName())) {
+			PersistedModelLocalService persistedModelLocalService =
+				PersistedModelLocalServiceRegistryUtil.
+					getPersistedModelLocalService(DLFileEntry.class.getName());
+
+			return persistedModelLocalService.getPersistedModel(
+				GetterUtil.getLong(
+					typeSettingsUnicodeProperties.getProperty("classPK")));
+		}
+
+		return (PersistedModel)
+			layoutDisplayPageObjectProvider.getDisplayObject();
 	}
 
 	@Override

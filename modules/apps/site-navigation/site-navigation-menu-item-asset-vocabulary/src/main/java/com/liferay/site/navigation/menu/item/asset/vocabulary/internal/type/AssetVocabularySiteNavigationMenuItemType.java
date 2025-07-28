@@ -26,6 +26,7 @@ import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
+import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.portlet.RequestBackedPortletURLFactoryUtil;
 import com.liferay.portal.kernel.portlet.url.builder.PortletURLBuilder;
 import com.liferay.portal.kernel.search.Field;
@@ -202,6 +203,17 @@ public class AssetVocabularySiteNavigationMenuItemType
 	@Override
 	public String getLabel(Locale locale) {
 		return _language.get(locale, "vocabulary");
+	}
+
+	@Override
+	public PersistedModel getModel(
+		UnicodeProperties typeSettingsUnicodeProperties) {
+
+		return _assetVocabularyLocalService.
+			fetchAssetVocabularyByUuidAndGroupId(
+				typeSettingsUnicodeProperties.getProperty("uuid"),
+				GetterUtil.getLong(
+					typeSettingsUnicodeProperties.getProperty("groupId")));
 	}
 
 	@Override
