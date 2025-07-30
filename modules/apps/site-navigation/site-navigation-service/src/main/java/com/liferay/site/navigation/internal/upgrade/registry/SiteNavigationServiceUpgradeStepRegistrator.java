@@ -5,6 +5,8 @@
 
 package com.liferay.site.navigation.internal.upgrade.registry;
 
+import com.liferay.portal.kernel.module.framework.ModuleServiceLifecycle;
+import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.upgrade.BaseExternalReferenceCodeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.BaseSQLServerDatetimeUpgradeProcess;
 import com.liferay.portal.kernel.upgrade.CTModelUpgradeProcess;
@@ -14,7 +16,10 @@ import com.liferay.site.navigation.internal.upgrade.v2_0_0.util.SiteNavigationMe
 import com.liferay.site.navigation.internal.upgrade.v2_0_0.util.SiteNavigationMenuTable;
 import com.liferay.site.navigation.internal.upgrade.v2_3_0.SiteNavigationMenuItemUpgradeProcess;
 import com.liferay.site.navigation.internal.upgrade.v3_0_0.SiteNavigationMenuItemExternalReferenceCodeUpgradeProcess;
+import com.liferay.site.navigation.service.SiteNavigationMenuItemLocalService;
+import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
 import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
+
 
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -83,14 +88,35 @@ public class SiteNavigationServiceUpgradeStepRegistrator
 
 			});
 
+//		SiteNavigationMenuItemType siteNavigationMenuItemType =
+//			 _siteNavigationMenuItemType;
+
 		registry.register(
 			"2.5.0", "3.0.0",
 			new SiteNavigationMenuItemExternalReferenceCodeUpgradeProcess(
-				_siteNavigationMenuItemTypeRegistry));
+				_siteNavigationMenuItemTypeRegistry
+//				, siteNavigationMenuItemType
+			));
 	}
+
+	@Reference(target = ModuleServiceLifecycle.PORTAL_INITIALIZED)
+	private ModuleServiceLifecycle _moduleServiceLifecycle;
 
 	@Reference
 	private SiteNavigationMenuItemTypeRegistry
 		_siteNavigationMenuItemTypeRegistry;
+
+//	@Reference(
+//		target = "(site.navigation.menu.item.type=" + SiteNavigationMenuItemTypeConstants.LAYOUT + ")"
+//	)
+//	private SiteNavigationMenuItemType _siteNavigationMenuItemType;
+
+//	@Reference
+//	private LayoutLocalService _layoutLocalService;
+//
+//	@Reference
+//	private SiteNavigationMenuItemLocalService
+//		_siteNavigationMenuItemLocalService;
+
 
 }
