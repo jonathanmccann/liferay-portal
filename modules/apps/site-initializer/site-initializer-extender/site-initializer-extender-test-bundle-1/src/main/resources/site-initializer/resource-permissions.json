@@ -6,6 +6,17 @@
 			"VIEW"
 		],
 		"primKey": "0",
+		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:TestCustomObjectDefinition$]",
+		"roleName": "Test Role 2",
+		"scope": 1
+	},
+	{
+		"actionIds": [
+			"DELETE",
+			"UPDATE",
+			"VIEW"
+		],
+		"primKey": "0",
 		"resourceName": "[$OBJECT_DEFINITION_CLASS_NAME:TestObjectDefinition3$]",
 		"roleName": "Test Role 2",
 		"scope": 1
