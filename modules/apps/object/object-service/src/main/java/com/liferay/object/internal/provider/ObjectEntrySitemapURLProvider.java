@@ -19,6 +19,7 @@ import com.liferay.portal.kernel.language.Language;
 import com.liferay.portal.kernel.model.GroupConstants;
 import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
+import com.liferay.portal.kernel.service.ClassNameLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
@@ -64,57 +65,57 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 		Layout layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
 			layoutUuid, layoutSet.getGroupId(), layoutSet.isPrivateLayout());
 
+		if (layout == null) {
+			return;
+		}
+
 		ObjectDefinition objectDefinition =
 			_getObjectDefinitionFromLayoutPageTemplateEntry(
 				themeDisplay.getCompanyId(), layout);
 
-		if ((layout == null) || !layout.isTypeAssetDisplay() ||
+		if (!layout.isTypeAssetDisplay() ||
 			_sitemapURLProviderHelper.isExcludeLayoutFromSitemap(layout) ||
 			!_isInclude(themeDisplay.getCompanyId(), objectDefinition)) {
 
 			return;
 		}
 
-		List<ObjectEntry> objectEntries = _getApprovedObjectEntries(
-			layoutSet.getGroupId(), objectDefinition);
-
-		if (objectEntries.isEmpty()) {
-			return;
-		}
-
-		Set<Locale> objectDefinitionAvailableLocales = _getAvailableLocales(
-			objectDefinition,
-			_language.getAvailableLocales(themeDisplay.getScopeGroupId()));
-
-		UnicodeProperties typeSettingsUnicodeProperties =
-			layout.getTypeSettingsProperties();
-
-		String urlSeparator = StringUtil.quote(
-			objectDefinition.getFriendlyURLSeparator(), CharPool.SLASH);
-
-		for (ObjectEntry objectEntry : objectEntries) {
-			String friendlyURL = _getFriendlyURL(
-				objectDefinition, objectEntry, themeDisplay.getLanguageId());
-
-			String canonicalURL = _portal.getCanonicalURL(
-				urlSeparator + friendlyURL, themeDisplay, layout);
-
-			Map<Locale, String> alternateURLs = _portal.getAlternateURLs(
-				canonicalURL, themeDisplay, layout,
-				objectDefinitionAvailableLocales);
-
-			for (String alternateURL : alternateURLs.values()) {
-				_sitemapManager.addURLElement(
-					element, alternateURL, typeSettingsUnicodeProperties,
-					objectEntry.getModifiedDate(), canonicalURL, alternateURLs);
-			}
-		}
+		_visitObjectEntries(
+			element, layout, layoutSet, objectDefinition, themeDisplay);
 	}
 
 	@Override
 	public void visitLayoutSet(
 			Element element, LayoutSet layoutSet, ThemeDisplay themeDisplay)
 		throws PortalException {
+
+		Long[] objectDefinitionIds =
+			_sitemapConfigurationManager.getCompanySitemapObjectDefinitionIds(
+				themeDisplay.getCompanyId());
+
+		for (long objectDefinitionId : objectDefinitionIds) {
+			ObjectDefinition objectDefinition =
+				_objectDefinitionLocalService.fetchObjectDefinition(
+					objectDefinitionId);
+
+			LayoutPageTemplateEntry layoutPageTemplateEntry =
+				_layoutPageTemplateEntryLocalService.
+					fetchDefaultLayoutPageTemplateEntry(
+						layoutSet.getGroupId(),
+						_classNameLocalService.getClassNameId(
+							objectDefinition.getClassName()),
+						0);
+
+			if (layoutPageTemplateEntry == null) {
+				return;
+			}
+
+			Layout layout = _layoutLocalService.fetchLayout(
+				layoutPageTemplateEntry.getPlid());
+
+			_visitObjectEntries(
+				element, layout, layoutSet, objectDefinition, themeDisplay);
+		}
 	}
 
 	private List<ObjectEntry> _getApprovedObjectEntries(
@@ -184,7 +185,9 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 			_layoutPageTemplateEntryLocalService.
 				fetchLayoutPageTemplateEntryByPlid(layout.getPlid());
 
-		if (layoutPageTemplateEntry == null) {
+		if ((layoutPageTemplateEntry == null) ||
+			!layoutPageTemplateEntry.isDefaultTemplate()) {
+
 			return null;
 		}
 
@@ -205,6 +208,50 @@ public class ObjectEntrySitemapURLProvider implements SitemapURLProvider {
 			companyId,
 			String.valueOf(objectDefinition.getObjectDefinitionId()));
 	}
+
+	private void _visitObjectEntries(
+			Element element, Layout layout, LayoutSet layoutSet,
+			ObjectDefinition objectDefinition, ThemeDisplay themeDisplay)
+		throws PortalException {
+
+		List<ObjectEntry> objectEntries = _getApprovedObjectEntries(
+			layoutSet.getGroupId(), objectDefinition);
+
+		if (objectEntries.isEmpty()) {
+			return;
+		}
+
+		Set<Locale> objectDefinitionAvailableLocales = _getAvailableLocales(
+			objectDefinition,
+			_language.getAvailableLocales(themeDisplay.getScopeGroupId()));
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			layout.getTypeSettingsProperties();
+
+		String urlSeparator = StringUtil.quote(
+			objectDefinition.getFriendlyURLSeparator(), CharPool.SLASH);
+
+		for (ObjectEntry objectEntry : objectEntries) {
+			String friendlyURL = _getFriendlyURL(
+				objectDefinition, objectEntry, themeDisplay.getLanguageId());
+
+			String canonicalURL = _portal.getCanonicalURL(
+				urlSeparator + friendlyURL, themeDisplay, layout);
+
+			Map<Locale, String> alternateURLs = _portal.getAlternateURLs(
+				canonicalURL, themeDisplay, layout,
+				objectDefinitionAvailableLocales);
+
+			for (String alternateURL : alternateURLs.values()) {
+				_sitemapManager.addURLElement(
+					element, alternateURL, typeSettingsUnicodeProperties,
+					objectEntry.getModifiedDate(), canonicalURL, alternateURLs);
+			}
+		}
+	}
+
+	@Reference
+	private ClassNameLocalService _classNameLocalService;
 
 	@Reference
 	private Language _language;
