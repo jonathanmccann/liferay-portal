@@ -121,6 +121,27 @@ paths:
                     application/xml:
                         schema:
                             $ref: "#/components/schemas/Site"
+            responses:
+                200:
+                    content:
+                        application/json:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                        application/xml:
+                            schema:
+                                $ref: "#/components/schemas/Site"
+                    description:
+                        default response
+            # @review
+            tags: ["Site"]
+
+    /sites/files:
+        post:
+            description:
+                Adds a new site based on a multipart/form-data
+            operationId: postSiteFile
+            requestBody:
+                content:
                     multipart/form-data:
                         schema:
                             properties:
