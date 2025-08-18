@@ -289,10 +289,7 @@ public abstract class BaseSiteResourceImpl
 	 *
 	 * curl -X 'POST' 'http://localhost:8080/o/headless-site/v1.0/sites' -d $'{"externalReferenceCode": ___, "membershipType": ___, "name": ___, "parentSiteKey": ___, "templateKey": ___, "templateType": ___}' --header 'Content-Type: application/json' -u 'test@liferay.com:test'
 	 */
-	@io.swagger.v3.oas.annotations.Operation(
-		description = "Adds a new site",
-		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = Site.class)), @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/xml", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = Site.class)), @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostSiteRequestBody.class))})
-	)
+	@io.swagger.v3.oas.annotations.Operation(description = "Adds a new site")
 	@io.swagger.v3.oas.annotations.tags.Tags(
 		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
 	)
@@ -302,27 +299,6 @@ public abstract class BaseSiteResourceImpl
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Site postSite(Site site) throws Exception {
-		return new Site();
-	}
-
-	/**
-	 * Invoke this method with the command line:
-	 *
-	 * curl -X 'POST' 'http://localhost:8080/o/headless-site/v1.0/sites'  -u 'test@liferay.com:test'
-	 */
-	@io.swagger.v3.oas.annotations.Operation(
-		description = "Adds a new site",
-		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = {@io.swagger.v3.oas.annotations.media.Content(mediaType = "application/json", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = Site.class)), @io.swagger.v3.oas.annotations.media.Content(mediaType = "application/xml", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = Site.class)), @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostSiteRequestBody.class))})
-	)
-	@io.swagger.v3.oas.annotations.tags.Tags(
-		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
-	)
-	@jakarta.ws.rs.Consumes("multipart/form-data")
-	@jakarta.ws.rs.Path("/sites")
-	@jakarta.ws.rs.POST
-	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
-	@Override
-	public Site postSite(MultipartBody multipartBody) throws Exception {
 		return new Site();
 	}
 
@@ -368,6 +344,27 @@ public abstract class BaseSiteResourceImpl
 			vulcanBatchEngineImportTaskResource.postImportTask(
 				Site.class.getName(), callbackURL, null, object)
 		).build();
+	}
+
+	/**
+	 * Invoke this method with the command line:
+	 *
+	 * curl -X 'POST' 'http://localhost:8080/o/headless-site/v1.0/sites/files'  -u 'test@liferay.com:test'
+	 */
+	@io.swagger.v3.oas.annotations.Operation(
+		description = "Adds a new site based on a multipart/form-data",
+		requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @io.swagger.v3.oas.annotations.media.Content(mediaType = "multipart/form-data", schema = @io.swagger.v3.oas.annotations.media.Schema(implementation = PostSiteFileRequestBody.class)))
+	)
+	@io.swagger.v3.oas.annotations.tags.Tags(
+		value = {@io.swagger.v3.oas.annotations.tags.Tag(name = "Site")}
+	)
+	@jakarta.ws.rs.Consumes("multipart/form-data")
+	@jakarta.ws.rs.Path("/sites/files")
+	@jakarta.ws.rs.POST
+	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
+	@Override
+	public Site postSiteFile(MultipartBody multipartBody) throws Exception {
+		return new Site();
 	}
 
 	/**
@@ -487,7 +484,7 @@ public abstract class BaseSiteResourceImpl
 			"createStrategy", "INSERT");
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "INSERT")) {
-			siteUnsafeFunction = site -> postSite((MultipartBody)null);
+			siteUnsafeFunction = site -> postSite(site);
 		}
 
 		if (StringUtil.equalsIgnoreCase(createStrategy, "UPSERT")) {
@@ -951,7 +948,7 @@ public abstract class BaseSiteResourceImpl
 	private static final com.liferay.portal.kernel.log.Log _log =
 		LogFactoryUtil.getLog(BaseSiteResourceImpl.class);
 
-	private class PostSiteRequestBody {
+	private class PostSiteFileRequestBody {
 
 		@io.swagger.v3.oas.annotations.media.Schema(
 			description = "File", format = "binary", type = "string"

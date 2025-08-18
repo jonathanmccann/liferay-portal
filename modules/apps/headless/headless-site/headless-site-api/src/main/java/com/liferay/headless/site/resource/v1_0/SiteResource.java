@@ -67,10 +67,10 @@ public interface SiteResource {
 
 	public Site postSite(Site site) throws Exception;
 
-	public Site postSite(MultipartBody multipartBody) throws Exception;
-
 	public Response postSiteBatch(String callbackURL, Object object)
 		throws Exception;
+
+	public Site postSiteFile(MultipartBody multipartBody) throws Exception;
 
 	public Response postSitesPageExportBatch(
 			String search, String callbackURL, String contentType,
