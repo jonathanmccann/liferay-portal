@@ -168,7 +168,7 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 	}
 
 	@Override
-	public Site postSite(MultipartBody multipartBody) throws Exception {
+	public Site postSiteFile(MultipartBody multipartBody) throws Exception {
 		Site site = postSite(
 			multipartBody.getValueAsInstance("site", Site.class));
 
