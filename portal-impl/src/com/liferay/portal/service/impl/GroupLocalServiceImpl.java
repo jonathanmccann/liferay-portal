@@ -61,6 +61,7 @@ import com.liferay.portal.kernel.exception.RequiredGroupException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.language.LanguageUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.messaging.DestinationNames;
@@ -3987,12 +3988,14 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 				typeSettings
 			).build();
 
+		boolean enabled = LazyReferencingThreadLocal.isEnabled();
+
 		boolean inheritLocales = GetterUtil.getBoolean(
 			typeSettingsUnicodeProperties.getProperty(
 				GroupConstants.TYPE_SETTINGS_KEY_INHERIT_LOCALES),
-			true);
+			enabled);
 
-		if (inheritLocales) {
+		if (inheritLocales && !enabled) {
 			typeSettingsUnicodeProperties.setProperty(
 				PropsKeys.LOCALES,
 				StringUtil.merge(
@@ -4017,9 +4020,11 @@ public class GroupLocalServiceImpl extends GroupLocalServiceBaseImpl {
 					"languageId",
 					LocaleUtil.toLanguageId(LocaleUtil.getDefault()));
 
-			validateLanguageIds(
-				inheritLocales, companyGroup.getGroupId(), defaultLanguageId,
-				newLanguageIds);
+			if (enabled) {
+				validateLanguageIds(
+					inheritLocales, companyGroup.getGroupId(),
+					defaultLanguageId, newLanguageIds);
+			}
 
 			if (!Objects.equals(
 					group.getDefaultLanguageId(), defaultLanguageId)) {

@@ -14,6 +14,7 @@ import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -35,9 +36,12 @@ import com.liferay.portal.kernel.servlet.DummyHttpServletResponse;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.FileUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.LinkedHashMapBuilder;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
+import com.liferay.portal.kernel.util.UnicodeProperties;
+import com.liferay.portal.kernel.util.UnicodePropertiesBuilder;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.portal.kernel.util.comparator.GroupNameComparator;
@@ -58,6 +62,7 @@ import java.io.File;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
@@ -138,32 +143,46 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 	}
 
 	@Override
-	public Page<Site> getSitesPage(String search, Pagination pagination)
+	public Page<Site> getSitesPage(
+			Boolean active, String search, Pagination pagination)
 		throws Exception {
-
-		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
-			throw new UnsupportedOperationException();
-		}
 
 		long[] classNameIds = {
 			_portal.getClassNameId(Company.class.getName()),
 			_portal.getClassNameId(Group.class.getName())
 		};
+
 		LinkedHashMap<String, Object> params =
 			LinkedHashMapBuilder.<String, Object>put(
-				"active", true
-			).put(
 				"site", true
+			).put(
+				"active",
+				() -> {
+					if (active != null) {
+						return GetterUtil.getBoolean(active);
+					}
+
+					return null;
+				}
 			).build();
 
 		return Page.of(
-			transform(
-				_groupService.search(
-					contextCompany.getCompanyId(), classNameIds, search, null,
-					params, true, pagination.getStartPosition(),
-					pagination.getEndPosition(), new GroupNameComparator()),
-				group -> _toSite(group)),
-			pagination,
+			HashMapBuilder.put(
+				"create",
+				addAction(
+					ActionKeys.UPDATE, "postSite", Group.class.getName(), null)
+			).put(
+				"createBatch",
+				addAction(
+					ActionKeys.UPDATE, "postSiteBatch", Group.class.getName(),
+					null)
+			).put(
+				"deleteBatch",
+				addAction(
+					ActionKeys.DELETE, "deleteSiteBatch", Group.class.getName(),
+					null)
+			).build(),
+			_getSitesList(search, pagination, params), pagination,
 			_groupService.searchCount(
 				contextCompany.getCompanyId(), classNameIds, search, params));
 	}
@@ -365,6 +384,25 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			ServiceContext serviceContext)
 		throws Exception {
 
+		boolean active = true;
+
+		if (Validator.isNotNull(site.getActive())) {
+			active = site.getActive();
+		}
+
+		boolean manualMembership = true;
+
+		if (Validator.isNotNull(site.getManualMembership())) {
+			manualMembership = site.getManualMembership();
+		}
+
+		int membershipRestriction =
+			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION;
+
+		if (Validator.isNotNull(site.getMembershipRestriction())) {
+			membershipRestriction = site.getMembershipRestriction();
+		}
+
 		long parentGroupId = GroupConstants.DEFAULT_PARENT_GROUP_ID;
 
 		if (Validator.isNotNull(site.getParentSiteKey())) {
@@ -393,11 +431,30 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			}
 		}
 
-		Group group = _groupService.addOrUpdateGroup(
+		Group group = _groupService.fetchGroupByExternalReferenceCode(
+			externalReferenceCode, serviceContext.getCompanyId());
+
+		boolean hasGroup = true;
+
+		if (group == null) {
+			hasGroup = false;
+		}
+
+		group = _groupService.addOrUpdateGroup(
 			externalReferenceCode, parentGroupId,
-			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, null, type, true,
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION, null, true, false,
-			true, serviceContext);
+			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, null, type,
+			manualMembership, membershipRestriction, site.getFriendlyUrlPath(),
+			true, false, active, serviceContext);
+
+		if (Validator.isNotNull(site.getTypeSettings())) {
+			UnicodeProperties unicodeProperties =
+				UnicodePropertiesBuilder.putAll(
+					site.getTypeSettings()
+				).build();
+
+			group = _groupService.updateGroup(
+				group.getGroupId(), unicodeProperties.toString());
+		}
 
 		LiveUsers.joinGroup(
 			contextCompany.getCompanyId(), group.getGroupId(),
@@ -410,7 +467,7 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 				group, GetterUtil.getLongStrict(site.getTemplateKey()), 0L,
 				true, false);
 		}
-		else {
+		else if (!hasGroup) {
 			String siteInitializerKey = "blank-site-initializer";
 
 			if (Validator.isNotNull(site.getTemplateKey())) {
@@ -437,6 +494,24 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		_initThemeDisplay();
 
 		return serviceContext;
+	}
+
+	private List<Site> _getSitesList(
+			String search, Pagination pagination,
+			LinkedHashMap<String, Object> params)
+		throws Exception {
+
+		long[] classNameIds = {
+			_portal.getClassNameId(Company.class.getName()),
+			_portal.getClassNameId(Group.class.getName())
+		};
+
+		return transform(
+			_groupService.search(
+				contextCompany.getCompanyId(), classNameIds, search, null,
+				params, true, pagination.getStartPosition(),
+				pagination.getEndPosition(), new GroupNameComparator()),
+			group -> _toSite(group));
 	}
 
 	private void _initThemeDisplay() throws Exception {
@@ -472,11 +547,24 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 	private Site _toSite(Group group) {
 		return new Site() {
 			{
+				if (!LazyReferencingThreadLocal.isEnabled()) {
+					setId(group::getGroupId);
+				}
+
+				setActive(group::getActive);
 				setExternalReferenceCode(group::getExternalReferenceCode);
 				setFriendlyUrlPath(group::getFriendlyURL);
-				setId(group::getGroupId);
 				setKey(group::getGroupKey);
+				setManualMembership(group::getManualMembership);
+				setMembershipRestriction(group::getMembershipRestriction);
+				setMembershipType(
+					() -> MembershipType.create(
+						GroupConstants.getTypeLabel(group.getType())));
 				setName(() -> group.getName(LocaleUtil.getDefault()));
+				setTypeSettings(
+					() -> UnicodePropertiesBuilder.fastLoad(
+						group.getTypeSettings()
+					).build());
 			}
 		};
 	}
