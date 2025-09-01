@@ -36,7 +36,6 @@ import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.test.log.LogCapture;
 import com.liferay.portal.test.log.LoggerTestUtil;
-import com.liferay.portal.test.rule.FeatureFlag;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.site.initializer.SiteInitializer;
 
@@ -154,7 +153,6 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		throws Exception {
 	}
 
-	@FeatureFlag("LPD-17564")
 	@Override
 	@Test
 	public void testGetSitesPage() throws Exception {
@@ -177,13 +175,6 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testGetSitesPageWithDepotEntry();
 		_testGetSitesPageWithSearch();
 		_testGetSitesPageWithoutAuthentication();
-	}
-
-	@FeatureFlag("LPD-17564")
-	@Override
-	@Test
-	public void testGetSitesPageWithPagination() throws Exception {
-		super.testGetSitesPageWithPagination();
 	}
 
 	@Override
