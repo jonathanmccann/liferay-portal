@@ -14,6 +14,7 @@ import com.liferay.headless.site.client.pagination.Page;
 import com.liferay.headless.site.client.pagination.Pagination;
 import com.liferay.headless.site.client.problem.Problem;
 import com.liferay.headless.site.client.resource.v1_0.SiteResource;
+import com.liferay.petra.function.UnsafeBiConsumer;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -159,8 +160,20 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	public void testGetSitesPage() throws Exception {
 		super.testGetSitesPage();
 
-		_testGetSitesPageWithActiveOrSiteGroups(false, true);
-		_testGetSitesPageWithActiveOrSiteGroups(true, false);
+		_testGetSitesPageWithActiveOrSiteGroups(
+			false, true,
+			(site, sitesPage) -> {
+				List<Site> items = (List<Site>)sitesPage.getItems();
+
+				Assert.assertTrue(items.contains(site));
+			});
+		_testGetSitesPageWithActiveOrSiteGroups(
+			true, false,
+			(site, sitesPage) -> {
+				List<Site> items = (List<Site>)sitesPage.getItems();
+
+				Assert.assertFalse(items.contains(site));
+			});
 		_testGetSitesPageWithDepotEntry();
 		_testGetSitesPageWithSearch();
 		_testGetSitesPageWithoutAuthentication();
@@ -290,13 +303,9 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 	}
 
 	private void _testGetSitesPageWithActiveOrSiteGroups(
-			boolean active, boolean site)
+			boolean active, boolean site,
+			UnsafeBiConsumer<Site, Page<Site>, Exception> unsafeBiConsumer)
 		throws Exception {
-
-		Page<Site> sitesPage = siteResource.getSitesPage(
-			null, Pagination.of(1, 100));
-
-		List<Site> originalItems = (List<Site>)sitesPage.getItems();
 
 		Site postSite = testGetSitesPage_addSite(randomSite());
 
@@ -307,16 +316,14 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 
 		_groupLocalService.updateGroup(group);
 
-		sitesPage = siteResource.getSitesPage(null, Pagination.of(1, 100));
-
-		List<Site> existingItems = (List<Site>)sitesPage.getItems();
-
-		Assert.assertEquals(originalItems, existingItems);
+		unsafeBiConsumer.accept(
+			postSite,
+			siteResource.getSitesPage(active, null, Pagination.of(1, 100)));
 	}
 
 	private void _testGetSitesPageWithDepotEntry() throws Exception {
 		Page<Site> sitesPage = siteResource.getSitesPage(
-			null, Pagination.of(1, 100));
+			true, null, Pagination.of(1, 100));
 
 		List<Site> originalItems = (List<Site>)sitesPage.getItems();
 
@@ -326,7 +333,8 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 			null, DepotConstants.TYPE_ASSET_LIBRARY,
 			ServiceContextTestUtil.getServiceContext());
 
-		sitesPage = siteResource.getSitesPage(null, Pagination.of(1, 100));
+		sitesPage = siteResource.getSitesPage(
+			true, null, Pagination.of(1, 100));
 
 		List<Site> existingItems = (List<Site>)sitesPage.getItems();
 
@@ -339,7 +347,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		SiteResource siteResource = builder.build();
 
 		try {
-			siteResource.getSitesPage(null, Pagination.of(1, 1));
+			siteResource.getSitesPage(true, null, Pagination.of(1, 1));
 
 			Assert.fail();
 		}
@@ -360,7 +368,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		Site postSite = _testPostSite_addSite(randomSite);
 
 		Page<Site> sitesPage = siteResource.getSitesPage(
-			name, Pagination.of(1, 10));
+			true, name, Pagination.of(1, 10));
 
 		List<Site> items = (List<Site>)sitesPage.getItems();
 
