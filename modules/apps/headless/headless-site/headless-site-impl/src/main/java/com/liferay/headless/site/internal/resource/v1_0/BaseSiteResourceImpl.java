@@ -188,6 +188,10 @@ public abstract class BaseSiteResourceImpl implements SiteResource {
 		value = {
 			@io.swagger.v3.oas.annotations.Parameter(
 				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
+				name = "active"
+			),
+			@io.swagger.v3.oas.annotations.Parameter(
+				in = io.swagger.v3.oas.annotations.enums.ParameterIn.QUERY,
 				name = "page"
 			),
 			@io.swagger.v3.oas.annotations.Parameter(
@@ -208,6 +212,9 @@ public abstract class BaseSiteResourceImpl implements SiteResource {
 	@jakarta.ws.rs.Produces({"application/json", "application/xml"})
 	@Override
 	public Page<Site> getSitesPage(
+			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
+			@jakarta.ws.rs.QueryParam("active")
+			Boolean active,
 			@io.swagger.v3.oas.annotations.Parameter(hidden = true)
 			@jakarta.ws.rs.QueryParam("search")
 			String search,

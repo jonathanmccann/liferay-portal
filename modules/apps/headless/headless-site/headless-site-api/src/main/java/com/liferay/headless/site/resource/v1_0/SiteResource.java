@@ -57,7 +57,8 @@ public interface SiteResource {
 			String externalReferenceCode)
 		throws Exception;
 
-	public Page<Site> getSitesPage(String search, Pagination pagination)
+	public Page<Site> getSitesPage(
+			Boolean active, String search, Pagination pagination)
 		throws Exception;
 
 	public Site postSite(Site site) throws Exception;
