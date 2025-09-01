@@ -137,7 +137,7 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 	}
 
 	@Override
-	public Page<Site> getSitesPage(String search, Pagination pagination)
+	public Page<Site> getSitesPage(Boolean active, String search, Pagination pagination)
 		throws Exception {
 
 		if (!FeatureFlagManagerUtil.isEnabled("LPD-17564")) {
@@ -150,7 +150,7 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		};
 		LinkedHashMap<String, Object> params =
 			LinkedHashMapBuilder.<String, Object>put(
-				"active", true
+				"active", GetterUtil.getBoolean(active, true)
 			).put(
 				"site", true
 			).build();
