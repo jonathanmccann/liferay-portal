@@ -13,6 +13,7 @@ import com.liferay.portal.events.ServicePreAction;
 import com.liferay.portal.events.ThemeServicePreAction;
 import com.liferay.portal.kernel.change.tracking.CTAware;
 import com.liferay.portal.kernel.exception.NoSuchGroupException;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Company;
@@ -60,11 +61,8 @@ import jakarta.ws.rs.core.Response;
 
 import java.io.File;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 import org.osgi.service.component.annotations.Component;
@@ -100,6 +98,13 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		}
 
 		_groupService.deleteGroup(group.getGroupId());
+	}
+
+	@Override
+	public Site getSite(Long siteId) {
+		Group group = _groupLocalService.fetchGroup(siteId);
+
+		return _toSite(group);
 	}
 
 	@Override
@@ -208,6 +213,31 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 
 		return putSiteByExternalReferenceCode(
 			site.getExternalReferenceCode(), multipartBody);
+	}
+
+	@Override
+	public Site putSite(Site site) throws Exception {
+		try {
+			if (Validator.isNull(site.getExternalReferenceCode())) {
+				throw new IllegalArgumentException(
+					"External Reference Code cannot be empty");
+			}
+
+			Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+				site.getExternalReferenceCode(), contextCompany.getCompanyId());
+
+			if (group == null) {
+				group = _addGroup(site.getExternalReferenceCode(), site);
+			}
+			else {
+				group = _updateGroup(group, site);
+			}
+
+			return _toSite(group);
+		}
+		catch (Throwable throwable) {
+			throw new Exception(throwable);
+		}
 	}
 
 	@Override
@@ -384,53 +414,6 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		boolean active = true;
-
-		if (Validator.isNotNull(site.getActive())) {
-			active = site.getActive();
-		}
-
-		boolean manualMembership = true;
-
-		if (Validator.isNotNull(site.getManualMembership())) {
-			manualMembership = site.getManualMembership();
-		}
-
-		int membershipRestriction =
-			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION;
-
-		if (Validator.isNotNull(site.getMembershipRestriction())) {
-			membershipRestriction = site.getMembershipRestriction();
-		}
-
-		long parentGroupId = GroupConstants.DEFAULT_PARENT_GROUP_ID;
-
-		if (Validator.isNotNull(site.getParentSiteKey())) {
-			Group parentGroup = _groupLocalService.getGroup(
-				contextCompany.getCompanyId(), site.getParentSiteKey());
-
-			parentGroupId = parentGroup.getGroupId();
-		}
-
-		Map<Locale, String> nameMap = new HashMap<>();
-
-		if (Validator.isNotNull(site.getName())) {
-			nameMap.put(LocaleUtil.getDefault(), site.getName());
-		}
-
-		int type = GroupConstants.TYPE_SITE_OPEN;
-
-		Site.MembershipType membershipType = site.getMembershipType();
-
-		if (membershipType != null) {
-			if (membershipType.equals(Site.MembershipType.PRIVATE)) {
-				type = GroupConstants.TYPE_SITE_PRIVATE;
-			}
-			else if (membershipType.equals(Site.MembershipType.RESTRICTED)) {
-				type = GroupConstants.TYPE_SITE_RESTRICTED;
-			}
-		}
-
 		Group group = _groupService.fetchGroupByExternalReferenceCode(
 			externalReferenceCode, serviceContext.getCompanyId());
 
@@ -441,10 +424,16 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		}
 
 		group = _groupService.addOrUpdateGroup(
-			externalReferenceCode, parentGroupId,
-			GroupConstants.DEFAULT_LIVE_GROUP_ID, nameMap, null, type,
-			manualMembership, membershipRestriction, site.getFriendlyUrlPath(),
-			true, false, active, serviceContext);
+			externalReferenceCode, _getParentGroupId(site.getParentSiteKey()),
+			GroupConstants.DEFAULT_LIVE_GROUP_ID,
+			HashMapBuilder.put(
+				LocaleUtil.getDefault(), site.getName()
+			).build(),
+			null, _getType(site.getMembershipType()),
+			_isManualMembership(site.getManualMembership()),
+			_getMembershipRestriction(site.getMembershipRestriction()),
+			site.getFriendlyUrlPath(), true, false, _isActive(site.getActive()),
+			serviceContext);
 
 		if (Validator.isNotNull(site.getTypeSettings())) {
 			UnicodeProperties unicodeProperties =
@@ -483,6 +472,27 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		return group;
 	}
 
+	private int _getMembershipRestriction(Integer membershipRestriction) {
+		if (membershipRestriction == null) {
+			return GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION;
+		}
+
+		return membershipRestriction;
+	}
+
+	private long _getParentGroupId(String parentSiteKey)
+		throws PortalException {
+
+		if (Validator.isNull(parentSiteKey)) {
+			return GroupConstants.DEFAULT_PARENT_GROUP_ID;
+		}
+
+		Group parentGroup = _groupLocalService.getGroup(
+			contextCompany.getCompanyId(), parentSiteKey);
+
+		return parentGroup.getGroupId();
+	}
+
 	private ServiceContext _getServiceContext(Group group) throws Exception {
 		ServiceContext serviceContext = new ServiceContext();
 
@@ -512,6 +522,19 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 				params, true, pagination.getStartPosition(),
 				pagination.getEndPosition(), new GroupNameComparator()),
 			group -> _toSite(group));
+	}
+
+	private int _getType(Site.MembershipType membershipType) {
+		if ((membershipType == null) ||
+			membershipType.equals(Site.MembershipType.OPEN)) {
+
+			return GroupConstants.TYPE_SITE_OPEN;
+		}
+		else if (membershipType.equals(Site.MembershipType.PRIVATE)) {
+			return GroupConstants.TYPE_SITE_PRIVATE;
+		}
+
+		return GroupConstants.TYPE_SITE_RESTRICTED;
 	}
 
 	private void _initThemeDisplay() throws Exception {
@@ -544,6 +567,22 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 		themeDisplay.setResponse(new DummyHttpServletResponse());
 	}
 
+	private boolean _isActive(Boolean active) {
+		if (active == null) {
+			return true;
+		}
+
+		return active;
+	}
+
+	private boolean _isManualMembership(Boolean manualMembership) {
+		if (manualMembership == null) {
+			return true;
+		}
+
+		return manualMembership;
+	}
+
 	private Site _toSite(Group group) {
 		return new Site() {
 			{
@@ -567,6 +606,50 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 					).build());
 			}
 		};
+	}
+
+	private Group _updateGroup(Group group, Site site) throws Exception {
+		ServiceContext serviceContext = ServiceContextFactory.getInstance(
+			contextHttpServletRequest);
+
+		ServiceContextThreadLocal.pushServiceContext(serviceContext);
+
+		try {
+			Group updatedGroup = _groupLocalService.updateGroup(
+				group.getGroupId(), _getParentGroupId(site.getParentSiteKey()),
+				HashMapBuilder.put(
+					LocaleUtil.getDefault(), site.getName()
+				).build(),
+				null, _getType(site.getMembershipType()),
+				_isManualMembership(site.getManualMembership()),
+				_getMembershipRestriction(site.getMembershipRestriction()),
+				site.getFriendlyUrlPath(), false, _isActive(site.getActive()),
+				serviceContext);
+
+			if (Validator.isNotNull(site.getTypeSettings())) {
+				UnicodeProperties unicodeProperties =
+					UnicodePropertiesBuilder.putAll(
+						site.getTypeSettings()
+					).build();
+
+				updatedGroup = _groupService.updateGroup(
+					updatedGroup.getGroupId(), unicodeProperties.toString());
+			}
+
+			LiveUsers.joinGroup(
+				contextCompany.getCompanyId(), updatedGroup.getGroupId(),
+				contextUser.getUserId());
+
+			return updatedGroup;
+		}
+		catch (Exception exception) {
+			PermissionCacheUtil.clearCache(contextUser.getUserId());
+
+			throw exception;
+		}
+		finally {
+			ServiceContextThreadLocal.popServiceContext();
+		}
 	}
 
 	@Reference
