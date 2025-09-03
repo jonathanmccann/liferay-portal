@@ -414,17 +414,8 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			ServiceContext serviceContext)
 		throws Exception {
 
-		Group group = _groupService.fetchGroupByExternalReferenceCode(
-			externalReferenceCode, serviceContext.getCompanyId());
-
-		boolean hasGroup = true;
-
-		if (group == null) {
-			hasGroup = false;
-		}
-
-		group = _groupService.addOrUpdateGroup(
-			externalReferenceCode, _getParentGroupId(site.getParentSiteKey()),
+		Group group = _groupService.addGroup(
+			_getParentGroupId(site.getParentSiteKey()),
 			GroupConstants.DEFAULT_LIVE_GROUP_ID,
 			HashMapBuilder.put(
 				LocaleUtil.getDefault(), site.getName()
@@ -434,6 +425,10 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 			_getMembershipRestriction(site.getMembershipRestriction()),
 			site.getFriendlyUrlPath(), true, false, _isActive(site.getActive()),
 			serviceContext);
+
+		if (Validator.isNotNull(externalReferenceCode)) {
+			group.setExternalReferenceCode(externalReferenceCode);
+		}
 
 		if (Validator.isNotNull(site.getTypeSettings())) {
 			UnicodeProperties unicodeProperties =
@@ -456,7 +451,7 @@ public class SiteResourceImpl extends BaseSiteResourceImpl {
 				group, GetterUtil.getLongStrict(site.getTemplateKey()), 0L,
 				true, false);
 		}
-		else if (!hasGroup) {
+		else {
 			String siteInitializerKey = "blank-site-initializer";
 
 			if (Validator.isNotNull(site.getTemplateKey())) {
