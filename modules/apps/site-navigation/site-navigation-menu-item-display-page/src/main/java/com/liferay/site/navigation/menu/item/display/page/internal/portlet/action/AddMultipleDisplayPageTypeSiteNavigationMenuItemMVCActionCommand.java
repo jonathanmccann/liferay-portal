@@ -224,6 +224,9 @@ public class AddMultipleDisplayPageTypeSiteNavigationMenuItemMVCActionCommand
 					"externalReferenceCode",
 					jsonObject.getString("externalReferenceCode")
 				).put(
+					"groupExternalReferenceCode",
+					jsonObject.getString("groupExternalReferenceCode")
+				).put(
 					"title", jsonObject.getString("title")
 				).put(
 					"type", jsonObject.getString("type")
