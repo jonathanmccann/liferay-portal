@@ -9,6 +9,9 @@
 
 <%
 Layout selLayout = (Layout)request.getAttribute(WebKeys.SEL_LAYOUT);
+
+Group group = selLayout.getGroup();
+
 SiteNavigationMenuItem siteNavigationMenuItem = (SiteNavigationMenuItem)request.getAttribute(SiteNavigationWebKeys.SITE_NAVIGATION_MENU_ITEM);
 boolean useCustomName = GetterUtil.getBoolean(request.getAttribute(SiteNavigationMenuItemTypeLayoutWebKeys.USE_CUSTOM_NAME));
 
@@ -21,7 +24,7 @@ String taglibOnChange = "Liferay.Util.toggleDisabled('#" + liferayPortletRespons
 
 <aui:input disabled="<%= !useCustomName %>" label="name" localized="<%= true %>" maxlength='<%= ModelHintsUtil.getMaxLength(SiteNavigationMenuItem.class.getName(), "name") %>' name="name" placeholder="name" required="<%= true %>" type="text" value='<%= SiteNavigationMenuItemUtil.getSiteNavigationMenuItemXML(siteNavigationMenuItem, "name") %>' />
 
-<aui:input id="groupId" name="TypeSettingsProperties--groupId--" required="<%= true %>" type="hidden" value="<%= (selLayout != null) ? selLayout.getGroupId() : StringPool.BLANK %>" />
+<aui:input id="groupExternalReferenceCode" name="TypeSettingsProperties--groupExternalReferenceCode--" required="<%= true %>" type="hidden" value="<%= (group != null) ? group.getExternalReferenceCode() : StringPool.BLANK %>" />
 
 <aui:input id="privateLayout" name="TypeSettingsProperties--privateLayout--" required="<%= true %>" type="hidden" value="<%= (selLayout != null) ? selLayout.isPrivateLayout() : StringPool.BLANK %>" />
 

@@ -213,6 +213,8 @@ public class DisplayPageTypeSiteNavigationMenuTypeDisplayContext {
 			).put(
 				"externalReferenceCode", getExternalReferenceCode()
 			).put(
+				"groupExternalReferenceCode", getGroupExternalReferenceCode()
+			).put(
 				"title", getTitle()
 			).put(
 				"type", getType()
@@ -279,6 +281,22 @@ public class DisplayPageTypeSiteNavigationMenuTypeDisplayContext {
 			"externalReferenceCode");
 
 		return _externalReferenceCode;
+	}
+
+	public String getGroupExternalReferenceCode() {
+		if (_groupExternalReferenceCode != null) {
+			return _groupExternalReferenceCode;
+		}
+
+		UnicodeProperties typeSettingsUnicodeProperties =
+			UnicodePropertiesBuilder.fastLoad(
+				_siteNavigationMenuItem.getTypeSettings()
+			).build();
+
+		_groupExternalReferenceCode = typeSettingsUnicodeProperties.get(
+			"groupExternalReferenceCode");
+
+		return _groupExternalReferenceCode;
 	}
 
 	public String getItemDetailsURL() {
@@ -427,6 +445,7 @@ public class DisplayPageTypeSiteNavigationMenuTypeDisplayContext {
 	private Long _classTypeId;
 	private final DisplayPageTypeContext _displayPageTypeContext;
 	private String _externalReferenceCode;
+	private String _groupExternalReferenceCode;
 	private final HttpServletRequest _httpServletRequest;
 	private final ItemSelector _itemSelector;
 	private LayoutDisplayPageObjectProvider<?> _layoutDisplayPageObjectProvider;

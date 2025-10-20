@@ -307,7 +307,12 @@ public class LayoutSiteNavigationMenuItemType
 		return UnicodePropertiesBuilder.put(
 			"externalReferenceCode", layout.getExternalReferenceCode()
 		).put(
-			"groupId", String.valueOf(layout.getGroupId())
+			"groupExternalReferenceCode",
+			() -> {
+				Group group = layout.getGroup();
+
+				return group.getExternalReferenceCode();
+			}
 		).put(
 			"layoutUuid", layout.getUuid()
 		).put(
