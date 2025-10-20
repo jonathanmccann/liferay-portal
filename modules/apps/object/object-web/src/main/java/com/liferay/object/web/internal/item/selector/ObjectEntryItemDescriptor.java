@@ -14,6 +14,7 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.service.GroupLocalService;
+import com.liferay.portal.kernel.service.GroupLocalServiceUtil;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.Portal;
@@ -85,6 +86,18 @@ public class ObjectEntryItemDescriptor
 			}
 		).put(
 			"externalReferenceCode", _objectEntry.getExternalReferenceCode()
+		).put(
+			"groupExternalReferenceCode",
+			() -> {
+				Group group = GroupLocalServiceUtil.fetchGroup(
+					_objectEntry.getGroupId());
+
+				if (group == null) {
+					return null;
+				}
+
+				return group.getExternalReferenceCode();
+			}
 		).put(
 			"scopeExternalReferenceCode",
 			() -> {

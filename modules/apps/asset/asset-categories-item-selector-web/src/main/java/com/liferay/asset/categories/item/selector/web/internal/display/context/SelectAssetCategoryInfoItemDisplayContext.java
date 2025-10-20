@@ -249,6 +249,14 @@ public class SelectAssetCategoryInfoItemDisplayContext {
 				"externalReferenceCode",
 				assetCategory.getExternalReferenceCode()
 			).put(
+				"groupExternalReferenceCode",
+				() -> {
+					Group group = GroupLocalServiceUtil.getGroup(
+						assetCategory.getGroupId());
+
+					return group.getExternalReferenceCode();
+				}
+			).put(
 				"icon", "categories"
 			).put(
 				"id", assetCategory.getCategoryId()
