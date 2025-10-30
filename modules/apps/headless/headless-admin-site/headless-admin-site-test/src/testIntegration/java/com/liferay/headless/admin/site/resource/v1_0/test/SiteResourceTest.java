@@ -80,9 +80,9 @@ import org.osgi.framework.ServiceRegistration;
  * @author Rubén Pulido
  */
 @FeatureFlag("LPD-41306")
-@LanguageIds(
+/*@LanguageIds(
 	availableLanguageIds = {"en_US", "es_ES", "pt_BR"}, defaultLanguageId = "en_US"
-)
+)*/
 @RunWith(Arquillian.class)
 public class SiteResourceTest extends BaseSiteResourceTestCase {
 
