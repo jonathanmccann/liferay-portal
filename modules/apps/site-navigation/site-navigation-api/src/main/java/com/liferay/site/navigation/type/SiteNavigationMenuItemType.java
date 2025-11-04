@@ -77,6 +77,13 @@ public interface SiteNavigationMenuItemType {
 		return unicodeProperties.getProperty("displayIcon", StringPool.BLANK);
 	}
 
+	public default long getGroupId(
+		long companyId, long defaultGroupId,
+		String groupExternalReferenceCode) {
+
+		return 0;
+	}
+
 	public default String getIcon() {
 		return "magic";
 	}
