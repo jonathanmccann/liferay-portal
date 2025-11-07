@@ -242,18 +242,10 @@ public class NavigationMenuResourceImpl extends BaseNavigationMenuResourceImpl {
 			NavigationMenu navigationMenu)
 		throws Exception {
 
-		int type = SiteNavigationConstants.TYPE_DEFAULT;
-
-		NavigationMenu.NavigationType navigationType =
-			navigationMenu.getNavigationType();
-
-		if (navigationType != null) {
-			type = navigationType.ordinal() + 1;
-		}
-
 		SiteNavigationMenu siteNavigationMenu =
 			_siteNavigationMenuService.addSiteNavigationMenu(
-				externalReferenceCode, groupId, navigationMenu.getName(), type,
+				externalReferenceCode, groupId, navigationMenu.getName(),
+				_getNavigationMenuType(navigationMenu),
 				_isAuto(navigationMenu.getAuto()),
 				ServiceContextBuilder.create(
 					groupId, contextHttpServletRequest, null
@@ -416,6 +408,19 @@ public class NavigationMenuResourceImpl extends BaseNavigationMenuResourceImpl {
 		}
 
 		return unicodeProperties.getProperty("title");
+	}
+
+	private int _getNavigationMenuType(NavigationMenu navigationMenu) {
+		int type = SiteNavigationConstants.TYPE_DEFAULT;
+
+		NavigationMenu.NavigationType navigationType =
+			navigationMenu.getNavigationType();
+
+		if (navigationType != null) {
+			type = navigationType.ordinal() + 1;
+		}
+
+		return type;
 	}
 
 	private Map<Long, List<SiteNavigationMenuItem>>
@@ -709,17 +714,9 @@ public class NavigationMenuResourceImpl extends BaseNavigationMenuResourceImpl {
 				_resourcePermissionLocalService, _roleLocalService)
 		).build();
 
-		int type = siteNavigationMenu.getType();
-
-		NavigationMenu.NavigationType navigationType =
-			navigationMenu.getNavigationType();
-
-		if (navigationType != null) {
-			type = navigationType.ordinal() + 1;
-		}
-
 		_siteNavigationMenuService.updateSiteNavigationMenu(
-			siteNavigationMenu.getSiteNavigationMenuId(), type,
+			siteNavigationMenu.getSiteNavigationMenuId(),
+			_getNavigationMenuType(navigationMenu),
 			_isAuto(navigationMenu.getAuto()), serviceContext);
 
 		return _toNavigationMenu(
