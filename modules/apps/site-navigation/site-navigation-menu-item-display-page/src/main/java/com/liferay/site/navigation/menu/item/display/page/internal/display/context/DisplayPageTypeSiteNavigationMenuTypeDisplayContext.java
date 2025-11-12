@@ -427,6 +427,10 @@ public class DisplayPageTypeSiteNavigationMenuTypeDisplayContext {
 		LayoutDisplayPageObjectProvider<?> layoutDisplayPageObjectProvider =
 			_getLayoutDisplayPageObjectProvider();
 
+		if (layoutDisplayPageObjectProvider == null) {
+			return JSONFactoryUtil.createJSONArray();
+		}
+
 		InfoItemFieldValues infoItemFieldValues =
 			layoutDisplayPageInfoItemFieldValuesProvider.getInfoItemFieldValues(
 				layoutDisplayPageObjectProvider.getDisplayObject());

@@ -403,9 +403,9 @@ public class LayoutSiteNavigationMenuItemType
 			portletDataContext, importedSiteNavigationMenuItem);
 
 		if (layout == null) {
-			if (ExportImportThreadLocal.isPortletImportInProcess()) {
-				throw new NoSuchLayoutException();
-			}
+//			if (ExportImportThreadLocal.isPortletImportInProcess()) {
+//				throw new NoSuchLayoutException();
+//			}
 
 			return false;
 		}
@@ -605,7 +605,8 @@ public class LayoutSiteNavigationMenuItemType
 
 		try {
 			long groupId = getGroupId(
-				siteNavigationMenuItem.getCompanyId(), 0,
+				siteNavigationMenuItem.getCompanyId(),
+				siteNavigationMenuItem.getGroupId(),
 				typeSettingsUnicodeProperties.getProperty(
 					"groupExternalReferenceCode"));
 

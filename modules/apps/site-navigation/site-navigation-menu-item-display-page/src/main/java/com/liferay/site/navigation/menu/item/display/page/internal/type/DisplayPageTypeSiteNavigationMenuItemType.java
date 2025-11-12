@@ -434,10 +434,21 @@ public class DisplayPageTypeSiteNavigationMenuItemType
 			element.attributeValue(
 				"display-page-group-external-reference-code"));
 
-		if ((externalReferenceCode == null) ||
-			(groupExternalReferenceCode == null)) {
-
+		if (externalReferenceCode == null) {
 			return false;
+		}
+
+		if(groupExternalReferenceCode != null) {
+			Group group = _groupLocalService.fetchGroupByExternalReferenceCode(
+				groupExternalReferenceCode,
+				importedSiteNavigationMenuItem.getCompanyId());
+
+			if (group == null) {
+				group = _groupLocalService.fetchGroup(
+					importedSiteNavigationMenuItem.getGroupId());
+
+				groupExternalReferenceCode = group.getExternalReferenceCode();
+			}
 		}
 
 		importedSiteNavigationMenuItem.setTypeSettings(
