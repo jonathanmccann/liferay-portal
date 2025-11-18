@@ -73,11 +73,11 @@ public class LayoutFriendlyURLSeparatorCompositeTest {
 		_urlSeparators.remove();
 	}
 
-	/*@Test
+	@Test
 	public void testGetLayoutFriendlyURLSeparatorComposite() throws Exception {
 		_assertGetLayoutFriendlyURLSeparatorComposite(
 			FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE);
-	}*/
+	}
 
 	@Test
 	public void testGetLayoutFriendlyURLSeparatorCompositeWithConfiguredURLSeparator()
@@ -93,6 +93,8 @@ public class LayoutFriendlyURLSeparatorCompositeTest {
 							JournalArticle.class.getName(),
 							journalArticleFriendlyURLSeparator
 						).toString())) {
+
+			_urlSeparators.remove();
 
 			_assertGetLayoutFriendlyURLSeparatorComposite(
 				journalArticleFriendlyURLSeparator);
