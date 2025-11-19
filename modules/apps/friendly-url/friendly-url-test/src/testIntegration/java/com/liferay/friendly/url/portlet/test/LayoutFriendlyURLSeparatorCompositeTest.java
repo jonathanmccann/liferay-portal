@@ -12,6 +12,8 @@ import com.liferay.journal.model.JournalArticle;
 import com.liferay.journal.test.util.JournalTestUtil;
 import com.liferay.petra.lang.CentralizedThreadLocal;
 import com.liferay.portal.kernel.json.JSONUtil;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.FriendlyURLResolverRegistryUtil;
 import com.liferay.portal.kernel.portlet.LayoutFriendlyURLSeparatorComposite;
@@ -83,6 +85,8 @@ public class LayoutFriendlyURLSeparatorCompositeTest {
 	public void testGetLayoutFriendlyURLSeparatorCompositeWithConfiguredURLSeparator()
 		throws Exception {
 
+		_log.error("Starting testGetLayoutFriendlyURLSeparatorCompositeWithConfiguredURLSeparator");
+
 		String journalArticleFriendlyURLSeparator = "/journal-test1/";
 
 		try (FriendlyURLSeparatorConfigurationManagerTemporarySwapper
@@ -93,6 +97,8 @@ public class LayoutFriendlyURLSeparatorCompositeTest {
 							JournalArticle.class.getName(),
 							journalArticleFriendlyURLSeparator
 						).toString())) {
+
+			_log.error("Set configuration and clearing cache");
 
 			_urlSeparators.remove();
 
@@ -144,5 +150,8 @@ public class LayoutFriendlyURLSeparatorCompositeTest {
 
 	@Inject
 	private Portal _portal;
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		LayoutFriendlyURLSeparatorCompositeTest.class);
 
 }

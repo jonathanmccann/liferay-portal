@@ -220,6 +220,8 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			_friendlyURLSeparatorProviderSnapshot.get();
 
 		if (friendlyURLSeparatorProvider == null) {
+			_log.error("friendlyURLSeparatorProvider is null");
+
 			return getDefaultURLSeparator();
 		}
 
@@ -227,6 +229,8 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			ServiceContextThreadLocal.getServiceContext();
 
 		if (serviceContext == null) {
+			_log.error("serviceContext is null");
+
 			return getDefaultURLSeparator();
 		}
 
@@ -234,7 +238,11 @@ public abstract class BaseAssetDisplayPageFriendlyURLResolver
 			friendlyURLSeparatorProvider.getFriendlyURLSeparator(
 				serviceContext.getCompanyId(), getKey());
 
+		_log.error("{urlSeparator = " + urlSeparator + ", key = " + getKey() + "}");
+
 		if (Validator.isNull(urlSeparator)) {
+			_log.error("Returning default - " + getDefaultURLSeparator());
+
 			return getDefaultURLSeparator();
 		}
 

@@ -8,6 +8,8 @@ package com.liferay.portal.kernel.portlet;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerList;
 import com.liferay.osgi.service.tracker.collections.list.ServiceTrackerListFactory;
 import com.liferay.petra.lang.CentralizedThreadLocal;
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 
 import java.util.ArrayList;
@@ -63,6 +65,8 @@ public class FriendlyURLResolverRegistryUtil {
 		String[] urlSeparators = _urlSeparators.get();
 
 		if (urlSeparators != null) {
+			_log.error("Returning cached _urlSeparators");
+
 			return urlSeparators;
 		}
 
@@ -90,5 +94,8 @@ public class FriendlyURLResolverRegistryUtil {
 		new CentralizedThreadLocal<>(
 			FriendlyURLResolverRegistryUtil.class.getName() +
 				"._urlSeparators");
+
+	private static final Log _log = LogFactoryUtil.getLog(
+		FriendlyURLResolverRegistryUtil.class);
 
 }

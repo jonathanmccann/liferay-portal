@@ -2721,6 +2721,8 @@ public class PortalImpl implements Portal {
 			for (String urlSeparator :
 					FriendlyURLResolverRegistryUtil.getURLSeparators()) {
 
+				_log.error("urlSeparator = " + urlSeparator);
+
 				if (!friendlyURL.startsWith(urlSeparator)) {
 					continue;
 				}
@@ -2745,8 +2747,12 @@ public class PortalImpl implements Portal {
 		}
 
 		if (layoutFriendlyURLSeparatorComposite != null) {
+			_log.error("Found existing layoutFriendlyURLSeparatorComposite for - " + friendlyURL);
+
 			return layoutFriendlyURLSeparatorComposite;
 		}
+
+		_log.error("Did not find existing layoutFriendlyURLSeparatorComposite for - " + friendlyURL);
 
 		LayoutQueryStringComposite layoutQueryStringComposite =
 			getActualLayoutQueryStringComposite(
