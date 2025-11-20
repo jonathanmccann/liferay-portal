@@ -223,6 +223,7 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		_testPostSiteSuccessMembershipTypePrivate();
 		_testPostSiteSuccessSiteInitializer();
 		_testPostSiteSuccessSiteTemplate();
+		_testPostSiteWithFriendlyURLMissingSlash();
 		_testPostSiteWithLocalizedDescription();
 		_testPostSiteWithLocalizedName();
 		_testPostSiteWithNondefaultLocales();
@@ -886,6 +887,20 @@ public class SiteResourceTest extends BaseSiteResourceTestCase {
 		Assert.assertEquals(
 			layoutSetPrototype.getLayoutSetPrototypeId(),
 			publicLayoutSet.getLayoutSetPrototypeId());
+	}
+
+	private void _testPostSiteWithFriendlyURLMissingSlash() throws Exception {
+		Site site = randomSite();
+
+		String friendlyUrlPath = StringUtil.toLowerCase(
+			RandomTestUtil.randomString());
+
+		site.setFriendlyUrlPath(friendlyUrlPath);
+
+		site = _testPostSite_addSite(site);
+
+		Assert.assertEquals(
+			StringPool.SLASH + friendlyUrlPath, site.getFriendlyUrlPath());
 	}
 
 	private void _testPostSiteWithLocalizedDescription() throws Exception {
