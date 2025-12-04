@@ -5,6 +5,7 @@
 
 package com.liferay.headless.admin.site.internal.resource.v1_0;
 
+import com.liferay.batch.engine.thread.local.BatchEngineThreadLocal;
 import com.liferay.document.library.kernel.model.DLFileEntry;
 import com.liferay.exportimport.vulcan.batch.engine.ExportImportVulcanBatchEngineTaskItemDelegate;
 import com.liferay.headless.admin.site.dto.v1_0.NavigationMenu;
@@ -15,12 +16,15 @@ import com.liferay.headless.admin.site.resource.v1_0.NavigationMenuResource;
 import com.liferay.headless.admin.user.dto.v1_0.Creator;
 import com.liferay.headless.common.spi.service.context.ServiceContextBuilder;
 import com.liferay.petra.string.StringPool;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.feature.flag.FeatureFlagManagerUtil;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.lazy.referencing.LazyReferencingThreadLocal;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.Layout;
+import com.liferay.portal.kernel.model.PersistedModel;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.search.Field;
@@ -56,6 +60,9 @@ import com.liferay.site.navigation.model.SiteNavigationMenuItem;
 import com.liferay.site.navigation.service.SiteNavigationMenuItemService;
 import com.liferay.site.navigation.service.SiteNavigationMenuLocalService;
 import com.liferay.site.navigation.service.SiteNavigationMenuService;
+import com.liferay.site.navigation.service.persistence.SiteNavigationMenuItemUtil;
+import com.liferay.site.navigation.type.SiteNavigationMenuItemType;
+import com.liferay.site.navigation.type.SiteNavigationMenuItemTypeRegistry;
 import com.liferay.site.navigation.util.comparator.SiteNavigationMenuItemOrderComparator;
 
 import jakarta.ws.rs.core.MultivaluedMap;
@@ -303,6 +310,20 @@ public class NavigationMenuResourceImpl
 		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.putAll(
 			navigationMenuItem.getTypeSettings()
 		).build();
+
+		String navigationMenuItemType = navigationMenuItem.getType();
+
+		if (!BatchEngineThreadLocal.isBatchImportInProcess()) {
+			SiteNavigationMenuItemType siteNavigationMenuItemType =
+				_siteNavigationMenuItemTypeRegistry.
+					getSiteNavigationMenuItemType(navigationMenuItemType);
+
+			if (!siteNavigationMenuItemType.hasModel(groupId, unicodeProperties)) {
+				throw new PortalException(
+					"Persisted model of type " + navigationMenuItemType +
+						" could not be found");
+			}
+		}
 
 		SiteNavigationMenuItem siteNavigationMenuItem =
 			_siteNavigationMenuItemService.addSiteNavigationMenuItem(
@@ -848,6 +869,10 @@ public class NavigationMenuResourceImpl
 
 	@Reference
 	private SiteNavigationMenuItemService _siteNavigationMenuItemService;
+
+	@Reference
+	private SiteNavigationMenuItemTypeRegistry
+		_siteNavigationMenuItemTypeRegistry;
 
 	@Reference
 	private SiteNavigationMenuLocalService _siteNavigationMenuLocalService;
