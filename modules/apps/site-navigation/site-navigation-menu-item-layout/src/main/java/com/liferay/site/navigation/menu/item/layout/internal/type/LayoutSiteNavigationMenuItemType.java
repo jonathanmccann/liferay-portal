@@ -336,6 +336,24 @@ public class LayoutSiteNavigationMenuItemType
 	}
 
 	@Override
+	public boolean hasModel(
+		long groupId, UnicodeProperties typeSettingsUnicodeProperties) {
+
+		Layout layout = _layoutLocalService.fetchLayoutByUuidAndGroupId(
+			typeSettingsUnicodeProperties.getProperty("layoutUuid"),
+			GetterUtil.getLong(
+				typeSettingsUnicodeProperties.getProperty("groupId")),
+			GetterUtil.getBoolean(
+				typeSettingsUnicodeProperties.getProperty("privateLayout")));
+
+		if (layout == null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
 	public boolean hasPermission(
 			PermissionChecker permissionChecker,
 			SiteNavigationMenuItem siteNavigationMenuItem)

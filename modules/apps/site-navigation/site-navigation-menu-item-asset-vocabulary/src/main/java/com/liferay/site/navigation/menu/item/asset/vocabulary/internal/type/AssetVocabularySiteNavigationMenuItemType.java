@@ -351,6 +351,37 @@ public class AssetVocabularySiteNavigationMenuItemType
 	}
 
 	@Override
+	public boolean hasModel(
+			long groupId, UnicodeProperties typeSettingsUnicodeProperties)
+		throws PortalException {
+
+		String externalReferenceCode = GetterUtil.getString(
+			typeSettingsUnicodeProperties.get("externalReferenceCode"));
+
+		String scopeExternalReferenceCode = GetterUtil.getString(
+			typeSettingsUnicodeProperties.get("scopeExternalReferenceCode"));
+
+		if (Validator.isNotNull(scopeExternalReferenceCode)) {
+			Group group =
+				_groupLocalServiceUtil.fetchGroupByExternalReferenceCode(
+					scopeExternalReferenceCode);
+
+			groupId = group.getGroupId();
+		}
+
+		AssetVocabulary assetVocabulary =
+			_assetVocabularyLocalService.
+				fetchAssetVocabularyByExternalReferenceCode(
+					externalReferenceCode, groupId);
+
+		if (assetVocabulary == null) {
+			return false;
+		}
+
+		return true;
+	}
+
+	@Override
 	public boolean hasPermission(
 			PermissionChecker permissionChecker,
 			SiteNavigationMenuItem siteNavigationMenuItem)
