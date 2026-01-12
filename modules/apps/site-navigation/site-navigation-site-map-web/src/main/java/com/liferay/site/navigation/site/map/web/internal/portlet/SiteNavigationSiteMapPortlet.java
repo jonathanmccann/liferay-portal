@@ -8,14 +8,21 @@ package com.liferay.site.navigation.site.map.web.internal.portlet;
 import com.liferay.fragment.processor.PortletRegistry;
 import com.liferay.portal.kernel.model.Release;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCPortlet;
+import com.liferay.portal.kernel.util.Portal;
 import com.liferay.site.navigation.site.map.web.internal.constants.SiteNavigationSitemapPortletKeys;
 
+import com.liferay.site.navigation.site.map.web.internal.display.context.SiteNavigationSiteMapDisplayContext;
 import jakarta.portlet.Portlet;
+import jakarta.portlet.PortletException;
+import jakarta.portlet.RenderRequest;
+import jakarta.portlet.RenderResponse;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+
+import java.io.IOException;
 
 /**
  * @author Eudaldo Alonso
@@ -57,6 +64,30 @@ public class SiteNavigationSiteMapPortlet extends MVCPortlet {
 		_portletRegistry.unregisterAlias(_ALIAS);
 	}
 
+	@Override
+	protected void doDispatch(
+			RenderRequest renderRequest, RenderResponse renderResponse)
+		throws IOException, PortletException {
+
+		try {
+			SiteNavigationSiteMapDisplayContext
+				siteNavigationSiteMapDisplayContext =
+				new SiteNavigationSiteMapDisplayContext(
+					_portal.getHttpServletRequest(renderRequest),
+					renderResponse);
+
+			renderRequest.setAttribute(
+				SiteNavigationSiteMapDisplayContext.class.getName(),
+				siteNavigationSiteMapDisplayContext);
+		}
+		catch (Exception exception) {
+
+		}
+
+
+		super.doDispatch(renderRequest, renderResponse);
+	}
+
 	private static final String _ALIAS = "site-map";
 
 	@Reference
@@ -66,5 +97,8 @@ public class SiteNavigationSiteMapPortlet extends MVCPortlet {
 		target = "(&(release.bundle.symbolic.name=com.liferay.site.navigation.site.map.web)(&(release.schema.version>=1.0.0)(!(release.schema.version>=2.0.0))))"
 	)
 	private Release _release;
+
+	@Reference
+	private Portal _portal;
 
 }
