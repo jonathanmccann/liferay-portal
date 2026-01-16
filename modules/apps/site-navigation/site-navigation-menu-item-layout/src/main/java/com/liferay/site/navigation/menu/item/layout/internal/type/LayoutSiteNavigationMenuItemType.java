@@ -189,6 +189,22 @@ public class LayoutSiteNavigationMenuItemType
 	}
 
 	@Override
+	public String getName(String typeSettings) {
+		UnicodeProperties typeSettingsUnicodeProperties =
+			UnicodePropertiesBuilder.fastLoad(
+				typeSettings
+			).build();
+
+		String name = typeSettingsUnicodeProperties.get("name");
+
+		if (Validator.isNotNull(name)) {
+			return name;
+		}
+
+		return typeSettingsUnicodeProperties.get("title");
+	}
+
+	@Override
 	public String getRegularURL(
 			HttpServletRequest httpServletRequest,
 			SiteNavigationMenuItem siteNavigationMenuItem)

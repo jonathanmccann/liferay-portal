@@ -94,25 +94,11 @@ public class SiteNavigationMenuItemLocalServiceImpl
 			_siteNavigationMenuItemTypeRegistry.getSiteNavigationMenuItemType(
 				type);
 
-		if (!BatchEngineThreadLocal.isBatchImportInProcess() &&
-			(siteNavigationMenuItemType == null)) {
-
+		if (siteNavigationMenuItemType == null) {
 			throw new InvalidSiteNavigationMenuItemTypeException(type);
 		}
 
-		String name = null;
-
-		if (BatchEngineThreadLocal.isBatchImportInProcess()) {
-			UnicodeProperties typeSettingsUnicodeProperties =
-				UnicodePropertiesBuilder.fastLoad(
-					typeSettings
-				).build();
-
-			name = typeSettingsUnicodeProperties.getProperty("title");
-		}
-		else {
-			name = siteNavigationMenuItemType.getName(typeSettings);
-		}
+		String name = siteNavigationMenuItemType.getName(typeSettings);
 
 		_validateName(name);
 
@@ -450,15 +436,6 @@ public class SiteNavigationMenuItemLocalServiceImpl
 		User user = _userLocalService.getUser(userId);
 
 		String name = siteNavigationMenuItemType.getName(typeSettings);
-
-		if (name == null) {
-			UnicodeProperties typeSettingsUnicodeProperties =
-				UnicodePropertiesBuilder.fastLoad(
-					typeSettings
-				).build();
-
-			name = typeSettingsUnicodeProperties.getProperty("title");
-		}
 
 		_validateName(name);
 
