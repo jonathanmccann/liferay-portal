@@ -123,7 +123,21 @@ public class LayoutFriendlyURLEntryUpgradeProcess extends UpgradeProcess {
 						for (Map.Entry<String, String> entry :
 								friendlyURLMap.entrySet()) {
 
-							preparedStatement.setLong(1, 0);
+							long friendlyURLEntryLocalizationId =
+								_getExistingFriendlyURLEntryLocalizationId(
+									entry.getKey(), ctCollectionId,
+									friendlyURLEntryId);
+
+							if (friendlyURLEntryLocalizationId != 0) {
+								// perform update
+								_updateExistingFriendlyURLEntryLocalizationId(
+									entry.getValue(),
+									friendlyURLEntryLocalizationId);
+
+								continue;
+							}
+
+							preparedStatement.setLong(1, 0); // Localization does not yet exist for these parameters so add as new
 							preparedStatement.setLong(2, ctCollectionId);
 							preparedStatement.setLong(
 								3,
@@ -152,6 +166,49 @@ public class LayoutFriendlyURLEntryUpgradeProcess extends UpgradeProcess {
 					}
 				},
 				null);
+		}
+	}
+
+	private long
+		_getExistingFriendlyURLEntryLocalizationId(
+			String languageId, long ctCollectionId, long friendlyURLEntryId)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"select friendlyURLEntryLocalizationId from " +
+					"FriendlyURLEntryLocalization where ",
+					"languageId = ? and ctCollectionId = ? and " +
+					"friendlyURLEntryId = ?"))) {
+
+			preparedStatement.setString(1, languageId);
+			preparedStatement.setLong(2, ctCollectionId);
+			preparedStatement.setLong(3, friendlyURLEntryId);
+
+			try (ResultSet resultSet = preparedStatement.executeQuery()) {
+				if (resultSet.next()) {
+					return resultSet.getLong("friendlyURLEntryLocalizationId");
+				}
+			}
+		}
+
+		return 0;
+	}
+
+	private void
+		_updateExistingFriendlyURLEntryLocalizationId(
+			String urlTitle, long friendlyURLEntryLocalizationId)
+		throws Exception {
+
+		try (PreparedStatement preparedStatement = connection.prepareStatement(
+				StringBundler.concat(
+					"update FriendlyURLEntryLocalization set " +
+					"urlTitle = ? where friendlyURLEntryLocalizationId = ?"))) {
+
+			preparedStatement.setString(1, urlTitle);
+			preparedStatement.setLong(2, friendlyURLEntryLocalizationId);
+
+			preparedStatement.executeUpdate();
 		}
 	}
 
