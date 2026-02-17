@@ -197,7 +197,7 @@ public class ObjectEntryFolderResourceImpl
 
 			@Override
 			public String getLabelLanguageKey() {
-				return "objectEntryFolders";
+				return "object-entry-folders";
 			}
 
 			@Override
