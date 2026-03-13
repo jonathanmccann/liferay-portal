@@ -78,7 +78,7 @@ public class NavigationMenuResourceImpl
 		_siteNavigationMenuService.deleteSiteNavigationMenu(
 			navigationMenuExternalReferenceCode,
 			GroupUtil.getGroupId(
-				true, contextCompany.getCompanyId(),
+				true, true, contextCompany.getCompanyId(),
 				siteExternalReferenceCode));
 	}
 
@@ -135,7 +135,7 @@ public class NavigationMenuResourceImpl
 				getSiteNavigationMenuByExternalReferenceCode(
 					navigationMenuExternalReferenceCode,
 					GroupUtil.getGroupId(
-						true, contextCompany.getCompanyId(),
+						true, true, contextCompany.getCompanyId(),
 						siteExternalReferenceCode)));
 	}
 
@@ -146,7 +146,8 @@ public class NavigationMenuResourceImpl
 		throws Exception {
 
 		long groupId = GroupUtil.getGroupId(
-			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+			true, true, contextCompany.getCompanyId(),
+			siteExternalReferenceCode);
 
 		return SearchUtil.search(
 			HashMapBuilder.put(
@@ -185,7 +186,8 @@ public class NavigationMenuResourceImpl
 		return _addNavigationMenu(
 			navigationMenu.getExternalReferenceCode(),
 			GroupUtil.getGroupId(
-				true, contextCompany.getCompanyId(), siteExternalReferenceCode),
+				true, true, contextCompany.getCompanyId(),
+				siteExternalReferenceCode),
 			navigationMenu);
 	}
 
@@ -197,7 +199,8 @@ public class NavigationMenuResourceImpl
 		throws Exception {
 
 		long groupId = GroupUtil.getGroupId(
-			true, contextCompany.getCompanyId(), siteExternalReferenceCode);
+			true, true, contextCompany.getCompanyId(),
+			siteExternalReferenceCode);
 
 		SiteNavigationMenu siteNavigationMenu =
 			_siteNavigationMenuLocalService.
