@@ -21,12 +21,14 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypeController;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.DateUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
+import com.liferay.portal.kernel.util.HttpComponentsUtil;
 import com.liferay.portal.kernel.util.ListUtil;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.MapUtil;
@@ -41,6 +43,7 @@ import com.liferay.portal.kernel.xml.Document;
 import com.liferay.portal.kernel.xml.Element;
 import com.liferay.portal.kernel.xml.SAXReader;
 import com.liferay.portal.util.LayoutTypeControllerTracker;
+import com.liferay.redirect.provider.RedirectProvider;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
 import com.liferay.site.manager.SitemapManager;
 import com.liferay.site.provider.SitemapURLProvider;
@@ -74,6 +77,79 @@ public class SitemapManagerImpl implements SitemapManager {
 		Element element, String url,
 		UnicodeProperties typeSettingsUnicodeProperties, Date modifiedDate,
 		String canonicalURL, Map<Locale, String> alternateURLs) {
+
+		long companyId = CompanyThreadLocal.getCompanyId();
+		String path = HttpComponentsUtil.getPath(url);
+		String contextPath = _portal.getPathContext();
+
+		if (Validator.isNotNull(contextPath) && path.startsWith(contextPath)) {
+			path = path.substring(contextPath.length());
+		}
+
+		String fullURL = path;
+
+		if (fullURL.startsWith(StringPool.SLASH)) {
+			fullURL = fullURL.substring(1);
+		}
+
+		int[] indices = _portal.getGroupFriendlyURLIndex(path);
+		long groupId = 0;
+		Group group = null;
+
+		try {
+			if (indices != null) {
+				String groupFriendlyURL = path.substring(indices[0], indices[1]);
+				group = _groupLocalService.fetchFriendlyURLGroup(companyId, groupFriendlyURL);
+			}
+
+			if (indices == null || group == null) {
+				for (Locale availableLocale : _language.getAvailableLocales(companyId)) {
+					String i18nPath = StringPool.SLASH + LocaleUtil.toLanguageId(availableLocale);
+
+					if (path.startsWith(i18nPath + StringPool.SLASH)) {
+						String pathWithoutLocale = path.substring(i18nPath.length());
+						int[] tempIndices = _portal.getGroupFriendlyURLIndex(pathWithoutLocale);
+						
+						if (tempIndices != null) {
+							String groupFriendlyURL = pathWithoutLocale.substring(tempIndices[0], tempIndices[1]);
+							Group tempGroup = _groupLocalService.fetchFriendlyURLGroup(companyId, groupFriendlyURL);
+							
+							if (tempGroup != null && _language.isAvailableLocale(tempGroup.getGroupId(), availableLocale)) {
+								path = pathWithoutLocale;
+								indices = tempIndices;
+								group = tempGroup;
+								break;
+							}
+						}
+					}
+				}
+			}
+		} catch (Exception e) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(e);
+			}
+		}
+
+		if (group != null) {
+			groupId = group.getGroupId();
+		}
+
+		String friendlyURL = StringPool.BLANK;
+
+		if ((indices != null) && (indices[1] < path.length())) {
+			friendlyURL = path.substring(indices[1]);
+
+			if (friendlyURL.startsWith(StringPool.SLASH)) {
+				friendlyURL = friendlyURL.substring(1);
+			}
+		}
+
+		com.liferay.redirect.provider.RedirectProvider.Redirect redirect = _redirectProvider.getRedirect(
+			groupId, friendlyURL, fullURL, null);
+
+		if (redirect != null) {
+			return;
+		}
 
 		Element urlElement = element.addElement("url");
 
@@ -580,6 +656,9 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	@Reference
 	private Portal _portal;
+
+	@Reference
+	private RedirectProvider _redirectProvider;
 
 	@Reference
 	private SAXReader _saxReader;
