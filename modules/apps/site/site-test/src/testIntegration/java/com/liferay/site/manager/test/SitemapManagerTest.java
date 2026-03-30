@@ -479,6 +479,79 @@ public class SitemapManagerTest {
 	}
 
 	@Test
+	public void testSitemapIncludePagesWithVirtualHostAndRedirect()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						_PID_SITEMAP_COMPANY_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"includeCategories", false
+						).put(
+							"includePages", true
+						).put(
+							"includeWebContent", false
+						).build());
+			GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group.getGroupId(), _PID_SITEMAP_GROUP_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"includeCategories", false
+						).put(
+							"includePages", true
+						).put(
+							"includeWebContent", false
+						).build())) {
+
+			String virtualHostname =
+				("virtualhost" + com.liferay.portal.kernel.util.StringUtil.randomString(8) + ".com").toLowerCase();
+
+			_layoutSetLocalService.updateVirtualHosts(
+				_group.getGroupId(), false,
+				TreeMapBuilder.put(
+					virtualHostname, _layout.getDefaultLanguageId()
+				).build());
+
+			Layout childLayout = LayoutTestUtil.addTypePortletLayout(
+				_group.getGroupId(), _layout.getPlid());
+
+			_setUpThemeDisplay(_group, childLayout, virtualHostname);
+
+			String canonicalURL = _portal.getCanonicalURL(
+				_portal.getLayoutFullURL(childLayout, _themeDisplay), _themeDisplay,
+				childLayout);
+
+			_assertSitemap(
+				true, _group.getGroupId(), childLayout.getUuid(), canonicalURL);
+
+			String sourceURL = HttpComponentsUtil.getPath(canonicalURL);
+
+			if (sourceURL.startsWith(StringPool.SLASH)) {
+				sourceURL = sourceURL.substring(1);
+			}
+
+			RedirectEntry redirectEntry =
+				_redirectEntryLocalService.createRedirectEntry(
+					com.liferay.counter.kernel.service.CounterLocalServiceUtil.increment());
+
+			redirectEntry.setUuid(
+				com.liferay.portal.kernel.uuid.PortalUUIDUtil.generate());
+			redirectEntry.setGroupId(_group.getGroupId());
+			redirectEntry.setCompanyId(TestPropsValues.getCompanyId());
+			redirectEntry.setDestinationURL("https://liferay.com");
+			redirectEntry.setPermanent(true);
+			redirectEntry.setSourceURL(sourceURL);
+
+			_redirectEntryLocalService.addRedirectEntry(redirectEntry);
+
+			_assertEmptySitemap(childLayout.getUuid());
+		}
+	}
+
+	@Test
 	public void testSitemapIncludeWebContentWithRedirect() throws Exception {
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =

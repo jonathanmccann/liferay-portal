@@ -334,7 +334,7 @@ public class JournalArticleSitemapURLProvider implements SitemapURLProvider {
 				_sitemapManager.addURLElement(
 					element, alternateURL, null,
 					journalArticle.getModifiedDate(), articleURL,
-					alternateURLs);
+					alternateURLs, articleLayout.getGroupId());
 			}
 
 			processedArticleIds.add(journalArticle.getArticleId());
