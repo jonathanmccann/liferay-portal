@@ -91,50 +91,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			fullURL = fullURL.substring(1);
 		}
 
-		int[] indices = _portal.getGroupFriendlyURLIndex(path);
-		String friendlyURL = StringPool.BLANK;
-
-		if (indices != null) {
-			if (indices[1] < path.length()) {
-				friendlyURL = path.substring(indices[1]);
-			}
-		}
-		else {
-			boolean localeFound = false;
-
-			long companyId = CompanyThreadLocal.getCompanyId();
-
-			for (Locale availableLocale :
-					_language.getAvailableLocales(companyId)) {
-
-				String i18nPath =
-					StringPool.SLASH + LocaleUtil.toLanguageId(availableLocale);
-
-				if (path.startsWith(i18nPath + StringPool.SLASH) ||
-					path.equals(i18nPath)) {
-
-					String pathWithoutLocale = path.substring(i18nPath.length());
-					int[] tempIndices = _portal.getGroupFriendlyURLIndex(pathWithoutLocale);
-
-					if (tempIndices != null) {
-						if (tempIndices[1] < pathWithoutLocale.length()) {
-							friendlyURL = pathWithoutLocale.substring(tempIndices[1]);
-						}
-					}
-					else {
-						friendlyURL = pathWithoutLocale;
-					}
-
-					localeFound = true;
-
-					break;
-				}
-			}
-
-			if (!localeFound) {
-				friendlyURL = path;
-			}
-		}
+		String friendlyURL = _getFriendlyURL(path);
 
 		if (friendlyURL.startsWith(StringPool.SLASH)) {
 			friendlyURL = friendlyURL.substring(1);
@@ -295,6 +252,48 @@ public class SitemapManagerImpl implements SitemapManager {
 	@Deactivate
 	protected void deactivate() {
 		_serviceTrackerMap.close();
+	}
+
+	private String _getFriendlyURL(String path) {
+		int[] groupFriendlyURLIndex = _portal.getGroupFriendlyURLIndex(path);
+
+		if (groupFriendlyURLIndex != null) {
+			if (groupFriendlyURLIndex[1] < path.length()) {
+				return path.substring(groupFriendlyURLIndex[1]);
+			}
+
+			return StringPool.BLANK;
+		}
+
+		long companyId = CompanyThreadLocal.getCompanyId();
+
+		for (Locale availableLocale :
+				_language.getAvailableLocales(companyId)) {
+
+			String i18nPath =
+				StringPool.SLASH + LocaleUtil.toLanguageId(availableLocale);
+
+			if (path.startsWith(i18nPath + StringPool.SLASH) ||
+				path.equals(i18nPath)) {
+
+				String pathWithoutLocale = path.substring(i18nPath.length());
+
+				int[] tempIndices = _portal.getGroupFriendlyURLIndex(
+					pathWithoutLocale);
+
+				if (tempIndices != null) {
+					if (tempIndices[1] < pathWithoutLocale.length()) {
+						return pathWithoutLocale.substring(tempIndices[1]);
+					}
+
+					return StringPool.BLANK;
+				}
+
+				return pathWithoutLocale;
+			}
+		}
+
+		return path;
 	}
 
 	private String _getIndexSitemap(

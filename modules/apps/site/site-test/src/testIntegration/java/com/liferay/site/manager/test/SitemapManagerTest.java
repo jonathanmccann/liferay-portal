@@ -476,19 +476,7 @@ public class SitemapManagerTest {
 				sourceURL = sourceURL.substring(1);
 			}
 
-			RedirectEntry redirectEntry =
-				_redirectEntryLocalService.createRedirectEntry(
-					com.liferay.counter.kernel.service.CounterLocalServiceUtil.increment());
-
-			redirectEntry.setUuid(
-				com.liferay.portal.kernel.uuid.PortalUUIDUtil.generate());
-			redirectEntry.setGroupId(_group.getGroupId());
-			redirectEntry.setCompanyId(TestPropsValues.getCompanyId());
-			redirectEntry.setDestinationURL("https://liferay.com");
-			redirectEntry.setPermanent(true);
-			redirectEntry.setSourceURL(sourceURL);
-
-			_redirectEntryLocalService.addRedirectEntry(redirectEntry);
+			_addRedirectEntry(sourceURL);
 
 			_assertSitemap(true, _group.getGroupId(), _layout.getUuid(), canonicalURL);
 		}
@@ -665,15 +653,7 @@ public class SitemapManagerTest {
 			_assertSitemap(
 				true, _group.getGroupId(), layout.getUuid(), canonicalURL);
 
-			RedirectEntry redirectEntry = _redirectEntryLocalService.createRedirectEntry(
-				com.liferay.counter.kernel.service.CounterLocalServiceUtil.increment());
-			redirectEntry.setUuid(com.liferay.portal.kernel.uuid.PortalUUIDUtil.generate());
-			redirectEntry.setGroupId(_group.getGroupId());
-			redirectEntry.setCompanyId(TestPropsValues.getCompanyId());
-			redirectEntry.setDestinationURL("https://liferay.com");
-			redirectEntry.setPermanent(true);
-			redirectEntry.setSourceURL((FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE + journalArticle.getUrlTitle()).substring(1));
-			_redirectEntryLocalService.addRedirectEntry(redirectEntry);
+			_addRedirectEntry((FriendlyURLResolverConstants.URL_SEPARATOR_JOURNAL_ARTICLE + journalArticle.getUrlTitle()).substring(1));
 
 			_assertEmptySitemap(layout.getUuid());
 		}
@@ -1095,6 +1075,22 @@ public class SitemapManagerTest {
 			journalArticle.getResourcePrimKey(),
 			journalArticle.getDDMStructureKey(),
 			AssetDisplayPageConstants.TYPE_SPECIFIC);
+	}
+
+	private void _addRedirectEntry(String sourceURL) throws Exception {
+		RedirectEntry redirectEntry =
+			_redirectEntryLocalService.createRedirectEntry(
+				com.liferay.counter.kernel.service.CounterLocalServiceUtil.increment());
+
+		redirectEntry.setUuid(
+			com.liferay.portal.kernel.uuid.PortalUUIDUtil.generate());
+		redirectEntry.setGroupId(_group.getGroupId());
+		redirectEntry.setCompanyId(TestPropsValues.getCompanyId());
+		redirectEntry.setDestinationURL("https://liferay.com");
+		redirectEntry.setPermanent(true);
+		redirectEntry.setSourceURL(sourceURL);
+
+		_redirectEntryLocalService.addRedirectEntry(redirectEntry);
 	}
 
 	private void _assertEmptySitemap(String uuid) throws Exception {
