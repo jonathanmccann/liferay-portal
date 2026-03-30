@@ -113,7 +113,18 @@ public class SitemapManagerImpl implements SitemapManager {
 				if (path.startsWith(i18nPath + StringPool.SLASH) ||
 					path.equals(i18nPath)) {
 
-					friendlyURL = path.substring(i18nPath.length());
+					String pathWithoutLocale = path.substring(i18nPath.length());
+					int[] tempIndices = _portal.getGroupFriendlyURLIndex(pathWithoutLocale);
+
+					if (tempIndices != null) {
+						if (tempIndices[1] < pathWithoutLocale.length()) {
+							friendlyURL = pathWithoutLocale.substring(tempIndices[1]);
+						}
+					}
+					else {
+						friendlyURL = pathWithoutLocale;
+					}
+
 					localeFound = true;
 
 					break;

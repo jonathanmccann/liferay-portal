@@ -428,6 +428,73 @@ public class SitemapManagerTest {
 	}
 
 	@Test
+	public void testSitemapIncludePagesWithLocaleAndRedirect()
+		throws Exception {
+
+		try (CompanyConfigurationTemporarySwapper
+				companyConfigurationTemporarySwapper =
+					new CompanyConfigurationTemporarySwapper(
+						TestPropsValues.getCompanyId(),
+						_PID_SITEMAP_COMPANY_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"includeCategories", false
+						).put(
+							"includePages", true
+						).put(
+							"includeWebContent", false
+						).build());
+			GroupConfigurationTemporarySwapper
+				groupConfigurationTemporarySwapper =
+					new GroupConfigurationTemporarySwapper(
+						_group.getGroupId(), _PID_SITEMAP_GROUP_CONFIGURATION,
+						HashMapDictionaryBuilder.<String, Object>put(
+							"includeCategories", false
+						).put(
+							"includePages", true
+						).put(
+							"includeWebContent", false
+						).build())) {
+
+			_layout.setTitle("Spanish Title", LocaleUtil.SPAIN);
+			_layoutLocalService.updateLayout(_layout);
+
+			String canonicalURL = _portal.getCanonicalURL(
+				_portal.getLayoutFullURL(_layout, _themeDisplay), _themeDisplay,
+				_layout);
+
+			java.util.Map<Locale, String> alternateURLs =
+				_sitemapManager.getAlternateURLs(canonicalURL, _themeDisplay, _layout);
+
+			String spanishURL = alternateURLs.get(LocaleUtil.SPAIN);
+
+			_assertSitemap(
+				true, _group.getGroupId(), _layout.getUuid(), canonicalURL, spanishURL);
+
+			String sourceURL = HttpComponentsUtil.getPath(spanishURL);
+
+			if (sourceURL.startsWith(StringPool.SLASH)) {
+				sourceURL = sourceURL.substring(1);
+			}
+
+			RedirectEntry redirectEntry =
+				_redirectEntryLocalService.createRedirectEntry(
+					com.liferay.counter.kernel.service.CounterLocalServiceUtil.increment());
+
+			redirectEntry.setUuid(
+				com.liferay.portal.kernel.uuid.PortalUUIDUtil.generate());
+			redirectEntry.setGroupId(_group.getGroupId());
+			redirectEntry.setCompanyId(TestPropsValues.getCompanyId());
+			redirectEntry.setDestinationURL("https://liferay.com");
+			redirectEntry.setPermanent(true);
+			redirectEntry.setSourceURL(sourceURL);
+
+			_redirectEntryLocalService.addRedirectEntry(redirectEntry);
+
+			_assertSitemap(true, _group.getGroupId(), _layout.getUuid(), canonicalURL);
+		}
+	}
+
+	@Test
 	public void testSitemapIncludePagesWithRedirect() throws Exception {
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
