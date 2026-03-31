@@ -704,7 +704,7 @@ public class AssetVocabularyLocalServiceImpl
 				return curVocabularyName;
 			}
 
-			curVocabularyName = curVocabularyName + CharPool.DASH + count++;
+			curVocabularyName = vocabularyName + CharPool.DASH + count++;
 		}
 	}
 
