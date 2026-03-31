@@ -178,12 +178,12 @@ public class AssetVocabularyLocalServiceImpl
 
 		if (Validator.isNull(name)) {
 			name = _generateVocabularyName(
-				groupId, trimmedTitleMap.get(LocaleUtil.getSiteDefault()));
+				0, groupId, trimmedTitleMap.get(LocaleUtil.getSiteDefault()));
 		}
 
 		name = _getVocabularyName(name);
 
-		validate(groupId, name);
+		validate(0, groupId, name);
 
 		_validateVisibilityType(visibilityType);
 
@@ -537,7 +537,17 @@ public class AssetVocabularyLocalServiceImpl
 			vocabulary.setExternalReferenceCode(externalReferenceCode);
 		}
 
-		vocabulary.setTitleMap(_getTrimmedTitleMap(titleMap));
+		Map<Locale, String> trimmedTitleMap = _getTrimmedTitleMap(titleMap);
+
+		String name = _generateVocabularyName(
+			vocabularyId, vocabulary.getGroupId(),
+			trimmedTitleMap.get(LocaleUtil.getSiteDefault()));
+
+		validate(vocabularyId, vocabulary.getGroupId(), name);
+
+		vocabulary.setName(name);
+
+		vocabulary.setTitleMap(trimmedTitleMap);
 		vocabulary.setDescriptionMap(descriptionMap);
 		vocabulary.setSettings(settings);
 		vocabulary.setVisibilityType(visibilityType);
@@ -568,7 +578,17 @@ public class AssetVocabularyLocalServiceImpl
 			vocabulary.setExternalReferenceCode(externalReferenceCode);
 		}
 
-		vocabulary.setTitleMap(_getTrimmedTitleMap(titleMap));
+		Map<Locale, String> trimmedTitleMap = _getTrimmedTitleMap(titleMap);
+
+		String name = _generateVocabularyName(
+			vocabularyId, vocabulary.getGroupId(),
+			trimmedTitleMap.get(LocaleUtil.getSiteDefault()));
+
+		validate(vocabularyId, vocabulary.getGroupId(), name);
+
+		vocabulary.setName(name);
+
+		vocabulary.setTitleMap(trimmedTitleMap);
 
 		if (Validator.isNotNull(title)) {
 			vocabulary.setTitle(title);
@@ -620,14 +640,6 @@ public class AssetVocabularyLocalServiceImpl
 		return searchContext;
 	}
 
-	protected boolean hasVocabulary(long groupId, String name) {
-		if (assetVocabularyPersistence.countByG_N(groupId, name) == 0) {
-			return false;
-		}
-
-		return true;
-	}
-
 	protected BaseModelSearchResult<AssetVocabulary> searchVocabularies(
 			SearchContext searchContext)
 		throws PortalException {
@@ -650,20 +662,29 @@ public class AssetVocabularyLocalServiceImpl
 			"Unable to fix the search index after 10 attempts");
 	}
 
-	protected void validate(long groupId, String name) throws PortalException {
+	protected void validate(long vocabularyId, long groupId, String name)
+		throws PortalException {
+
 		if (Validator.isNull(name)) {
 			throw new VocabularyNameException(
 				"Category vocabulary name cannot be null for group " + groupId);
 		}
 
-		if (hasVocabulary(groupId, name)) {
+		AssetVocabulary vocabulary = assetVocabularyPersistence.fetchByG_N(
+			groupId, name);
+
+		if ((vocabulary != null) &&
+			(vocabulary.getVocabularyId() != vocabularyId)) {
+
 			throw new DuplicateVocabularyException(
 				"A category vocabulary with the name " + name +
 					" already exists");
 		}
 	}
 
-	private String _generateVocabularyName(long groupId, String name) {
+	private String _generateVocabularyName(
+		long vocabularyId, long groupId, String name) {
+
 		String vocabularyName = _getVocabularyName(name);
 
 		vocabularyName = StringUtil.replace(
@@ -677,7 +698,9 @@ public class AssetVocabularyLocalServiceImpl
 			AssetVocabulary vocabulary = assetVocabularyPersistence.fetchByG_N(
 				groupId, curVocabularyName);
 
-			if (vocabulary == null) {
+			if ((vocabulary == null) ||
+				(vocabulary.getVocabularyId() == vocabularyId)) {
+
 				return curVocabularyName;
 			}
 
