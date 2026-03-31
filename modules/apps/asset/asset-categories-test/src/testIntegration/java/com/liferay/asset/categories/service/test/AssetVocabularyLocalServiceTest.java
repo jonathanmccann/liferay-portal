@@ -126,6 +126,8 @@ public class AssetVocabularyLocalServiceTest {
 				null, vocabulary.getSettings(),
 				AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL);
 
+			Assert.assertEquals(
+				StringUtil.toLowerCase(title), vocabulary.getName());
 			Assert.assertEquals(title, vocabulary.getTitle(locale));
 			Assert.assertEquals(
 				AssetVocabularyConstants.VISIBILITY_TYPE_INTERNAL,
