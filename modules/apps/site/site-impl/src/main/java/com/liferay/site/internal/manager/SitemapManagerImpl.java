@@ -34,6 +34,7 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -90,17 +91,19 @@ public class SitemapManagerImpl implements SitemapManager {
 			fullURL = fullURL.substring(1);
 		}
 
-		String friendlyURL = _getFriendlyURL(path, groupId);
+		if (_SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED) {
+			String friendlyURL = _getFriendlyURL(path, groupId);
 
-		if (friendlyURL.startsWith(StringPool.SLASH)) {
-			friendlyURL = friendlyURL.substring(1);
-		}
+			if (friendlyURL.startsWith(StringPool.SLASH)) {
+				friendlyURL = friendlyURL.substring(1);
+			}
 
-		RedirectProvider.Redirect redirect = _redirectProvider.getRedirect(
-			groupId, friendlyURL, fullURL, null);
+			RedirectProvider.Redirect redirect = _redirectProvider.getRedirect(
+				groupId, friendlyURL, fullURL, null);
 
-		if (redirect != null) {
-			return;
+			if (redirect != null) {
+				return;
+			}
 		}
 
 		Element urlElement = element.addElement("url");
@@ -226,14 +229,32 @@ public class SitemapManagerImpl implements SitemapManager {
 			ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		if (Validator.isNull(layoutUuid) &&
-			_sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
-				themeDisplay.getCompanyId())) {
+		long startTime = 0;
 
-			return _getIndexSitemap(groupId, privateLayout, themeDisplay);
+		if (_SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED && _log.isInfoEnabled()) {
+			startTime = System.currentTimeMillis();
 		}
 
-		return _getSitemap(layoutUuid, groupId, privateLayout, themeDisplay);
+		try {
+			if (Validator.isNull(layoutUuid) &&
+				_sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
+					themeDisplay.getCompanyId())) {
+
+				return _getIndexSitemap(groupId, privateLayout, themeDisplay);
+			}
+
+			return _getSitemap(
+				layoutUuid, groupId, privateLayout, themeDisplay);
+		}
+		finally {
+			if (_SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED &&
+				_log.isInfoEnabled()) {
+
+				long duration = System.currentTimeMillis() - startTime;
+
+				_log.info("Sitemap generated in " + duration + " ms");
+			}
+		}
 	}
 
 	@Activate
@@ -640,6 +661,11 @@ public class SitemapManagerImpl implements SitemapManager {
 		" xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"".getBytes();
 
 	private static final int _MAXIMUM_SIZE = 50 * 1024 * 1024;
+
+	private static final boolean _SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED =
+		GetterUtil.getBoolean(
+			SystemProperties.get("sitemap.exclude.redirect.urls.enabled"),
+			true);
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SitemapManagerImpl.class.getName());
