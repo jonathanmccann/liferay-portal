@@ -21,6 +21,7 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypeController;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
+import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
@@ -34,7 +35,6 @@ import com.liferay.portal.kernel.util.MapUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PropsValues;
 import com.liferay.portal.kernel.util.StringUtil;
-import com.liferay.portal.kernel.util.SystemProperties;
 import com.liferay.portal.kernel.util.TextFormatter;
 import com.liferay.portal.kernel.util.UnicodeProperties;
 import com.liferay.portal.kernel.util.Validator;
@@ -229,11 +229,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			ThemeDisplay themeDisplay)
 		throws PortalException {
 
-		long startTime = 0;
-
-		if (_SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED && _log.isInfoEnabled()) {
-			startTime = System.currentTimeMillis();
-		}
+		long startTime = System.currentTimeMillis();
 
 		try {
 			if (Validator.isNull(layoutUuid) &&
@@ -247,13 +243,9 @@ public class SitemapManagerImpl implements SitemapManager {
 				layoutUuid, groupId, privateLayout, themeDisplay);
 		}
 		finally {
-			if (_SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED &&
-				_log.isInfoEnabled()) {
+			long duration = System.currentTimeMillis() - startTime;
 
-				long duration = System.currentTimeMillis() - startTime;
-
-				_log.info("Sitemap generated in " + duration + " ms");
-			}
+			_log.error("Sitemap generated in " + duration + " ms");
 		}
 	}
 
@@ -285,16 +277,18 @@ public class SitemapManagerImpl implements SitemapManager {
 			return StringPool.BLANK;
 		}
 
-		long companyId = 0;
+		long companyId = CompanyThreadLocal.getCompanyId();
 
-		try {
-			Group group = _groupLocalService.getGroup(groupId);
+		if (companyId == 0) {
+			try {
+				Group group = _groupLocalService.getGroup(groupId);
 
-			companyId = group.getCompanyId();
-		}
-		catch (PortalException portalException) {
-			if (_log.isDebugEnabled()) {
-				_log.debug(portalException);
+				companyId = group.getCompanyId();
+			}
+			catch (PortalException portalException) {
+				if (_log.isDebugEnabled()) {
+					_log.debug(portalException);
+				}
 			}
 		}
 
@@ -661,11 +655,6 @@ public class SitemapManagerImpl implements SitemapManager {
 		" xmlns=\"http://www.sitemaps.org/schemas/sitemap/0.9\"".getBytes();
 
 	private static final int _MAXIMUM_SIZE = 50 * 1024 * 1024;
-
-	private static final boolean _SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED =
-		GetterUtil.getBoolean(
-			SystemProperties.get("sitemap.exclude.redirect.urls.enabled"),
-			true);
 
 	private static final Log _log = LogFactoryUtil.getLog(
 		SitemapManagerImpl.class.getName());
