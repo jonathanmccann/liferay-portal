@@ -97,8 +97,8 @@ public class SitemapManagerImpl implements SitemapManager {
 			friendlyURL = friendlyURL.substring(1);
 		}
 
-		com.liferay.redirect.provider.RedirectProvider.Redirect redirect =
-			_redirectProvider.getRedirect(groupId, friendlyURL, fullURL, null);
+		RedirectProvider.Redirect redirect = _redirectProvider.getRedirect(
+			groupId, friendlyURL, fullURL, null);
 
 		if (redirect != null) {
 			return;
