@@ -21,7 +21,6 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutSet;
 import com.liferay.portal.kernel.model.LayoutTypeController;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.GroupLocalService;
 import com.liferay.portal.kernel.service.LayoutLocalService;
 import com.liferay.portal.kernel.service.LayoutSetLocalService;
@@ -91,7 +90,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			fullURL = fullURL.substring(1);
 		}
 
-		String friendlyURL = _getFriendlyURL(path);
+		String friendlyURL = _getFriendlyURL(path, groupId);
 
 		if (friendlyURL.startsWith(StringPool.SLASH)) {
 			friendlyURL = friendlyURL.substring(1);
@@ -254,7 +253,7 @@ public class SitemapManagerImpl implements SitemapManager {
 		_serviceTrackerMap.close();
 	}
 
-	private String _getFriendlyURL(String path) {
+	private String _getFriendlyURL(String path, long groupId) {
 		int[] groupFriendlyURLIndex = _portal.getGroupFriendlyURLIndex(path);
 
 		if (groupFriendlyURLIndex != null) {
@@ -265,7 +264,18 @@ public class SitemapManagerImpl implements SitemapManager {
 			return StringPool.BLANK;
 		}
 
-		long companyId = CompanyThreadLocal.getCompanyId();
+		long companyId = 0;
+
+		try {
+			Group group = _groupLocalService.getGroup(groupId);
+
+			companyId = group.getCompanyId();
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+		}
 
 		for (Locale availableLocale :
 				_language.getAvailableLocales(companyId)) {
