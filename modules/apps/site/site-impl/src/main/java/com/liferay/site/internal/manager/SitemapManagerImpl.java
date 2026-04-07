@@ -91,6 +91,8 @@ public class SitemapManagerImpl implements SitemapManager {
 			fullURL = fullURL.substring(1);
 		}
 
+		boolean _SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED = true;
+
 		if (_SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED) {
 			String friendlyURL = _getFriendlyURL(path, groupId);
 
