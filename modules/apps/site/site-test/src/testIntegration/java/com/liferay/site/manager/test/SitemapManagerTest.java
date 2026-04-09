@@ -1094,10 +1094,14 @@ public class SitemapManagerTest {
 	}
 
 	private void _assertEmptySitemap(String uuid) throws Exception {
-		Assert.assertEquals(
-			StringPool.BLANK,
-			_sitemapManager.getSitemap(
-				uuid, _group.getGroupId(), false, _themeDisplay));
+		String xml = _sitemapManager.getSitemap(
+			uuid, _group.getGroupId(), false, _themeDisplay);
+
+		Document document = _saxReader.read(xml);
+
+		Element rootElement = document.getRootElement();
+
+		Assert.assertTrue(rootElement.elements().isEmpty());
 	}
 
 	private void _assertSitemap(
@@ -1360,10 +1364,7 @@ public class SitemapManagerTest {
 							"includeWebContent", false
 						).build())) {
 
-			Assert.assertEquals(
-				StringPool.BLANK,
-				_sitemapManager.getSitemap(
-					null, guestGroupId, false, _themeDisplay));
+			_assertEmptySitemap(null);
 		}
 	}
 
