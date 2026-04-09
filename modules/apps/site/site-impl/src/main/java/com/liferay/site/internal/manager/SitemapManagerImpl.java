@@ -91,9 +91,9 @@ public class SitemapManagerImpl implements SitemapManager {
 			fullURL = fullURL.substring(1);
 		}
 
-		boolean _SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED = true;
+		boolean sitemapExcludeRedirectURLEnabled = true;
 
-		if (_SITEMAP_EXCLUDE_REDIRECT_URLS_ENABLED) {
+		if (sitemapExcludeRedirectURLEnabled) {
 			String friendlyURL = _getFriendlyURL(path, groupId);
 
 			if (friendlyURL.startsWith(StringPool.SLASH)) {
@@ -437,10 +437,6 @@ public class SitemapManagerImpl implements SitemapManager {
 		_visitLayoutSets(
 			_getLayoutSets(groupId, layoutUuid, privateLayout, themeDisplay),
 			layoutUuid, rootElement, themeDisplay);
-
-		if (!rootElement.hasContent()) {
-			return StringPool.BLANK;
-		}
 
 		_removeEntriesAndSize(rootElement);
 
