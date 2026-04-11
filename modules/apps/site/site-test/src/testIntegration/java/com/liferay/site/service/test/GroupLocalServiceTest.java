@@ -57,38 +57,6 @@ public class GroupLocalServiceTest {
 			new LiferayIntegrationTestRule(),
 			PermissionCheckerMethodTestRule.INSTANCE);
 
-	@FeatureFlag("LPD-82960")
-	@Test
-	public void testActivatingSiteClearsMaintenanceMode() throws Exception {
-		Group group = GroupTestUtil.addGroup();
-
-		Group updatedGroup = _groupLocalService.updateGroup(
-			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
-			group.getDescriptionMap(), group.getType(),
-			UnicodePropertiesBuilder.setProperty(
-				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
-				Boolean.TRUE.toString()
-			).build(
-			).toString(),
-			group.isManualMembership(), group.getMembershipRestriction(),
-			group.getFriendlyURL(), group.isInheritContent(), false,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
-
-		Assert.assertFalse(updatedGroup.isActive());
-		Assert.assertTrue(updatedGroup.isMaintenanceMode());
-
-		updatedGroup = _groupLocalService.updateGroup(
-			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
-			group.getDescriptionMap(), group.getType(),
-			updatedGroup.getTypeSettings(), group.isManualMembership(),
-			group.getMembershipRestriction(), group.getFriendlyURL(),
-			group.isInheritContent(), true,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
-
-		Assert.assertTrue(updatedGroup.isActive());
-		Assert.assertFalse(updatedGroup.isMaintenanceMode());
-	}
-
 	@Test
 	public void testAddGroup() throws Exception {
 		String groupName = RandomTestUtil.randomString();
@@ -176,34 +144,40 @@ public class GroupLocalServiceTest {
 		}
 	}
 
-	@FeatureFlag("LPD-82960")
-	@Test
-	public void testEnablingMaintenanceModeDeactivatesSite() throws Exception {
-		Group group = GroupTestUtil.addGroup();
-
-		Assert.assertTrue(group.isActive());
-
-		Group updatedGroup = _groupLocalService.updateGroup(
-			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
-			group.getDescriptionMap(), group.getType(),
-			UnicodePropertiesBuilder.setProperty(
-				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
-				Boolean.TRUE.toString()
-			).build(
-			).toString(),
-			group.isManualMembership(), group.getMembershipRestriction(),
-			group.getFriendlyURL(), group.isInheritContent(), true,
-			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
-
-		Assert.assertFalse(updatedGroup.isActive());
-		Assert.assertTrue(updatedGroup.isMaintenanceMode());
-	}
-
 	@Test
 	public void testGetStagedSites() {
 		List<Group> groups = _groupLocalService.getStagedSites();
 
 		Assert.assertTrue(groups.toString(), groups.isEmpty());
+	}
+
+	@FeatureFlag("LPD-82960")
+	@Test
+	public void testUpdateGroupMaintenanceModeScenarios() throws Exception {
+
+		// Initial State: Active = true, Maintenance = false
+
+		_testUpdateGroupMaintenanceMode(true, false, true, true, false, true);
+		_testUpdateGroupMaintenanceMode(true, false, true, false, true, false);
+		_testUpdateGroupMaintenanceMode(true, false, false, true, false, true);
+		_testUpdateGroupMaintenanceMode(
+			true, false, false, false, false, false);
+
+		// Initial State: Active = false, Maintenance = true
+
+		_testUpdateGroupMaintenanceMode(false, true, true, true, true, false);
+		_testUpdateGroupMaintenanceMode(false, true, true, false, true, false);
+		_testUpdateGroupMaintenanceMode(false, true, false, true, false, true);
+		_testUpdateGroupMaintenanceMode(
+			false, true, false, false, false, false);
+
+		// Initial State: Active = false, Maintenance = false
+
+		_testUpdateGroupMaintenanceMode(false, false, true, true, true, false);
+		_testUpdateGroupMaintenanceMode(false, false, true, false, true, false);
+		_testUpdateGroupMaintenanceMode(false, false, false, true, false, true);
+		_testUpdateGroupMaintenanceMode(
+			false, false, false, false, false, false);
 	}
 
 	private Group _addGroup(String name) throws Exception {
@@ -258,6 +232,70 @@ public class GroupLocalServiceTest {
 		Assert.assertEquals("/global", group.getFriendlyURL());
 
 		Assert.assertNotNull(_groupLocalService.getCompanyGroup(companyId));
+	}
+
+	private void _testUpdateGroupMaintenanceMode(
+			boolean initialActive, boolean initialMaintenance,
+			boolean updateActive, boolean updateMaintenance,
+			boolean expectedActive, boolean expectedMaintenance)
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		String typeSettings = group.getTypeSettings();
+
+		if (initialMaintenance) {
+			typeSettings = UnicodePropertiesBuilder.setProperty(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+				Boolean.TRUE.toString()
+			).build(
+			).toString();
+		}
+
+		group = _groupLocalService.updateGroup(
+			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
+			group.getDescriptionMap(), group.getType(), typeSettings,
+			group.isManualMembership(), group.getMembershipRestriction(),
+			group.getFriendlyURL(), group.isInheritContent(), initialActive,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		Assert.assertEquals(initialActive, group.isActive());
+		Assert.assertEquals(initialMaintenance, group.isMaintenanceMode());
+
+		UnicodeProperties unicodeProperties = UnicodePropertiesBuilder.fastLoad(
+			group.getTypeSettings()
+		).build();
+
+		if (updateMaintenance) {
+			unicodeProperties.setProperty(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE,
+				Boolean.TRUE.toString());
+		}
+		else {
+			unicodeProperties.remove(
+				GroupConstants.TYPE_SETTINGS_KEY_MAINTENANCE_MODE);
+		}
+
+		group = _groupLocalService.updateGroup(
+			group.getGroupId(), group.getParentGroupId(), group.getNameMap(),
+			group.getDescriptionMap(), group.getType(),
+			unicodeProperties.toString(), group.isManualMembership(),
+			group.getMembershipRestriction(), group.getFriendlyURL(),
+			group.isInheritContent(), updateActive,
+			ServiceContextTestUtil.getServiceContext(group.getGroupId()));
+
+		Assert.assertEquals(
+			StringBundler.concat(
+				"Failed for initA=", initialActive, ", initM=",
+				initialMaintenance, ", updA=", updateActive, ", updM=",
+				updateMaintenance),
+			expectedActive, group.isActive());
+		Assert.assertEquals(
+			StringBundler.concat(
+				"Failed for initA=", initialActive, ", initM=",
+				initialMaintenance, ", updA=", updateActive, ", updM=",
+				updateMaintenance),
+			expectedMaintenance, group.isMaintenanceMode());
 	}
 
 	@Inject
