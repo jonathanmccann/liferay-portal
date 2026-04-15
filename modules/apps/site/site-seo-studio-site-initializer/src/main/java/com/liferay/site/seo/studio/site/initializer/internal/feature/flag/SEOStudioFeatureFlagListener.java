@@ -50,10 +50,10 @@ public class SEOStudioFeatureFlagListener implements FeatureFlagListener {
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
 
-			Group group = _groupLocalService.fetchGroup(
+			Group group = _groupLocalService.getGroup(
 				companyId, GroupConstants.SEO_STUDIO);
 
-			if (group != null) {
+			if (!group.isActive()) {
 				_groupLocalService.updateGroup(
 					group.getGroupId(), group.getParentGroupId(),
 					group.getNameMap(), group.getDescriptionMap(),
@@ -73,10 +73,10 @@ public class SEOStudioFeatureFlagListener implements FeatureFlagListener {
 		try (SafeCloseable safeCloseable =
 				CTCollectionThreadLocal.setProductionModeWithSafeCloseable()) {
 
-			Group group = _groupLocalService.fetchGroup(
+			Group group = _groupLocalService.getGroup(
 				companyId, GroupConstants.SEO_STUDIO);
 
-			if ((group != null) && group.isActive()) {
+			if (group.isActive()) {
 				_groupLocalService.updateGroup(
 					group.getGroupId(), group.getParentGroupId(),
 					group.getNameMap(), group.getDescriptionMap(),
