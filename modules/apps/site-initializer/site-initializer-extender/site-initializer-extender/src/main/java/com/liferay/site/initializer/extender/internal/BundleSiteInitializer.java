@@ -3977,6 +3977,106 @@ public class BundleSiteInitializer implements SiteInitializer {
 		}
 	}
 
+	private void _addOrUpdateSegmentsExperiences(
+			ServiceContext serviceContext,
+			Map<String, String> stringUtilReplaceValues)
+		throws Exception {
+
+		Set<String> parentResourcePaths = _servletContext.getResourcePaths(
+			"/site-initializer/segments-experiences");
+
+		if (SetUtil.isEmpty(parentResourcePaths)) {
+			return;
+		}
+
+		for (String parentResourcePath : parentResourcePaths) {
+			String json = SiteInitializerUtil.read(
+				parentResourcePath + "segments-experiences.json",
+				_servletContext);
+
+			if (json == null) {
+				return;
+			}
+
+			json = _replace(json, stringUtilReplaceValues);
+
+			JSONObject jsonObject = _jsonFactory.createJSONObject(json);
+
+			Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
+				serviceContext.getScopeGroupId(), false,
+				jsonObject.getString("friendlyURL"));
+
+			Layout draftLayout = layout.fetchDraftLayout();
+
+			UnicodeProperties unicodeProperties = new UnicodeProperties(true);
+
+			JSONObject propertiesJSONObject = jsonObject.getJSONObject(
+				"typeSettings");
+
+			if (propertiesJSONObject != null) {
+				Map<String, String> map = JSONUtil.toStringMap(
+					propertiesJSONObject);
+
+				unicodeProperties.putAll(map);
+			}
+
+			SegmentsExperience segmentsExperience =
+				_segmentsExperienceLocalService.
+					fetchSegmentsExperienceByExternalReferenceCode(
+						jsonObject.getString("externalReferenceCode"),
+						serviceContext.getScopeGroupId());
+
+			if (segmentsExperience == null) {
+				segmentsExperience =
+					_segmentsExperienceLocalService.appendSegmentsExperience(
+						serviceContext.getUserId(),
+						serviceContext.getScopeGroupId(),
+						jsonObject.getString("segmentsEntryERC"),
+						jsonObject.getString("segmentsEntryScopeERC"),
+						draftLayout.getPlid(),
+						SiteInitializerUtil.toMap(
+							jsonObject.getString("name_i18n")),
+						jsonObject.getBoolean("active", true),
+						unicodeProperties, serviceContext);
+
+				String externalReferenceCode = jsonObject.getString(
+					"externalReferenceCode");
+
+				if (Validator.isNotNull(externalReferenceCode)) {
+					segmentsExperience.setExternalReferenceCode(
+						externalReferenceCode);
+
+					segmentsExperience =
+						_segmentsExperienceLocalService.
+							updateSegmentsExperience(segmentsExperience);
+				}
+			}
+			else {
+				segmentsExperience =
+					_segmentsExperienceLocalService.updateSegmentsExperience(
+						segmentsExperience.getSegmentsExperienceId(),
+						jsonObject.getString("segmentsEntryERC"),
+						jsonObject.getString("segmentsEntryScopeERC"),
+						SiteInitializerUtil.toMap(
+							jsonObject.getString("name_i18n")),
+						jsonObject.getBoolean("active", true),
+						unicodeProperties);
+			}
+
+			Set<String> resourcePaths = _servletContext.getResourcePaths(
+				parentResourcePath);
+
+			for (String resourcePath : resourcePaths) {
+				if (resourcePath.endsWith("/")) {
+					_addOrUpdateLayoutContent(
+						layout, resourcePath,
+						segmentsExperience.getSegmentsExperienceId(),
+						serviceContext, stringUtilReplaceValues);
+				}
+			}
+		}
+	}
+
 	private void _addOrUpdateSiteNavigationMenu(
 			JSONObject jsonObject, ServiceContext serviceContext,
 			Map<String, SiteNavigationMenuItemSetting>
@@ -4578,75 +4678,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 
 			_groupLocalService.setRoleGroups(
 				role.getRoleId(), ArrayUtil.toLongArray(groupIds));
-		}
-	}
-
-	private void _addSegmentsExperiences(
-			ServiceContext serviceContext,
-			Map<String, String> stringUtilReplaceValues)
-		throws Exception {
-
-		Set<String> parentResourcePaths = _servletContext.getResourcePaths(
-			"/site-initializer/segments-experiences");
-
-		if (SetUtil.isEmpty(parentResourcePaths)) {
-			return;
-		}
-
-		for (String parentResourcePath : parentResourcePaths) {
-			String json = SiteInitializerUtil.read(
-				parentResourcePath + "segments-experiences.json",
-				_servletContext);
-
-			if (json == null) {
-				return;
-			}
-
-			json = _replace(json, stringUtilReplaceValues);
-
-			JSONObject jsonObject = _jsonFactory.createJSONObject(json);
-
-			Layout layout = _layoutLocalService.getLayoutByFriendlyURL(
-				serviceContext.getScopeGroupId(), false,
-				jsonObject.getString("friendlyURL"));
-
-			Layout draftLayout = layout.fetchDraftLayout();
-
-			UnicodeProperties unicodeProperties = new UnicodeProperties(true);
-
-			JSONObject propertiesJSONObject = jsonObject.getJSONObject(
-				"typeSettings");
-
-			if (propertiesJSONObject != null) {
-				Map<String, String> map = JSONUtil.toStringMap(
-					propertiesJSONObject);
-
-				unicodeProperties.putAll(map);
-			}
-
-			SegmentsExperience segmentsExperience =
-				_segmentsExperienceLocalService.appendSegmentsExperience(
-					serviceContext.getUserId(),
-					serviceContext.getScopeGroupId(),
-					jsonObject.getString("segmentsEntryERC"),
-					jsonObject.getString("segmentsEntryScopeERC"),
-					draftLayout.getPlid(),
-					SiteInitializerUtil.toMap(
-						jsonObject.getString("name_i18n")),
-					jsonObject.getBoolean("active", true), unicodeProperties,
-					serviceContext);
-
-			Set<String> resourcePaths = _servletContext.getResourcePaths(
-				parentResourcePath);
-
-			for (String resourcePath : resourcePaths) {
-				if (resourcePath.endsWith("/")) {
-					_addOrUpdateLayoutContent(
-						layout, resourcePath,
-						segmentsExperience.getSegmentsExperienceId(),
-						serviceContext, stringUtilReplaceValues);
-				}
-			}
 		}
 	}
 
@@ -5335,6 +5366,10 @@ public class BundleSiteInitializer implements SiteInitializer {
 			"addOrUpdateSegmentsEntries",
 			() -> _addOrUpdateSegmentsEntries(
 				serviceContext, stringUtilReplaceValues));
+		R addOrUpdateSegmentsExperiencesR = new R(
+			"addOrUpdateSegmentsExperiences",
+			() -> _addOrUpdateSegmentsExperiences(
+				serviceContext, stringUtilReplaceValues));
 		R addOrUpdateSXPBlueprintR = new R(
 			"addOrUpdateSXPBlueprint",
 			() -> _addOrUpdateSXPBlueprint(
@@ -5351,10 +5386,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 			"addPortletSettings", () -> _addPortletSettings(serviceContext));
 		R addRolesAssignmentsR = new R(
 			"addRolesAssignments", () -> _addRolesAssignments(serviceContext));
-		R addSegmentsExperiencesR = new R(
-			"addSegmentsExperiences",
-			() -> _addSegmentsExperiences(
-				serviceContext, stringUtilReplaceValues));
 		R addSiteConfigurationR = new R(
 			"addSiteConfiguration",
 			() -> _addSiteConfiguration(serviceContext));
@@ -5490,7 +5521,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 			addOrUpdateOrganizationsR, _dependsOn(addOrUpdateExpandoColumnsR)
 		).put(
 			addOrUpdateResourcePermissionsR,
-			_dependsOn(addSegmentsExperiencesR, addWorkflowDefinitionsR)
+			_dependsOn(addOrUpdateSegmentsExperiencesR, addWorkflowDefinitionsR)
 		).put(
 			addOrUpdateRolesR, _dependsOn()
 		).put(
@@ -5498,6 +5529,9 @@ public class BundleSiteInitializer implements SiteInitializer {
 		).put(
 			addOrUpdateSegmentsEntriesR,
 			_dependsOn(addOrUpdateRolesR, addUserAccountsR)
+		).put(
+			addOrUpdateSegmentsExperiencesR,
+			_dependsOn(addOrUpdateLayoutsContentR, addOrUpdateSegmentsEntriesR)
 		).put(
 			addOrUpdateSXPBlueprintR,
 			_dependsOn(addOrUpdateTaxonomyVocabulariesR)
@@ -5512,9 +5546,6 @@ public class BundleSiteInitializer implements SiteInitializer {
 			addRolesAssignmentsR,
 			_dependsOn(
 				addOrUpdateRolesR, addOrUpdateUserGroupsR, addUserAccountsR)
-		).put(
-			addSegmentsExperiencesR,
-			_dependsOn(addOrUpdateLayoutsContentR, addOrUpdateSegmentsEntriesR)
 		).put(
 			addSiteConfigurationR, _dependsOn(addOrUpdateRolesR)
 		).put(
