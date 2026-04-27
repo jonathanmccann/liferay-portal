@@ -3,7 +3,7 @@
 	"externalReferenceCode": "TEST-SEGMENTS-EXPERIENCE-2",
 	"friendlyURL": "/test-public-layout",
 	"name_i18n": {
-		"en-US": "Test Segments Experience 2"
+		"en-US": "Test Segments Experience 2 Update"
 	},
 	"segmentsEntryERC": "[$SEGMENTS_ENTRY_ERC:TEST-SEGMENTS-ENTRY-2$]",
 	"segmentsEntryScopeERC": "[$SEGMENTS_ENTRY_SCOPE_ERC:TEST-SEGMENTS-ENTRY-2$]"

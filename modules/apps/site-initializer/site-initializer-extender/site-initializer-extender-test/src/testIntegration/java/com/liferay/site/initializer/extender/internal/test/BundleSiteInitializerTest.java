@@ -3852,6 +3852,96 @@ public class BundleSiteInitializerTest {
 			draftLayoutSegmentsExperience2.getSegmentsExperienceId());
 	}
 
+	private void _assertSegmentsExperiences1() throws Exception {
+		SegmentsExperience segmentsExperience1 =
+			_segmentsExperienceLocalService.
+				fetchSegmentsExperienceByExternalReferenceCode(
+					"TEST-SEGMENTS-EXPERIENCE-1", _group.getGroupId());
+
+		Assert.assertNotNull(segmentsExperience1);
+		Assert.assertEquals(
+			"Test Segments Experience 1",
+			segmentsExperience1.getName(LocaleUtil.getSiteDefault()));
+
+		SegmentsExperience segmentsExperience2 =
+			_segmentsExperienceLocalService.
+				fetchSegmentsExperienceByExternalReferenceCode(
+					"TEST-SEGMENTS-EXPERIENCE-2", _group.getGroupId());
+
+		Assert.assertNotNull(segmentsExperience2);
+		Assert.assertEquals(
+			"Test Segments Experience 2",
+			segmentsExperience2.getName(LocaleUtil.getSiteDefault()));
+
+		SegmentsEntry segmentsEntry1 =
+			_segmentsEntryLocalService.fetchSegmentsEntry(
+				_group.getGroupId(), "TEST-SEGMENTS-ENTRY-1");
+		SegmentsEntry segmentsEntry2 =
+			_segmentsEntryLocalService.fetchSegmentsEntry(
+				_group.getGroupId(), "TEST-SEGMENTS-ENTRY-2");
+
+		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			_group.getGroupId(), false, "/test-public-layout");
+
+		List<SegmentsExperience> publishLayoutSegmentsExperiences =
+			_segmentsExperienceLocalService.getSegmentsExperiences(
+				_group.getGroupId(),
+				new String[] {
+					segmentsEntry1.getExternalReferenceCode(),
+					segmentsEntry2.getExternalReferenceCode()
+				},
+				null, layout.getPlid(), true);
+
+		Assert.assertEquals(
+			publishLayoutSegmentsExperiences.toString(), 2,
+			publishLayoutSegmentsExperiences.size());
+	}
+
+	private void _assertSegmentsExperiences2() throws Exception {
+		SegmentsExperience segmentsExperience1 =
+			_segmentsExperienceLocalService.
+				fetchSegmentsExperienceByExternalReferenceCode(
+					"TEST-SEGMENTS-EXPERIENCE-1", _group.getGroupId());
+
+		Assert.assertNotNull(segmentsExperience1);
+		Assert.assertEquals(
+			"Test Segments Experience 1",
+			segmentsExperience1.getName(LocaleUtil.getSiteDefault()));
+
+		SegmentsExperience segmentsExperience2 =
+			_segmentsExperienceLocalService.
+				fetchSegmentsExperienceByExternalReferenceCode(
+					"TEST-SEGMENTS-EXPERIENCE-2", _group.getGroupId());
+
+		Assert.assertNotNull(segmentsExperience2);
+		Assert.assertEquals(
+			"Test Segments Experience 2 Update",
+			segmentsExperience2.getName(LocaleUtil.getSiteDefault()));
+
+		SegmentsEntry segmentsEntry1 =
+			_segmentsEntryLocalService.fetchSegmentsEntry(
+				_group.getGroupId(), "TEST-SEGMENTS-ENTRY-1");
+		SegmentsEntry segmentsEntry2 =
+			_segmentsEntryLocalService.fetchSegmentsEntry(
+				_group.getGroupId(), "TEST-SEGMENTS-ENTRY-2");
+
+		Layout layout = _layoutLocalService.fetchLayoutByFriendlyURL(
+			_group.getGroupId(), false, "/test-public-layout");
+
+		List<SegmentsExperience> publishLayoutSegmentsExperiences =
+			_segmentsExperienceLocalService.getSegmentsExperiences(
+				_group.getGroupId(),
+				new String[] {
+					segmentsEntry1.getExternalReferenceCode(),
+					segmentsEntry2.getExternalReferenceCode()
+				},
+				null, layout.getPlid(), true);
+
+		Assert.assertEquals(
+			publishLayoutSegmentsExperiences.toString(), 2,
+			publishLayoutSegmentsExperiences.size());
+	}
+
 	private void _assertSiteConfiguration1() throws Exception {
 		Assert.assertEquals(
 			GroupConstants.DEFAULT_MEMBERSHIP_RESTRICTION,
@@ -4623,6 +4713,7 @@ public class BundleSiteInitializerTest {
 		_assertPortletSettings();
 		_assertSAPEntries();
 		_assertSegmentsEntries();
+		_assertSegmentsExperiences1();
 		_assertSiteConfiguration1();
 		_assertSiteSettings();
 		_assertSiteNavigationMenu1();
@@ -4662,6 +4753,7 @@ public class BundleSiteInitializerTest {
 		_assertOrganizations2();
 		_assertPLOEntries2();
 		_assertResourcePermission2();
+		_assertSegmentsExperiences2();
 		_assertSiteConfiguration2();
 		_assertSiteNavigationMenu2();
 		_assertSXPBlueprint2();
