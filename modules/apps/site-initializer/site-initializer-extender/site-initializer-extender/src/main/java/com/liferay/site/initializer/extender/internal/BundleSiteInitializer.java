@@ -3995,7 +3995,7 @@ public class BundleSiteInitializer implements SiteInitializer {
 				_servletContext);
 
 			if (json == null) {
-				return;
+				continue;
 			}
 
 			json = _replace(json, stringUtilReplaceValues);
