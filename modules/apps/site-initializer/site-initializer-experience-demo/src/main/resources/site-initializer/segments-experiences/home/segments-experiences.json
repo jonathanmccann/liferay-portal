@@ -1,0 +1,10 @@
+{
+	"active": "true",
+	"externalReferenceCode": "EXPERIENCE-DEMO-HOME-ADMINISTRATORS",
+	"friendlyURL": "/home",
+	"name_i18n": {
+		"en-US": "Administrators"
+	},
+	"segmentsEntryERC": "[$SEGMENTS_ENTRY_ERC:ADMINISTRATORS$]",
+	"segmentsEntryScopeERC": "[$SEGMENTS_ENTRY_SCOPE_ERC:ADMINISTRATORS$]"
+}

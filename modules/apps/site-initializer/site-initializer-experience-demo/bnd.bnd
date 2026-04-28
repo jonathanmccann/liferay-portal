@@ -1,0 +1,6 @@
+Bundle-Name: Liferay Site Initializer Experience Demo
+Bundle-SymbolicName: com.liferay.site.initializer.experience.demo
+Bundle-Version: 1.0.0
+Liferay-Site-Initializer-Name: Experience Demo
+Provide-Capability: liferay.site.initializer
+Web-ContextPath: /site-initializer-experience-demo
