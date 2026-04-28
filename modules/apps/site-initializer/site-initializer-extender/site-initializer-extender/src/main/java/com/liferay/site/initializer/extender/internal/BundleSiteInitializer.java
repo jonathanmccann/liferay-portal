@@ -4050,6 +4050,37 @@ public class BundleSiteInitializer implements SiteInitializer {
 						_segmentsExperienceLocalService.
 							updateSegmentsExperience(segmentsExperience);
 				}
+
+				_layoutLocalService.copyLayoutContent(
+					_segmentsExperienceLocalService.
+						fetchDefaultSegmentsExperienceId(draftLayout.getPlid()),
+					draftLayout,
+					segmentsExperience.getSegmentsExperienceId(), draftLayout);
+
+				SegmentsExperience liveSegmentsExperience =
+					_segmentsExperienceLocalService.appendSegmentsExperience(
+						serviceContext.getUserId(),
+						serviceContext.getScopeGroupId(),
+						jsonObject.getString("segmentsEntryERC"),
+						jsonObject.getString("segmentsEntryScopeERC"),
+						layout.getPlid(),
+						SiteInitializerUtil.toMap(
+							jsonObject.getString("name_i18n")),
+						jsonObject.getBoolean("active", true),
+						unicodeProperties, serviceContext);
+
+				liveSegmentsExperience.setSegmentsExperienceKey(
+					segmentsExperience.getSegmentsExperienceKey());
+
+				liveSegmentsExperience =
+					_segmentsExperienceLocalService.updateSegmentsExperience(
+						liveSegmentsExperience);
+
+				_layoutLocalService.copyLayoutContent(
+					_segmentsExperienceLocalService.
+						fetchDefaultSegmentsExperienceId(layout.getPlid()),
+					layout,
+					liveSegmentsExperience.getSegmentsExperienceId(), layout);
 			}
 			else {
 				segmentsExperience =
@@ -4061,6 +4092,23 @@ public class BundleSiteInitializer implements SiteInitializer {
 							jsonObject.getString("name_i18n")),
 						jsonObject.getBoolean("active", true),
 						unicodeProperties);
+
+				SegmentsExperience liveSegmentsExperience =
+					_segmentsExperienceLocalService.fetchSegmentsExperience(
+						serviceContext.getScopeGroupId(),
+						segmentsExperience.getSegmentsExperienceKey(),
+						layout.getPlid());
+
+				if (liveSegmentsExperience != null) {
+					_segmentsExperienceLocalService.updateSegmentsExperience(
+						liveSegmentsExperience.getSegmentsExperienceId(),
+						jsonObject.getString("segmentsEntryERC"),
+						jsonObject.getString("segmentsEntryScopeERC"),
+						SiteInitializerUtil.toMap(
+							jsonObject.getString("name_i18n")),
+						jsonObject.getBoolean("active", true),
+						unicodeProperties);
+				}
 			}
 
 			Set<String> resourcePaths = _servletContext.getResourcePaths(
