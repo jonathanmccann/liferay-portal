@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>{{RESOURCE_NAME}} — exploratory testing findings</title>
+<style>
+  :root {
+    --bg: #fbfbfb;
+    --fg: #1d2327;
+    --muted: #5a6470;
+    --border: #d8dde3;
+    --code-bg: #f1f3f6;
+    --link: #1356b8;
+    --crit: #b3261e;
+    --crit-bg: #fdecea;
+    --high: #c75a00;
+    --high-bg: #fff2e2;
+    --med:  #6b5800;
+    --med-bg: #fff8d6;
+    --low:  #2f6f3f;
+    --low-bg: #e7f4ea;
+  }
+  html { font-size: 16px; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    margin: 0;
+    line-height: 1.55;
+  }
+  .wrap {
+    max-width: 920px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 5rem;
+  }
+  h1 {
+    font-size: 1.85rem;
+    margin: 0 0 0.4rem;
+    line-height: 1.25;
+  }
+  h2 {
+    font-size: 1.4rem;
+    margin: 2.5rem 0 0.75rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid var(--border);
+  }
+  h3 {
+    font-size: 1.1rem;
+    margin: 1.6rem 0 0.5rem;
+  }
+  p, ul, ol, table { margin: 0.6rem 0; }
+  a { color: var(--link); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  code, kbd {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    font-size: 0.92em;
+    background: var(--code-bg);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+  }
+  pre {
+    background: var(--code-bg);
+    padding: 0.8rem 1rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    font-size: 0.88rem;
+  }
+  pre code { background: transparent; padding: 0; }
+  .lead {
+    color: var(--muted);
+    font-size: 0.97rem;
+    margin: 0.4rem 0 1.5rem;
+  }
+  .finding {
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    border-radius: 4px;
+    padding: 1rem 1.2rem;
+    margin: 1.1rem 0;
+    background: white;
+  }
+  .finding.crit { border-left-color: var(--crit); }
+  .finding.high { border-left-color: var(--high); }
+  .finding.med  { border-left-color: var(--med);  }
+  .finding.low  { border-left-color: var(--low);  }
+  .finding h3 { margin-top: 0; display: flex; align-items: center; gap: 0.5rem; }
+  .badge {
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    padding: 0.15rem 0.45rem;
+    border-radius: 3px;
+    letter-spacing: 0.04em;
+  }
+  .badge.crit { background: var(--crit-bg); color: var(--crit); }
+  .badge.high { background: var(--high-bg); color: var(--high); }
+  .badge.med  { background: var(--med-bg);  color: var(--med); }
+  .badge.low  { background: var(--low-bg);  color: var(--low); }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.92rem;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 0.45rem 0.6rem;
+    text-align: left;
+    vertical-align: top;
+  }
+  th { background: var(--code-bg); font-weight: 600; }
+  td.center { text-align: center; }
+  ul, ol { padding-left: 1.4rem; }
+  li { margin: 0.25rem 0; }
+  .toc {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1rem 1.3rem;
+    margin: 1.5rem 0;
+  }
+  .toc ol { margin: 0.3rem 0; padding-left: 1.4rem; }
+  .toc li { margin: 0.15rem 0; font-size: 0.95rem; }
+  .meta {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin: 0.3rem 0 0;
+  }
+  .label { color: var(--muted); font-weight: 600; }
+  hr { border: none; border-top: 1px solid var(--border); margin: 3rem 0 1rem; }
+  .client-impact {
+    background: var(--low-bg);
+    border-left: 3px solid var(--low);
+    padding: 0.6rem 0.9rem;
+    border-radius: 3px;
+    font-size: 0.92rem;
+    margin: 0.6rem 0;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<h1>{{RESOURCE_NAME}} — exploratory testing findings</h1>
+<p class="lead">
+  Exploratory black-box testing of {{RESOURCE_PATH}} against the running localhost bundle.{{OPTIONAL_CONTEXT_SENTENCE}}
+</p>
+<p class="meta">
+  Tested {{DATE}} · All test artifacts cleaned up.
+</p>
+
+<div class="toc">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#critical">Critical</a></li>
+    <li><a href="#high">High</a></li>
+    <li><a href="#medium">Medium</a></li>
+    <li><a href="#low">Low / informational</a></li>
+    <li><a href="#coverage">Coverage observations</a></li>
+    <li><a href="#priorities">Suggested fix priority</a></li>
+  </ol>
+</div>
+
+<p>Severity is the tester's judgement, not gospel — open to recalibration.</p>
+
+<!-- =============== EXAMPLE FINDING (delete and replace) =============== -->
+<h2 id="critical">Critical</h2>
+
+<div class="finding crit">
+  <h3 id="c1"><span class="badge crit">C1</span> Short summary of the finding</h3>
+  <p><span class="label">Reproducer:</span> describe the exact request(s) and any setup. Include curl-ready commands when useful.</p>
+  <p><span class="label">Expected:</span> describe the documented or intuitive behavior.</p>
+  <p><span class="label">Actual:</span> describe the observed behavior, with HTTP status codes and notable response fragments.</p>
+  <p><span class="label">Root cause:</span> point at <code>file:line</code> where the bug originates. Include any AOP / threadlocal / service-vs-localservice analysis if relevant.</p>
+  <div class="client-impact">
+    <strong>Client impact:</strong> who is affected (UI consumer, scripted client, admin tool, end user), under what conditions, and any known mitigations or workarounds.
+  </div>
+  <p><span class="label">Suggested fix:</span> smallest viable change, file-by-file. Reference precedent in the codebase if the project has one (e.g. existing <code>*ExceptionMapper</code> classes).</p>
+</div>
+
+<h2 id="high">High</h2>
+<!-- repeat finding blocks with class="finding high" and badge class="high" -->
+
+<h2 id="medium">Medium</h2>
+<!-- repeat finding blocks with class="finding med" and badge class="med" -->
+
+<h2 id="low">Low / informational</h2>
+<!-- repeat finding blocks with class="finding low" and badge class="low" -->
+
+<!-- =============== COVERAGE =============== -->
+<h2 id="coverage">Coverage observations on the integration test</h2>
+<p>List categories the existing <code>*ResourceTest.java</code> misses. Be specific so a developer can add the gaps as new <code>@Test</code> methods.</p>
+<ul>
+  <li>Example: no test for non-admin authenticated user on PUT (only unauthenticated → 403 is covered)</li>
+</ul>
+
+<!-- =============== PRIORITIES =============== -->
+<h2 id="priorities">Suggested fix priority</h2>
+<ol>
+  <li><strong><a href="#c1">C1</a></strong> — one-sentence rationale (impact × effort)</li>
+</ol>
+
+<hr>
+<p class="meta">
+  Generated by the <code>explore-test-headless</code> skill.
+</p>
+
+</div>
+</body>
+</html>
