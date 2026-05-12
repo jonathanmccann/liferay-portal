@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.Portal;
 import com.liferay.portal.kernel.util.PortalUtil;
+import com.liferay.portal.kernel.util.Validator;
 
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
@@ -33,6 +34,19 @@ public class SitemapServlet extends HttpServlet {
 		try {
 			String redirect = Portal.PATH_MAIN + "/portal/sitemap";
 
+			String assetTypeSlug = _getAssetTypeSlug(
+				httpServletRequest.getRequestURI());
+
+			if (Validator.isNotNull(assetTypeSlug)) {
+				String queryString = httpServletRequest.getQueryString();
+
+				redirect = redirect + "?assetTypeSlug=" + assetTypeSlug;
+
+				if (Validator.isNotNull(queryString)) {
+					redirect = redirect + "&" + queryString;
+				}
+			}
+
 			ServletContext servletContext = getServletContext();
 
 			RequestDispatcher requestDispatcher =
@@ -47,6 +61,37 @@ public class SitemapServlet extends HttpServlet {
 				HttpServletResponse.SC_INTERNAL_SERVER_ERROR, exception,
 				httpServletRequest, httpServletResponse);
 		}
+	}
+
+	private String _getAssetTypeSlug(String requestURI) {
+		if (requestURI == null) {
+			return null;
+		}
+
+		int slashIndex = requestURI.lastIndexOf('/');
+
+		String fileName = requestURI.substring(slashIndex + 1);
+
+		if (!fileName.startsWith("sitemap-") || !fileName.endsWith(".xml")) {
+			return null;
+		}
+
+		String assetTypeSlug = fileName.substring(
+			"sitemap-".length(), fileName.length() - ".xml".length());
+
+		if (assetTypeSlug.isEmpty()) {
+			return null;
+		}
+
+		for (int i = 0; i < assetTypeSlug.length(); i++) {
+			char c = assetTypeSlug.charAt(i);
+
+			if (!Character.isLetterOrDigit(c) && (c != '-')) {
+				return null;
+			}
+		}
+
+		return assetTypeSlug;
 	}
 
 	private static final Log _log = LogFactoryUtil.getLog(SitemapServlet.class);
