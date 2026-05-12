@@ -57,12 +57,12 @@ import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
@@ -219,16 +219,6 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	@Override
-	public String getAssetTypeFromSlug(String slug) {
-		return _classNamesBySlugMap.get(slug);
-	}
-
-	@Override
-	public Map<String, String> getAssetTypeSlugs() {
-		return _slugsByClassNameMap;
-	}
-
-	@Override
 	public String getSitemap(
 			long groupId, boolean privateLayout, ThemeDisplay themeDisplay)
 		throws PortalException {
@@ -249,14 +239,19 @@ public class SitemapManagerImpl implements SitemapManager {
 	@Override
 	public String getSitemap(
 			String layoutUuid, long groupId, boolean privateLayout,
-			ThemeDisplay themeDisplay, String assetType)
+			ThemeDisplay themeDisplay, String assetTypeSlug)
 		throws PortalException {
 
-		if (Validator.isNotNull(assetType)) {
+		if (Validator.isNotNull(assetTypeSlug)) {
 			long companyId = themeDisplay.getCompanyId();
 
-			SitemapURLProvider sitemapURLProvider =
-				_serviceTrackerMap.getService(assetType);
+			String className = _classNamesByAssetTypeSlug.get(assetTypeSlug);
+
+			SitemapURLProvider sitemapURLProvider = null;
+
+			if (className != null) {
+				sitemapURLProvider = _serviceTrackerMap.getService(className);
+			}
 
 			if ((sitemapURLProvider == null) ||
 				!_sitemapConfigurationManager.xmlSitemapIndexCompanyEnabled(
@@ -271,7 +266,7 @@ public class SitemapManagerImpl implements SitemapManager {
 			}
 
 			return _getAssetTypeSitemap(
-				groupId, privateLayout, themeDisplay, assetType);
+				groupId, privateLayout, themeDisplay, className);
 		}
 
 		if (Validator.isNull(layoutUuid) &&
@@ -338,7 +333,7 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	private String _getAssetTypeSitemap(
 			long groupId, boolean privateLayout, ThemeDisplay themeDisplay,
-			String assetType)
+			String className)
 		throws PortalException {
 
 		Document document = _createSitemapDocument(
@@ -349,7 +344,7 @@ public class SitemapManagerImpl implements SitemapManager {
 		_initEntriesAndSize(rootElement);
 
 		SitemapURLProvider sitemapURLProvider = _serviceTrackerMap.getService(
-			assetType);
+			className);
 
 		if ((sitemapURLProvider != null) &&
 			sitemapURLProvider.isInclude(
@@ -444,9 +439,10 @@ public class SitemapManagerImpl implements SitemapManager {
 			String portalURL = themeDisplay.getPortalURL();
 
 			for (Map.Entry<String, String> entry :
-					_slugsByClassNameMap.entrySet()) {
+					_classNamesByAssetTypeSlug.entrySet()) {
 
-				String className = entry.getKey();
+				String assetTypeSlug = entry.getKey();
+				String className = entry.getValue();
 
 				SitemapURLProvider sitemapURLProvider =
 					_serviceTrackerMap.getService(className);
@@ -465,7 +461,7 @@ public class SitemapManagerImpl implements SitemapManager {
 				locationElement.addText(
 					StringBundler.concat(
 						portalURL, _portal.getPathContext(), "/sitemap-",
-						entry.getValue(), ".xml?groupId=", groupId,
+						assetTypeSlug, ".xml?groupId=", groupId,
 						"&privateLayout=", privateLayout));
 
 				Date lastModified = _getAssetTypeGroupLastModified(
@@ -796,22 +792,21 @@ public class SitemapManagerImpl implements SitemapManager {
 
 	private static final BundleContext _bundleContext =
 		SystemBundleUtil.getBundleContext();
-	private static final Map<String, String> _classNamesBySlugMap;
-	private static final Map<String, String> _slugsByClassNameMap = Map.of(
-		AssetCategory.class.getName(), "categories",
-		JournalArticle.class.getName(), "web-content", Layout.class.getName(),
-		"pages", ObjectEntry.class.getName(), "object-entries");
+	private static final Map<String, String> _classNamesByAssetTypeSlug;
 
 	static {
-		Map<String, String> map = new ConcurrentHashMap<>();
+		Map<String, String> classNamesByAssetTypeSlug = new LinkedHashMap<>();
 
-		for (Map.Entry<String, String> entry :
-				_slugsByClassNameMap.entrySet()) {
+		classNamesByAssetTypeSlug.put("pages", Layout.class.getName());
+		classNamesByAssetTypeSlug.put(
+			"web-content", JournalArticle.class.getName());
+		classNamesByAssetTypeSlug.put(
+			"categories", AssetCategory.class.getName());
+		classNamesByAssetTypeSlug.put(
+			"object-entries", ObjectEntry.class.getName());
 
-			map.put(entry.getValue(), entry.getKey());
-		}
-
-		_classNamesBySlugMap = Collections.unmodifiableMap(map);
+		_classNamesByAssetTypeSlug = Collections.unmodifiableMap(
+			classNamesByAssetTypeSlug);
 	}
 
 	@Reference

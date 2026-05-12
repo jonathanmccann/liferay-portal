@@ -343,7 +343,7 @@ public class SitemapManagerTest {
 
 			String xml = _sitemapManager.getSitemap(
 				null, _group.getGroupId(), false, _themeDisplay,
-				_CLASS_NAME_OBJECT_ENTRY);
+				_SLUG_OBJECT_ENTRIES);
 
 			Document document = _saxReader.read(xml);
 
@@ -393,7 +393,7 @@ public class SitemapManagerTest {
 
 			String xml = _sitemapManager.getSitemap(
 				null, _group.getGroupId(), false, _themeDisplay,
-				_CLASS_NAME_JOURNAL_ARTICLE);
+				_SLUG_WEB_CONTENT);
 
 			Assert.assertNull(xml);
 		}
@@ -418,7 +418,7 @@ public class SitemapManagerTest {
 
 			String xml = _sitemapManager.getSitemap(
 				null, _group.getGroupId(), false, _themeDisplay,
-				_CLASS_NAME_JOURNAL_ARTICLE);
+				_SLUG_WEB_CONTENT);
 
 			Document document = _saxReader.read(xml);
 
@@ -1164,28 +1164,11 @@ public class SitemapManagerTest {
 							"xmlSitemapIndexEnabled", true
 						).build())) {
 
-			List<String> urls = new ArrayList<>();
-
-			for (Map.Entry<String, String> entry :
-					_sitemapManager.getAssetTypeSlugs(
-					).entrySet()) {
-
-				if (StringUtil.equals(
-						entry.getKey(), _CLASS_NAME_OBJECT_ENTRY)) {
-
-					continue;
-				}
-
-				urls.add(
-					StringBundler.concat(
-						_themeDisplay.getPortalURL(), _portal.getPathContext(),
-						"/sitemap-", entry.getValue(), ".xml?groupId=",
-						_group.getGroupId(), "&privateLayout=false"));
-			}
-
 			_assertSitemap(
 				false, _group.getGroupId(), StringPool.BLANK,
-				ArrayUtil.toStringArray(urls));
+				_buildAssetTypeSitemapURL(_SLUG_PAGES),
+				_buildAssetTypeSitemapURL(_SLUG_WEB_CONTENT),
+				_buildAssetTypeSitemapURL(_SLUG_CATEGORIES));
 		}
 	}
 
@@ -1215,7 +1198,7 @@ public class SitemapManagerTest {
 
 			Element webContentLocElement = _getLocElement(
 				rootElement.elements(),
-				_buildAssetTypeSitemapURL(_CLASS_NAME_JOURNAL_ARTICLE));
+				_buildAssetTypeSitemapURL(_SLUG_WEB_CONTENT));
 
 			Assert.assertNotNull(webContentLocElement);
 
@@ -1234,11 +1217,9 @@ public class SitemapManagerTest {
 	public void testSitemapIndexByAssetTypeRespectsPerTypeFlagsCompany()
 		throws Exception {
 
-		String categoriesURL = _buildAssetTypeSitemapURL(
-			_CLASS_NAME_ASSET_CATEGORY);
-		String pagesURL = _buildAssetTypeSitemapURL(_CLASS_NAME_LAYOUT);
-		String webContentURL = _buildAssetTypeSitemapURL(
-			_CLASS_NAME_JOURNAL_ARTICLE);
+		String categoriesURL = _buildAssetTypeSitemapURL(_SLUG_CATEGORIES);
+		String pagesURL = _buildAssetTypeSitemapURL(_SLUG_PAGES);
+		String webContentURL = _buildAssetTypeSitemapURL(_SLUG_WEB_CONTENT);
 
 		try (CompanyConfigurationTemporarySwapper
 				companyConfigurationTemporarySwapper =
@@ -1475,14 +1456,11 @@ public class SitemapManagerTest {
 		}
 	}
 
-	private String _buildAssetTypeSitemapURL(String assetTypeGroup) {
+	private String _buildAssetTypeSitemapURL(String assetTypeSlug) {
 		return StringBundler.concat(
 			_themeDisplay.getPortalURL(), _portal.getPathContext(), "/sitemap-",
-			_sitemapManager.getAssetTypeSlugs(
-			).get(
-				assetTypeGroup
-			),
-			".xml?groupId=", _group.getGroupId(), "&privateLayout=false");
+			assetTypeSlug, ".xml?groupId=", _group.getGroupId(),
+			"&privateLayout=false");
 	}
 
 	private Set<Locale> _getAvailableLocales(Layout layout)
@@ -1836,22 +1814,19 @@ public class SitemapManagerTest {
 
 	private static final String _ASSET_TYPE_GROUPING_MODE = "asset-type";
 
-	private static final String _CLASS_NAME_ASSET_CATEGORY =
-		AssetCategory.class.getName();
-
-	private static final String _CLASS_NAME_JOURNAL_ARTICLE =
-		JournalArticle.class.getName();
-
-	private static final String _CLASS_NAME_LAYOUT = Layout.class.getName();
-
-	private static final String _CLASS_NAME_OBJECT_ENTRY =
-		ObjectEntry.class.getName();
-
 	private static final String _PID_SITEMAP_COMPANY_CONFIGURATION =
 		"com.liferay.site.internal.configuration.SitemapCompanyConfiguration";
 
 	private static final String _PID_SITEMAP_GROUP_CONFIGURATION =
 		"com.liferay.site.internal.configuration.SitemapGroupConfiguration";
+
+	private static final String _SLUG_CATEGORIES = "categories";
+
+	private static final String _SLUG_OBJECT_ENTRIES = "object-entries";
+
+	private static final String _SLUG_PAGES = "pages";
+
+	private static final String _SLUG_WEB_CONTENT = "web-content";
 
 	private static CompanyConfigurationTemporarySwapper
 		_companyConfigurationTemporarySwapper;
