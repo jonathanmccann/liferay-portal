@@ -88,6 +88,12 @@
 				"en_US": "Detected Date"
 			},
 			"name": "detectedDate",
+			"objectFieldSettings": [
+				{
+					"name": "timeStorage",
+					"value": "convertToUTC"
+				}
+			],
 			"required": true,
 			"system": true,
 			"type": "Date"
@@ -185,6 +191,12 @@
 				"en_US": "Resolved Date"
 			},
 			"name": "resolvedDate",
+			"objectFieldSettings": [
+				{
+					"name": "timeStorage",
+					"value": "convertToUTC"
+				}
+			],
 			"system": true,
 			"type": "Date"
 		},
