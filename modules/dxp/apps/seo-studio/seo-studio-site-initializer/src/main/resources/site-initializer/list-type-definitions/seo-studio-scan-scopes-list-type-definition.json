@@ -3,13 +3,13 @@
 	"listTypeEntries": [
 		{
 			"externalReferenceCode": "SEO_STUDIO_SCAN_SCOPE_CONTENT_TYPE",
-			"key": "content_type",
+			"key": "contentType",
 			"name": "Content Type",
 			"system": true
 		},
 		{
 			"externalReferenceCode": "SEO_STUDIO_SCAN_SCOPE_ENTIRE_DOMAIN",
-			"key": "entire_domain",
+			"key": "entireDomain",
 			"name": "Entire Domain",
 			"system": true
 		},
@@ -21,7 +21,7 @@
 		},
 		{
 			"externalReferenceCode": "SEO_STUDIO_SCAN_SCOPE_SPECIFIC_SITES",
-			"key": "specific_sites",
+			"key": "specificSites",
 			"name": "Specific Sites",
 			"system": true
 		},
@@ -33,7 +33,7 @@
 		},
 		{
 			"externalReferenceCode": "SEO_STUDIO_SCAN_SCOPE_URL_PATTERN",
-			"key": "url_pattern",
+			"key": "urlPattern",
 			"name": "URL Pattern",
 			"system": true
 		}

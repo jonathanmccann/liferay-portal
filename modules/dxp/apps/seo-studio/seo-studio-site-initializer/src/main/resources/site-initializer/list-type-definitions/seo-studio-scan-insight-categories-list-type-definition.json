@@ -3,13 +3,13 @@
 	"listTypeEntries": [
 		{
 			"externalReferenceCode": "SEO_STUDIO_SCAN_INSIGHT_CATEGORY_AEO_READINESS",
-			"key": "aeo_readiness",
+			"key": "aeoReadiness",
 			"name": "AEO Readiness",
 			"system": true
 		},
 		{
 			"externalReferenceCode": "SEO_STUDIO_SCAN_INSIGHT_CATEGORY_CONTENT_STRUCTURE",
-			"key": "content_structure",
+			"key": "contentStructure",
 			"name": "Content Structure",
 			"system": true
 		},
@@ -33,13 +33,13 @@
 		},
 		{
 			"externalReferenceCode": "SEO_STUDIO_SCAN_INSIGHT_CATEGORY_PAGE_STRUCTURE",
-			"key": "page_structure",
+			"key": "pageStructure",
 			"name": "Page Structure",
 			"system": true
 		},
 		{
 			"externalReferenceCode": "SEO_STUDIO_SCAN_INSIGHT_CATEGORY_STRUCTURED_DATA",
-			"key": "structured_data",
+			"key": "structuredData",
 			"name": "Structured Data",
 			"system": true
 		},

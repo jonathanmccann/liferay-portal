@@ -15,7 +15,7 @@
 		},
 		{
 			"externalReferenceCode": "SEO_STUDIO_SCAN_TYPE_SINGLE_ITEM",
-			"key": "single_item",
+			"key": "singleItem",
 			"name": "Single Item",
 			"system": true
 		}
