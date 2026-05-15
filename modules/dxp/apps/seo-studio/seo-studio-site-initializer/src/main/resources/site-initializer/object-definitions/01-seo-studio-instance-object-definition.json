@@ -44,9 +44,7 @@
 			"DBType": "String",
 			"businessType": "Encrypted",
 			"externalReferenceCode": "CLIENT_ID",
-			"indexed": true,
-			"indexedAsKeyword": false,
-			"indexedLanguageId": "en_US",
+			"indexed": false,
 			"label": {
 				"en_US": "Client ID"
 			},
