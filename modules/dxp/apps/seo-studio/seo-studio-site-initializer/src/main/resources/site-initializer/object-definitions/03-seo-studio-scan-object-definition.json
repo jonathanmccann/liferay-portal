@@ -84,6 +84,19 @@
 		},
 		{
 			"DBType": "String",
+			"businessType": "Text",
+			"externalReferenceCode": "SCAN_KEY",
+			"indexed": true,
+			"indexedAsKeyword": true,
+			"label": {
+				"en_US": "Scan Key"
+			},
+			"name": "scanKey",
+			"system": true,
+			"type": "String"
+		},
+		{
+			"DBType": "String",
 			"businessType": "Picklist",
 			"externalReferenceCode": "SCAN_RANGE",
 			"indexed": true,
