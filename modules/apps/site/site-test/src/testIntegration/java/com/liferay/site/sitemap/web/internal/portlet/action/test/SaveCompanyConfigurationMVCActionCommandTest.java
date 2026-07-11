@@ -12,6 +12,7 @@ import com.liferay.object.test.util.ObjectDefinitionTestUtil;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.petra.string.StringUtil;
+import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.model.GroupConstants;
@@ -19,6 +20,10 @@ import com.liferay.portal.kernel.model.Layout;
 import com.liferay.portal.kernel.model.LayoutTypePortlet;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
+import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.PermissionCheckerFactoryUtil;
@@ -39,15 +44,21 @@ import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.JavaConstants;
 import com.liferay.portal.kernel.util.LocaleUtil;
 import com.liferay.portal.kernel.util.WebKeys;
+import com.liferay.portal.test.log.LogCapture;
+import com.liferay.portal.test.log.LoggerTestUtil;
 import com.liferay.portal.test.rule.Inject;
 import com.liferay.portal.test.rule.LiferayIntegrationTestRule;
 import com.liferay.portal.test.rule.PermissionCheckerMethodTestRule;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
+import com.liferay.site.constants.SitemapConstants;
+import com.liferay.site.storage.helper.SitemapStorageHelper;
 
 import jakarta.portlet.PortletException;
 
+import java.util.Calendar;
 import java.util.Dictionary;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
@@ -85,6 +96,9 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_layout = _layoutLocalService.fetchDefaultLayout(
 			group.getGroupId(), true);
 
+		_originalCachedGenerationEnabled =
+			_sitemapConfigurationManager.cachedGenerationCompanyEnabled(
+				_company.getCompanyId());
 		_originalCompanySitemapGroupIds =
 			_sitemapConfigurationManager.getCompanySitemapGroupIds(
 				_company.getCompanyId());
@@ -106,6 +120,18 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_originalXMLSitemapIndexMode =
 			_sitemapConfigurationManager.xmlSitemapIndexMode(
 				_company.getCompanyId());
+		_originalXMLSitemapRegenerationDay =
+			_sitemapConfigurationManager.xmlSitemapRegenerationDay(
+				_company.getCompanyId());
+		_originalXMLSitemapRegenerationFrequency =
+			_sitemapConfigurationManager.xmlSitemapRegenerationFrequency(
+				_company.getCompanyId());
+		_originalXMLSitemapRegenerationTime =
+			_sitemapConfigurationManager.xmlSitemapRegenerationTime(
+				_company.getCompanyId());
+		_originalXMLSitemapRegenerationTimeZoneId =
+			_sitemapConfigurationManager.xmlSitemapRegenerationTimeZoneId(
+				_company.getCompanyId());
 
 		_originalName = PrincipalThreadLocal.getName();
 
@@ -115,14 +141,24 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	@AfterClass
 	public static void tearDownClass() throws Exception {
 		_sitemapConfigurationManager.saveSitemapCompanyConfiguration(
-			_company.getCompanyId(),
+			_originalCachedGenerationEnabled, _company.getCompanyId(),
 			ArrayUtil.toArray(_originalCompanySitemapGroupIds),
 			ArrayUtil.toArray(_originalCompanySitemapObjectDefinitionIds),
 			_originalIncludeCategories, _originalIncludePages,
 			_originalIncludeWebContent, _originalXMLSitemapIndexEnabled,
-			_originalXMLSitemapIndexMode);
+			_originalXMLSitemapIndexMode, _originalXMLSitemapRegenerationDay,
+			_originalXMLSitemapRegenerationFrequency,
+			_originalXMLSitemapRegenerationTime,
+			_originalXMLSitemapRegenerationTimeZoneId);
 
 		PrincipalThreadLocal.setName(_originalName);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		_deleteRegenerateSitemapScheduledJobs();
+
+		_sitemapStorageHelper.deleteSitemaps(_company.getCompanyId());
 	}
 
 	@Test
@@ -130,6 +166,35 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		_assertSaveCompanyConfiguration(
 			new long[0], new long[0], new long[0], new long[0], true, true,
 			true, true, _adminUser);
+	}
+
+	@Test
+	public void testSaveCompanyConfigurationCachedWithExistingFilesDoesNotRegenerate()
+		throws Exception {
+
+		_assertSaveCompanyConfigurationRegeneration(false, false);
+	}
+
+	@Test
+	public void testSaveCompanyConfigurationCachedWithoutFilesRegenerates()
+		throws Exception {
+
+		_sitemapStorageHelper.deleteSitemaps(_company.getCompanyId());
+
+		_deleteRegenerateSitemapScheduledJobs();
+
+		Assert.assertFalse(
+			_sitemapStorageHelper.hasSitemapFiles(_company.getCompanyId()));
+
+		_processSaveCompanyConfiguration(true, false);
+
+		try {
+			Assert.assertTrue(_getSitemapRegenerationScheduledJobsCount() > 0);
+		}
+		catch (AssertionError assertionError) {
+			Assert.assertTrue(
+				_sitemapStorageHelper.hasSitemapFiles(_company.getCompanyId()));
+		}
 	}
 
 	@Test
@@ -295,6 +360,49 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		Assert.assertTrue(portletExceptionThrown);
 	}
 
+	@Test
+	public void testSaveCompanyConfigurationOnDemandDoesNotRegenerate()
+		throws Exception {
+
+		_deleteRegenerateSitemapScheduledJobs();
+
+		_processSaveCompanyConfiguration(false, false);
+
+		Assert.assertEquals(0, _getSitemapRegenerationScheduledJobsCount());
+	}
+
+	@Test
+	public void testSaveCompanyConfigurationRegenerationSettings()
+		throws Exception {
+
+		_processSaveCompanyConfiguration(
+			true, false, String.valueOf(Calendar.WEDNESDAY),
+			SitemapConstants.REGENERATION_FREQUENCY_WEEKLY, "03:30", "UTC");
+
+		Dictionary<String, Object> properties =
+			_getCompanyConfigurationProperties();
+
+		Assert.assertTrue(
+			GetterUtil.getBoolean(properties.get("cachedGenerationEnabled")));
+		Assert.assertEquals(
+			String.valueOf(Calendar.WEDNESDAY),
+			properties.get("xmlSitemapRegenerationDay"));
+		Assert.assertEquals(
+			SitemapConstants.REGENERATION_FREQUENCY_WEEKLY,
+			properties.get("xmlSitemapRegenerationFrequency"));
+		Assert.assertEquals(
+			"03:30", properties.get("xmlSitemapRegenerationTime"));
+		Assert.assertEquals(
+			"UTC", properties.get("xmlSitemapRegenerationTimeZoneId"));
+	}
+
+	@Test
+	public void testSaveCompanyConfigurationSaveAndGenerateRegenerates()
+		throws Exception {
+
+		_assertSaveCompanyConfigurationRegeneration(true, true);
+	}
+
 	private void _assertCompanyConfiguration(
 			long[] companySitemapGroupIds,
 			long[] companySitemapObjectDefinitionIds, boolean includeCategories,
@@ -302,17 +410,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			boolean xmlSitemapIndexEnabled)
 		throws Exception {
 
-		Configuration[] configurations = _configurationAdmin.listConfigurations(
-			StringBundler.concat(
-				"(&(companyId=", _company.getCompanyId(),
-				")(service.factoryPid=", _PID_SITEMAP_COMPANY_CONFIGURATION,
-				".scoped))"));
-
-		Assert.assertTrue(ArrayUtil.isNotEmpty(configurations));
-
-		Configuration configuration = configurations[0];
-
-		Dictionary<String, Object> properties = configuration.getProperties();
+		Dictionary<String, Object> properties =
+			_getCompanyConfigurationProperties();
 
 		Assert.assertArrayEquals(
 			companySitemapGroupIds,
@@ -365,6 +464,87 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 			includePages, includeWebContent, xmlSitemapIndexEnabled);
 	}
 
+	private void _assertSaveCompanyConfigurationRegeneration(
+			boolean expectRegeneration, boolean saveAndGenerate)
+		throws Exception {
+
+		long companyId = _company.getCompanyId();
+
+		Group group = GroupTestUtil.addGroup(
+			companyId, _adminUser.getUserId(),
+			GroupConstants.DEFAULT_PARENT_GROUP_ID);
+
+		_sitemapStorageHelper.storeSitemapFile(
+			companyId, group.getGroupId(), "<urlset />");
+
+		_deleteRegenerateSitemapScheduledJobs();
+
+		_processSaveCompanyConfiguration(true, saveAndGenerate);
+
+		if (expectRegeneration) {
+			Assert.assertTrue(_getSitemapRegenerationScheduledJobsCount() > 0);
+		}
+		else {
+			Assert.assertEquals(0, _getSitemapRegenerationScheduledJobsCount());
+		}
+	}
+
+	private void _deleteRegenerateSitemapScheduledJobs() throws Exception {
+		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
+				"com.liferay.portal.scheduler.quartz.internal." +
+					"QuartzSchedulerEngine",
+				LoggerTestUtil.OFF)) {
+
+			for (SchedulerResponse schedulerResponse :
+					_schedulerEngineHelper.getScheduledJobs(
+						StorageType.PERSISTED)) {
+
+				Message message = schedulerResponse.getMessage();
+
+				if ((message == null) ||
+					(message.getLong("companyId") != _company.getCompanyId()) ||
+					(message.get("assetTypeKey") == null)) {
+
+					continue;
+				}
+
+				try {
+					_schedulerEngineHelper.delete(
+						schedulerResponse.getJobName(),
+						schedulerResponse.getGroupName(),
+						StorageType.PERSISTED);
+				}
+				catch (SchedulerException schedulerException) {
+					SchedulerResponse deletedSchedulerResponse =
+						_schedulerEngineHelper.getScheduledJob(
+							schedulerResponse.getJobName(),
+							schedulerResponse.getGroupName(),
+							StorageType.PERSISTED);
+
+					if (deletedSchedulerResponse != null) {
+						throw schedulerException;
+					}
+				}
+			}
+		}
+	}
+
+	private Dictionary<String, Object> _getCompanyConfigurationProperties()
+		throws Exception {
+
+		Configuration[] configurations = _configurationAdmin.listConfigurations(
+			StringBundler.concat(
+				"(&(companyId=", _company.getCompanyId(),
+				")(service.factoryPid=", _PID_SITEMAP_COMPANY_CONFIGURATION,
+				".scoped))"));
+
+		Assert.assertTrue(ArrayUtil.isNotEmpty(configurations));
+
+		Configuration configuration = configurations[0];
+
+		return configuration.getProperties();
+	}
+
 	private MockLiferayPortletActionRequest _getMockLiferayPortletActionRequest(
 			long[] groupIds, long[] objectDefinitionIds,
 			boolean includeCategories, boolean includePages,
@@ -375,6 +555,8 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
 			new MockLiferayPortletActionRequest();
 
+		mockLiferayPortletActionRequest.addParameter(
+			"cachedGenerationEnabled", "false");
 		mockLiferayPortletActionRequest.addParameter(
 			"groupsSearchContainerPrimaryKeys",
 			StringUtil.merge(groupIds, StringPool.COMMA));
@@ -398,6 +580,26 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		return mockLiferayPortletActionRequest;
 	}
 
+	private int _getSitemapRegenerationScheduledJobsCount() throws Exception {
+		int count = 0;
+
+		for (SchedulerResponse schedulerResponse :
+				_schedulerEngineHelper.getScheduledJobs(
+					StorageType.PERSISTED)) {
+
+			Message message = schedulerResponse.getMessage();
+
+			if ((message != null) &&
+				(message.getLong("companyId") == _company.getCompanyId()) &&
+				(message.get("assetTypeKey") != null)) {
+
+				count++;
+			}
+		}
+
+		return count;
+	}
+
 	private ThemeDisplay _getThemeDisplay(User user) throws Exception {
 		ThemeDisplay themeDisplay = new ThemeDisplay();
 
@@ -412,6 +614,62 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 		themeDisplay.setUser(user);
 
 		return themeDisplay;
+	}
+
+	private MockLiferayPortletActionRequest _processSaveCompanyConfiguration(
+			boolean cachedGenerationEnabled, boolean saveAndGenerate)
+		throws Exception {
+
+		return _processSaveCompanyConfiguration(
+			cachedGenerationEnabled, saveAndGenerate, StringPool.BLANK,
+			SitemapConstants.REGENERATION_FREQUENCY_HOURLY, StringPool.BLANK,
+			StringPool.BLANK);
+	}
+
+	private MockLiferayPortletActionRequest _processSaveCompanyConfiguration(
+			boolean cachedGenerationEnabled, boolean saveAndGenerate,
+			String xmlSitemapRegenerationDay,
+			String xmlSitemapRegenerationFrequency,
+			String xmlSitemapRegenerationTime,
+			String xmlSitemapRegenerationTimeZoneId)
+		throws Exception {
+
+		MockLiferayPortletActionRequest mockLiferayPortletActionRequest =
+			new MockLiferayPortletActionRequest();
+
+		mockLiferayPortletActionRequest.addParameter(
+			"cachedGenerationEnabled", String.valueOf(cachedGenerationEnabled));
+		mockLiferayPortletActionRequest.addParameter(
+			"includeCategories", "true");
+		mockLiferayPortletActionRequest.addParameter("includePages", "true");
+		mockLiferayPortletActionRequest.addParameter(
+			"includeWebContent", "true");
+		mockLiferayPortletActionRequest.addParameter(
+			"saveAndGenerate", String.valueOf(saveAndGenerate));
+		mockLiferayPortletActionRequest.addParameter(
+			"xmlSitemapIndexEnabled", "true");
+		mockLiferayPortletActionRequest.addParameter(
+			"xmlSitemapIndexMode", SitemapConstants.INDEX_MODE_ASSET_TYPE);
+		mockLiferayPortletActionRequest.addParameter(
+			"xmlSitemapRegenerationDay", xmlSitemapRegenerationDay);
+		mockLiferayPortletActionRequest.addParameter(
+			"xmlSitemapRegenerationFrequency", xmlSitemapRegenerationFrequency);
+		mockLiferayPortletActionRequest.addParameter(
+			"xmlSitemapRegenerationTime", xmlSitemapRegenerationTime);
+		mockLiferayPortletActionRequest.addParameter(
+			"xmlSitemapRegenerationTimeZoneId",
+			xmlSitemapRegenerationTimeZoneId);
+		mockLiferayPortletActionRequest.setAttribute(
+			JavaConstants.JAKARTA_PORTLET_RESPONSE,
+			new MockLiferayPortletActionResponse());
+		mockLiferayPortletActionRequest.setAttribute(
+			WebKeys.THEME_DISPLAY, _getThemeDisplay(_adminUser));
+
+		_mvcActionCommand.processAction(
+			mockLiferayPortletActionRequest,
+			new MockLiferayPortletActionResponse());
+
+		return mockLiferayPortletActionRequest;
 	}
 
 	private static final String _PID_SITEMAP_COMPANY_CONFIGURATION =
@@ -431,6 +689,7 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	@Inject
 	private static LayoutLocalService _layoutLocalService;
 
+	private static boolean _originalCachedGenerationEnabled;
 	private static Long[] _originalCompanySitemapGroupIds;
 	private static Long[] _originalCompanySitemapObjectDefinitionIds;
 	private static boolean _originalIncludeCategories;
@@ -439,6 +698,10 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 	private static String _originalName;
 	private static boolean _originalXMLSitemapIndexEnabled;
 	private static String _originalXMLSitemapIndexMode;
+	private static String _originalXMLSitemapRegenerationDay;
+	private static String _originalXMLSitemapRegenerationFrequency;
+	private static String _originalXMLSitemapRegenerationTime;
+	private static String _originalXMLSitemapRegenerationTimeZoneId;
 
 	@Inject
 	private static SitemapConfigurationManager _sitemapConfigurationManager;
@@ -453,5 +716,11 @@ public class SaveCompanyConfigurationMVCActionCommandTest {
 
 	@Inject
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Inject
+	private SchedulerEngineHelper _schedulerEngineHelper;
+
+	@Inject
+	private SitemapStorageHelper _sitemapStorageHelper;
 
 }
