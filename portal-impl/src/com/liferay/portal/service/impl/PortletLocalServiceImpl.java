@@ -502,6 +502,21 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 			portlet = new PortletWrapper(portlet) {
 
 				@Override
+				public boolean equals(Object object) {
+					if (this == object) {
+						return true;
+					}
+
+					if (!(object instanceof Portlet)) {
+						return false;
+					}
+
+					Portlet portlet = (Portlet)object;
+
+					return finalPortletId.equals(portlet.getPortletId());
+				}
+
+				@Override
 				public String getInstanceId() {
 					return PortletIdCodec.decodeInstanceId(finalPortletId);
 				}
@@ -514,6 +529,11 @@ public class PortletLocalServiceImpl extends PortletLocalServiceBaseImpl {
 				@Override
 				public boolean getStatic() {
 					return _staticPortlet;
+				}
+
+				@Override
+				public int hashCode() {
+					return finalPortletId.hashCode();
 				}
 
 				@Override
