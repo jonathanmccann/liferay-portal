@@ -380,6 +380,33 @@ public class SitemapManagerImpl implements SitemapManager {
 	}
 
 	@Override
+	public void reconcileSitemapCompanyConfiguration(
+			long companyId, boolean cachedGenerationEnabled,
+			boolean xmlSitemapIndexEnabled, String xmlSitemapIndexMode)
+		throws PortalException {
+
+		if (cachedGenerationEnabled && xmlSitemapIndexEnabled &&
+			StringUtil.equals(
+				xmlSitemapIndexMode, SitemapConstants.INDEX_MODE_ASSET_TYPE)) {
+
+			if (_sitemapStorageHelper.hasSitemapFiles(companyId)) {
+				return;
+			}
+
+			for (String assetTypeKey : _assetTypeKeys.values()) {
+				_scheduleCompanyRegenerateSitemap(
+					assetTypeKey, companyId, new Date());
+			}
+
+			return;
+		}
+
+		_sitemapStorageHelper.deleteSitemaps(companyId);
+
+		_deleteRegenerateSitemapScheduledJobs(companyId);
+	}
+
+	@Override
 	public void regenerateSitemap(
 			String assetTypeKey, long companyId, long groupId)
 		throws PortalException {
@@ -727,6 +754,27 @@ public class SitemapManagerImpl implements SitemapManager {
 		themeDisplay.setUser(_userLocalService.getGuestUser(companyId));
 
 		return themeDisplay;
+	}
+
+	private void _deleteRegenerateSitemapScheduledJobs(long companyId)
+		throws PortalException {
+
+		for (SchedulerResponse schedulerResponse :
+				_schedulerEngineHelper.getScheduledJobs(
+					SitemapDestinationNames.SITEMAP_REGENERATION,
+					StorageType.PERSISTED)) {
+
+			Message message = schedulerResponse.getMessage();
+
+			if ((message != null) &&
+				(message.getLong("companyId") == companyId)) {
+
+				_schedulerEngineHelper.delete(
+					schedulerResponse.getJobName(),
+					SitemapDestinationNames.SITEMAP_REGENERATION,
+					StorageType.PERSISTED);
+			}
+		}
 	}
 
 	private void _generateAssetTypeSitemap(
