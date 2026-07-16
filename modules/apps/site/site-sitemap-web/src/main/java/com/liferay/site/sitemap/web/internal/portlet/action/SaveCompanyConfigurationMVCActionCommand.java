@@ -9,9 +9,14 @@ import com.liferay.configuration.admin.constants.ConfigurationAdminPortletKeys;
 import com.liferay.object.model.ObjectDefinition;
 import com.liferay.object.service.ObjectDefinitionLocalService;
 import com.liferay.portal.kernel.language.Language;
+import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.model.Group;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
 import com.liferay.portal.kernel.portlet.bridges.mvc.MVCActionCommand;
+import com.liferay.portal.kernel.scheduler.SchedulerEngineHelper;
+import com.liferay.portal.kernel.scheduler.SchedulerException;
+import com.liferay.portal.kernel.scheduler.StorageType;
+import com.liferay.portal.kernel.scheduler.messaging.SchedulerResponse;
 import com.liferay.portal.kernel.security.auth.PrincipalException;
 import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.service.GroupLocalService;
@@ -19,8 +24,10 @@ import com.liferay.portal.kernel.servlet.SessionMessages;
 import com.liferay.portal.kernel.theme.ThemeDisplay;
 import com.liferay.portal.kernel.util.ArrayUtil;
 import com.liferay.portal.kernel.util.ParamUtil;
+import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.WebKeys;
 import com.liferay.site.configuration.manager.SitemapConfigurationManager;
+import com.liferay.site.constants.SitemapConstants;
 import com.liferay.site.manager.SitemapManager;
 import com.liferay.site.storage.helper.SitemapStorageHelper;
 
@@ -69,7 +76,13 @@ public class SaveCompanyConfigurationMVCActionCommand
 		}
 
 		boolean cachedGenerationEnabled = ParamUtil.getBoolean(
-			actionRequest, "cachedGenerationEnabled");
+			actionRequest, "cachedGenerationEnabled", true);
+
+		boolean xmlSitemapIndexEnabled = ParamUtil.getBoolean(
+			actionRequest, "xmlSitemapIndexEnabled");
+		String xmlSitemapIndexMode = ParamUtil.getString(
+			actionRequest, "xmlSitemapIndexMode",
+			_sitemapConfigurationManager.xmlSitemapIndexMode(companyId));
 
 		_sitemapConfigurationManager.saveSitemapCompanyConfiguration(
 			cachedGenerationEnabled, companyId,
@@ -108,10 +121,7 @@ public class SaveCompanyConfigurationMVCActionCommand
 			ParamUtil.getBoolean(actionRequest, "includeCategories"),
 			ParamUtil.getBoolean(actionRequest, "includePages"),
 			ParamUtil.getBoolean(actionRequest, "includeWebContent"),
-			ParamUtil.getBoolean(actionRequest, "xmlSitemapIndexEnabled"),
-			ParamUtil.getString(
-				actionRequest, "xmlSitemapIndexMode",
-				_sitemapConfigurationManager.xmlSitemapIndexMode(companyId)),
+			xmlSitemapIndexEnabled, xmlSitemapIndexMode,
 			ParamUtil.getString(
 				actionRequest, "xmlSitemapRegenerationDay",
 				_sitemapConfigurationManager.xmlSitemapRegenerationDay(
@@ -129,27 +139,34 @@ public class SaveCompanyConfigurationMVCActionCommand
 				_sitemapConfigurationManager.xmlSitemapRegenerationTimeZoneId(
 					companyId)));
 
-		boolean saveAndGenerate = ParamUtil.getBoolean(
-			actionRequest, "saveAndGenerate");
-
-		if (saveAndGenerate) {
-			Map<Long, String> assetTypeKeys =
-				_sitemapManager.getAssetTypeKeys();
-
-			for (String assetTypeKey : assetTypeKeys.values()) {
-				_sitemapManager.scheduleRegenerateSitemap(
-					assetTypeKey, companyId, 0, new Date());
-			}
-		}
-
 		String successMessageKey = "xml-sitemap-settings-have-been-saved";
 
-		if (saveAndGenerate ||
-			(cachedGenerationEnabled &&
-			 !_sitemapStorageHelper.hasSitemapFiles(companyId))) {
+		if (cachedGenerationEnabled && xmlSitemapIndexEnabled &&
+			StringUtil.equals(
+				xmlSitemapIndexMode, SitemapConstants.INDEX_MODE_ASSET_TYPE)) {
 
-			successMessageKey =
-				"xml-sitemap-has-been-cached-and-settings-have-been-saved";
+			boolean saveAndGenerate = ParamUtil.getBoolean(
+				actionRequest, "saveAndGenerate");
+
+			if (saveAndGenerate ||
+				!_sitemapStorageHelper.hasSitemapFiles(companyId)) {
+
+				Map<Long, String> assetTypeKeys =
+					_sitemapManager.getAssetTypeKeys();
+
+				for (String assetTypeKey : assetTypeKeys.values()) {
+					_sitemapManager.scheduleRegenerateSitemap(
+						assetTypeKey, companyId, 0, new Date());
+				}
+
+				successMessageKey =
+					"xml-sitemap-has-been-cached-and-settings-have-been-saved";
+			}
+		}
+		else {
+			_sitemapStorageHelper.deleteSitemaps(companyId);
+
+			_deleteRegenerateSitemapScheduledJobs(companyId);
 		}
 
 		SessionMessages.add(
@@ -157,6 +174,41 @@ public class SaveCompanyConfigurationMVCActionCommand
 			_language.get(themeDisplay.getLocale(), successMessageKey));
 
 		sendRedirect(actionRequest, actionResponse);
+	}
+
+	private void _deleteRegenerateSitemapScheduledJobs(long companyId)
+		throws Exception {
+
+		for (SchedulerResponse schedulerResponse :
+				_schedulerEngineHelper.getScheduledJobs(
+					StorageType.PERSISTED)) {
+
+			Message message = schedulerResponse.getMessage();
+
+			if ((message == null) ||
+				(message.getLong("companyId") != companyId) ||
+				(message.get("assetTypeKey") == null)) {
+
+				continue;
+			}
+
+			try {
+				_schedulerEngineHelper.delete(
+					schedulerResponse.getJobName(),
+					schedulerResponse.getGroupName(), StorageType.PERSISTED);
+			}
+			catch (SchedulerException schedulerException) {
+				SchedulerResponse deletedSchedulerResponse =
+					_schedulerEngineHelper.getScheduledJob(
+						schedulerResponse.getJobName(),
+						schedulerResponse.getGroupName(),
+						StorageType.PERSISTED);
+
+				if (deletedSchedulerResponse != null) {
+					throw schedulerException;
+				}
+			}
+		}
 	}
 
 	@Reference
@@ -167,6 +219,9 @@ public class SaveCompanyConfigurationMVCActionCommand
 
 	@Reference
 	private ObjectDefinitionLocalService _objectDefinitionLocalService;
+
+	@Reference
+	private SchedulerEngineHelper _schedulerEngineHelper;
 
 	@Reference
 	private SitemapConfigurationManager _sitemapConfigurationManager;
