@@ -11,6 +11,7 @@ import com.liferay.petra.string.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.seo.studio.model.CrawlHit;
+import com.liferay.seo.studio.model.Domain;
 
 import java.net.URI;
 
@@ -50,10 +51,11 @@ public class SEOStudioService extends BaseService {
 		String lastURL = null;
 
 		while (true) {
-			JSONObject hitsJSONObject = new JSONObject(
-				_getCrawlHits(lastURL, 2000, seoStudioDomainId));
-
-			JSONArray itemsJSONArray = hitsJSONObject.optJSONArray("items");
+			JSONArray itemsJSONArray = new JSONObject(
+				_getCrawlHits(lastURL, 2000, seoStudioDomainId)
+			).optJSONArray(
+				"items"
+			);
 
 			if ((itemsJSONArray == null) || itemsJSONArray.isEmpty()) {
 				break;
@@ -77,15 +79,21 @@ public class SEOStudioService extends BaseService {
 		return crawlHits;
 	}
 
-	public String getDomain(long seoStudioDomainId) {
+	public Domain getDomain(long seoStudioDomainId) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/domains/" + seoStudioDomainId
 		).build();
 
-		return get(_getAuthorization(), uriComponents.toUri());
+		String responseJSON = get(_getAuthorization(), uriComponents.toUri());
+
+		if (Validator.isNull(responseJSON)) {
+			return null;
+		}
+
+		return new Domain(new JSONObject(responseJSON));
 	}
 
-	public String getPage(int page, int pageSize, long seoStudioScanId) {
+	public String getSEOStudioPage(int page, int pageSize, long seoStudioScanId) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/pages"
 		).queryParam(
@@ -101,7 +109,7 @@ public class SEOStudioService extends BaseService {
 		return get(_getAuthorization(), uriComponents.toUri());
 	}
 
-	public String patchDomain(JSONObject jsonObject, long seoStudioDomainId) {
+	public String patchSEOStudioDomain(JSONObject jsonObject, long seoStudioDomainId) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/domains/" + seoStudioDomainId
 		).build();
@@ -133,7 +141,7 @@ public class SEOStudioService extends BaseService {
 		return patchScan(jsonObject, seoStudioScanId);
 	}
 
-	public String postInsightType(JSONObject jsonObject) {
+	public String postSEOStudioInsightType(JSONObject jsonObject) {
 		UriComponents uriComponents = UriComponentsBuilder.fromPath(
 			"/o/seo-studio/insight-types"
 		).build();
