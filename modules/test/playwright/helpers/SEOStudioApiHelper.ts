@@ -14,15 +14,9 @@ export type PageData = {
 	type?: string;
 };
 
-export type InsightType = {
-	category: string;
-	description?: string;
-	fixHint?: string;
-	id?: number;
-	name: string;
+export type InsightInput = {
+	externalReferenceCode: string;
 	pageURLs: Array<PageData | string>;
-	severity: string;
-	whyItMatters?: string;
 };
 
 export type Scan = {
@@ -43,7 +37,7 @@ export class SEOStudioApiHelper {
 
 	async addPages(
 		scan: Scan,
-		insightTypeId: number,
+		externalReferenceCode: string,
 		pages: PageData[]
 	): Promise<void> {
 		for (const page of pages) {
@@ -51,7 +45,7 @@ export class SEOStudioApiHelper {
 
 			await this._postScanInsight(
 				scan,
-				insightTypeId,
+				externalReferenceCode,
 				seoStudioPage.id,
 				page.state
 			);
@@ -60,33 +54,19 @@ export class SEOStudioApiHelper {
 
 	async createInsights(
 		scan: Scan,
-		insightTypes: InsightType[]
-	): Promise<InsightType[]> {
-		const createdInsightTypes: InsightType[] = [];
-
-		for (const insightTypeInput of insightTypes) {
-			const insightType = await this._postInsightType(
-				scan,
-				insightTypeInput
-			);
-
-			createdInsightTypes.push({
-				...insightTypeInput,
-				id: insightType.id,
-			});
-
+		insightInputs: InsightInput[]
+	): Promise<void> {
+		for (const insightInput of insightInputs) {
 			await this.addPages(
 				scan,
-				insightType.id,
-				insightTypeInput.pageURLs.map((pageInput) =>
+				insightInput.externalReferenceCode,
+				insightInput.pageURLs.map((pageInput) =>
 					typeof pageInput === 'string'
 						? {pageURL: pageInput}
 						: pageInput
 				)
 			);
 		}
-
-		return createdInsightTypes;
 	}
 
 	async createScan(scanType: string): Promise<Scan> {
@@ -126,26 +106,6 @@ export class SEOStudioApiHelper {
 				r_accountToSEOStudioDomains_accountEntryId: accountId,
 				r_seoStudioInstanceToSEOStudioDomains_seoStudioInstanceId:
 					instanceId,
-			},
-			failOnStatusCode: true,
-		});
-	}
-
-	private async _postInsightType(
-		scan: Scan,
-		input: InsightType
-	): Promise<{id: number}> {
-		return this.apiHelpers.post(this._url('insight-types'), {
-			data: {
-				category: input.category,
-				description: input.description,
-				fixHint: input.fixHint,
-				name: input.name,
-				r_accountToSEOStudioInsightTypes_accountEntryId: scan.accountId,
-				r_seoStudioScanToSEOStudioInsightTypes_seoStudioScanId:
-					scan.scanId,
-				severity: input.severity,
-				whyItMatters: input.whyItMatters,
 			},
 			failOnStatusCode: true,
 		});
@@ -202,7 +162,7 @@ export class SEOStudioApiHelper {
 
 	private async _postScanInsight(
 		scan: Scan,
-		insightTypeId: number,
+		externalReferenceCode: string,
 		pageId: number,
 		state?: number
 	) {
@@ -211,8 +171,8 @@ export class SEOStudioApiHelper {
 				classification: 'problem',
 				detectedDate: new Date().toISOString(),
 				r_accountToSEOStudioScanInsights_accountEntryId: scan.accountId,
-				r_seoStudioInsightTypeToScanInsights_seoStudioInsightTypeId:
-					insightTypeId,
+				r_seoStudioInsightTypeToScanInsights_seoStudioInsightTypeERC:
+					externalReferenceCode,
 				r_seoStudioPageToSEOStudioScanInsights_seoStudioPageId: pageId,
 				r_seoStudioScanToSEOStudioScanInsights_seoStudioScanId:
 					scan.scanId,

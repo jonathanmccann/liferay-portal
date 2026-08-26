@@ -8,6 +8,10 @@ import {expect, mergeTests} from '@playwright/test';
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
 import {Scan} from '../../../helpers/SEOStudioApiHelper';
+import {
+	MISSING_OR_EMPTY_META_DESCRIPTION_TAG,
+	MISSING_OR_EMPTY_TITLE_TAG,
+} from './constants/insightTypes';
 import {SEO_STUDIO_FRIENDLY_URL} from './constants/site';
 import {seoStudioPagesTest} from './fixtures/seoStudioPagesTest';
 
@@ -52,51 +56,40 @@ test(
 	'Renders the Insights table rows when the latest scan has insights',
 	{tag: '@LPD-91406'},
 	async ({apiHelpers, onPagePage}) => {
-		const insightTypeInputs = [
+		const insightInputs = [
 			{
-				category: 'metadata',
-				name: 'missingMetaDescription',
+				insightType: MISSING_OR_EMPTY_TITLE_TAG,
 				pageURLs: [
 					'https://example.com/a',
 					'https://example.com/b',
 					'https://example.com/c',
 				],
-				severity: '3',
 			},
 			{
-				category: 'images',
-				name: 'missingAltText',
+				insightType: MISSING_OR_EMPTY_META_DESCRIPTION_TAG,
 				pageURLs: ['https://example.com/d', 'https://example.com/e'],
-				severity: '2',
-			},
-			{
-				category: 'linksAndURLs',
-				name: 'brokenInternalLink',
-				pageURLs: [
-					'https://example.com/f',
-					'https://example.com/g',
-					'https://example.com/h',
-					'https://example.com/i',
-				],
-				severity: '3',
 			},
 		];
 
 		const scan = await apiHelpers.seoStudio.createScan('crawler');
 
 		try {
-			await apiHelpers.seoStudio.createInsights(scan, insightTypeInputs);
+			await apiHelpers.seoStudio.createInsights(
+				scan,
+				insightInputs.map(({insightType, pageURLs}) => ({
+					externalReferenceCode: insightType.externalReferenceCode,
+					pageURLs,
+				}))
+			);
 
 			await onPagePage.goto(SEO_STUDIO_FRIENDLY_URL);
 
-			for (const insightTypeInput of insightTypeInputs) {
-				const row = onPagePage.getInsightRow(insightTypeInput.name);
+			for (const {insightType, pageURLs} of insightInputs) {
+				const row = onPagePage.getInsightRow(insightType.label);
 
 				await expect(row).toBeVisible();
 
-				await expect(row).toContainText(
-					String(insightTypeInput.pageURLs.length)
-				);
+				await expect(row).toContainText(String(pageURLs.length));
 			}
 		}
 		finally {
@@ -113,22 +106,14 @@ test.describe('Filter and Sort Insights tests', () => {
 
 		await apiHelpers.seoStudio.createInsights(scan, [
 			{
-				category: 'images',
-				name: 'missingAltTextOnImages',
+				externalReferenceCode:
+					MISSING_OR_EMPTY_TITLE_TAG.externalReferenceCode,
 				pageURLs: ['https://example.com/a'],
-				severity: '3',
 			},
 			{
-				category: 'images',
-				name: 'altTextTooLong',
+				externalReferenceCode:
+					MISSING_OR_EMPTY_META_DESCRIPTION_TAG.externalReferenceCode,
 				pageURLs: ['https://example.com/b'],
-				severity: '2',
-			},
-			{
-				category: 'images',
-				name: 'brokenImageURLs',
-				pageURLs: ['https://example.com/c'],
-				severity: '1',
 			},
 		]);
 
@@ -144,14 +129,13 @@ test.describe('Filter and Sort Insights tests', () => {
 		{tag: '@LPD-91408'},
 		async ({onPagePage}) => {
 			await expect(
-				onPagePage.getInsightRow('Missing Alt Text on Images')
+				onPagePage.getInsightRow(MISSING_OR_EMPTY_TITLE_TAG.label)
 			).toBeVisible();
 
 			await expect(async () => {
 				expect(await onPagePage.getInsightNamesInOrder()).toEqual([
-					'Missing Alt Text on Images',
-					'Alt Text Too Long (>125 chars)',
-					'Broken Image URLs (404s)',
+					MISSING_OR_EMPTY_TITLE_TAG.label,
+					MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label,
 				]);
 			}).toPass({timeout: 10000});
 		}
@@ -162,7 +146,7 @@ test.describe('Filter and Sort Insights tests', () => {
 		{tag: '@LPD-91408'},
 		async ({onPagePage, page}) => {
 			await expect(
-				onPagePage.getInsightRow('Missing Alt Text on Images')
+				onPagePage.getInsightRow(MISSING_OR_EMPTY_TITLE_TAG.label)
 			).toBeVisible();
 
 			await onPagePage.sortByColumn('Impact');
@@ -171,9 +155,8 @@ test.describe('Filter and Sort Insights tests', () => {
 
 			await expect(async () => {
 				expect(await onPagePage.getInsightNamesInOrder()).toEqual([
-					'Broken Image URLs (404s)',
-					'Alt Text Too Long (>125 chars)',
-					'Missing Alt Text on Images',
+					MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label,
+					MISSING_OR_EMPTY_TITLE_TAG.label,
 				]);
 			}).toPass({timeout: 10000});
 
@@ -181,9 +164,8 @@ test.describe('Filter and Sort Insights tests', () => {
 
 			await expect(async () => {
 				expect(await onPagePage.getInsightNamesInOrder()).toEqual([
-					'Missing Alt Text on Images',
-					'Alt Text Too Long (>125 chars)',
-					'Broken Image URLs (404s)',
+					MISSING_OR_EMPTY_TITLE_TAG.label,
+					MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label,
 				]);
 			}).toPass({timeout: 10000});
 		}
@@ -200,13 +182,12 @@ test.describe('Filter and Sort Insights tests', () => {
 			).toBeVisible();
 
 			await expect(
-				onPagePage.getInsightRow('Missing Alt Text on Images')
+				onPagePage.getInsightRow(MISSING_OR_EMPTY_TITLE_TAG.label)
 			).toBeVisible();
 			await expect(
-				onPagePage.getInsightRow('Broken Image URLs (404s)')
-			).not.toBeVisible();
-			await expect(
-				onPagePage.getInsightRow('Alt Text Too Long (>125 chars)')
+				onPagePage.getInsightRow(
+					MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label
+				)
 			).not.toBeVisible();
 
 			await expect(page).toHaveURL(/fdsConfig/);
@@ -233,10 +214,12 @@ test.describe('Filter and Sort Insights tests', () => {
 				onPagePage.activeFilterChip('Impact: High')
 			).toBeVisible();
 			await expect(
-				onPagePage.getInsightRow('Broken Image URLs (404s)')
+				onPagePage.getInsightRow(
+					MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label
+				)
 			).not.toBeVisible();
 
-			await onPagePage.selectInsight('Missing Alt Text on Images');
+			await onPagePage.selectInsight(MISSING_OR_EMPTY_TITLE_TAG.label);
 
 			await expect(page).toHaveURL(/objectEntryExternalReferenceCode=/);
 
@@ -248,7 +231,9 @@ test.describe('Filter and Sort Insights tests', () => {
 				onPagePage.activeFilterChip('Impact: High')
 			).toBeVisible();
 			await expect(
-				onPagePage.getInsightRow('Broken Image URLs (404s)')
+				onPagePage.getInsightRow(
+					MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label
+				)
 			).not.toBeVisible();
 		}
 	);

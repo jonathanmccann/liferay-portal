@@ -7,23 +7,25 @@ import {expect, mergeTests} from '@playwright/test';
 
 import {dataApiHelpersTest} from '../../../fixtures/dataApiHelpersTest';
 import {loginTest} from '../../../fixtures/loginTest';
-import {InsightType, PageData, Scan} from '../../../helpers/SEOStudioApiHelper';
+import {
+	InsightInput,
+	PageData,
+	Scan,
+} from '../../../helpers/SEOStudioApiHelper';
 import getRandomString from '../../../utils/getRandomString';
+import {MISSING_OR_EMPTY_META_DESCRIPTION_TAG} from './constants/insightTypes';
 import {SEO_STUDIO_FRIENDLY_URL} from './constants/site';
 import {seoStudioPagesTest} from './fixtures/seoStudioPagesTest';
 
 const test = mergeTests(loginTest(), dataApiHelpersTest, seoStudioPagesTest);
 
-let insightType: InsightType;
-let insightTypeInput: InsightType & {pageURLs: PageData[]};
+let insightInput: InsightInput & {pageURLs: PageData[]};
 let scan: Scan;
 
 test.beforeEach(async ({apiHelpers, onPagePage}) => {
-	insightTypeInput = {
-		category: 'metadata',
-		description: 'Pages without meta description.',
-		fixHint: 'Add a unique meta description to each page.',
-		name: 'missingMetaDescription',
+	insightInput = {
+		externalReferenceCode:
+			MISSING_OR_EMPTY_META_DESCRIPTION_TAG.externalReferenceCode,
 		pageURLs: [
 			{
 				author: 'Alice',
@@ -38,14 +40,11 @@ test.beforeEach(async ({apiHelpers, onPagePage}) => {
 				type: 'Document',
 			},
 		],
-		severity: '3',
 	};
 
 	scan = await apiHelpers.seoStudio.createScan('crawler');
 
-	[insightType] = await apiHelpers.seoStudio.createInsights(scan, [
-		insightTypeInput,
-	]);
+	await apiHelpers.seoStudio.createInsights(scan, [insightInput]);
 
 	await onPagePage.goto(SEO_STUDIO_FRIENDLY_URL);
 });
@@ -58,24 +57,30 @@ test(
 	'Renders the breadcrumb, title, and content sections on the insight detail screen',
 	{tag: '@LPD-91182'},
 	async ({insightDetailPage, onPagePage, page}) => {
-		await onPagePage.selectInsight(insightTypeInput.name);
+		await onPagePage.selectInsight(
+			MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label
+		);
 
 		await expect(insightDetailPage.onPageBreadcrumbLink).toBeVisible();
 
 		await expect(
 			page.getByRole('heading', {
 				level: 2,
-				name: `${insightTypeInput.name} from ${insightTypeInput.pageURLs.length} pages`,
+				name: `${MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label} from ${insightInput.pageURLs.length} pages`,
 			})
 		).toBeVisible();
 
 		await expect(insightDetailPage.descriptionSectionTitle).toBeVisible();
 		await expect(
-			page.getByText(insightTypeInput.description)
+			page.getByText(
+				MISSING_OR_EMPTY_META_DESCRIPTION_TAG.descriptionText
+			)
 		).toBeVisible();
 
 		await expect(insightDetailPage.suggestionSectionTitle).toBeVisible();
-		await expect(page.getByText(insightTypeInput.fixHint)).toBeVisible();
+		await expect(
+			page.getByText(MISSING_OR_EMPTY_META_DESCRIPTION_TAG.fixHintText)
+		).toBeVisible();
 	}
 );
 
@@ -83,13 +88,15 @@ test(
 	'Renders the affected pages table with one row per scan insight',
 	{tag: '@LPD-91182'},
 	async ({insightDetailPage, onPagePage}) => {
-		await onPagePage.selectInsight(insightTypeInput.name);
-
-		await expect(insightDetailPage.affectedPagesHeading).toContainText(
-			`(${insightTypeInput.pageURLs.length})`
+		await onPagePage.selectInsight(
+			MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label
 		);
 
-		for (const pageInput of insightTypeInput.pageURLs) {
+		await expect(insightDetailPage.affectedPagesHeading).toContainText(
+			`(${insightInput.pageURLs.length})`
+		);
+
+		for (const pageInput of insightInput.pageURLs) {
 			const row = insightDetailPage.getAffectedPageRow(pageInput.title);
 
 			await expect(row).toBeVisible();
@@ -107,7 +114,9 @@ test(
 	'Navigates back to the On-Page screen from the breadcrumb',
 	{tag: '@LPD-91182'},
 	async ({insightDetailPage, onPagePage}) => {
-		await onPagePage.selectInsight(insightTypeInput.name);
+		await onPagePage.selectInsight(
+			MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label
+		);
 
 		await expect(insightDetailPage.onPageBreadcrumbLink).toBeVisible();
 
@@ -131,24 +140,30 @@ test(
 			},
 		];
 
-		await apiHelpers.seoStudio.addPages(scan, insightType.id, fixedPages);
+		await apiHelpers.seoStudio.addPages(
+			scan,
+			insightInput.externalReferenceCode,
+			fixedPages
+		);
 
 		await onPagePage.goto(SEO_STUDIO_FRIENDLY_URL);
 
-		await onPagePage.selectInsight(insightTypeInput.name);
+		await onPagePage.selectInsight(
+			MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label
+		);
 
 		await expect(insightDetailPage.affectedPagesHeading).toContainText(
-			`(${insightTypeInput.pageURLs.length})`
+			`(${insightInput.pageURLs.length})`
 		);
 
 		await expect(
 			page.getByRole('heading', {
 				level: 2,
-				name: `${insightTypeInput.name} from ${insightTypeInput.pageURLs.length} pages`,
+				name: `${MISSING_OR_EMPTY_META_DESCRIPTION_TAG.label} from ${insightInput.pageURLs.length} pages`,
 			})
 		).toBeVisible();
 
-		for (const pageInput of insightTypeInput.pageURLs) {
+		for (const pageInput of insightInput.pageURLs) {
 			await expect(
 				insightDetailPage.getAffectedPageRow(pageInput.title)
 			).toBeVisible();
